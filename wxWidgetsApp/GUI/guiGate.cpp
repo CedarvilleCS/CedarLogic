@@ -25,12 +25,13 @@ guiGate::guiGate() : klsCollisionObject(COLL_GATE) {
 }
 
 guiGate::~guiGate(){
-	// Destroy the hotspots:
+	// Destry the hotspots:
+	
 	map< string, gateHotspot* >::iterator hs = hotspots.begin();
 	while( hs != hotspots.end() ) {
-		delete (hs->second);
+		// delete (hs->second);
 		hotspots.erase(hs);
-		hs = hotspots.begin();
+		hs = hotspots.begin(); 
 	}
 }
 
