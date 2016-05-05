@@ -1,0 +1,12 @@
+version: 1.0.{build}
+configuration: Debug
+platform: Any CPU
+environment:
+  platform: Win32
+  WXWIN: C:\wxWidgets-2.8.12
+  WXADDITIONS: C:\wxWidgets-2.8.12\additions
+cache: C:\wxWidgets-2.8.12
+before_build:
+- ps: "Add-Type -assembly \"system.io.compression.filesystem\"\n\nif(![System.IO.File]::Exists(\"C:\\wxWidgets2.8.12.zip\")){\n\nWrite-Host \"Downloading wxWidgets..\" \n\n$url = \"https://dl.dropboxusercontent.com/s/h958d09l8zizxeu/wxWidgets-2.8.12.zip?dl=0\"\n$dlLocation = \"C:\\wxWidgets2.8.12.zip\"\n$webclient = New-Object System.Net.WebClient\n\n$webclient.DownloadFile($url,$dlLocation) \nWrite-Host \"Extracting archive..\" \n[io.compression.zipfile]::ExtractToDirectory(\"C:\\wxWidgets2.8.12.zip\", \"C:\\wxWidgets2.8.12\\\")\n\n} else {\n\nWrite-Host \"Downloading wxWidgets..\" \n\n$url = \"https://dl.dropboxusercontent.com/s/h958d09l8zizxeu/wxWidgets-2.8.12.zip?dl=0\"\n$dlLocation = \"C:\\wxWidgets2.8.12.zip\"\n$webclient = New-Object System.Net.WebClient\n\n$webclient.DownloadFile($url,$dlLocation) \nWrite-Host \"Extracting archive..\" \n[io.compression.zipfile]::ExtractToDirectory(\"C:\\wxWidgets2.8.12.zip\", \"C:\\wxWidgets2.8.12\\\")\n\nWrite-Host \"wxWidgets is already downloaded!\"\n}"
+build:
+  verbosity: minimal
