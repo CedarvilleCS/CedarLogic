@@ -40,7 +40,7 @@ gateImage::gateImage( string gateName, wxWindow *parent, wxWindowID id,
 	this->gateName = gateName;
 	update();
 	// the delete below is causing some out-of-range reference  KAS
-	//delete m_gate;
+	delete m_gate;
 	this->SetToolTip((const wxChar *)wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption.c_str()); // added cast KAS
 }
 
