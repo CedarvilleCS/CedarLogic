@@ -4,7 +4,7 @@
 #include<map>
 
 //more ZAD constants ***************************************************
-const int H_KEY_0 = 0x06;
+const int H_KEY_0 = 0x06; 
 const int H_KEY_1 = 0x05;
 const int H_KEY_2 = 0x01;
 const int H_KEY_3 = 0x08;
