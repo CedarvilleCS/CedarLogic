@@ -14,3 +14,4 @@ CedarLogic is Cedarville University's digital logic simulator.
   8. Run `Developer Command Prompt for VS2015`, navigate to `$%WXWIN%\build\msw`.
   9. Run `nmake -f makefile.vc`
  10. When that's done, you should be able to build and run CedarLogic in Visual Studio.
+ 11. If you see errors about glcanvas not being defined, delete your wxwidgets directory and restart.

@@ -12,4 +12,5 @@
 !wxWidgetsApp/**
 
 # But seriously, do ignore...
+wxWidgetsApp/wxWidgetsApp.vcxproj.user
 wxWidgetsApp/Debug/
