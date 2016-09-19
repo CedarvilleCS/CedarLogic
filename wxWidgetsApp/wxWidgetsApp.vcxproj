@@ -38,7 +38,6 @@
     <ClInclude Include="GUI\PaletteCanvas.h" />
     <ClInclude Include="GUI\PaletteFrame.h" />
     <ClInclude Include="GUI\paramDialog.h" />
-    <ClInclude Include="GUI\product.h" />
     <ClInclude Include="GUI\RamPopupDialog.h" />
     <ClInclude Include="GUI\threadLogic.h" />
     <ClInclude Include="GUI\XMLParser.h" />

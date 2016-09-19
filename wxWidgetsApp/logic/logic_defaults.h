@@ -12,8 +12,6 @@
 #ifndef LOGIC_DEFAULTS_H
 #define LOGIC_DEFAULTS_H
 
-#include "../GUI/product.h"
-
 // Warning message macro:
 #ifndef _PRODUCTION_
 #define WARNING(message) \
@@ -23,6 +21,8 @@
 	;
 #endif
 
+#include <string>
+#include <cmath>
 #include <fstream>
 using namespace std;
 extern ofstream* logiclog;

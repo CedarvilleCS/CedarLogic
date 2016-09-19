@@ -130,9 +130,6 @@
     <ClInclude Include="GUI\paramDialog.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\product.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="GUI\RamPopupDialog.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
