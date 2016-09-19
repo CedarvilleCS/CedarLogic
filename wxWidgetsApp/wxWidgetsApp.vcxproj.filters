@@ -14,6 +14,27 @@
     <Filter Include="Source Files\logic">
       <UniqueIdentifier>{a0d80ade-b817-4c20-9ca7-eb763f6dbcde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GUI\Dialog">
+      <UniqueIdentifier>{1850cb50-44d5-48ea-bacd-6c4aeda0a430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\KLS">
+      <UniqueIdentifier>{13dcca07-59ee-407b-b7c1-286daa227b39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Frame">
+      <UniqueIdentifier>{e07199ee-89d8-4114-843d-60cdc8879242}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\GLFont">
+      <UniqueIdentifier>{3340b7a5-c53c-482d-847c-5dd29f1e2598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\XML">
+      <UniqueIdentifier>{1c39cde8-b31d-475b-839c-2e9cd0dbfb97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Canvas">
+      <UniqueIdentifier>{a1f71740-b503-4ef0-9e53-093c519bf407}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Misc">
+      <UniqueIdentifier>{01e35951-accd-48e3-a165-b28bfc7b6076}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Z80\InstructionManager.h">
@@ -49,31 +70,16 @@
     <ClInclude Include="logic\logic_wire.h">
       <Filter>Source Files\logic</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\ADCPopupDialog.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\CircuitParse.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="GUI\CircuitPrint.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\commands.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\EditRegDialog.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="GUI\gateImage.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\gl_defs.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\GLFont\glfont2.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\GUICanvas.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\GUICircuit.h">
@@ -88,62 +94,77 @@
     <ClInclude Include="GUI\guiWire.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\klsBBox.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\klsClipboard.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\klsCollisionChecker.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\klsGLCanvas.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\klsMessage.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\klsMiniMap.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\LibraryParse.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\MainApp.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\MainFrame.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\OscopeCanvas.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\OscopeFrame.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\PaletteCanvas.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\PaletteFrame.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\paramDialog.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\RamPopupDialog.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\threadLogic.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\XMLParser.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\Z80PopupDialog.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\ADCPopupDialog.h">
+      <Filter>Source Files\GUI\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\EditRegDialog.h">
+      <Filter>Source Files\GUI\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\RamPopupDialog.h">
+      <Filter>Source Files\GUI\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Z80PopupDialog.h">
+      <Filter>Source Files\GUI\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\paramDialog.h">
+      <Filter>Source Files\GUI\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\klsBBox.h">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\klsClipboard.h">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\klsCollisionChecker.h">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\klsGLCanvas.h">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\klsMessage.h">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\klsMiniMap.h">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\MainFrame.h">
+      <Filter>Source Files\GUI\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\PaletteFrame.h">
+      <Filter>Source Files\GUI\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\OscopeFrame.h">
+      <Filter>Source Files\GUI\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GLFont\glfont2.h">
+      <Filter>Source Files\GUI\GLFont</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\CircuitParse.h">
+      <Filter>Source Files\GUI\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\LibraryParse.h">
+      <Filter>Source Files\GUI\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\XMLParser.h">
+      <Filter>Source Files\GUI\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GUICanvas.h">
+      <Filter>Source Files\GUI\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\OscopeCanvas.h">
+      <Filter>Source Files\GUI\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\PaletteCanvas.h">
+      <Filter>Source Files\GUI\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\MainApp.h">
+      <Filter>Source Files\GUI\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\threadLogic.h">
+      <Filter>Source Files\GUI\Misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -171,31 +192,16 @@
     <ClCompile Include="logic\logic_wire.cpp">
       <Filter>Source Files\logic</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\ADCPopupDialog.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\CircuitParse.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="GUI\CircuitPrint.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\commands.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\EditRegDialog.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="GUI\gateImage.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\gl_defs.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\GLFont\glfont2.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\GUICanvas.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\GUICircuit.cpp">
@@ -210,53 +216,68 @@
     <ClCompile Include="GUI\guiWire.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\klsClipboard.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="GUI\ADCPopupDialog.cpp">
+      <Filter>Source Files\GUI\Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\klsCollisionChecker.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\klsGLCanvas.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\klsMiniMap.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\LibraryParse.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\MainApp.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\MainFrame.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\OscopeCanvas.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\OscopeFrame.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\PaletteCanvas.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\PaletteFrame.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\paramDialog.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="GUI\EditRegDialog.cpp">
+      <Filter>Source Files\GUI\Dialog</Filter>
     </ClCompile>
     <ClCompile Include="GUI\RamPopupDialog.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\threadLogic.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\XMLParser.cpp">
-      <Filter>Source Files\GUI</Filter>
+      <Filter>Source Files\GUI\Dialog</Filter>
     </ClCompile>
     <ClCompile Include="GUI\Z80PopupDialog.cpp">
-      <Filter>Source Files\GUI</Filter>
+      <Filter>Source Files\GUI\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\paramDialog.cpp">
+      <Filter>Source Files\GUI\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\klsClipboard.cpp">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\klsCollisionChecker.cpp">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\klsGLCanvas.cpp">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\klsMiniMap.cpp">
+      <Filter>Source Files\GUI\KLS</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\MainFrame.cpp">
+      <Filter>Source Files\GUI\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\PaletteFrame.cpp">
+      <Filter>Source Files\GUI\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\OscopeFrame.cpp">
+      <Filter>Source Files\GUI\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GLFont\glfont2.cpp">
+      <Filter>Source Files\GUI\GLFont</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\CircuitParse.cpp">
+      <Filter>Source Files\GUI\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\LibraryParse.cpp">
+      <Filter>Source Files\GUI\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\XMLParser.cpp">
+      <Filter>Source Files\GUI\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUICanvas.cpp">
+      <Filter>Source Files\GUI\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\OscopeCanvas.cpp">
+      <Filter>Source Files\GUI\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\PaletteCanvas.cpp">
+      <Filter>Source Files\GUI\Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\MainApp.cpp">
+      <Filter>Source Files\GUI\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\threadLogic.cpp">
+      <Filter>Source Files\GUI\Misc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
