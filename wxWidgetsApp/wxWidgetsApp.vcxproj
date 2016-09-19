@@ -10,6 +10,10 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <PropertyGroup>
+    <WXWIN Condition="'$(WXWIN)' == ''">c:\wxWidgets-2.8.12</WXWIN>
+    <WXADDITIONS Condition="'$(WXADDITIONS)' == ''">c:\wxWidgets-2.8.12\additions</WXADDITIONS>
+  </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="GUI\ADCPopupDialog.h" />
     <ClInclude Include="GUI\CircuitParse.h" />
