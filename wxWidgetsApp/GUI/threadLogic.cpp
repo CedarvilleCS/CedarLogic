@@ -15,26 +15,6 @@
 
 DECLARE_APP(MainApp)
 
-/*string parseStringFromString(string& source) {
-	unsigned int pointer = 0;
-	while (pointer < source.size() && source[pointer] != ' ' && source[pointer] != '\n' && source[pointer] != '\t') pointer++;
-	string result = source.substr(0,pointer);
-	if (pointer != source.size()) source = source.substr(pointer+1,source.size()-pointer-1);
-	return result;
-}
-
-int parseIntFromString(string& source) {
-	unsigned int pointer = 0;
-	int result = 0;
-	while (pointer < source.size() && source[pointer] != ' ' && source[pointer] != '\n' && source[pointer] != '\t') pointer++;
-	int factor = 0;
-	for (int n = pointer-1; n >= 0; n--) {
-		result += ((int)(source[n]-'0')) * ((int)pow((float)10,(int)factor++));
-	}
-	if (pointer != source.size()) source = source.substr(pointer+1,source.size()-pointer-1);
-	return result;
-}
- */
 threadLogic::threadLogic() : wxThread() {
 	return;
 }

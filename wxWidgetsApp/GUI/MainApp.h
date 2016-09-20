@@ -21,13 +21,13 @@
 #include "threadLogic.h"
 #include "../logic/logic_defaults.h"
 #include "LibraryParse.h"
-#include "product.h"
 #include "gl_defs.h"
 #include "klsMessage.h"
 #include <deque>
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 
 class MainFrame;
 
