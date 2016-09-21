@@ -572,12 +572,14 @@ void klsGLCanvas::wxOnMouseEvent(wxMouseEvent& event) {
 	setMouseCoords();
 
 	// Check all of the button events:
-	if( event.LeftDown() ) {
+	if (event.LeftDown() ) {
 		mouseOutOfWindow = false; // Assume that we clicked inside the window!
-		beginDrag( BUTTON_LEFT );
-		OnMouseDown( event ); // Call the event handler.
-	} else if( event.LeftUp() || event.LeftDClick() ) {
-		endDrag( BUTTON_LEFT );
+		beginDrag(BUTTON_LEFT);
+		OnMouseDown(event); // Call the event handler.
+	} else if( event.LeftUp() || event.LeftDClick()) {
+		if (isDragging()) {
+			endDrag(BUTTON_LEFT);
+		}
 		OnMouseUp( event );
 	} else if( event.RightDown() || event.RightDClick() ) {
 		beginDrag( BUTTON_RIGHT );
