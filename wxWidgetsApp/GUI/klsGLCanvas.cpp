@@ -577,9 +577,7 @@ void klsGLCanvas::wxOnMouseEvent(wxMouseEvent& event) {
 		beginDrag(BUTTON_LEFT);
 		OnMouseDown(event); // Call the event handler.
 	} else if( event.LeftUp() || event.LeftDClick()) {
-		if (isDragging()) {
-			endDrag(BUTTON_LEFT);
-		}
+		endDrag(BUTTON_LEFT);
 		OnMouseUp( event );
 	} else if( event.RightDown() || event.RightDClick() ) {
 		beginDrag( BUTTON_RIGHT );
@@ -708,9 +706,13 @@ void klsGLCanvas::endDrag( mouseButton whichButton ) {
 	// Set the flag to tell us that the button is finished dragging:
 	setIsDragging( false, whichButton );
 
-	// Release the mouse capture (Note that we call ReleaseMouse() as often as we call
-	// CaptureMouse() because it has some sort of stack to remember and release):
-	ReleaseMouse();
+	// Release the mouse capture.
+	// wxWidgets has an assertion for when the mouse is released too many times.
+	// This function is called for double clicking and ESC presses (among other reasons).
+	// In both of those situations ReleaseMouse is called without CaptureMouse.
+	if (HasCapture()) {
+		ReleaseMouse();
+	}
 }
 
 
