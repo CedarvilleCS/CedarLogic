@@ -111,7 +111,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = 0, const wxString& name = _T("GUICanvas") );
 
-    ~GUICanvas();
+	virtual ~GUICanvas();
 
 	// Event handlers
 	void OnMouseDown( wxMouseEvent& event ) {

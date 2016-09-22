@@ -74,7 +74,7 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		map < string, GLPoint2f > hotspotmap = (*(gCircuit->getGates()))[gates[i]]->getHotspotList();
 		map < string, GLPoint2f >::iterator hsmapWalk = hotspotmap.begin();
 		while (hsmapWalk != hotspotmap.end()) {
-			if ( (*(gCircuit->getGates()))[gates[i]]->isConnected(hsmapWalk->first) ) connectWireList[(*(gCircuit->getGates()))[gates[i]]->getConnection(hsmapWalk->first)->getID()]++;
+			if ( (*(gCircuit->getGates()))[gates[i]]->isConnected(hsmapWalk->first) )connectWireList[(*(gCircuit->getGates()))[gates[i]]->getConnection(hsmapWalk->first)->getID()]++;
 			hsmapWalk++;
 		}
 		// Creation of a gate takes care of type, position, id; all other items are in params

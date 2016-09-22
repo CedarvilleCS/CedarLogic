@@ -612,7 +612,7 @@ public:
 	Gate_JUNCTION( Circuit *newCircuit );
 
 	// Remove this junction's claim on the junction ID:
-	~Gate_JUNCTION();
+	virtual ~Gate_JUNCTION();
 
 	// Handle gate events:
 	void gateProcess( void );
@@ -666,7 +666,7 @@ public:
 	
 	// Destroy the gate, and remove the Junction object from the
 	// Circuit:
-	~Gate_T();
+	virtual ~Gate_T();
 
 	// Handle gate events:
 	void gateProcess( void );
@@ -706,7 +706,7 @@ public:
 	
 	// Destroy the gate, and remove the Junction object from the
 	// Circuit:
-	~Gate_NODE();
+	virtual ~Gate_NODE();
 
 	// Handle gate events:
 	void gateProcess( void );

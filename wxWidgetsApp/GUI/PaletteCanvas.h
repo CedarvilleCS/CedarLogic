@@ -20,7 +20,7 @@ using namespace std;
 class PaletteCanvas : public wxScrolledWindow {
 public:
 	PaletteCanvas( wxWindow *parent, wxWindowID, wxString &libName, const wxPoint &pos, const wxSize &size );
-	~PaletteCanvas();
+virtual	~PaletteCanvas();
 
     void OnPaint( wxPaintEvent &event );
 	void Activate( void );

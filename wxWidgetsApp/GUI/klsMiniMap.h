@@ -29,7 +29,7 @@ public:
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = 0, const wxString& name = _T("klsMiniMap"));
-	~klsMiniMap() { return; };
+	virtual ~klsMiniMap() { return; };
 	
 	void setLists( hash_map< unsigned long, guiGate* >* gateList, hash_map< unsigned long, guiWire* >* wireList ) {
 		this->gateList = gateList;

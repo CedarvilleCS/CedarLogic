@@ -51,7 +51,7 @@ class MainFrame : public wxFrame {
 public:
     // ctor(s)
     MainFrame(const wxString& title, string cmdFilename = "");
-	~MainFrame();
+	virtual ~MainFrame();
 	
     // event handlers (these functions should _not_ be virtual)
     void OnClose(wxCloseEvent& event);

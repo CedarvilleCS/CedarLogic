@@ -46,7 +46,7 @@ class CircuitParse {
 public:
 	CircuitParse(string, vector< GUICanvas* >);
 	CircuitParse(GUICanvas*);
-	~CircuitParse();
+	virtual ~CircuitParse();
 	
 	void loadFile(string);
 	void parseFile();

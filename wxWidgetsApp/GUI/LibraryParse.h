@@ -65,7 +65,7 @@ class LibraryParse {
 public:
 	LibraryParse(string);
 	LibraryParse();
-	~LibraryParse();
+	virtual ~LibraryParse();
 	
 	void parseFile();
 

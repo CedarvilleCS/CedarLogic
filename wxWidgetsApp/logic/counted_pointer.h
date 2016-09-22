@@ -21,7 +21,7 @@ public:
 
     explicit counted_ptr(X* p = 0) // allocate a new counter
         : itsCounter(0) {if (p) itsCounter = new counter(p);}
-    ~counted_ptr()
+    virtual ~counted_ptr()
         {release();}
     counted_ptr(const counted_ptr& r) throw()
         {acquire(r.itsCounter);}

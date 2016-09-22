@@ -25,7 +25,7 @@ using namespace std;
 class klsClipboard {
 public:
 	klsClipboard() { return; };
-	~klsClipboard() { return; };
+	virtual ~klsClipboard() { return; };
 	
 	cmdPasteBlock* pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanvas );
 	void copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector < unsigned long > gates, vector < unsigned long > wires );

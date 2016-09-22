@@ -49,7 +49,7 @@ class GUICircuit : public wxDocument
 public:
     GUICircuit();
 
-    ~GUICircuit();
+    virtual ~GUICircuit();
 
 	// Reinit circuit
 	void reInitializeLogicCircuit();

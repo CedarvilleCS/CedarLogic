@@ -67,7 +67,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = 0 );
 
-    ~klsGLCanvas();
+    virtual ~klsGLCanvas();
 
 
 	// Print the canvas contents to a bitmap:

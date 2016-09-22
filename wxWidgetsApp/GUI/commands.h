@@ -53,7 +53,7 @@ protected:
 	
 public:
 	cmdMoveGate( GUICircuit* gCircuit, unsigned long gid, float startX, float startY, float endX, float endY, bool uW = false );
-	~cmdMoveGate( void ) { return; };
+	virtual ~cmdMoveGate( void ) { return; };
 	
 	bool Do( void );
 	bool Undo( void );
@@ -72,7 +72,7 @@ public:
 	cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, wireSegment > oldList, map < long, wireSegment > newList );
 	cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, wireSegment > oldList, GLPoint2f delta );
 	cmdMoveWire( string def );
-	~cmdMoveWire( void ) { return; };
+	virtual ~cmdMoveWire( void ) { return; };
 	
 	bool Do( void );
 	bool Undo( void );
@@ -92,7 +92,7 @@ protected:
 	vector < klsCommand* > proxconnects;
 public:
 	cmdMoveSelection( GUICircuit* gCircuit, vector < GateState > &preMove, vector < WireState > &preMoveWire, float startX, float startY, float endX, float endY );
-	~cmdMoveSelection( void ) { return; };
+	virtual ~cmdMoveSelection( void ) { return; };
 	
 	bool Do( void );
 	bool Undo( void );
@@ -111,7 +111,7 @@ protected:
 public:
 	cmdCreateGate( GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long gid, string gateType, float x, float y);
 	cmdCreateGate( string def );
-	~cmdCreateGate( void ) { return; };
+	virtual ~cmdCreateGate( void ) { return; };
 	
 	bool Do( void );
 	bool Undo( void );
@@ -140,7 +140,7 @@ protected:
 public:
 	cmdConnectWire( GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false );
 	cmdConnectWire( string def );
-	~cmdConnectWire( void ) { return; };
+	virtual ~cmdConnectWire( void ) { return; };
 	
 	bool Do( void );
 	bool Undo( void );
@@ -157,7 +157,7 @@ protected:
 public:
 	cmdCreateWire( GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long wid, cmdConnectWire* conn1, cmdConnectWire* conn2 );
 	cmdCreateWire( string def );
-	~cmdCreateWire( void );
+	virtual ~cmdCreateWire( void );
 	
 	bool Do( void );
 	bool Undo( void );
@@ -174,7 +174,7 @@ protected:
 	bool noCalcShape;
 public:
 	cmdDisconnectWire( GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false );
-	~cmdDisconnectWire( void ) { return; };
+	virtual ~cmdDisconnectWire( void ) { return; };
 	
 	bool Do( void );
 	bool Undo( void );
@@ -192,7 +192,7 @@ protected:
 	
 public:
 	cmdMergeWire( GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wid1, unsigned long wid2, GLPoint2f mc );
-	~cmdMergeWire( void );
+	virtual ~cmdMergeWire( void );
 	
 	bool Do( void );
 	bool Undo( void );
@@ -206,7 +206,7 @@ protected:
 	
 public:
 	cmdDeleteWire( GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wid);
-	~cmdDeleteWire( void );
+	virtual ~cmdDeleteWire( void );
 	
 	bool Do( void );
 	bool Undo( void );
@@ -221,7 +221,7 @@ protected:
 	
 public:
 	cmdDeleteGate( GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long gid);
-	~cmdDeleteGate( void );
+	virtual ~cmdDeleteGate( void );
 	
 	bool Do( void );
 	bool Undo( void );
@@ -236,7 +236,7 @@ protected:
 	
 public:
 	cmdDeleteSelection( GUICircuit* gCircuit, GUICanvas* gCanvas, vector < unsigned long > &gates, vector < unsigned long > &wires);
-	~cmdDeleteSelection( void );
+	virtual ~cmdDeleteSelection( void );
 	
 	bool Do( void );
 	bool Undo( void );
@@ -254,7 +254,7 @@ protected:
 public:
 	cmdSetParams( GUICircuit* gCircuit, unsigned long gid, paramSet pSet, bool setMode = false );
 	cmdSetParams( string def );
-	~cmdSetParams( void ) { return; };
+	virtual ~cmdSetParams( void ) { return; };
 	
 	bool Do( void );
 	bool Undo( void );
@@ -270,7 +270,7 @@ protected:
 	bool m_init;
 public:
 	cmdPasteBlock( vector < klsCommand* > &cmdList );
-	~cmdPasteBlock( void ) { return; };
+	virtual ~cmdPasteBlock( void ) { return; };
 	
 	bool Do( void );
 	bool Undo( void );

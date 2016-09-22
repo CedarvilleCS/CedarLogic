@@ -34,7 +34,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = 0, const wxString& name = _T("") );
 
-    ~gateImage();
+    virtual ~gateImage();
 
     void OnPaint(wxPaintEvent& event);
     void mouseCallback(wxMouseEvent& event);
