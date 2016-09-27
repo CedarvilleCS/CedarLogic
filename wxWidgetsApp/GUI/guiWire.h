@@ -118,6 +118,19 @@ class guiWire : public klsCollisionObject {
 public:
 	guiWire();
 
+	// TJD. 9/26/2016
+	// Added destructor to fix memory bug after transition from mingw to windows.
+	// The bug showed itself by segfaulting when copying a gate with a wire selected.
+	// The problem was that wireSegment-s that are owned by guiWire and destroyed
+	// implicitly by its default destructor were being referenced in klsCollisionObject's destructor.
+	// There is a call to insertSubObject() that passes pointers to guiWire's wireSegments into the base class.
+	// This problem did not show up in mingw because gcc is too lenient about deleted data.
+	// gcc leaves recently deleted stuff alone, windows overwrites it immediately with arbitrary data.
+	virtual ~guiWire() {
+		deleteSubObjects();
+		deleteCollisionObject();
+	}
+
 	// Connection functions
 	//		addConnection: if openMode is true, then no shape is calculated; waiting for setSegmentMap call.
 	void addConnection( guiGate* iGate, string connection, bool openMode = false );
