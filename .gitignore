@@ -15,3 +15,9 @@
 # But seriously, do ignore...
 wxWidgetsApp/wxWidgetsApp.vcxproj.user
 wxWidgetsApp/Debug/
+
+# These are temporary ignores.
+# These files were removed from the project and shouldn't be re-added.
+*.xpm
+resources.rc
+KLS_Logic.txt
