@@ -6,6 +6,7 @@
 !.gitignore
 !FormBuilderApps.sln
 !README.md
+!Doxyfile
 !wxSetup/
 !wxSetup/**
 !wxWidgetsApp/
