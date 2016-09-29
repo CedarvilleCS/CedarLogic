@@ -94,9 +94,6 @@
     <ClInclude Include="GUI\guiWire.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="GUI\ADCPopupDialog.h">
       <Filter>Source Files\GUI\Dialog</Filter>
     </ClInclude>

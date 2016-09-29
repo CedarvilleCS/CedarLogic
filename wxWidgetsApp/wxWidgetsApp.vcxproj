@@ -53,7 +53,6 @@
     <ClInclude Include="logic\logic_gate.h" />
     <ClInclude Include="logic\logic_junction.h" />
     <ClInclude Include="logic\logic_wire.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Z80\InstructionManager.h" />
     <ClInclude Include="Z80\WaveformFSM.h" />
     <ClInclude Include="Z80\Z_80LogicGate.h" />
