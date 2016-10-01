@@ -12,53 +12,8 @@
 #include <cmath>
 #include <stack>
 
+#include "MainApp.h"
 DECLARE_APP(MainApp)
-
-struct lessThan : binary_function<wireSegment&, wireSegment&, bool>
-{
-public:
-	bool operator()(const wireSegment& m1, const wireSegment& m2) const
-	{ return !(m1.begin.x == m2.begin.x && m1.begin.y == m2.begin.y && m1.end.x == m2.end.x && m1.end.y == m2.end.y); }
-};
-
-#define EQUALRANGE 0.00125
-bool operator==(const GLPoint2f& p1, const GLPoint2f& p2) { return (p1.x >= p2.x-EQUALRANGE &&
-																	p1.x <= p2.x+EQUALRANGE && 
-																	p1.y <= p2.y+EQUALRANGE &&
-																	p1.y >= p2.y-EQUALRANGE); }
-
-
-typedef struct {
-	double x, y, c;
-} line;
-
-// Construct a line from two points, useful for intersection checking
-line points_to_line( GLPoint2f p1, GLPoint2f p2 ) {
-	line ret;
-	if (p1.x == p2.x) {
-		ret.x = 1;
-		ret.y = 0;
-		ret.c = -p1.x;
-	} else {
-		ret.y = 1;
-		ret.x = -(p1.y-p2.y)/(p1.x-p2.x);
-		ret.c = -(ret.x*p1.x) - (ret.y*p1.y);
-	}
-	return ret;
-}
-
-// Returns a point where two lines intersect
-GLPoint2f intersection_point( line l1, line l2, bool l1Vert ) {
-	GLPoint2f p;
-	p.x = (l2.y*l1.c - l1.y*l2.c) / (l2.x*l1.y - l1.x*l2.y);
-	if (l1Vert) p.y = -(l1.x*p.x + l1.c) / l1.y;
-	else p.y = -(l2.x*p.x + l2.c) / l2.y;
-	return p;
-}
-
-bool point_in_box( GLPoint2f p, GLPoint2f b1, GLPoint2f b2 ) {
-	return ( (p.x >= min(b1.x,b2.x)) && (p.x <= max(b1.x,b2.x)) && (p.y >= min(b1.y,b2.y)) && (p.y <= max(b1.y,b2.y)) );
-}
 
 // Returns distance from p1 to p2
 float lineMagnitude( GLPoint2f p1, GLPoint2f p2 ) {

@@ -11,7 +11,7 @@
 #ifndef GUIWIRE_H_
 #define GUIWIRE_H_
 
-#include <float.h>
+#include <cfloat>
 #include <string>
 #include <vector>
 #include "../logic/logic_defaults.h"
@@ -20,6 +20,8 @@
 #include "guiGate.h"
 #include "XMLParser.h"
 
+class guiGate;
+
 struct glWireRenderInfo {
 	vector< GLPoint2f > vertexPoints;
 	vector< GLPoint2f > intersectPoints;
@@ -27,15 +29,6 @@ struct glWireRenderInfo {
 };
 
 float distanceToLine( GLPoint2f p, GLPoint2f l1, GLPoint2f l2 );
-bool operator==(const GLPoint2f& p1, const GLPoint2f& p2);
-class guiGate;
-
-struct pointCompare : binary_function<GLPoint2f&, GLPoint2f&, bool>
-{
-public:
-	bool operator()(const GLPoint2f& m1, const GLPoint2f& m2) const
-	{ return !(m1.x == m2.x && m1.y == m2.y); }
-};
 
 struct wireConnection {
 	guiGate* cGate; // hold a pointer since this object shouldn't know about the gateList
