@@ -11,14 +11,14 @@
 #ifndef GUIWIRE_H_
 #define GUIWIRE_H_
 
-#include "GlWrapper.h"
-
 #include <float.h>
 #include <string>
 #include <vector>
 #include "../logic/logic_defaults.h"
 #include "klsCollisionChecker.h"
 #include "gl_defs.h"
+#include "guiGate.h"
+#include "XMLParser.h"
 
 struct glWireRenderInfo {
 	vector< GLPoint2f > vertexPoints;
@@ -101,9 +101,6 @@ public:
 		calcBBox();
 	};
 };
-
-#include "guiGate.h"
-#include "XMLParser.h"
 
 class guiWire : public klsCollisionObject {
 public:

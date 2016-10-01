@@ -35,6 +35,9 @@
     <Filter Include="Source Files\GUI\Misc">
       <UniqueIdentifier>{01e35951-accd-48e3-a165-b28bfc7b6076}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GUI\gl">
+      <UniqueIdentifier>{45518276-9896-4b48-920c-41806f507b24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Z80\InstructionManager.h">
@@ -77,9 +80,6 @@
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\gateImage.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\gl_defs.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\GUICircuit.h">
@@ -163,8 +163,11 @@
     <ClInclude Include="GUI\threadLogic.h">
       <Filter>Source Files\GUI\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\GlWrapper.h">
-      <Filter>Source Files\GUI</Filter>
+    <ClInclude Include="GUI\gl_defs.h">
+      <Filter>Source Files\GUI\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\gl_wrapper.h">
+      <Filter>Source Files\GUI\gl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -199,9 +202,6 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\gateImage.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\gl_defs.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\GUICircuit.cpp">
@@ -278,6 +278,9 @@
     </ClCompile>
     <ClCompile Include="GUI\threadLogic.cpp">
       <Filter>Source Files\GUI\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\gl_defs.cpp">
+      <Filter>Source Files\GUI\gl</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -11,7 +11,8 @@
 #ifndef GUITEXT_H_
 #define GUITEXT_H_
 
-#include "GlWrapper.h"
+
+#include "gl_wrapper.h"
 
 #include <string>
 

@@ -23,7 +23,7 @@ class guiGate;
 //#include "OscopeFrame.h"
 class OscopeFrame;
 
-#include "GlWrapper.h"
+#include "gl_wrapper.h"
 
 #include <map>
 #include <stack>

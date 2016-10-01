@@ -11,7 +11,8 @@
 #ifndef GUIGATE_H_
 #define GUIGATE_H_
 
-#include "GlWrapper.h"
+
+#include "gl_wrapper.h"
 
 class guiWire;
 

@@ -22,7 +22,7 @@
     <ClInclude Include="GUI\EditRegDialog.h" />
     <ClInclude Include="GUI\gateImage.h" />
     <ClInclude Include="GUI\GLFont\glfont2.h" />
-    <ClInclude Include="GUI\GlWrapper.h" />
+    <ClInclude Include="GUI\gl_wrapper.h" />
     <ClInclude Include="GUI\gl_defs.h" />
     <ClInclude Include="GUI\GUICanvas.h" />
     <ClInclude Include="GUI\GUICircuit.h" />

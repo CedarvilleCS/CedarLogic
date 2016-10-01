@@ -9,7 +9,6 @@
 *****************************************************************************/
 
 #include "guiWire.h"
-#include "MainApp.h"
 #include <cmath>
 #include <stack>
 
