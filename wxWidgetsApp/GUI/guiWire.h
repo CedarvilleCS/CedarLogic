@@ -11,16 +11,7 @@
 #ifndef GUIWIRE_H_
 #define GUIWIRE_H_
 
-#ifdef __WXMAC__
-#  ifdef __DARWIN__
-#    include <OpenGL/glu.h>
-#  else
-#    include <glu.h>
-#  endif
-#else
-#  include <windows.h>
-#  include <GL/glu.h>
-#endif
+#include "GlWrapper.h"
 
 #include <float.h>
 #include <string>

@@ -1,16 +1,7 @@
 #ifndef GL_DEFS_H_
 #define GL_DEFS_H_
 
-#ifdef __WXMAC__
-#  ifdef __DARWIN__
-#    include <OpenGL/glu.h>
-#  else
-#    include <glu.h>
-#  endif
-#else
-#  include <windows.h>
-#  include <GL/glu.h>
-#endif
+#include "GlWrapper.h"
 
 struct GLPoint2f {
 	GLPoint2f( GLfloat newX = 0.0, GLfloat newY = 0.0 ) : x(newX), y(newY) {};
