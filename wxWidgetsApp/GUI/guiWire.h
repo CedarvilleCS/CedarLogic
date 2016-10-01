@@ -14,13 +14,11 @@
 #include <cfloat>
 #include <string>
 #include <vector>
-#include "../logic/logic_defaults.h"
+#include "../logic/logic_defaults.h" // StateType
 #include "klsCollisionChecker.h"
-#include "gl_defs.h"
-#include "guiGate.h"
-#include "XMLParser.h"
 
 class guiGate;
+class XMLParser;
 
 struct glWireRenderInfo {
 	vector< GLPoint2f > vertexPoints;
@@ -127,7 +125,6 @@ public:
 	bool hover( float cx, float cy, float delta );
 	long getHoverSegmentID( void ) { return hoverSegmentID; };
 	
-	bool isWithinBox( float x1, float y1, float x2, float y2 );
 	GLPoint2f getCenter( void );
 	
 	// Moving functions

@@ -163,9 +163,6 @@ public:
 	// Recalculate the bounding box, based on the lines that are included alredy:
 	virtual void calcBBox( void );
 
-	// Am I completely within a given box?
-	bool isWithinBox( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
-
 
 	// Insert a hotspot in the hotspot list.
 	void insertHotspot( float x1, float y1, string connection );

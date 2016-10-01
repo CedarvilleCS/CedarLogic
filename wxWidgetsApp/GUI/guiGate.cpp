@@ -232,15 +232,6 @@ void guiGate::calcBBox( void ) {
 	updateBBoxes();
 }
 
-// Am I completely inside a given box?
-bool guiGate::isWithinBox( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 ) {
-	klsBBox selBBox;
-	selBBox.reset();
-	selBBox.addPoint( GLPoint2f( x1, y1 ) );
-	selBBox.addPoint( GLPoint2f( x2, y2 ) );
-	return selBBox.contains( this->getBBox() );
-}
-
 
 // Insert a hotspot in the hotspot list.
 void guiGate::insertHotspot( float x1, float y1, string connection ) {

@@ -11,8 +11,11 @@
 #include "guiWire.h"
 #include <cmath>
 #include <stack>
+#include "guiGate.h"
+#include "XMLParser.h"
+#include "gl_defs.h"
 
-#include "MainApp.h"
+class MainApp;
 DECLARE_APP(MainApp)
 
 // Returns distance from p1 to p2
@@ -299,15 +302,6 @@ bool guiWire::hover( float cx, float cy, float delta ) {
 	return false;
 }
 
-
-bool guiWire::isWithinBox(float x1, float y1, float x2, float y2) {
-	// Create the selection bounding box:
-	klsBBox selBox;
-	selBox.addPoint( GLPoint2f( x1, y1 ) );
-	selBox.addPoint( GLPoint2f( x2, y2 ) );
-	
-	return selBox.contains( this->getBBox() );
-}
 
 // Return the begin point of the initial vertical bar seg segMap[headSegment].  All other segs
 //	hold a delta to this so we know where to move them when the 
