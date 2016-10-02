@@ -14,6 +14,15 @@
 #include <map>
 #include <hash_map>   // removed .h  KAS
 
+#include "MainApp.h"
+#include "commands.h"
+#include "GUICanvas.h"
+#include "GUICircuit.h"
+#include "guiGate.h"
+#include "guiWire.h"
+#include "wx/clipbrd.h"
+#include "wx/dataobj.h"
+
 DECLARE_APP(MainApp)
 
 cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanvas ) {

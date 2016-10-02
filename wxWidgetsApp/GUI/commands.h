@@ -11,17 +11,19 @@
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
 
-#include "MainApp.h"
-#include "GUICircuit.h"
-#include "GUICanvas.h"
-#include "guiGate.h"
-#include "guiWire.h"
-#include "wx/cmdproc.h"
+#include <map>
+#include <hash_map>
 #include <string>
 #include <stack>
-#include <sstream>
-
+#include <vector>
+#include "wx/cmdproc.h"
+#include "gl_defs.h"
+#include "guiWire.h"  // wireSegment
+#include "GUICanvas.h"  // GateState, WireState
 using namespace std;
+
+class GUICircuit;
+class GUICanvas;
 
 // Holds pointers to all of a gate's parameters
 struct paramSet {

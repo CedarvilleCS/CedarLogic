@@ -9,11 +9,12 @@
 *****************************************************************************/
 
 #include "guiGate.h"
+#include <iomanip>
 #include "wx/wx.h"
 #include "MainApp.h"
 #include "klsCollisionChecker.h"
 #include "paramDialog.h"
-#include <iomanip>
+#include "guiWire.h"
 
 DECLARE_APP(MainApp)
 

@@ -11,7 +11,15 @@
 #include "commands.h"
 #include "OscopeFrame.h"
 #include <sstream>
-#include <hash_map>  // was hash_map.h  edited  KAS
+
+#include "MainApp.h"
+#include "GUICircuit.h"
+#include "GUICanvas.h"
+#include "guiGate.h"
+#include "guiWire.h"
+#include <string>
+#include <stack>
+#include <sstream>
 
 DECLARE_APP(MainApp)
 

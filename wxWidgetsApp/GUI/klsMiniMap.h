@@ -17,11 +17,12 @@ class klsMiniMap;
 #include "wx/image.h"
 #include "wx/bitmap.h"
 #include "wx/dcmemory.h"
-#include "guiGate.h"
-#include "guiWire.h"
 #include "klsGLCanvas.h"
 #include <hash_map>
 using namespace std;
+
+class guiWire;
+class guiGate;
 
 class klsMiniMap : public wxPanel {
 public:
