@@ -33,6 +33,35 @@ float distanceToLine( GLPoint2f p, GLPoint2f l1, GLPoint2f l2 ) {
 	else return lineMagnitude(p, GLPoint2f( l1.x+u*(l2.x-l1.x), l1.y+u*(l2.y-l1.y) ));
 }
 
+
+
+
+
+void wireSegment::calcBBox() {
+	klsBBox newBBox;
+	newBBox.addPoint(begin);
+	newBBox.addPoint(end);
+
+	if (isHorizontal()) {
+		newBBox.extendTop(WIRE_BBOX_THICKNESS / 2.0);
+		newBBox.extendBottom(WIRE_BBOX_THICKNESS / 2.0);
+	}
+	else {
+		newBBox.extendLeft(WIRE_BBOX_THICKNESS / 2.0);
+		newBBox.extendRight(WIRE_BBOX_THICKNESS / 2.0);
+	}
+
+	this->setBBox(newBBox);
+}
+
+bool wireSegment::isHorizontal(void) {
+	return !verticalSeg;
+}
+
+bool wireSegment::isVertical(void) {
+	return verticalSeg;
+}
+
 void wireSegment::printme(string lineBegin) {
 	wxGetApp().logfile << lineBegin << "Segment " << id << " ";
 	if (isVertical()) wxGetApp().logfile << "vertical" << endl;
@@ -41,7 +70,7 @@ void wireSegment::printme(string lineBegin) {
 	wxGetApp().logfile << lineBegin << "\t\tDIFFS: " << diffBegin.x << "," << diffBegin.y << " and " << diffEnd.x << "," << diffEnd.y << endl;
 	for (unsigned int i = 0; i < connections.size(); i++) {
 		GLPoint2f connPoint;
-//		connections[i].cGate->getHotspotCoords(connections[i].connection, connPoint.x, connPoint.y);
+		//		connections[i].cGate->getHotspotCoords(connections[i].connection, connPoint.x, connPoint.y);
 		wxGetApp().logfile << lineBegin << "\tconnected to " << connections[i].gid << " @ " << connections[i].connection << endl; //" at point " << connPoint.x << "," << connPoint.y << endl;
 	}
 	map < GLfloat, vector < long > >::iterator iwalk = intersects.begin();
@@ -53,6 +82,18 @@ void wireSegment::printme(string lineBegin) {
 		iwalk++;
 	}
 }
+
+wireSegment::wireSegment() : klsCollisionObject(COLL_WIRE_SEG) {};
+
+// Give the segment initial values - begin and end points, and orientation
+wireSegment::wireSegment(GLPoint2f nB, GLPoint2f nE, bool nisVertical, unsigned long nid) : klsCollisionObject(COLL_WIRE_SEG), verticalSeg(nisVertical), begin(nB), end(nE), id(nid) {
+	calcBBox();
+};
+
+
+
+
+
 
 guiWire::guiWire() : klsCollisionObject(COLL_WIRE) {
 	selected = false;
@@ -71,6 +112,19 @@ guiWire::guiWire() : klsCollisionObject(COLL_WIRE) {
 /*	renderInfo.numVertices = 1;
 	renderInfo.segmentVertices = new GLfloat[1];
 	renderInfo.segmentVertices[0] = 0.0; */
+}
+
+// TJD. 9/26/2016
+// Added destructor to fix memory bug after transition from mingw to windows.
+// The bug showed itself by segfaulting when copying a gate with a wire selected.
+// The problem was that wireSegment-s that are owned by guiWire and destroyed
+// implicitly by its default destructor were being referenced in klsCollisionObject's destructor.
+// There is a call to insertSubObject() that passes pointers to guiWire's wireSegments into the base class.
+// This problem did not show up in mingw because gcc is too lenient about deleted data.
+// gcc leaves recently deleted stuff alone, windows overwrites it immediately with arbitrary data.
+guiWire::~guiWire() {
+	deleteSubObjects();
+	deleteCollisionObject();
 }
 
 // Add an input connection to the wire
@@ -163,20 +217,12 @@ void guiWire::removeConnection(guiGate* iGate, string connection) {
 	calcBBox();
 }
 
-// Create the bbox for this wire, based on
-// the bboxes of the wire segments. Also,
-// add the wire segments into the subObjs list:
-void guiWire::calcBBox( void ){
-	this->deleteSubObjects();
-	
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
-	while (segWalk != segMap.end()) {
-		this->insertSubObject( &(segWalk->second) );
-		segWalk++;
-	}
-	
-	this->resetBBox();
-	this->makeValidBBox();
+long guiWire::numConnections() {
+	return connectPoints.size();
+}
+
+vector < wireConnection > guiWire::getConnections() {
+	return connectPoints;
 }
 
 void guiWire::draw(bool color) {
@@ -302,6 +348,9 @@ bool guiWire::hover( float cx, float cy, float delta ) {
 	return false;
 }
 
+long guiWire::getHoverSegmentID() {
+	return hoverSegmentID;
+};
 
 // Return the begin point of the initial vertical bar seg segMap[headSegment].  All other segs
 //	hold a delta to this so we know where to move them when the 
@@ -338,6 +387,22 @@ void guiWire::move( GLPoint2f origin, GLPoint2f delta ) {
 	this->calcBBox();
 }
 
+// Create the bbox for this wire, based on
+// the bboxes of the wire segments. Also,
+// add the wire segments into the subObjs list:
+void guiWire::calcBBox() {
+	this->deleteSubObjects();
+
+	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	while (segWalk != segMap.end()) {
+		this->insertSubObject(&(segWalk->second));
+		segWalk++;
+	}
+
+	this->resetBBox();
+	this->makeValidBBox();
+}
+
 // Take existing segment connections and update their map keys, returns true if interesting segment is found
 bool guiWire::refreshIntersections(bool removeBadSegs) {
 	bool retVal = false;
@@ -361,6 +426,20 @@ bool guiWire::refreshIntersections(bool removeBadSegs) {
 	}
 	return retVal;
 }
+
+bool guiWire::isSelected(void) { return selected; };
+
+void guiWire::select(void) { selected = true; };
+
+void guiWire::unselect(void) { selected = false; };
+
+void guiWire::setID(long nid) { id = nid; };
+
+unsigned long guiWire::getID(void) { return id; };
+
+void guiWire::setState(StateType ns) { state = ns; };
+
+StateType guiWire::getState(void) { return state; };
 
 // Save segment tree and wire info
 void guiWire::saveWire(XMLParser* xparse) {
@@ -425,6 +504,19 @@ void guiWire::saveWire(XMLParser* xparse) {
 	
 	xparse->closeTag("wire");	
 }
+
+map < long, wireSegment > guiWire::getSegmentMap(void) { return segMap; };
+
+void guiWire::setSegmentMap(map < long, wireSegment > newSegMap) {
+	this->deleteSubObjects(); // prevent coll checker pointers from invalidating
+	segMap = newSegMap;
+	calcBBox();
+	headSegment = ((segMap.begin())->first);
+	nextSegID = ((segMap.rbegin())->first) + 1;
+	endSegDrag();
+};
+
+map < long, wireSegment > guiWire::getOldSegmentMap(void) { return oldSegMap; };
 
 // Calculates a default three-segment shape for the wire, from source to destination, squared halfway
 void guiWire::calcShape() {
