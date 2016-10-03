@@ -21,3 +21,4 @@ wxWidgetsApp/Debug/
 *.xpm
 resources.rc
 KLS_Logic.txt
+*.TMP
