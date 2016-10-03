@@ -55,9 +55,6 @@
     <ClInclude Include="Z80\Z_80LogicGate.h">
       <Filter>Source Files\Z80</Filter>
     </ClInclude>
-    <ClInclude Include="logic\counted_pointer.h">
-      <Filter>Source Files\logic</Filter>
-    </ClInclude>
     <ClInclude Include="logic\logic_circuit.h">
       <Filter>Source Files\logic</Filter>
     </ClInclude>
@@ -174,6 +171,9 @@
     </ClInclude>
     <ClInclude Include="GUI\wireSegment.h">
       <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClInclude>
+    <ClInclude Include="logic\logic_values.h">
+      <Filter>Source Files\logic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

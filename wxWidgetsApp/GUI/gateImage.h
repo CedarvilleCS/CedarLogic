@@ -16,7 +16,7 @@ class gateImage;
 #include "MainApp.h"
 #include "wx/glcanvas.h"
 #include "guiGate.h"
-#include "../logic/logic_defaults.h"
+#include "../logic/logic_values.h"
 #include "wx/generic/dragimgg.h"
 #include "GUICircuit.h"
 #define wxDragImage wxGenericDragImage

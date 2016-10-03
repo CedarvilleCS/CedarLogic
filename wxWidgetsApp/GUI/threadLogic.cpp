@@ -13,6 +13,14 @@
 #include <sstream>
 #include "wx/timer.h"
 
+#include "../logic/logic_defaults.h"
+#include "../logic/logic_wire.h"
+#include "../logic/logic_gate.h"
+#include "../logic/logic_circuit.h"
+#include "../logic/logic_event.h"
+#include <string>
+
+
 DECLARE_APP(MainApp)
 
 threadLogic::threadLogic() : wxThread() {

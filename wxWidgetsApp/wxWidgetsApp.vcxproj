@@ -48,12 +48,12 @@
     <ClInclude Include="GUI\wireSegment.h" />
     <ClInclude Include="GUI\XMLParser.h" />
     <ClInclude Include="GUI\Z80PopupDialog.h" />
-    <ClInclude Include="logic\counted_pointer.h" />
     <ClInclude Include="logic\logic_circuit.h" />
     <ClInclude Include="logic\logic_defaults.h" />
     <ClInclude Include="logic\logic_event.h" />
     <ClInclude Include="logic\logic_gate.h" />
     <ClInclude Include="logic\logic_junction.h" />
+    <ClInclude Include="logic\logic_values.h" />
     <ClInclude Include="logic\logic_wire.h" />
     <ClInclude Include="Z80\InstructionManager.h" />
     <ClInclude Include="Z80\WaveformFSM.h" />

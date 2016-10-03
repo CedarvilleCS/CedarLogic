@@ -9,7 +9,7 @@
 *****************************************************************************/
 
 #include "PaletteCanvas.h"
-#include "../logic/logic_defaults.h"
+#include "../logic/logic_values.h"
 
 using namespace std;
 
