@@ -69,7 +69,7 @@ const TimeType DEFAULT_GATE_DELAY = 1;
 const IDType ID_NONE = ULLONG_MAX;
 
 
-#include "counted_pointer.h"
+#include <memory>
 #include <map>
 #include <set>
 #include <vector>
@@ -96,9 +96,9 @@ class Junction;
 
 
 // Gate and wire pointer definitions:
-typedef counted_ptr<Gate>     GATE_PTR;
-typedef counted_ptr<Wire>     WIRE_PTR;
-typedef counted_ptr<Junction> JUNC_PTR;
+typedef std::shared_ptr<Gate>     GATE_PTR;
+typedef std::shared_ptr<Wire>     WIRE_PTR;
+typedef std::shared_ptr<Junction> JUNC_PTR;
 
 
 // Outside classes depend on these... :(
