@@ -17,7 +17,6 @@ class klsGLCanvas;
 #include "wx/glcanvas.h"
 #include "klsMiniMap.h"
 // For GLPoint2f:
-#include "guiWire.h"
 
 // Included for floor() method:
 #include <cmath>

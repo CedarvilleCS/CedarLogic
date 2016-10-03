@@ -172,6 +172,9 @@
     <ClInclude Include="GUI\gateImage.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\wireSegment.h">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Z80\InstructionManager.cpp">
@@ -284,6 +287,9 @@
     </ClCompile>
     <ClCompile Include="GUI\gateImage.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wireSegment.cpp">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

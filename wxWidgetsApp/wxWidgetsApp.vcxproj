@@ -45,6 +45,7 @@
     <ClInclude Include="GUI\paramDialog.h" />
     <ClInclude Include="GUI\RamPopupDialog.h" />
     <ClInclude Include="GUI\threadLogic.h" />
+    <ClInclude Include="GUI\wireSegment.h" />
     <ClInclude Include="GUI\XMLParser.h" />
     <ClInclude Include="GUI\Z80PopupDialog.h" />
     <ClInclude Include="logic\counted_pointer.h" />
@@ -87,6 +88,7 @@
     <ClCompile Include="GUI\paramDialog.cpp" />
     <ClCompile Include="GUI\RamPopupDialog.cpp" />
     <ClCompile Include="GUI\threadLogic.cpp" />
+    <ClCompile Include="GUI\wireSegment.cpp" />
     <ClCompile Include="GUI\XMLParser.cpp" />
     <ClCompile Include="GUI\Z80PopupDialog.cpp" />
     <ClCompile Include="logic\logic_circuit.cpp" />

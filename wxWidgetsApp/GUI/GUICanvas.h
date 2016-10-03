@@ -26,6 +26,9 @@ class cmdPasteBlock;
 #include "klsGLCanvas.h"
 #include "GUICircuit.h"
 #include "klsCollisionChecker.h"
+#include "wireSegment.h"
+
+class guiWire;
 
 // Struct GateState
 //		stores the position and id of a gate so we know where we moved from

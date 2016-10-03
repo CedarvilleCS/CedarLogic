@@ -14,6 +14,7 @@
 #include "guiText.h"
 #include "../logic/logic_defaults.h"
 #include "OscopeFrame.h"
+#include "guiWire.h"
 
 // Included to use the min() and max() templates:
 #include <algorithm>

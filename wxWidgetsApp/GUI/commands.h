@@ -18,7 +18,7 @@
 #include <vector>
 #include "wx/cmdproc.h"
 #include "gl_defs.h"
-#include "guiWire.h"  // wireSegment
+#include "wireSegment.h"
 #include "GUICanvas.h"  // GateState, WireState
 using namespace std;
 

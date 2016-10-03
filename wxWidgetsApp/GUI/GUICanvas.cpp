@@ -12,6 +12,7 @@
 #include "MainApp.h"
 #include "paramDialog.h"
 #include "klsClipboard.h"
+#include "guiWire.h"
 
 // Included to use the min() and max() templates:
 #include <algorithm>
