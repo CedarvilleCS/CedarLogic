@@ -5508,6 +5508,87 @@
 			</offset>
 		</shape>
 	</gate>
+  <gate>
+    <name>CB_PRI_ENCODER_4x2</name>
+    <caption>4x2 Priority Encoder</caption>
+    <logic_type>PRI_ENCODER</logic_type>
+    <logic_param>INPUT_BITS 4</logic_param>
+    <input> 
+      <name>IN_0</name>
+		  <point>-3,-2.5</point> 
+		</input>
+		<input> 
+      <name>IN_1</name>
+		  <point>-3,-1.5</point> 
+		</input>
+    <input>
+      <name>IN_2</name>
+      <point>-3,-0.5</point>
+    </input>
+    <input>
+      <name>IN_3</name>
+      <point>-3,0.5</point>
+    </input>
+		<input> <name>ENABLE</name>
+		          <point>-3,2</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>3,-2.5</point> 
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-1.5</point> 
+		</output>
+		<shape>
+			<line>-2,3,2,3</line>
+			<line>2,3,2,-3.5</line>
+			<line>2,-3.5,-2,-3.5</line>
+			<line>-2,-3.5,-2,3</line>
+
+#		  Lines for offset in other encoders
+			<line>2,-1.5,3,-1.5</line>
+			<line>2,-2.5,3,-2.5</line>
+
+#			Encoder Input Lines
+			<line>-2,-2.5,-3,-2.5</line>
+			<line>-2,-1.5,-3,-1.5</line>
+      <line>-2,-0.5,-3,-0.5</line>
+      <line>-2,0.5,-3,0.5</line>
+
+#			Enable
+			<line>-2,2,-3,2</line>
+			
+#			E
+			<offset><point>-1.7,2.4</point>
+			<line>0,0,0.4,0</line>
+			<line>0.4,-0.8,0,-0.8</line>
+			<line>0,-0.8,0,-0.4</line>
+			<line>0,-0.4,0,0</line>
+			<line>0,-0.4,0.4,-0.4</line>
+			</offset>
+
+#			0 of inputs
+			<offset><point>-1.7,-2.1</point>
+			<line>0,0,0.4,0</line>
+			<line>0.4,0,0.4,-0.4</line>
+			<line>0.4,-0.4,0.4,-0.8</line>
+			<line>0.4,-0.8,0,-0.8</line>
+			<line>0,-0.8,0,-0.4</line>
+			<line>0,-0.4,0,0</line>
+			</offset>
+
+#			0 of outputs
+			<offset><point>1.3,-2.1</point>
+			<line>0,0,0.4,0</line>
+			<line>0.4,0,0.4,-0.4</line>
+			<line>0.4,-0.4,0.4,-0.8</line>
+			<line>0.4,-0.8,0,-0.8</line>
+			<line>0,-0.8,0,-0.4</line>
+			<line>0,-0.4,0,0</line>
+			</offset>
+
+    </shape>
+  </gate>
+  
 </library>
 <library> <name> 7  - Flip Flops</name>
 #	<gate> <name>AA_DFF</name>

@@ -133,7 +133,7 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		cmdTemp = new cmdMoveWire( gCircuit, copyWires[i]->getID(), copyWires[i]->getSegmentMap(), copyWires[i]->getSegmentMap());
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
-		delete copyWires[i];
+		//delete copyWires[i];
 	}
 	if (!wxTheClipboard->Open()) return;
 	wxTheClipboard->AddData(new wxTextDataObject((wxChar*)(oss.str().c_str())));

@@ -256,6 +256,9 @@ IDType Circuit::newGate( string type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_MUX );
 		} else if( type == "DECODER" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_DECODER );
+		} else if (type == "PRI_ENCODER") {
+			// Added 10/4/16 -- Colin Broberg
+			gateList[thisGateID] = GATE_PTR( new Gate_PRI_ENCODER );
 		} else if( type == "CLOCK" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_CLOCK );
 			// This is a polled gate, so insert it into the polled gates queue!
