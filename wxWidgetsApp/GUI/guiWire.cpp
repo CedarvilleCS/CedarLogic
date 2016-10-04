@@ -25,12 +25,23 @@ float lineMagnitude(GLPoint2f p1, GLPoint2f p2) {
 
 // Returns distance from point p to line defined by l1 and l2
 float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2) {
+
 	float lineMag = lineMagnitude(l1, l2);
-	if (lineMag < EQUALRANGE) return FLT_MAX;
+
+	if (lineMag < EQUALRANGE) {
+		return FLT_MAX;
+	}
+
 	float u = (((p.x - l1.x)*(l2.x - l1.x)) + ((p.y - l1.y)*(l2.y - l1.y)));
+
 	u = u / pow(lineMag, 2);
-	if (u < EQUALRANGE || u > 1) return min(lineMagnitude(p, l1), lineMagnitude(p, l2));
-	else return lineMagnitude(p, GLPoint2f(l1.x + u*(l2.x - l1.x), l1.y + u*(l2.y - l1.y)));
+
+	if (u < EQUALRANGE || u > 1) {
+		return min(lineMagnitude(p, l1), lineMagnitude(p, l2));
+	}
+	else {
+		return lineMagnitude(p, GLPoint2f(l1.x + u*(l2.x - l1.x), l1.y + u*(l2.y - l1.y)));
+	}
 }
 
 

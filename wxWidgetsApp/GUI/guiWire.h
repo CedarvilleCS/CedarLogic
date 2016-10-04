@@ -21,6 +21,8 @@
 class guiGate;
 class XMLParser;
 
+float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2);
+
 struct glWireRenderInfo {
 	vector< GLPoint2f > vertexPoints;
 	vector< GLPoint2f > intersectPoints;

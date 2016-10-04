@@ -3,8 +3,8 @@
 // of guiWire from recompiling the whole project.
 // Tyler J Drake 9-3-2016
 
-#ifndef WIRESEGMENT_H_
-#define WIRESEGMENT_H_
+#ifndef WIRE_SEGMENT_H
+#define WIRE_SEGMENT_H
 
 #include <cfloat>
 #include <string>
@@ -14,21 +14,14 @@
 
 class guiGate;
 
-// This doesn't belong here, but I'm not sure where to put it yet.
-// Beware! This implementation is actually in guiWire.cpp!!!
-float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2);
-
 struct wireConnection {
 	guiGate* cGate; // hold a pointer since this object shouldn't know about the gateList
 	unsigned long gid; // hold an id that will be useful in copy/paste remapping of ids
 	string connection; // know what hotspot i am connected to in the gate
 };
 
-// Class wireSegment:
-//	All segments are defined by a begin and end point, plus orientation.  Begin always is
-//		less than end along the oriented line (bottom to top, left to right)
-// 	Vertical/horizontal is a flag in the segment rather than determinate on endpoints
-//		i.e. the wire, once declared vertical will always be vertical
+// guiWire's are made of wireSegments.
+// Segments are vertical or horizontal.
 class wireSegment : public klsCollisionObject {
 public:
 	// Create the bbox for this wire segment:
@@ -44,11 +37,16 @@ public:
 
 	//Whenever "begin" or "end" are changed, calcBBox() must be called
 	// to re-build the bounding box.
-	GLPoint2f begin, end;
+
+	// Endpoints of the segment.
+	// Begin is always less than end.
+	GLPoint2f begin;
+	GLPoint2f end;
 
 	// All segments must know their relative position, in this case to the
 	//	first segment's (initial vertical bar) begin point
-	GLPoint2f diffBegin, diffEnd;
+	GLPoint2f diffBegin;
+	GLPoint2f diffEnd;
 
 	// Keep a list of the connections that are on this segment
 	vector < wireConnection > connections;
@@ -60,9 +58,6 @@ public:
 
 	// ID for this seg in its parent map
 	long id;
-
-	// pretty print
-	void printme(string lineBegin = "");
 
 	wireSegment();
 
