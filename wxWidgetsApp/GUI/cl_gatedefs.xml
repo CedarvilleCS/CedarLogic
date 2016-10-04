@@ -5585,10 +5585,8 @@
 			<line>0,-0.8,0,-0.4</line>
 			<line>0,-0.4,0,0</line>
 			</offset>
-
     </shape>
   </gate>
-  
 </library>
 <library> <name> 7  - Flip Flops</name>
 #	<gate> <name>AA_DFF</name>
