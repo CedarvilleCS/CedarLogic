@@ -300,7 +300,7 @@ void OscopeCanvas::UpdateData(void){
 					guiWire* myWire = currentGate->getConnection( firstInput );
 					
 					// Push the current state onto this TO's data queue:
-					stateValues[junctionName].push_back(myWire->getState()); 
+					stateValues[junctionName].push_back(myWire->getState());
 				} else {
 					// The TO is not connected, so the state is UNKNOWN:
 					stateValues[junctionName].push_back(UNKNOWN); 

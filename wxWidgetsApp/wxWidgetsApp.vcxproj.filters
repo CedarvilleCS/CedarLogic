@@ -17,9 +17,6 @@
     <Filter Include="Source Files\GUI\Dialog">
       <UniqueIdentifier>{1850cb50-44d5-48ea-bacd-6c4aeda0a430}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GUI\KLS">
-      <UniqueIdentifier>{13dcca07-59ee-407b-b7c1-286daa227b39}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GUI\Frame">
       <UniqueIdentifier>{e07199ee-89d8-4114-843d-60cdc8879242}</UniqueIdentifier>
     </Filter>
@@ -40,6 +37,9 @@
     </Filter>
     <Filter Include="Source Files\GUI\Dragable Things">
       <UniqueIdentifier>{7f19615b-eee3-41bb-afe3-fccf84ecbdf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Collision">
+      <UniqueIdentifier>{13dcca07-59ee-407b-b7c1-286daa227b39}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,22 +89,22 @@
       <Filter>Source Files\GUI\Dialog</Filter>
     </ClInclude>
     <ClInclude Include="GUI\klsBBox.h">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClInclude>
     <ClInclude Include="GUI\klsClipboard.h">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClInclude>
     <ClInclude Include="GUI\klsCollisionChecker.h">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClInclude>
     <ClInclude Include="GUI\klsGLCanvas.h">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClInclude>
     <ClInclude Include="GUI\klsMessage.h">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClInclude>
     <ClInclude Include="GUI\klsMiniMap.h">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClInclude>
     <ClInclude Include="GUI\MainFrame.h">
       <Filter>Source Files\GUI\Frame</Filter>
@@ -217,16 +217,16 @@
       <Filter>Source Files\GUI\Dialog</Filter>
     </ClCompile>
     <ClCompile Include="GUI\klsClipboard.cpp">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClCompile>
     <ClCompile Include="GUI\klsCollisionChecker.cpp">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClCompile>
     <ClCompile Include="GUI\klsGLCanvas.cpp">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClCompile>
     <ClCompile Include="GUI\klsMiniMap.cpp">
-      <Filter>Source Files\GUI\KLS</Filter>
+      <Filter>Source Files\GUI\Collision</Filter>
     </ClCompile>
     <ClCompile Include="GUI\MainFrame.cpp">
       <Filter>Source Files\GUI\Frame</Filter>
