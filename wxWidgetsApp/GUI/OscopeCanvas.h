@@ -17,7 +17,7 @@ class OscopeCanvas;
 #include "MainApp.h"
 #include "wx/glcanvas.h"
 #include "GUICircuit.h"
-#include "../logic/logic_defaults.h"
+#include "../logic/logic_values.h"
 
 #include <map>
 #include <vector>
@@ -39,7 +39,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = 0, const wxString& name = _T("OscopeCanvas") );
 
-    ~OscopeCanvas();
+    virtual ~OscopeCanvas();
 
     void OnPaint(wxPaintEvent& event);
     void OnSize(wxSizeEvent& event);

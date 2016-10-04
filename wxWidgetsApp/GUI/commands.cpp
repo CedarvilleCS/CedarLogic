@@ -11,7 +11,15 @@
 #include "commands.h"
 #include "OscopeFrame.h"
 #include <sstream>
-#include <hash_map>  // was hash_map.h  edited  KAS
+
+#include "MainApp.h"
+#include "GUICircuit.h"
+#include "GUICanvas.h"
+#include "guiGate.h"
+#include "guiWire.h"
+#include <string>
+#include <stack>
+#include <sstream>
 
 DECLARE_APP(MainApp)
 
@@ -61,7 +69,6 @@ cmdMoveWire::cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, w
 	this->wid = wid;
 	oldSegList = oldList;
 	this->delta = delta;
-	(*(gCircuit->getWires()))[wid]->printme("\t\t");
 }
 
 cmdMoveWire::cmdMoveWire( string def ) : klsCommand( true, _T("Move Wire") ) {

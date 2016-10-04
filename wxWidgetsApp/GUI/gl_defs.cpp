@@ -4,6 +4,13 @@
 #include "MainApp.h"
 DECLARE_APP(MainApp)
 
+bool GLPoint2f::operator==(const GLPoint2f& other) {
+	return (x >= other.x - EQUALRANGE &&
+		x <= other.x + EQUALRANGE &&
+		y <= other.y + EQUALRANGE &&
+		y >= other.y - EQUALRANGE);
+}
+
 void defineGLLists() {
 	float degInRad = 0;
 	

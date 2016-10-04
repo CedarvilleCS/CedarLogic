@@ -14,6 +14,14 @@
 #include <fstream>
 #include <sstream>
 
+#include "XMLParser.h"
+#include "guiGate.h"
+#include "guiWire.h"
+#include "GUICircuit.h"
+#include "GUICanvas.h"
+#include <map>
+#include <hash_map>
+
 DECLARE_APP(MainApp)
 
 CircuitParse::CircuitParse(GUICanvas* glc) {

@@ -19,7 +19,7 @@
 #include "wx/help.h"
 #include "wx/fs_zip.h"
 #include "threadLogic.h"
-#include "../logic/logic_defaults.h"
+#include "../logic/logic_values.h"
 #include "LibraryParse.h"
 #include "gl_defs.h"
 #include "klsMessage.h"

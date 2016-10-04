@@ -23,16 +23,7 @@ class guiGate;
 //#include "OscopeFrame.h"
 class OscopeFrame;
 
-#ifdef __WXMAC__
-#  ifdef __DARWIN__
-#    include <OpenGL/glu.h>
-#  else
-#    include <glu.h>
-#  endif
-#else
-#  include <windows.h>
-#  include <GL/glu.h>
-#endif
+#include "gl_wrapper.h"
 
 #include <map>
 #include <stack>
@@ -49,7 +40,7 @@ class GUICircuit : public wxDocument
 public:
     GUICircuit();
 
-    ~GUICircuit();
+    virtual ~GUICircuit();
 
 	// Reinit circuit
 	void reInitializeLogicCircuit();

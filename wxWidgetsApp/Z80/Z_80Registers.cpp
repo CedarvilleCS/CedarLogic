@@ -426,7 +426,7 @@ void Z_80Registers::setFlags( int result, int varType, int lhs, int rhs, bool wa
 	if( NF == HOLD ){
 		newFlags |= testNFlag();
 	}else if( NF == TEST ){
-		newFlags |= testNFlag( result );
+		newFlags |= testNFlag( result == 1 );
 	}else if( NF == CLEAR || NF == DNTCARE ){
 	}else if( NF == SET ){
 		newFlags |= N_FLAG;

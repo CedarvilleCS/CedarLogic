@@ -17,7 +17,6 @@ class klsGLCanvas;
 #include "wx/glcanvas.h"
 #include "klsMiniMap.h"
 // For GLPoint2f:
-#include "guiWire.h"
 
 // Included for floor() method:
 #include <cmath>
@@ -67,7 +66,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = 0 );
 
-    ~klsGLCanvas();
+    virtual ~klsGLCanvas();
 
 
 	// Print the canvas contents to a bitmap:

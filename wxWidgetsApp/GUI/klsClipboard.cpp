@@ -14,6 +14,15 @@
 #include <map>
 #include <hash_map>   // removed .h  KAS
 
+#include "MainApp.h"
+#include "commands.h"
+#include "GUICanvas.h"
+#include "GUICircuit.h"
+#include "guiGate.h"
+#include "guiWire.h"
+#include "wx/clipbrd.h"
+#include "wx/dataobj.h"
+
 DECLARE_APP(MainApp)
 
 cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanvas ) {
@@ -74,7 +83,7 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		map < string, GLPoint2f > hotspotmap = (*(gCircuit->getGates()))[gates[i]]->getHotspotList();
 		map < string, GLPoint2f >::iterator hsmapWalk = hotspotmap.begin();
 		while (hsmapWalk != hotspotmap.end()) {
-			if ( (*(gCircuit->getGates()))[gates[i]]->isConnected(hsmapWalk->first) ) connectWireList[(*(gCircuit->getGates()))[gates[i]]->getConnection(hsmapWalk->first)->getID()]++;
+			if ( (*(gCircuit->getGates()))[gates[i]]->isConnected(hsmapWalk->first) )connectWireList[(*(gCircuit->getGates()))[gates[i]]->getConnection(hsmapWalk->first)->getID()]++;
 			hsmapWalk++;
 		}
 		// Creation of a gate takes care of type, position, id; all other items are in params
@@ -109,7 +118,6 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 			// get rid of it
 			wire->removeConnection( wireConns[i].cGate, wireConns[i].connection );
 		}
-		wire->printme();
 		// Wire should now have a completely valid shape to copy, shove it on the vector
 		copyWires.push_back(wire);
 		wireWalk++;

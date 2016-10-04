@@ -11,6 +11,7 @@
 #include "GUICircuit.h"
 #include "MainApp.h"
 #include "OscopeFrame.h"
+#include "guiWire.h"
 
 DECLARE_APP(MainApp)
 IMPLEMENT_DYNAMIC_CLASS(GUICircuit, wxDocument)

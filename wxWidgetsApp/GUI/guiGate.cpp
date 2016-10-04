@@ -9,11 +9,12 @@
 *****************************************************************************/
 
 #include "guiGate.h"
+#include <iomanip>
 #include "wx/wx.h"
 #include "MainApp.h"
 #include "klsCollisionChecker.h"
 #include "paramDialog.h"
-#include <iomanip>
+#include "guiWire.h"
 
 DECLARE_APP(MainApp)
 
@@ -103,12 +104,7 @@ void guiGate::updateBBoxes( bool noUpdateWires ) {
 }
 
 void guiGate::finalizeWirePlacements() {
-	// Update the connected wires' shapes to accomidate the new gate position:
-	map < string, guiWire* >::iterator connWalk = connections.begin();
-	while (connWalk != connections.end()) {
-		(connWalk->second)->endSegDrag();
-		connWalk++;
-	}
+	updateConnectionMerges();
 }
 
 // Convert model->world coordinates:
@@ -230,15 +226,6 @@ void guiGate::calcBBox( void ) {
 
 	// Recalculate the world-space bbox:
 	updateBBoxes();
-}
-
-// Am I completely inside a given box?
-bool guiGate::isWithinBox( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2 ) {
-	klsBBox selBBox;
-	selBBox.reset();
-	selBBox.addPoint( GLPoint2f( x1, y1 ) );
-	selBBox.addPoint( GLPoint2f( x2, y2 ) );
-	return selBBox.contains( this->getBBox() );
 }
 
 
@@ -385,6 +372,7 @@ void guiGate::saveGate(XMLParser* xparse) {
 void guiGate::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ) {
 	if (wxGetApp().libraries[libName][libGateName].dlgParams.size() == 0) return;
 	paramDialog myDialog(wxT("Parameters"), gc, this, wxcmd);
+	myDialog.SetFocus();
 	myDialog.ShowModal();
 }
 

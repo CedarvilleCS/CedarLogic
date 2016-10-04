@@ -11,16 +11,8 @@
 #ifndef GUITEXT_H_
 #define GUITEXT_H_
 
-#ifdef __WXMAC__
-#  ifdef __DARWIN__
-#    include <OpenGL/glu.h>
-#  else
-#    include <glu.h>
-#  endif
-#else
-#  include <windows.h>
-#  include <GL/glu.h>
-#endif
+
+#include "gl_wrapper.h"
 
 #include <string>
 

@@ -35,6 +35,12 @@
     <Filter Include="Source Files\GUI\Misc">
       <UniqueIdentifier>{01e35951-accd-48e3-a165-b28bfc7b6076}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GUI\gl">
+      <UniqueIdentifier>{45518276-9896-4b48-920c-41806f507b24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dragable Things">
+      <UniqueIdentifier>{7f19615b-eee3-41bb-afe3-fccf84ecbdf9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Z80\InstructionManager.h">
@@ -48,9 +54,6 @@
     </ClInclude>
     <ClInclude Include="Z80\Z_80LogicGate.h">
       <Filter>Source Files\Z80</Filter>
-    </ClInclude>
-    <ClInclude Include="logic\counted_pointer.h">
-      <Filter>Source Files\logic</Filter>
     </ClInclude>
     <ClInclude Include="logic\logic_circuit.h">
       <Filter>Source Files\logic</Filter>
@@ -69,33 +72,6 @@
     </ClInclude>
     <ClInclude Include="logic\logic_wire.h">
       <Filter>Source Files\logic</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\CircuitPrint.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\commands.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\gateImage.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\gl_defs.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\GUICircuit.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\guiGate.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\guiText.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\guiWire.h">
-      <Filter>Source Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="GUI\ADCPopupDialog.h">
       <Filter>Source Files\GUI\Dialog</Filter>
@@ -166,6 +142,39 @@
     <ClInclude Include="GUI\threadLogic.h">
       <Filter>Source Files\GUI\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\gl_defs.h">
+      <Filter>Source Files\GUI\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\gl_wrapper.h">
+      <Filter>Source Files\GUI\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\CircuitPrint.h">
+      <Filter>Source Files\GUI\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\guiGate.h">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\guiText.h">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\guiWire.h">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\commands.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GUICircuit.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\gateImage.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wireSegment.h">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClInclude>
+    <ClInclude Include="logic\logic_values.h">
+      <Filter>Source Files\logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Z80\InstructionManager.cpp">
@@ -191,30 +200,6 @@
     </ClCompile>
     <ClCompile Include="logic\logic_wire.cpp">
       <Filter>Source Files\logic</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\CircuitPrint.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\commands.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\gateImage.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\gl_defs.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\GUICircuit.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\guiGate.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\guiText.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\guiWire.cpp">
-      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="GUI\ADCPopupDialog.cpp">
       <Filter>Source Files\GUI\Dialog</Filter>
@@ -278,6 +263,33 @@
     </ClCompile>
     <ClCompile Include="GUI\threadLogic.cpp">
       <Filter>Source Files\GUI\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\gl_defs.cpp">
+      <Filter>Source Files\GUI\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\CircuitPrint.cpp">
+      <Filter>Source Files\GUI\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\guiGate.cpp">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\guiText.cpp">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\guiWire.cpp">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\commands.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUICircuit.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\gateImage.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wireSegment.cpp">
+      <Filter>Source Files\GUI\Dragable Things</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

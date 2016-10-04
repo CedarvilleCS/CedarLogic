@@ -16,7 +16,7 @@ class gateImage;
 #include "MainApp.h"
 #include "wx/glcanvas.h"
 #include "guiGate.h"
-#include "../logic/logic_defaults.h"
+#include "../logic/logic_values.h"
 #include "wx/generic/dragimgg.h"
 #include "GUICircuit.h"
 #define wxDragImage wxGenericDragImage
@@ -34,7 +34,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = 0, const wxString& name = _T("") );
 
-    ~gateImage();
+    virtual ~gateImage();
 
     void OnPaint(wxPaintEvent& event);
     void mouseCallback(wxMouseEvent& event);

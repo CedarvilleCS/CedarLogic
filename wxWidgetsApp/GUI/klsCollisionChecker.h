@@ -52,7 +52,7 @@ public:
 		cData.bboxChanged = true; // The object is new, so mark it as having changed!
 	};
 	
-	~klsCollisionObject() {
+	virtual ~klsCollisionObject() {
 		deleteSubObjects();
 		deleteCollisionObject();
 	}
@@ -209,7 +209,7 @@ public:
 	klsCollisionChecker() {
 	};
 
-	~klsCollisionChecker() {
+	virtual ~klsCollisionChecker() {
 	};
 	
 	// Check the overlaps of all of the collision objects stored in this checker,

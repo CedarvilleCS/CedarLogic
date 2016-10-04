@@ -15,15 +15,13 @@
 #include "wx/wx.h"
 #include "wx/thread.h"
 #include "klsMessage.h"
-#include "../logic/logic_defaults.h"
-#include "../logic/logic_wire.h"
-#include "../logic/logic_gate.h"
-#include "../logic/logic_circuit.h"
-#include "../logic/logic_event.h"
-#include <string>
+#include "../logic/logic_values.h"
 #include <fstream>
+#include <map>
 
 using namespace std;
+
+class Circuit;
 
 class threadLogic : public wxThread
 {
@@ -32,12 +30,15 @@ public:
 	
     // thread execution starts here
     virtual void *Entry();
+
 	void checkMessages();
+
     // called when the thread exits - whether it terminates normally or is
     // stopped with Delete() (but not when it is Kill()ed!)
     virtual void OnExit();
     
     bool parseMessage(klsMessage::Message input);
+
     void sendMessage(klsMessage::Message message);
     
 private:

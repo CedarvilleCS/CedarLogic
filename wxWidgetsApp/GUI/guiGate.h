@@ -11,16 +11,8 @@
 #ifndef GUIGATE_H_
 #define GUIGATE_H_
 
-#ifdef __WXMAC__
-#  ifdef __DARWIN__
-#    include <OpenGL/glu.h>
-#  else
-#    include <glu.h>
-#  endif
-#else
-#  include <windows.h>
-#  include <GL/glu.h>
-#endif
+
+#include "gl_wrapper.h"
 
 class guiWire;
 
@@ -32,8 +24,7 @@ class guiWire;
 #include <string>
 #include <fstream>
 #include "wx/glcanvas.h"
-#include "guiWire.h"
-#include "../logic/logic_defaults.h"
+#include "../logic/logic_values.h"
 #include "XMLParser.h"
 #include "guiText.h"
 #include "klsCollisionChecker.h"
@@ -170,9 +161,6 @@ public:
 
 	// Recalculate the bounding box, based on the lines that are included alredy:
 	virtual void calcBBox( void );
-
-	// Am I completely within a given box?
-	bool isWithinBox( GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
 
 
 	// Insert a hotspot in the hotspot list.

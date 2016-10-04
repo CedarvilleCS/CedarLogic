@@ -22,6 +22,7 @@
     <ClInclude Include="GUI\EditRegDialog.h" />
     <ClInclude Include="GUI\gateImage.h" />
     <ClInclude Include="GUI\GLFont\glfont2.h" />
+    <ClInclude Include="GUI\gl_wrapper.h" />
     <ClInclude Include="GUI\gl_defs.h" />
     <ClInclude Include="GUI\GUICanvas.h" />
     <ClInclude Include="GUI\GUICircuit.h" />
@@ -44,16 +45,16 @@
     <ClInclude Include="GUI\paramDialog.h" />
     <ClInclude Include="GUI\RamPopupDialog.h" />
     <ClInclude Include="GUI\threadLogic.h" />
+    <ClInclude Include="GUI\wireSegment.h" />
     <ClInclude Include="GUI\XMLParser.h" />
     <ClInclude Include="GUI\Z80PopupDialog.h" />
-    <ClInclude Include="logic\counted_pointer.h" />
     <ClInclude Include="logic\logic_circuit.h" />
     <ClInclude Include="logic\logic_defaults.h" />
     <ClInclude Include="logic\logic_event.h" />
     <ClInclude Include="logic\logic_gate.h" />
     <ClInclude Include="logic\logic_junction.h" />
+    <ClInclude Include="logic\logic_values.h" />
     <ClInclude Include="logic\logic_wire.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Z80\InstructionManager.h" />
     <ClInclude Include="Z80\WaveformFSM.h" />
     <ClInclude Include="Z80\Z_80LogicGate.h" />
@@ -87,6 +88,7 @@
     <ClCompile Include="GUI\paramDialog.cpp" />
     <ClCompile Include="GUI\RamPopupDialog.cpp" />
     <ClCompile Include="GUI\threadLogic.cpp" />
+    <ClCompile Include="GUI\wireSegment.cpp" />
     <ClCompile Include="GUI\XMLParser.cpp" />
     <ClCompile Include="GUI\Z80PopupDialog.cpp" />
     <ClCompile Include="logic\logic_circuit.cpp" />

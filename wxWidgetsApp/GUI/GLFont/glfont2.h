@@ -46,7 +46,7 @@ public:
 	GLFont ();
 
 	//Destructor
-	~GLFont ();
+	virtual ~GLFont ();
 
 public:
 

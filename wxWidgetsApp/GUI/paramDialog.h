@@ -24,7 +24,7 @@ public:
     // ctor(s)
     
     paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, wxCommandProcessor* wxcmd);
-	~paramDialog();
+	virtual ~paramDialog();
 	
 	void OnOK( wxCommandEvent &evt );
 	void OnLoad( wxCommandEvent &evt );

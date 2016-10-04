@@ -26,6 +26,9 @@ class cmdPasteBlock;
 #include "klsGLCanvas.h"
 #include "GUICircuit.h"
 #include "klsCollisionChecker.h"
+#include "wireSegment.h"
+
+class guiWire;
 
 // Struct GateState
 //		stores the position and id of a gate so we know where we moved from
@@ -111,7 +114,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = 0, const wxString& name = _T("GUICanvas") );
 
-    ~GUICanvas();
+	virtual ~GUICanvas();
 
 	// Event handlers
 	void OnMouseDown( wxMouseEvent& event ) {

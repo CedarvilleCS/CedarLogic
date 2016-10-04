@@ -9569,7 +9569,7 @@
 #		<caption>8-Bit Magnitude Comparator (TODO)</caption>
 #	</gate>
 </library>
-<library> <name> 4  - Decorations</name>
+<library> <name> 4  - Text</name>
 	<gate> <name>AA_LABEL</name>
 		<caption>Label</caption>
 		<gui_type>LABEL</gui_type>

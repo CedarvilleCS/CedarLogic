@@ -11,18 +11,12 @@
 #ifndef CIRCUITPARSE_H_
 #define CIRCUITPARSE_H_
 
-
-#include "XMLParser.h"
-#include "guiGate.h"
-#include "GUICircuit.h"
-#include "GUICanvas.h"
-#include "guiWire.h"
 #include <string>
-#include <fstream>
-#include <map>
-#include <hash_map>
-
+#include <vector>
 using namespace std;
+
+class GUICanvas;
+class XMLParser;
 
 // used for parsing inputs and outputs
 class gateConnector {
@@ -46,7 +40,7 @@ class CircuitParse {
 public:
 	CircuitParse(string, vector< GUICanvas* >);
 	CircuitParse(GUICanvas*);
-	~CircuitParse();
+	virtual ~CircuitParse();
 	
 	void loadFile(string);
 	void parseFile();
