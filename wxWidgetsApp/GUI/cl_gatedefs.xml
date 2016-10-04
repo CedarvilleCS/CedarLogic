@@ -5544,11 +5544,11 @@
 			<line>2,-3.5,-2,-3.5</line>
 			<line>-2,-3.5,-2,3</line>
 
-#		  Lines for offset in other encoders
+#		  Output
 			<line>2,-1.5,3,-1.5</line>
 			<line>2,-2.5,3,-2.5</line>
 
-#			Encoder Input Lines
+#			Input
 			<line>-2,-2.5,-3,-2.5</line>
 			<line>-2,-1.5,-3,-1.5</line>
       <line>-2,-0.5,-3,-0.5</line>
@@ -5587,6 +5587,118 @@
 			</offset>
     </shape>
   </gate>
+  <gate>
+  <name>CC_PRI_ENCODER_8x3</name>
+  <caption>8x3 Priority Encoder</caption>
+  <logic_type>PRI_ENCODER</logic_type>
+  <logic_param>INPUT_BITS 8</logic_param>
+  <input>
+    <name>IN_0</name>
+    <point>-3,-4.5</point>
+  </input>
+  <input>
+    <name>IN_1</name>
+    <point>-3,-3.5</point>
+  </input>
+  <input>
+    <name>IN_2</name>
+    <point>-3,-2.5</point>
+  </input>
+  <input>
+    <name>IN_3</name>
+    <point>-3,-1.5</point>
+  </input>
+  <input>
+    <name>IN_4</name>
+    <point>-3,-0.5</point>
+  </input>
+  <input>
+    <name>IN_5</name>
+    <point>-3,0.5</point>
+  </input>
+  <input>
+    <name>IN_6</name>
+    <point>-3,1.5</point>
+  </input>
+  <input>
+    <name>IN_7</name>
+    <point>-3,2.5</point>
+  </input>
+  <output>
+    <name>OUT_0</name>
+    <point>3,-4.5</point>
+  </output>
+  <output>
+    <name>OUT_1</name>
+    <point>3,-3.5</point>
+  </output>
+  <output>
+    <name>OUT_2</name>
+    <point>3,-2.5</point>
+  </output>
+  <input>
+    <name>ENABLE</name>
+    <point>-3,4</point>
+  </input>
+  
+  <shape>
+    #     inputs
+    <line>-2,5,2,5</line>
+    <line>2,5,2,-5.5</line>
+    <line>2,-5.5,-2,-5.5</line>
+    <line>-2,-5.5,-2,5</line>
+
+    #		  outputs
+    <line>2,-4.5,3,-4.5</line>
+    <line>2,-3.5,3,-3.5</line>
+    <line>2,-2.5,3,-2.5</line>
+
+    #			Encoder Input Lines
+    <line>-2,-4.5,-3,-4.5</line>
+    <line>-2,-3.5,-3,-3.5</line>
+    <line>-2,-2.5,-3,-2.5</line>
+    <line>-2,-1.5,-3,-1.5</line>
+    <line>-2,-0.5,-3,-0.5</line>
+    <line>-2, 0.5,-3, 0.5</line>
+    <line>-2, 1.5,-3, 1.5</line>
+    <line>-2, 2.5,-3, 2.5</line>
+
+    #			Enable
+    <line>-2,4,-3,4</line>
+
+    #			E
+    <offset>
+      <point>-1.7,4.4</point>
+      <line>0,0,0.4,0</line>
+      <line>0.4,-0.8,0,-0.8</line>
+      <line>0,-0.8,0,-0.4</line>
+      <line>0,-0.4,0,0</line>
+      <line>0,-0.4,0.4,-0.4</line>
+    </offset>
+
+    #			0 of inputs
+    <offset>
+      <point>-1.7,-4.1</point>
+      <line>0,0,0.4,0</line>
+      <line>0.4,0,0.4,-0.4</line>
+      <line>0.4,-0.4,0.4,-0.8</line>
+      <line>0.4,-0.8,0,-0.8</line>
+      <line>0,-0.8,0,-0.4</line>
+      <line>0,-0.4,0,0</line>
+    </offset>
+
+    #			0 of outputs
+    <offset>
+      <point>1.3,-4.1</point>
+      <line>0,0,0.4,0</line>
+      <line>0.4,0,0.4,-0.4</line>
+      <line>0.4,-0.4,0.4,-0.8</line>
+      <line>0.4,-0.8,0,-0.8</line>
+      <line>0,-0.8,0,-0.4</line>
+      <line>0,-0.4,0,0</line>
+    </offset>
+  </shape>
+</gate>
 </library>
 <library> <name> 7  - Flip Flops</name>
 #	<gate> <name>AA_DFF</name>
