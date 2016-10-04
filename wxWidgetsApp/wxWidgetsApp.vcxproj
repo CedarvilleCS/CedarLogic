@@ -29,6 +29,7 @@
     <ClInclude Include="GUI\guiGate.h" />
     <ClInclude Include="GUI\guiText.h" />
     <ClInclude Include="GUI\guiWire.h" />
+    <ClInclude Include="GUI\autoSaveThread.h" />
     <ClInclude Include="GUI\klsBBox.h" />
     <ClInclude Include="GUI\klsClipboard.h" />
     <ClInclude Include="GUI\klsCollisionChecker.h" />
@@ -62,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI\ADCPopupDialog.cpp" />
+    <ClCompile Include="GUI\autoSaveThread.cpp" />
     <ClCompile Include="GUI\CircuitParse.cpp" />
     <ClCompile Include="GUI\CircuitPrint.cpp" />
     <ClCompile Include="GUI\commands.cpp" />

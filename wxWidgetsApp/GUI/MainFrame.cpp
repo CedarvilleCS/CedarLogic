@@ -23,6 +23,7 @@
 #include "wx/docview.h"
 #include "commands.h"
 #include "CircuitPrint.h"
+#include "autoSaveThread.h"
 
 DECLARE_APP(MainApp)
 
@@ -245,11 +246,14 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	SetSizer( mainSizer);
 		
 	threadLogic *thread = CreateThread();
+	autoSaveThread *autoThread = CreateSaveThread();
 	
     if ( thread->Run() != wxTHREAD_NO_ERROR )
     {
        wxLogError(wxT("Can't start thread!"));
     }
+	
+	
 	
 	mTimer = new wxTimer(this, TIMER_ID);
 	mTimer->Stop();
@@ -272,6 +276,11 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	
 	doOpenFile = (cmdFilename.size() > 0);
 	this->openedFilename = (const wxChar *)cmdFilename.c_str(); // KAS
+
+	if (autoThread->Run() != wxTHREAD_NO_ERROR)
+	{
+		wxLogError(wxT("Autosave thread not started!"));
+	}
 }
 
 MainFrame::~MainFrame() {
@@ -285,6 +294,7 @@ MainFrame::~MainFrame() {
 	
 	// Shut down the detached thread and wait for it to exit
 	wxGetApp().logicThread->Delete();
+
 	
 	wxGetApp().m_semAllDone.Wait();
 	
@@ -331,6 +341,21 @@ threadLogic *MainFrame::CreateThread()
 	
     return thread;
 }
+
+autoSaveThread *MainFrame::CreateSaveThread()
+{
+	autoSaveThread *thread = new autoSaveThread();
+	if (thread->Create != wxTHREAD_NO_ERROR)
+	{
+		wxLogError(wxT("Can't create autosave thread!"));
+	}
+
+	wxCriticalSectionLocker enter(wxGetApp().m_critsect);
+	wxGetApp().saveThread = thread;
+
+	return thread;
+}
+
 
 // event handlers
 

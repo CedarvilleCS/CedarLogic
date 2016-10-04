@@ -25,6 +25,7 @@
 //#include "OscopeFrame.h"
 class OscopeFrame;
 #include "klsMiniMap.h"
+#include "autoSaveThread.h"
 
 enum
 {
@@ -96,6 +97,7 @@ public:
 private:
     // helper function - creates a new thread (but doesn't run it)
 	threadLogic *CreateThread();
+	autoSaveThread *CreateSaveThread();
 
 	vector< GUICanvas* > canvases;
 	GUICircuit* gCircuit;

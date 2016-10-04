@@ -175,6 +175,9 @@
     <ClInclude Include="logic\logic_values.h">
       <Filter>Source Files\logic</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\autoSaveThread.h">
+      <Filter>Source Files\GUI\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Z80\InstructionManager.cpp">
@@ -290,6 +293,9 @@
     </ClCompile>
     <ClCompile Include="GUI\wireSegment.cpp">
       <Filter>Source Files\GUI\Dragable Things</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\autoSaveThread.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
