@@ -65,21 +65,17 @@ public:
 	void calcBBox();
 
 	// Selection functions
-	bool isSelected(void);
-
-	void select(void);
-
-	void unselect(void);
+	bool isSelected();
+	void select();
+	void unselect();
 
 	// ID functions
 	void setID(long nid);
-
-	unsigned long getID(void);
-
+	unsigned long getID();
+	
 	// State functions
 	void setState(StateType ns);
-
-	StateType getState(void);
+	StateType getState();
 
 	// Give directions for XML tag definition of wire
 	void saveWire(XMLParser* xparse);
@@ -116,12 +112,7 @@ public:
 	void updateSegDrag(klsCollisionObject* mouse);
 
 	//	The current dragging segment is dropped, clean up
-	void endSegDrag(void);
-
-	// pretty print
-	void printme(string lineBegin = "");
-
-	void debugStatement(int lineBegin, string descriptor);
+	void endSegDrag();
 
 private:
 	// Take existing segment connections and update their map keys
@@ -133,6 +124,9 @@ private:
 	// Take existing segments and merge concurrent segments
 	void mergeSegments();
 	void generateRenderInfo();
+
+
+
 
 	// Store the tree in a non-pointered way for easy copy
 	map < long, wireSegment > segMap;

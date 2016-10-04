@@ -69,7 +69,6 @@ cmdMoveWire::cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, w
 	this->wid = wid;
 	oldSegList = oldList;
 	this->delta = delta;
-	(*(gCircuit->getWires()))[wid]->printme("\t\t");
 }
 
 cmdMoveWire::cmdMoveWire( string def ) : klsCommand( true, _T("Move Wire") ) {

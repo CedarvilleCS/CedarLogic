@@ -104,12 +104,7 @@ void guiGate::updateBBoxes( bool noUpdateWires ) {
 }
 
 void guiGate::finalizeWirePlacements() {
-	// Update the connected wires' shapes to accomidate the new gate position:
-	map < string, guiWire* >::iterator connWalk = connections.begin();
-	while (connWalk != connections.end()) {
-		(connWalk->second)->endSegDrag();
-		connWalk++;
-	}
+	updateConnectionMerges();
 }
 
 // Convert model->world coordinates:

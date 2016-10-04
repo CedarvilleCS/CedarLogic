@@ -118,7 +118,6 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 			// get rid of it
 			wire->removeConnection( wireConns[i].cGate, wireConns[i].connection );
 		}
-		wire->printme();
 		// Wire should now have a completely valid shape to copy, shove it on the vector
 		copyWires.push_back(wire);
 		wireWalk++;
