@@ -2887,7 +2887,16 @@
       <line>1,0,2,0</line>
       <line>1,0.1,2,0.1</line>
       <line>1,-0.1,2,-0.1</line>
-    
+      
+      #	0
+			<offset><point>-0.1,-1</point>
+			<line>0,0,0.4,0</line>
+			<line>0.4,0,0.4,-0.4</line>
+			<line>0.4,-0.4,0.4,-0.8</line>
+			<line>0.4,-0.8,0,-0.8</line>
+			<line>0,-0.8,0,-0.4</line>
+			<line>0,-0.4,0,0</line>
+			</offset>
 		</shape>
 	</gate>
   <gate> 
@@ -2957,6 +2966,15 @@
       <line>1,0.1,2,0.1</line>
       <line>1,-0.1,2,-0.1</line>
     
+      #	0
+			<offset><point>-0.1,-3</point>
+			<line>0,0,0.4,0</line>
+			<line>0.4,0,0.4,-0.4</line>
+			<line>0.4,-0.4,0.4,-0.8</line>
+			<line>0.4,-0.8,0,-0.8</line>
+			<line>0,-0.8,0,-0.4</line>
+			<line>0,-0.4,0,0</line>
+			</offset>
 		</shape>
 	</gate>
   <gate> 
@@ -3069,7 +3087,16 @@
       <line>1,0,2,0</line>
       <line>1,0.1,2,0.1</line>
       <line>1,-0.1,2,-0.1</line>
-    
+      
+      #	0
+			<offset><point>-0.1,-7</point>
+			<line>0,0,0.4,0</line>
+			<line>0.4,0,0.4,-0.4</line>
+			<line>0.4,-0.4,0.4,-0.8</line>
+			<line>0.4,-0.8,0,-0.8</line>
+			<line>0,-0.8,0,-0.4</line>
+			<line>0,-0.4,0,0</line>
+			</offset>
 		</shape>
 	</gate>
 	<gate> <name>CA_SMALL_TGATE</name>
