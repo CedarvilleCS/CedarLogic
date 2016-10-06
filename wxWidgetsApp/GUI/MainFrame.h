@@ -44,7 +44,9 @@ enum
     Tool_Step,
     Tool_ZoomIn,
     Tool_ZoomOut,
-    Tool_Lock
+    Tool_Lock,
+	Tool_NewTab,
+	Tool_DeleteTab
 };
 
 class MainFrame : public wxFrame {
@@ -84,6 +86,8 @@ public:
 	void OnZoomOut(wxCommandEvent& event);
 	void OnTimeStepModSlider(wxScrollEvent& event);
 	void OnLock(wxCommandEvent& event);
+	void OnNewTab(wxCommandEvent& event);
+	void OnDeleteTab(wxCommandEvent& event);
 	
 	void saveSettings( void );
 	

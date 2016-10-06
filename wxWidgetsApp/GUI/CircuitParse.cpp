@@ -63,7 +63,8 @@ void CircuitParse::parseFile() {
 	do { // while next tag is not close circuit
 		string temp = mParse->readTag();
 		char pageNum = temp[temp.size()-1] - '0';
-		gCanvas = gCanvases[(int)pageNum];
+        gCanvas = gCanvases[0];
+		
 		string pageTag = temp;
 		// while next tag is not close page
  		while (!mParse->isCloseTag(mParse->getCurrentIndex())) {

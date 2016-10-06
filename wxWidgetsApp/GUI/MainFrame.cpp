@@ -54,6 +54,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_TOOL(Tool_ZoomOut, MainFrame::OnZoomOut)
 	EVT_SCROLL(MainFrame::OnTimeStepModSlider)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
+	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
+	EVT_TOOL(Tool_DeleteTab, MainFrame::OnDeleteTab)
 	
     //EVT_SIZE(MainFrame::OnSize)
     //EVT_MAXIMIZE(MainFrame::OnMaximize)
@@ -156,10 +158,10 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 
 	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
 	// to read the bitmaps from file directly, without the use of a resource file.  KAS
-	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked"};
-	wxBitmap *bmp[14];
+	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab"};
+	wxBitmap *bmp[15];
 
-	for (int  i = 0; i < 14; i++) {
+	for (int  i = 0; i < 15; i++) {
 		bitmaps[i] = "GUI/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
@@ -195,6 +197,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddTool(Tool_Lock, _T("Lock state"), *bmp[13], wxT("Lock state"), wxITEM_CHECK);
 	toolBar->AddSeparator();
 	toolBar->AddTool(wxID_ABOUT, _T("About"), *bmp[8], wxT("About"));
+	toolBar->AddTool(Tool_NewTab, _T("New Tab"), *bmp[14], wxT("New Tab"));
 	SetToolBar(toolBar);
 	toolBar->Show(true);
 
@@ -229,7 +232,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	mainSizer->Add( canvasBook, wxSizerFlags(1).Expand().Border(wxALL, 0) );
 
 	//add 10 tabs
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 1; i++) {
 		canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 		ostringstream oss;
 		oss << "Page " << (i+1);
@@ -840,4 +843,17 @@ void MainFrame::PauseSim() {
 		wxGetApp().appSystemTime.Start(0);
 		mTimer->Start(20);
 	}
+}
+
+void MainFrame::OnNewTab(wxCommandEvent& event) {
+	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
+	ostringstream oss;
+	oss << "Page " << canvases.size();
+	canvasBook->AddPage(canvases[canvases.size()-1], (const wxChar *)oss.str().c_str(), (false));
+
+}
+
+void MainFrame::OnDeleteTab(wxCommandEvent& event) {
+
+
 }
