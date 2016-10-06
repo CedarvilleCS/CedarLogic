@@ -5,8 +5,6 @@
 #ifndef AUTO_SAVE_THREAD_H
 #define AUTO_SAVE_THREAD_H
 
-
-
 class autoSaveThread : public wxThread
 {
 public:
@@ -17,6 +15,9 @@ public:
 	virtual void OnExit();
 
 private:
+
+	time_t timeout;
+	const int WAIT_TIME = 10;
 
 };
 

@@ -93,6 +93,10 @@ public:
 	void PauseSim( void );
 	
 	void loadCircuitFile( string fileName );
+
+	void OnThreadSave();
+	bool FileIsDirty();
+	void removeTempFile();
 	
 private:
     // helper function - creates a new thread (but doesn't run it)
@@ -117,6 +121,7 @@ private:
 	bool doOpenFile;
 	wxString lastDirectory;
 	wxString openedFilename;
+	unsigned int currentTempNum;
 	
 	wxSlider* timeStepModSlider;
 	wxStaticText* timeStepModVal;

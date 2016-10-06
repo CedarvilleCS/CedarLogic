@@ -281,6 +281,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	{
 		wxLogError(wxT("Autosave thread not started!"));
 	}
+	currentTempNum = 0;
 }
 
 MainFrame::~MainFrame() {
@@ -294,6 +295,7 @@ MainFrame::~MainFrame() {
 	
 	// Shut down the detached thread and wait for it to exit
 	wxGetApp().logicThread->Delete();
+	wxGetApp().saveThread->Delete();
 
 	
 	wxGetApp().m_semAllDone.Wait();
@@ -345,7 +347,7 @@ threadLogic *MainFrame::CreateThread()
 autoSaveThread *MainFrame::CreateSaveThread()
 {
 	autoSaveThread *thread = new autoSaveThread();
-	if (thread->Create != wxTHREAD_NO_ERROR)
+	if (thread->Create() != wxTHREAD_NO_ERROR)
 	{
 		wxLogError(wxT("Can't create autosave thread!"));
 	}
@@ -414,6 +416,7 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 		mTimer->Start(20);
 	}
 	
+	removeTempFile();
 
 	//Edit by Joshua Lansford 10/18/07
 	//KAS replaced the destroy method with a close method.
@@ -428,7 +431,6 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	//See 
 	//http://www.wxwidgets.org/manuals/stable/wx_windowdeletionoverview.html
 	if (destroy) this->Destroy();
-	
 }
 
 void MainFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {
@@ -444,6 +446,7 @@ void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
 }
 
 void MainFrame::OnNew(wxCommandEvent& event) {
+
 	if (commandProcessor->IsDirty()) {
 		wxMessageDialog dialog( this, wxT("Circuit has not been saved.  Would you like to save it?"), wxT("Save Circuit"), wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
 		switch (dialog.ShowModal()) {
@@ -465,6 +468,8 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	commandProcessor->SetMenuStrings();
 	currentCanvas->Update(); // Render();
 	this->SetTitle((const wxChar *)"CEDAR Logic Simulator"); // KAS
+	removeTempFile();
+	currentTempNum++;
     openedFilename = _T("");
 	idleTimer->Start(20);
 	if (!(toolBar->GetToolState(Tool_Pause))) {
@@ -474,6 +479,7 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 }
 
 void MainFrame::OnOpen(wxCommandEvent& event) {
+	
 	currentCanvas->getCircuit()->setSimulate(false);
 	if (commandProcessor->IsDirty()) {
 		wxMessageDialog dialog( this, wxT("Circuit has not been saved.  Would you like to save it?"), wxT("Save Circuit"), wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
@@ -518,6 +524,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 //by calling this method.
 void MainFrame::loadCircuitFile( string fileName ){
 	wxString path = (const wxChar *)fileName.c_str();  // KAS
+	removeTempFile();
 	openedFilename = path;
 	this->SetTitle( _T("CEDAR Logic Simulator - ") + path );
 	while (!(wxGetApp().dGUItoLOGIC.empty())) wxGetApp().dGUItoLOGIC.pop_front();
@@ -550,6 +557,7 @@ void MainFrame::OnSave(wxCommandEvent& event) {
 }
 
 void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
+	
 	gCircuit->setSimulate(false);
 	wxGetApp().appSystemTime.Pause();
 	mTimer->Stop();
@@ -560,6 +568,7 @@ void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	dialog.SetDirectory(lastDirectory);
 	if (dialog.ShowModal() == wxID_OK) {
+		removeTempFile();
 		wxString path = dialog.GetPath();
 		openedFilename = path;
 		this->SetTitle( _T("CEDAR Logic Simulator - ") + path );
@@ -864,5 +873,57 @@ void MainFrame::PauseSim() {
 	else {
 		wxGetApp().appSystemTime.Start(0);
 		mTimer->Start(20);
+	}
+}
+
+//Julian: I'm aware this is very bad. This is strictly for testing purposes.
+//The code is copied from OnSaveAs to see if I can invoke it from a thread.
+void MainFrame::OnThreadSave()
+{
+	if (openedFilename == _T(""))
+	{
+		gCircuit->setSimulate(false);
+		wxGetApp().appSystemTime.Pause();
+		mTimer->Stop();
+		CircuitParse cirp(currentCanvas);
+		cirp.saveCircuit("Circuit" + to_string(currentTempNum) + ".temp", canvases);
+		idleTimer->Start(20);
+		if (!(toolBar->GetToolState(Tool_Pause))) {
+			wxGetApp().appSystemTime.Start(0);
+			mTimer->Start(20);
+		}
+		gCircuit->setSimulate(true);
+	}
+	else
+	{
+		gCircuit->setSimulate(false);
+		wxGetApp().appSystemTime.Pause();
+		mTimer->Stop();
+		CircuitParse cirp(currentCanvas);
+		cirp.saveCircuit((string)(const char*)openedFilename.c_str() + ".temp", canvases);
+		idleTimer->Start(20);
+		if (!(toolBar->GetToolState(Tool_Pause))) {
+			wxGetApp().appSystemTime.Start(0);
+			mTimer->Start(20);
+		}
+		gCircuit->setSimulate(true);
+	}
+}
+
+bool MainFrame::FileIsDirty()
+{
+	return commandProcessor->IsDirty();
+}
+
+void MainFrame::removeTempFile()
+{
+	if (openedFilename == _T(""))
+	{
+		remove(("Circuit" + to_string(currentTempNum) + ".temp").c_str());
+		currentTempNum++;
+	}
+	else
+	{
+		remove((openedFilename + ".temp").c_str());
 	}
 }
