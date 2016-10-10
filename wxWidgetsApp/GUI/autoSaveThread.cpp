@@ -19,17 +19,28 @@ void *autoSaveThread::Entry()
 	time(&timeout);
 	int waitTime;
 
+	while (wxGetApp().mainframe == NULL)
+	{
+		Sleep(10);
+	}
+
+	MainFrame *frame = wxGetApp().mainframe;
+
 	while (!TestDestroy())
 	{
 		//We only want auto save to happen every WAIT_TIME seconds
-		waitTime = (int)difftime(time(NULL),timeout);
-		if (waitTime > WAIT_TIME && wxGetApp().mainframe != NULL && wxGetApp().mainframe->FileIsDirty())
+		waitTime = (int)difftime(time(NULL), timeout);
+		if (waitTime > WAIT_TIME)
 		{
-			wxGetApp().mainframe->OnThreadSave();
+			if (frame != NULL && frame->FileIsDirty() && !frame->isHandlingEvent())
+			{
+				frame->OnThreadSave();
+			}
 			time(&timeout);
 		}
+		Sleep(10);
 	}
-
+	frame = NULL;
 	return NULL;
 }
 

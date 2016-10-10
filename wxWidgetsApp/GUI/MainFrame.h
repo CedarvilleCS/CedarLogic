@@ -97,6 +97,7 @@ public:
 	void OnThreadSave();
 	bool FileIsDirty();
 	void removeTempFile();
+	bool isHandlingEvent();
 	
 private:
     // helper function - creates a new thread (but doesn't run it)
@@ -113,7 +114,6 @@ private:
 	wxPanel* mainPanel;
 	wxToolBar* toolBar;
 	wxTimer* mTimer;
-	wxTimer* idleTimer;
 	wxNotebook* canvasBook;
 	
 	// Instance variables
@@ -122,6 +122,8 @@ private:
 	wxString lastDirectory;
 	wxString openedFilename;
 	unsigned int currentTempNum;
+
+	bool handlingEvent;
 	
 	wxSlider* timeStepModSlider;
 	wxStaticText* timeStepModVal;
