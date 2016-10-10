@@ -767,9 +767,9 @@ void MainFrame::OnStep(wxCommandEvent& event) {
 
 void MainFrame::OnLock(wxCommandEvent& event) {
 	if (toolBar->GetToolState(Tool_Lock)) {
-		for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->lockCanvas();
+		lock();
 	} else {
-		for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->unlockCanvas();
+		unlock();
 	}
 }
 
@@ -896,4 +896,14 @@ void MainFrame::removeTempFile()
 bool MainFrame::isHandlingEvent()
 {
 	return handlingEvent;
+}
+
+void MainFrame::lock()
+{
+	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->lockCanvas();
+}
+
+void MainFrame::unlock()
+{
+	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->unlockCanvas();
 }

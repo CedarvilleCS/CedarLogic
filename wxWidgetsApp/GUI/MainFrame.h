@@ -94,15 +94,19 @@ public:
 	
 	void loadCircuitFile( string fileName );
 
+
+	//Julian: Added functions to help with auto save functionality
 	void OnThreadSave();
 	bool FileIsDirty();
 	void removeTempFile();
 	bool isHandlingEvent();
+	void lock();
+	void unlock();
 	
 private:
     // helper function - creates a new thread (but doesn't run it)
 	threadLogic *CreateThread();
-	autoSaveThread *CreateSaveThread();
+	autoSaveThread *CreateSaveThread(); //Julian
 
 	vector< GUICanvas* > canvases;
 	GUICircuit* gCircuit;
@@ -122,7 +126,7 @@ private:
 	wxString openedFilename;
 	unsigned int currentTempNum;
 
-	bool handlingEvent;
+	bool handlingEvent; //Julian: Prevents autosaving from occuring during an open/new/saveas/etc...
 	
 	wxSlider* timeStepModSlider;
 	wxStaticText* timeStepModVal;
