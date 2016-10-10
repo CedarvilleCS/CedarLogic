@@ -7,8 +7,15 @@ struct GLPoint2f {
 	GLPoint2f( GLfloat newX = 0.0, GLfloat newY = 0.0 ) : x(newX), y(newY) {};
 	GLfloat x, y;
 
+	GLPoint2f operator+(const GLPoint2f &other) const;
 
-	bool operator==(const GLPoint2f& other);
+	GLPoint2f operator-(const GLPoint2f &other) const;
+
+	void operator+=(const GLPoint2f &other);
+
+	void operator-=(const GLPoint2f &other);
+
+	bool operator==(const GLPoint2f &other);
 };
 
 struct GLLine2f {
