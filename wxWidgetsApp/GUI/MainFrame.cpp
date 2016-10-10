@@ -253,12 +253,6 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
        wxLogError(wxT("Can't start thread!"));
     }
 	
-	
-	
-	mTimer = new wxTimer(this, TIMER_ID);
-	mTimer->Stop();
-	mTimer->Start(20);
-
 	// Setup the "Maximize Catch" flag:
 	sizeChanged = false;
 	
@@ -286,10 +280,6 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 MainFrame::~MainFrame() {
 	
 	saveSettings();
-	
-	// Stop the timers so no more events fire
-	mTimer->Stop();
-	
 	
 	// Shut down the detached thread and wait for it to exit
 	wxGetApp().logicThread->Delete();
@@ -320,9 +310,6 @@ MainFrame::~MainFrame() {
 	//Removed the delete of systemTime because it was causeing a
 	//crash on close.  In stead, I changed it from a pointer
 	//to a local var so that it would not need to be deleted.
-	
-	delete mTimer;
-	mTimer = NULL;
 }
 
 threadLogic *MainFrame::CreateThread()
@@ -384,7 +371,6 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	handlingEvent = true;
 	
 	wxGetApp().appSystemTime.Pause();
-	mTimer->Stop();
 
 	// Allow the user to save the file, unless we are in the midst of terminating the app!!, KAS 4/26/07	
 	if (commandProcessor->IsDirty() && !destroy) {
@@ -407,7 +393,6 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	
 	if (!(toolBar->GetToolState(Tool_Pause))) {
 		wxGetApp().appSystemTime.Start(0);
-		mTimer->Start(20);
 	}
 	
 	removeTempFile();
@@ -453,7 +438,6 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 		}			
 	}
 	wxGetApp().appSystemTime.Pause();
-	mTimer->Stop();
 	wxGetApp().dGUItoLOGIC.clear();
 	wxGetApp().dLOGICtoGUI.clear();
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->clearCircuit();
@@ -467,7 +451,6 @@ void MainFrame::OnNew(wxCommandEvent& event) {
     openedFilename = _T("");
 	if (!(toolBar->GetToolState(Tool_Pause))) {
 		wxGetApp().appSystemTime.Start(0);
-		mTimer->Start(20);
 	}
 
 	handlingEvent = false;
@@ -491,7 +474,6 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 		}			
 	}
 	wxGetApp().appSystemTime.Pause();
-	mTimer->Stop();
 
 	wxString caption = wxT("Open a circuit");
 	wxString wildcard = wxT("Circuit files (*.cdl)|*.cdl");
@@ -508,7 +490,6 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	currentCanvas->getCircuit()->setSimulate(true);
 	if (!(toolBar->GetToolState(Tool_Pause))) {
 		wxGetApp().appSystemTime.Start(0);
-		mTimer->Start(20);
 	}
 
 	handlingEvent = false;
@@ -541,12 +522,10 @@ void MainFrame::OnSave(wxCommandEvent& event) {
 		gCircuit->setSimulate(false);
 		commandProcessor->MarkAsSaved();
 		wxGetApp().appSystemTime.Pause();
-		mTimer->Stop();
 		CircuitParse cirp(currentCanvas);
 		cirp.saveCircuit((string)(const char*)openedFilename.c_str(), canvases); //currentCanvas->getGateList(), currentCanvas->getWireList());
 		if (!(toolBar->GetToolState(Tool_Pause))) {
 			wxGetApp().appSystemTime.Start(0);
-			mTimer->Start(20);
 		}
 		gCircuit->setSimulate(true);		
 	}
@@ -557,7 +536,6 @@ void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 
 	gCircuit->setSimulate(false);
 	wxGetApp().appSystemTime.Pause();
-	mTimer->Stop();
 	wxString caption = wxT("Save circuit");
 	wxString wildcard = wxT("Circuit files (*.cdl)|*.cdl");
 	wxString defaultFilename = wxT("");
@@ -574,7 +552,6 @@ void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 	}
 	if (!(toolBar->GetToolState(Tool_Pause))) {
 		wxGetApp().appSystemTime.Start(0);
-		mTimer->Start(20);
 	}
 	gCircuit->setSimulate(true);
 
@@ -634,7 +611,6 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 	if ( gCircuit->panic ) {
 		gCircuit->panic = false;
 		toolBar->ToggleTool( Tool_Pause, true );
-		mTimer->Stop();
 		wxGetApp().appSystemTime.Start(0);
 		wxGetApp().appSystemTime.Pause();
 		//Edit by Joshua Lansford 11/24/06
@@ -863,13 +839,11 @@ void MainFrame::ResumeExecution() {
 
 void MainFrame::PauseSim() {	
 	if (toolBar->GetToolState(Tool_Pause)) {
-		mTimer->Stop();
 		wxGetApp().appSystemTime.Start(0);
 		wxGetApp().appSystemTime.Pause();
 	}
 	else {
 		wxGetApp().appSystemTime.Start(0);
-		mTimer->Start(20);
 	}
 }
 
@@ -881,43 +855,22 @@ void MainFrame::OnThreadSave()
 	{
 		gCircuit->setSimulate(false);
 		wxGetApp().appSystemTime.Pause();
-		mTimer->Stop();
 		CircuitParse cirp(currentCanvas);
 		cirp.saveCircuit("Circuit" + to_string(currentTempNum) + ".temp", canvases);
 		if (!(toolBar->GetToolState(Tool_Pause))) {
 			wxGetApp().appSystemTime.Start(0);
-			mTimer->Start(20);
 		}
 		gCircuit->setSimulate(true);
 	}
-
-	//if (openedFilename == _T("")) OnSaveAs(event);
-	//else {
-	//	gCircuit->setSimulate(false);
-	//	commandProcessor->MarkAsSaved();
-	//	wxGetApp().appSystemTime.Pause();
-	//	mTimer->Stop();
-	//	idleTimer->Stop();
-	//	CircuitParse cirp(currentCanvas);
-	//	cirp.saveCircuit((string)(const char*)openedFilename.c_str(), canvases); //currentCanvas->getGateList(), currentCanvas->getWireList());
-	//	idleTimer->Start(20);
-	//	if (!(toolBar->GetToolState(Tool_Pause))) {
-	//		wxGetApp().appSystemTime.Start(0);
-	//		mTimer->Start(20);
-	//	}
-	//	gCircuit->setSimulate(true);
-	//}
 
 	else
 	{
 		gCircuit->setSimulate(false);
 		wxGetApp().appSystemTime.Pause();
-		mTimer->Stop();
 		CircuitParse cirp(currentCanvas);
 		cirp.saveCircuit((string)(const char*)openedFilename.c_str() + ".temp", canvases);
 		if (!(toolBar->GetToolState(Tool_Pause))) {
 			wxGetApp().appSystemTime.Start(0);
-			mTimer->Start(20);
 		}
 		gCircuit->setSimulate(true);
 	}

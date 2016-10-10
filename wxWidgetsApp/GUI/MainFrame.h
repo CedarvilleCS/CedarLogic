@@ -113,7 +113,6 @@ private:
 
 	wxPanel* mainPanel;
 	wxToolBar* toolBar;
-	wxTimer* mTimer;
 	wxNotebook* canvasBook;
 	
 	// Instance variables
