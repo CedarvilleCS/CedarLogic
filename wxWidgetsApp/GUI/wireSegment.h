@@ -43,11 +43,6 @@ public:
 	GLPoint2f begin;
 	GLPoint2f end;
 
-	// All segments must know their relative position, in this case to the
-	//	first segment's (initial vertical bar) begin point
-	GLPoint2f diffBegin;
-	GLPoint2f diffEnd;
-
 	// Keep a list of the connections that are on this segment
 	vector < wireConnection > connections;
 

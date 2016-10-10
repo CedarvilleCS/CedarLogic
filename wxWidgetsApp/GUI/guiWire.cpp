@@ -306,25 +306,21 @@ GLPoint2f guiWire::getCenter(void) {
 }
 
 void guiWire::move(GLPoint2f origin, GLPoint2f delta) {
+
 	// Only move if all connections are selected, else just let the updateConnectionPos
 	//		figure it all out as various connections are moved
 	for (unsigned int i = 0; i < connectPoints.size(); i++) {
 		if (!(connectPoints[i].cGate->isSelected())) return;
 	}
-	// Move my reference point by a certain amount
-	if (segMap[headSegment].isVertical()) {
-		segMap[headSegment].begin.x = segMap[headSegment].end.x = origin.x + delta.x;
-		segMap[headSegment].begin.y = origin.y + delta.y;
-	}
-	else {
-		segMap[headSegment].begin.y = segMap[headSegment].end.y = origin.y + delta.y;
-		segMap[headSegment].begin.x = origin.x + delta.x;
-	}
+
+	GLPoint2f realDelta = origin + delta - segMap[headSegment].begin;
+
 	map < long, wireSegment >::iterator segWalk = segMap.begin();
+
 	// Walk the list from second seg on out to move segs by differentials
 	while (segWalk != segMap.end()) {
-		(segWalk->second).begin = GLPoint2f(segMap[headSegment].begin.x + (segWalk->second).diffBegin.x, segMap[headSegment].begin.y + (segWalk->second).diffBegin.y);
-		(segWalk->second).end = GLPoint2f(segMap[headSegment].begin.x + (segWalk->second).diffEnd.x, segMap[headSegment].begin.y + (segWalk->second).diffEnd.y);
+		(segWalk->second).begin += realDelta;
+		(segWalk->second).end += realDelta;
 		(segWalk->second).calcBBox();
 		segWalk++;
 	}
@@ -525,9 +521,8 @@ void guiWire::calcShape() {
 				segMap[nextSegID].connections.push_back(connectPoints[counter--]);
 				segMap[nextSegID].intersects[centerx].push_back(0);
 				segMap[0].intersects[segMap[nextSegID].begin.y].push_back(segMap[nextSegID].id);
-				// Set the new seg's differential
-				segMap[nextSegID].diffBegin = GLPoint2f(segMap[nextSegID].begin.x - segMap[0].begin.x, segMap[nextSegID].begin.y - segMap[0].begin.y);
-				segMap[nextSegID].diffEnd = GLPoint2f(segMap[nextSegID].end.x - segMap[0].begin.x, segMap[nextSegID].end.y - segMap[0].begin.y);
+				
+
 				segMap[nextSegID].calcBBox();
 				nextSegID++;
 			}
@@ -567,17 +562,14 @@ void guiWire::calcShape() {
 				segMap[nextSegID].connections.push_back(connectPoints[counter--]);
 				segMap[nextSegID].intersects[centery].push_back(2);
 				segMap[2].intersects[segMap[nextSegID].begin.x].push_back(segMap[nextSegID].id);
-				// Set the new seg's differential
-				segMap[nextSegID].diffBegin = GLPoint2f(segMap[nextSegID].begin.x - segMap[0].begin.x, segMap[nextSegID].begin.y - segMap[0].begin.y);
-				segMap[nextSegID].diffEnd = GLPoint2f(segMap[nextSegID].end.x - segMap[0].begin.x, segMap[nextSegID].end.y - segMap[0].begin.y);
+
 				segMap[nextSegID].calcBBox();
 				nextSegID++;
 			}
 			else segMap[2].connections.push_back(connectPoints[counter--]);
 			vertices.pop();
 		}
-		segMap[2].diffBegin = GLPoint2f(segMap[2].begin.x - segMap[0].begin.x, segMap[2].begin.y - segMap[0].begin.y);
-		segMap[2].diffEnd = GLPoint2f(segMap[2].end.x - segMap[0].begin.x, segMap[2].end.y - segMap[0].begin.y);
+
 		nextSegID = 3;
 	}
 	// ONE VERTICAL, ONE HORIZONTAL
@@ -592,9 +584,7 @@ void guiWire::calcShape() {
 		else horizontalVertex = vertices.top();
 		segMap[0] = wireSegment(GLPoint2f(verticalVertex.x, min(verticalVertex.y, horizontalVertex.y)), GLPoint2f(verticalVertex.x, max(verticalVertex.y, horizontalVertex.y)), true, 0);
 		segMap[1] = wireSegment(GLPoint2f(min(verticalVertex.x, horizontalVertex.x), horizontalVertex.y), GLPoint2f(max(verticalVertex.x, horizontalVertex.x), horizontalVertex.y), false, 1);
-		segMap[0].diffEnd = GLPoint2f(segMap[0].end.x - segMap[0].begin.x, segMap[0].end.y - segMap[0].begin.y);
-		segMap[1].diffBegin = GLPoint2f(segMap[1].begin.x - segMap[0].begin.x, segMap[1].begin.y - segMap[0].begin.y);
-		segMap[1].diffEnd = GLPoint2f(segMap[1].end.x - segMap[0].begin.x, segMap[1].end.y - segMap[0].begin.y);
+
 		segMap[0].connections.push_back(connectPoints[verticalConn]);
 		segMap[1].connections.push_back(connectPoints[horizontalConn]);
 		segMap[0].intersects[segMap[1].begin.y].push_back(1);
@@ -628,16 +618,14 @@ bool guiWire::startSegDrag(klsCollisionObject* mouse) {
 		if (((wireSegment*)(*cgWalk))->isVertical()) {
 			segsToAddWhenFound.push_back(wireSegment(vertex, vertex, false, nextSegID++));
 			segsToAddWhenFound[segsToAddWhenFound.size() - 1].intersects[vertex.x].push_back(((wireSegment*)(*cgWalk))->id);
-			segsToAddWhenFound[segsToAddWhenFound.size() - 1].diffBegin = GLPoint2f(vertex.x - segMap[headSegment].begin.x, vertex.y - segMap[headSegment].begin.y);
-			segsToAddWhenFound[segsToAddWhenFound.size() - 1].diffEnd = GLPoint2f(vertex.x - segMap[headSegment].begin.x, vertex.y - segMap[headSegment].begin.y);
+
 			segsToAddWhenFound[segsToAddWhenFound.size() - 1].connections.push_back(((wireSegment*)(*cgWalk))->connections[i]);
 			((wireSegment*)(*cgWalk))->intersects[vertex.y].push_back(segsToAddWhenFound[segsToAddWhenFound.size() - 1].id);
 		}
 		else { // just horizontal
 			segsToAddWhenFound.push_back(wireSegment(vertex, vertex, true, nextSegID++));
 			segsToAddWhenFound[segsToAddWhenFound.size() - 1].intersects[vertex.y].push_back(((wireSegment*)(*cgWalk))->id);
-			segsToAddWhenFound[segsToAddWhenFound.size() - 1].diffBegin = GLPoint2f(vertex.x - segMap[headSegment].begin.x, vertex.y - segMap[headSegment].begin.y);
-			segsToAddWhenFound[segsToAddWhenFound.size() - 1].diffEnd = GLPoint2f(vertex.x - segMap[headSegment].begin.x, vertex.y - segMap[headSegment].begin.y);
+
 			segsToAddWhenFound[segsToAddWhenFound.size() - 1].connections.push_back(((wireSegment*)(*cgWalk))->connections[i]);
 			((wireSegment*)(*cgWalk))->intersects[vertex.x].push_back(segsToAddWhenFound[segsToAddWhenFound.size() - 1].id);
 		}
@@ -720,13 +708,6 @@ void guiWire::updateSegDrag(klsCollisionObject* mouse) {
 			}
 		}
 		isectWalk++;
-	}
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
-	segWalk++;
-	while (segWalk != segMap.end()) {
-		(segWalk->second).diffBegin = GLPoint2f((segWalk->second).begin.x - segMap[headSegment].begin.x, (segWalk->second).begin.y - segMap[headSegment].begin.y);
-		(segWalk->second).diffEnd = GLPoint2f((segWalk->second).end.x - segMap[headSegment].begin.x, (segWalk->second).end.y - segMap[headSegment].begin.y);
-		segWalk++;
 	}
 
 	refreshIntersections();
@@ -1013,8 +994,7 @@ void guiWire::mergeSegments() {
 			(isectWalk->second) = newIsectVector;
 			isectWalk++;
 		}
-		(segWalk->second).diffBegin = GLPoint2f((segWalk->second).begin.x - newSegMap[headSegment].begin.x, (segWalk->second).begin.y - newSegMap[headSegment].begin.y);
-		(segWalk->second).diffEnd = GLPoint2f((segWalk->second).end.x - newSegMap[headSegment].begin.x, (segWalk->second).end.y - newSegMap[headSegment].begin.y);
+
 		(segWalk->second).calcBBox();
 		segWalk++;
 	}
@@ -1080,12 +1060,6 @@ void guiWire::removeZeroLengthSegments() {
 	refreshIntersections(true);
 	// Maybe we removed the head?
 	headSegment = segMap.begin()->first;
-	segWalk = segMap.begin();
-	while (segWalk != segMap.end()) {
-		(segWalk->second).diffBegin = GLPoint2f((segWalk->second).begin.x - segMap[headSegment].begin.x, (segWalk->second).begin.y - segMap[headSegment].begin.y);
-		(segWalk->second).diffEnd = GLPoint2f((segWalk->second).end.x - segMap[headSegment].begin.x, (segWalk->second).end.y - segMap[headSegment].begin.y);
-		segWalk++;
-	}
 }
 
 // fill out some info to avoid loss of cycles in render loop

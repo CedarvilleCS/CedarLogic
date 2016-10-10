@@ -86,12 +86,8 @@ cmdMoveWire::cmdMoveWire( string def ) : klsCommand( true, _T("Move Wire") ) {
 		iss >> segID >> begin.x >> dump >> begin.y >> dump >> end.x >> dump >> end.y;
 		newSegList[segID] = wireSegment( begin, end, isVertical, segID );
 		if (!doneFirstSeg) {
-			newSegList[segID].diffEnd = GLPoint2f( newSegList[segID].end.x - newSegList[segID].begin.x, newSegList[segID].end.y - newSegList[segID].begin.y );
 			firstSegID = segID;
-		} else {
-			newSegList[segID].diffBegin = GLPoint2f( newSegList[segID].begin.x - newSegList[firstSegID].begin.x, newSegList[segID].begin.y - newSegList[firstSegID].begin.y );
-			newSegList[segID].diffEnd = GLPoint2f( newSegList[segID].end.x - newSegList[firstSegID].begin.x, newSegList[segID].end.y - newSegList[firstSegID].begin.y );
-		}			
+		}		
 		iss >> temp;
 		while (temp == "connection") {
 			int gid; string name; wireConnection wc;
@@ -828,8 +824,6 @@ bool cmdMergeWire::Do() {
 			}
 			isectWalk++;
 		}
-		wire1NewMap[newID].diffBegin = GLPoint2f( wire1NewMap[newID].begin.x-diffBegin.x, wire1NewMap[newID].begin.y-diffBegin.y );
-		wire1NewMap[newID].diffEnd = GLPoint2f( wire1NewMap[newID].end.x-diffBegin.x, wire1NewMap[newID].end.y-diffBegin.y );
 		segWalk++;
 	}
 	// Calculate the closest segment in wire1 to the point given in wire2

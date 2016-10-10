@@ -277,9 +277,8 @@ void CircuitParse::parseWireToSend( void ) {
 						GLPoint2f begin, end;
 						istringstream iss( mParse->readTagValue("points") );
 						iss >> begin.x >> dump >> begin.y >> dump >> end.x >> dump >> end.y;
-						newSeg.begin = begin; newSeg.end = end;
-						newSeg.diffBegin = GLPoint2f( begin.x-wireShape[headSegmentID].begin.x, begin.y-wireShape[headSegmentID].begin.y );
-						newSeg.diffEnd = GLPoint2f( end.x-wireShape[headSegmentID].begin.x, end.y-wireShape[headSegmentID].begin.y );
+						newSeg.begin = begin;
+						newSeg.end = end;
 						newSeg.calcBBox();
 						mParse->readCloseTag();
 					} else if (temp == "connection") {
