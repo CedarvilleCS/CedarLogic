@@ -519,23 +519,14 @@ void MainFrame::loadCircuitFile( string fileName ){
 void MainFrame::OnSave(wxCommandEvent& event) {
 	if (openedFilename == _T("")) OnSaveAs(event);
 	else {
-		gCircuit->setSimulate(false);
 		commandProcessor->MarkAsSaved();
-		wxGetApp().appSystemTime.Pause();
-		CircuitParse cirp(currentCanvas);
-		cirp.saveCircuit((string)(const char*)openedFilename.c_str(), canvases); //currentCanvas->getGateList(), currentCanvas->getWireList());
-		if (!(toolBar->GetToolState(Tool_Pause))) {
-			wxGetApp().appSystemTime.Start(0);
-		}
-		gCircuit->setSimulate(true);		
+		save((string)openedFilename);
 	}
 }
 
 void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 	handlingEvent = true;
 
-	gCircuit->setSimulate(false);
-	wxGetApp().appSystemTime.Pause();
 	wxString caption = wxT("Save circuit");
 	wxString wildcard = wxT("Circuit files (*.cdl)|*.cdl");
 	wxString defaultFilename = wxT("");
@@ -547,14 +538,8 @@ void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 		openedFilename = path;
 		this->SetTitle( _T("CEDAR Logic Simulator - ") + path );
 		commandProcessor->MarkAsSaved();
-		CircuitParse cirp(currentCanvas);
-		cirp.saveCircuit((string)(const char*)openedFilename.c_str(), canvases); //currentCanvas->getGateList(), currentCanvas->getWireList());
+		save((string)openedFilename);
 	}
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
-	gCircuit->setSimulate(true);
-
 	handlingEvent = false;
 }
 
@@ -853,26 +838,12 @@ void MainFrame::OnThreadSave()
 {
 	if (openedFilename == _T(""))
 	{
-		gCircuit->setSimulate(false);
-		wxGetApp().appSystemTime.Pause();
-		CircuitParse cirp(currentCanvas);
-		cirp.saveCircuit("Circuit" + to_string(currentTempNum) + ".temp", canvases);
-		if (!(toolBar->GetToolState(Tool_Pause))) {
-			wxGetApp().appSystemTime.Start(0);
-		}
-		gCircuit->setSimulate(true);
+		save("Circuit" + to_string(currentTempNum) + ".temp");
 	}
 
 	else
 	{
-		gCircuit->setSimulate(false);
-		wxGetApp().appSystemTime.Pause();
-		CircuitParse cirp(currentCanvas);
-		cirp.saveCircuit((string)(const char*)openedFilename.c_str() + ".temp", canvases);
-		if (!(toolBar->GetToolState(Tool_Pause))) {
-			wxGetApp().appSystemTime.Start(0);
-		}
-		gCircuit->setSimulate(true);
+		save((string)openedFilename + ".temp");
 	}
 }
 
@@ -906,4 +877,24 @@ void MainFrame::lock()
 void MainFrame::unlock()
 {
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->unlockCanvas();
+}
+
+void MainFrame::save(string filename)
+{
+	//Pause system so that user can't modify during save
+	lock();
+	gCircuit->setSimulate(false);
+	wxGetApp().appSystemTime.Pause();
+
+	//Save file
+	CircuitParse cirp(currentCanvas);
+	cirp.saveCircuit(filename, canvases);
+
+	//Resume system
+	if (!(toolBar->GetToolState(Tool_Pause)))
+	{
+		wxGetApp().appSystemTime.Start(0);
+	}
+	gCircuit->setSimulate(true);
+	unlock();
 }

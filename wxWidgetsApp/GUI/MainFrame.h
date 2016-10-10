@@ -102,6 +102,7 @@ public:
 	bool isHandlingEvent();
 	void lock();
 	void unlock();
+	void save(string filename);
 	
 private:
     // helper function - creates a new thread (but doesn't run it)
