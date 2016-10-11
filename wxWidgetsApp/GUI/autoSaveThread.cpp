@@ -32,9 +32,9 @@ void *autoSaveThread::Entry()
 		waitTime = (int)difftime(time(NULL), timeout);
 		if (waitTime > WAIT_TIME)
 		{
-			if (frame != NULL && frame->FileIsDirty() && !frame->isHandlingEvent())
+			if (frame != NULL && frame->fileIsDirty() && !frame->isHandlingEvent())
 			{
-				frame->OnThreadSave();
+				frame->autosave();
 			}
 			time(&timeout);
 		}

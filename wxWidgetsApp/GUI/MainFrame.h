@@ -96,18 +96,20 @@ public:
 
 
 	//Julian: Added functions to help with auto save functionality
-	void OnThreadSave();
-	bool FileIsDirty();
+	void autosave();
+	bool fileIsDirty();
 	void removeTempFile();
 	bool isHandlingEvent();
 	void lock();
 	void unlock();
 	void save(string filename);
+	void load(string filename);
 	
 private:
     // helper function - creates a new thread (but doesn't run it)
 	threadLogic *CreateThread();
 	autoSaveThread *CreateSaveThread(); //Julian
+	
 
 	vector< GUICanvas* > canvases;
 	GUICircuit* gCircuit;
@@ -128,6 +130,7 @@ private:
 	unsigned int currentTempNum;
 
 	bool handlingEvent; //Julian: Prevents autosaving from occuring during an open/new/saveas/etc...
+	const string CRASH_FILENAME = "crashfile.temp"; //Julian: Filename to check.
 	
 	wxSlider* timeStepModSlider;
 	wxStaticText* timeStepModVal;

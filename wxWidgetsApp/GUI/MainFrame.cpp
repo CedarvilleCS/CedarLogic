@@ -269,6 +269,21 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	doOpenFile = (cmdFilename.size() > 0);
 	this->openedFilename = (const wxChar *)cmdFilename.c_str(); // KAS
 
+	if (ifstream(CRASH_FILENAME)) {
+		wxMessageDialog dialog(this, wxT("Oops! It seems like there may have been a crash. Would you like to try to recover your work?"), wxT("Recover File"), wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+		if (dialog.ShowModal() == wxID_YES)
+		{
+			doOpenFile = false;
+			openedFilename = "Recovered File";
+			load(CRASH_FILENAME);
+			this->SetTitle(_T("CEDAR Logic Simulator - ") + openedFilename);
+		}
+		else
+		{
+			removeTempFile();
+		}
+	}
+
 	if (autoThread->Run() != wxTHREAD_NO_ERROR)
 	{
 		wxLogError(wxT("Autosave thread not started!"));
@@ -394,8 +409,15 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	if (!(toolBar->GetToolState(Tool_Pause))) {
 		wxGetApp().appSystemTime.Start(0);
 	}
-	
-	removeTempFile();
+
+	if (destroy)
+	{
+		removeTempFile();
+	}
+	else
+	{
+		handlingEvent = false;
+	}
 
 	//Edit by Joshua Lansford 10/18/07
 	//KAS replaced the destroy method with a close method.
@@ -587,9 +609,7 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 	
 	if ( doOpenFile ) {
 		doOpenFile = false;
-		CircuitParse cirp((const char *)openedFilename.c_str(), canvases); // KAS
-    	cirp.parseFile();
-	    currentCanvas->Update(); // Render();
+		load((string)openedFilename);
 		this->SetTitle( _T("CEDAR Logic Simulator - ") + openedFilename );
 	}
 	
@@ -832,55 +852,38 @@ void MainFrame::PauseSim() {
 	}
 }
 
-//Julian: I'm aware this is very bad. This is strictly for testing purposes.
-//The code is copied from OnSaveAs to see if I can invoke it from a thread.
-void MainFrame::OnThreadSave()
-{
-	if (openedFilename == _T(""))
-	{
-		save("Circuit" + to_string(currentTempNum) + ".temp");
-	}
+//Julian: All of the following functions were added to support autosave functionality.
 
-	else
-	{
-		save((string)openedFilename + ".temp");
-	}
+
+void MainFrame::autosave() {
+	save(CRASH_FILENAME);
 }
 
-bool MainFrame::FileIsDirty()
-{
+bool MainFrame::fileIsDirty() {
 	return commandProcessor->IsDirty();
 }
 
-void MainFrame::removeTempFile()
-{
-	if (openedFilename == _T(""))
-	{
-		remove(("Circuit" + to_string(currentTempNum) + ".temp").c_str());
-	}
-	else
-	{
-		remove((openedFilename + ".temp").c_str());
-	}
+void MainFrame::removeTempFile() {
+	remove(CRASH_FILENAME.c_str());
 }
 
-bool MainFrame::isHandlingEvent()
-{
+bool MainFrame::isHandlingEvent() {
 	return handlingEvent;
 }
 
-void MainFrame::lock()
-{
-	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->lockCanvas();
+void MainFrame::lock() {
+	for (unsigned int i = 0; i < canvases.size(); i++) {
+		canvases[i]->lockCanvas();
+	}
 }
 
-void MainFrame::unlock()
-{
-	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->unlockCanvas();
+void MainFrame::unlock() {
+	for (unsigned int i = 0; i < canvases.size(); i++) {
+		canvases[i]->unlockCanvas();
+	}
 }
 
-void MainFrame::save(string filename)
-{
+void MainFrame::save(string filename) {
 	//Pause system so that user can't modify during save
 	lock();
 	gCircuit->setSimulate(false);
@@ -891,10 +894,15 @@ void MainFrame::save(string filename)
 	cirp.saveCircuit(filename, canvases);
 
 	//Resume system
-	if (!(toolBar->GetToolState(Tool_Pause)))
-	{
+	if (!(toolBar->GetToolState(Tool_Pause))) {
 		wxGetApp().appSystemTime.Start(0);
 	}
 	gCircuit->setSimulate(true);
 	unlock();
+}
+
+void MainFrame::load(string filename) {
+	CircuitParse cirp(filename, canvases); // KAS
+	cirp.parseFile();
+	currentCanvas->Update(); // Render();
 }

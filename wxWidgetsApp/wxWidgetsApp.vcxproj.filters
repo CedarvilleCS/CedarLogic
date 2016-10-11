@@ -26,9 +26,6 @@
     <Filter Include="Source Files\GUI\GLFont">
       <UniqueIdentifier>{3340b7a5-c53c-482d-847c-5dd29f1e2598}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GUI\XML">
-      <UniqueIdentifier>{1c39cde8-b31d-475b-839c-2e9cd0dbfb97}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GUI\Canvas">
       <UniqueIdentifier>{a1f71740-b503-4ef0-9e53-093c519bf407}</UniqueIdentifier>
     </Filter>
@@ -40,6 +37,9 @@
     </Filter>
     <Filter Include="Source Files\GUI\Dragable Things">
       <UniqueIdentifier>{7f19615b-eee3-41bb-afe3-fccf84ecbdf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\XML">
+      <UniqueIdentifier>{1c39cde8-b31d-475b-839c-2e9cd0dbfb97}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -295,7 +295,7 @@
       <Filter>Source Files\GUI\Dragable Things</Filter>
     </ClCompile>
     <ClCompile Include="GUI\autoSaveThread.cpp">
-      <Filter>Source Files\GUI</Filter>
+      <Filter>Source Files\GUI\Misc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

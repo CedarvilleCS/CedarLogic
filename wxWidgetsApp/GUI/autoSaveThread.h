@@ -17,7 +17,7 @@ public:
 private:
 
 	time_t timeout;
-	const int WAIT_TIME = 10; //TODO change to 10 minutes
+	const int WAIT_TIME = 600;
 
 };
 
