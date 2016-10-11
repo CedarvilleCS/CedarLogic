@@ -183,23 +183,6 @@ public:
 	string toString();
 };
 
-// cmdMergeWire - connects a wire another wire
-class cmdMergeWire : public klsCommand {
-protected:
-	unsigned long wid1;
-	unsigned long wid2;
-	long wire2seg;
-	stack < klsCommand* > cmdList;
-	GLPoint2f searchPoint;
-	
-public:
-	cmdMergeWire( GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wid1, unsigned long wid2, GLPoint2f mc );
-	virtual ~cmdMergeWire( void );
-	
-	bool Do( void );
-	bool Undo( void );
-};
-
 // cmdDeleteWire - Deletes a wire
 class cmdDeleteWire : public klsCommand {
 protected:
