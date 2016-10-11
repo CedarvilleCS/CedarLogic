@@ -231,18 +231,18 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	canvasBook = new wxNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400));
 	mainSizer->Add( canvasBook, wxSizerFlags(1).Expand().Border(wxALL, 0) );
 
-	//add 10 tabs
+	//add 1 tab
 	for (int i = 0; i < 1; i++) {
 		canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 		ostringstream oss;
 		oss << "Page " << (i+1);
 		canvasBook->AddPage(canvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));  // KAS
 	}
-	
+
 	currentCanvas = canvases[0];
 	gCircuit->setCurrentCanvas(currentCanvas);
 	currentCanvas->setMinimap(miniMap);
-	mainSizer->Show( canvasBook );
+	mainSizer->Show(canvasBook);
 	currentCanvas->SetFocus();
 
 	SetSizer( mainSizer);
@@ -505,7 +505,20 @@ void MainFrame::loadCircuitFile( string fileName ){
 	commandProcessor->ClearCommands();
 	commandProcessor->SetMenuStrings();
     CircuitParse cirp((const char *)path.c_str(), canvases); // KAS
-	cirp.parseFile();
+	vector<GUICanvas*> newCanvases = cirp.parseFile();
+	
+	for (unsigned int i = 0; i < newCanvases.size(); i++) 
+	{
+		ostringstream oss;
+		oss << "Page " << (i + 1);
+		canvasBook->AddPage(newCanvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));
+	}
+	currentCanvas = canvases[0];
+	gCircuit->setCurrentCanvas(currentCanvas);
+	currentCanvas->setMinimap(miniMap);
+	mainSizer->Show(canvasBook);
+	currentCanvas->SetFocus();
+
 }
 
 void MainFrame::OnSave(wxCommandEvent& event) {

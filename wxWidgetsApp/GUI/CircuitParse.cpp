@@ -50,9 +50,9 @@ void CircuitParse::loadFile(string fileName) {
 	this->fileName = fileName;
 }
 
-void CircuitParse::parseFile() {
+vector<GUICanvas*> CircuitParse::parseFile() {
 	// need to throw exception
-	if (mParse->readTag() != "circuit") return;
+	if (mParse->readTag() != "circuit") return gCanvases;
 	
 	// Read the currentPage tag.
 	if( mParse->readTag() == "CurrentPage" ) {
@@ -63,7 +63,14 @@ void CircuitParse::parseFile() {
 	do { // while next tag is not close circuit
 		string temp = mParse->readTag();
 		char pageNum = temp[temp.size()-1] - '0';
-        gCanvas = gCanvases[0];
+		if ((int)pageNum > (int)(gCanvases.size()-1)) {
+			gCanvas = new GUICanvas(gCanvases[0]->GetParent(), gCanvases[0]->getCircuit(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
+			gCanvases.push_back(gCanvas);
+		}
+		else {
+			gCanvas = gCanvases[(int)pageNum];
+			
+		}
 		
 		string pageTag = temp;
 		// while next tag is not close page
@@ -173,6 +180,7 @@ void CircuitParse::parseFile() {
 		mParse->readCloseTag();
 	} while (!mParse->isCloseTag(mParse->getCurrentIndex()));
 	gCanvas->getCircuit()->getOscope()->UpdateMenu();
+	return gCanvases;
 }
 
 void CircuitParse::parseGateToSend(string type, string ID, string position, vector < gateConnector > &inputs, vector < gateConnector > &outputs, vector < parameter > &params) {
