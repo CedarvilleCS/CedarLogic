@@ -78,6 +78,8 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
 					*newPasteText += s + "\n"; 
 
 					wxTheClipboard->AddData(new wxTextDataObject ((wxChar*)newPasteText->c_str())); // Update clipboard data so subsequent pastes carry on 
+
+					/* END OF EDIT */
 				}
 				cg = new cmdSetParams(temp);
 			}

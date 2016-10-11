@@ -5785,7 +5785,7 @@
       <point>-3,0.5</point>
     </input>
 		<input> <name>ENABLE</name>
-		          <point>-3,2</point> 
+		          <point>-3,2.5</point> 
 		</input>
 		<output> <name>OUT_0</name>
 		          <point>3,-2.5</point> 
@@ -5794,10 +5794,10 @@
 		          <point>3,-1.5</point> 
 		</output>
 		<shape>
-			<line>-2,3,2,3</line>
-			<line>2,3,2,-3.5</line>
+			<line>-2,3.5,2,3.5</line>
+			<line>2,3.5,2,-3.5</line>
 			<line>2,-3.5,-2,-3.5</line>
-			<line>-2,-3.5,-2,3</line>
+			<line>-2,-3.5,-2,3.5</line>
 
 #		  Output
 			<line>2,-1.5,3,-1.5</line>
@@ -5810,10 +5810,10 @@
       <line>-2,0.5,-3,0.5</line>
 
 #			Enable
-			<line>-2,2,-3,2</line>
+			<line>-2,2.5,-3,2.5</line>
 			
 #			E
-			<offset><point>-1.7,2.4</point>
+			<offset><point>-1.7,2.9</point>
 			<line>0,0,0.4,0</line>
 			<line>0.4,-0.8,0,-0.8</line>
 			<line>0,-0.8,0,-0.4</line>
@@ -5893,15 +5893,15 @@
   </output>
   <input>
     <name>ENABLE</name>
-    <point>-3,4</point>
+    <point>-3,4.5</point>
   </input>
   
   <shape>
     #     body
-    <line>-2,5,2,5</line>
-    <line>2,5,2,-5.5</line>
+    <line>-2,5.5,2,5.5</line>
+    <line>2,5.5,2,-5.5</line>
     <line>2,-5.5,-2,-5.5</line>
-    <line>-2,-5.5,-2,5</line>
+    <line>-2,-5.5,-2,5.5</line>
 
     #		  outputs
     <line>2,-4.5,3,-4.5</line>
@@ -5919,11 +5919,11 @@
     <line>-2, 2.5,-3, 2.5</line>
 
     #			Enable
-    <line>-2,4,-3,4</line>
+    <line>-2,4.5,-3,4.5</line>
 
     #			E
     <offset>
-      <point>-1.7,4.4</point>
+      <point>-1.7,4.9</point>
       <line>0,0,0.4,0</line>
       <line>0.4,-0.8,0,-0.8</line>
       <line>0,-0.8,0,-0.4</line>
@@ -6043,15 +6043,15 @@
     
   <input>
     <name>ENABLE</name>
-    <point>-3,8</point>
+    <point>-3,8.5</point>
   </input>
   
   <shape>
     #     body
-    <line>-2,9,2,9</line>
-    <line>2,9,2,-9.5</line>
+    <line>-2,9.5,2,9.5</line>
+    <line>2,9.5,2,-9.5</line>
     <line>2,-9.5,-2,-9.5</line>
-    <line>-2,-9.5,-2,9</line>
+    <line>-2,-9.5,-2,9.5</line>
 
     #		  outputs
     <line>2,-8.5,3,-8.5</line>
@@ -6079,11 +6079,11 @@
     <line>-2, 6.5,-3, 6.5</line>
 
     #			Enable
-    <line>-2,8,-3,8</line>
+    <line>-2,8.5,-3,8.5</line>
 
     #			E
     <offset>
-      <point>-1.7,8.4</point>
+      <point>-1.7,8.9</point>
       <line>0,0,0.4,0</line>
       <line>0.4,-0.8,0,-0.8</line>
       <line>0,-0.8,0,-0.4</line>
