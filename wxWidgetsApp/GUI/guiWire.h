@@ -54,8 +54,6 @@ public:
 
 	bool hover(float cx, float cy, float delta);
 
-	long getHoverSegmentID();
-
 	GLPoint2f getCenter();
 
 	// Moving functions
@@ -100,13 +98,13 @@ public:
 	//	from the coordinates of the connection point vertices.
 	//	As segments are created, they are merged with segments
 	//	following the same path, and duplicates are removed.
-	void calcShape();
+	void calcShape();  // TODO
 
 	// Manual wire routing functionality
 	//	Takes a mouse pointer and finds the segment in question.
 	//	The segment is isolated between its nearest intersections
 	//	and set as the dragging segment.
-	bool startSegDrag(klsCollisionObject* mouse);
+	bool startSegDrag(klsCollisionObject* mouse);  // TODO
 
 	//	The current dragging segment is moved to a new position
 	//	while the associated segments are added/modified to keep
@@ -121,11 +119,11 @@ private:
 	bool refreshIntersections(bool removeBadSegs = false);
 
 	// Self-explanatory, see comments in source
-	void removeZeroLengthSegments();
+	void removeZeroLengthSegments();  // TODO
 
 	// Take existing segments and merge concurrent segments
 	void mergeSegments();
-	void generateRenderInfo();
+	void generateRenderInfo();  // TODO
 
 
 
@@ -145,7 +143,6 @@ private:
 	unsigned long id;
 	StateType state;
 	klsBBox mouseCoords;
-	long hoverSegmentID;
 
 	// Handle a pointer for the segment being moved, -1 if not set
 	long currentDragSegment;
