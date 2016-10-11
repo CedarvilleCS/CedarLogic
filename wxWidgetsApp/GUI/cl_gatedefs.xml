@@ -9309,7 +9309,7 @@
 	<gate> <name>BM_ROM_16x16</name>
 		<caption>16x16 ROM</caption>
 		<logic_type>RAM</logic_type>
-                <gui_type>RAM</logic_type>
+                <gui_type>RAM</gui_type>
 		<logic_param>DATA_BITS 16</logic_param>
 		<logic_param>ADDRESS_BITS 16</logic_param>
 

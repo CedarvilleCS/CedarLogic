@@ -38,12 +38,49 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
     	if (pasteText.find('\n',0) == string::npos) return NULL;
     	istringstream iss(pasteText);
     	string temp;
+		
 		hash_map < unsigned long, unsigned long > gateids;
 		hash_map < unsigned long, unsigned long > wireids;
     	while (getline( iss, temp, '\n' )) {
     		klsCommand* cg = NULL;
     		if (temp.substr(0,10) == "creategate") cg = new cmdCreateGate(temp);
-    		else if (temp.substr(0,9) == "setparams") cg = new cmdSetParams(temp);
+			else if (temp.substr(0, 9) == "setparams") {
+
+				/* EDIT by Colin Broberg, 10/6/16
+				   logic to increment number on end of TO/FROM tag */
+
+				string numEnd = "";	// String of numbers on end that we will build
+				string temp2 = temp;
+				// Loop from end of temp to beginning, gathering up numbers to build unto numEnd
+				// Starts at temp.length() - 2 so that it starts at the end minus one because 
+				// temp always ends with a /t
+				for (int i = temp.length() - 2; i > 0; i--) {	
+					if (isdigit(temp[i])) {
+						numEnd = temp[i] + numEnd;
+					}
+					else {
+						break;
+					}
+				}
+
+				if (numEnd != "") {
+					string *newPasteText = new string();
+					*newPasteText = pasteText; // This string will be modified and rewritten to the clipboard so that subsequent pastes continue to increment
+
+					temp.erase(temp.length() - 1 - numEnd.length(), numEnd.length() + 1); // Erase number at end of tag, add 1 to erase the \t also
+					newPasteText->erase(newPasteText->length() - 2 - numEnd.length(), numEnd.length() + 2);  // Modify clipboard data similarly, but +2 so it erases the \n also
+
+					int holder = stoi(numEnd);
+					holder++; // The whole point of this -- increment number at end of tag by 1
+					string s = to_string(holder) + "\t";
+
+					temp += s; // Add it back to temp string
+					*newPasteText += s + "\n"; 
+
+					wxTheClipboard->AddData(new wxTextDataObject ((wxChar*)newPasteText->c_str())); // Update clipboard data so subsequent pastes carry on 
+				}
+				cg = new cmdSetParams(temp);
+			}
     		else if (temp.substr(0,10) == "createwire") cg = new cmdCreateWire(temp);
     		else if (temp.substr(0,11) == "connectwire") cg = new cmdConnectWire(temp);
     		else if (temp.substr(0,8) == "movewire") cg = new cmdMoveWire(temp);
@@ -67,7 +104,7 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
 		}
 		gCircuit->getOscope()->UpdateMenu();
     }
-	wxTheClipboard->Close();
+
 	if (cmdList.size() > 0) return new cmdPasteBlock ( cmdList );
 	return NULL;
 }
