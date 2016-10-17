@@ -1412,19 +1412,21 @@ Gate_PRI_ENCODER::Gate_PRI_ENCODER() : Gate_N_INPUT() {
 
 	// One output:
 	declareOutput("OUT");
+	declareOutput("VALID");
 }
 
 
 // Handle gate events:
 void Gate_PRI_ENCODER::gateProcess(void) {
 	vector< StateType > inBus = getInputBusState("IN");
-	//unsigned long inNum = bus_to_ulong(inBus); //NOTE: The ENCODER assumes 0 on non-specified input lines (Not UNKNOWN)!
+	unsigned long inNum = bus_to_ulong(inBus); //NOTE: The ENCODER assumes 0 on non-specified input lines (Not UNKNOWN)!
 
 	vector< StateType > outBus(outBits, ZERO); // All bits are 0
 
 	int outBusSize = (unsigned long)ceil(log((double)inBits) / log(2.0)); // The size of output will be lg of input size
 
 	bool enabled = true;
+	bool isValid = false;
 
 	//by testing for ZERO instead of one, we let a floating enable
 	//be enabling.
@@ -1441,6 +1443,17 @@ void Gate_PRI_ENCODER::gateProcess(void) {
 				break;
 			}
 		}
+		// If input other than zero is recieved, then it's valid
+		if (inNum != 0) {
+			isValid = true;
+		}
+	}
+
+	if (isValid) {
+		setOutputState("VALID", ONE);
+	}
+	else {
+		setOutputState("VALID", ZERO);
 	}
 
 	setOutputBusState("OUT", outBus);

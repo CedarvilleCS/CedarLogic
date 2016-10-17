@@ -5793,6 +5793,10 @@
 		<output> <name>OUT_1</name>
 		          <point>3,-1.5</point> 
 		</output>
+    <output>
+      <name>VALID</name>
+      <point>3,-0.5</point>
+    </output>
 		<shape>
 			<line>-2,3.5,2,3.5</line>
 			<line>2,3.5,2,-3.5</line>
@@ -5802,6 +5806,9 @@
 #		  Output
 			<line>2,-1.5,3,-1.5</line>
 			<line>2,-2.5,3,-2.5</line>
+      
+#     Valid
+      <line>2, -0.5,3,-0.5</line>
 
 #			Input
 			<line>-2,-2.5,-3,-2.5</line>
@@ -5820,6 +5827,21 @@
 			<line>0,-0.4,0,0</line>
 			<line>0,-0.4,0.4,-0.4</line>
 			</offset>
+
+#			VA
+      <offset>
+        <point>0.6,-0.2</point>
+        <line>0,0,0.2,-0.8</line>
+        <line>0.2,-0.8,0.4,0</line>
+      </offset>
+      <offset>
+        <point>1.2,-0.2</point>
+        <line>0,0,0.4,0</line>
+        <line>0,-0.4,0.4,-0.4</line>
+        <line>0.4,0,0.4,-0.4</line>
+        <line>0.4,-0.4,0.4,-0.8</line>
+        <line>0,0,0,-0.8</line>
+      </offset>
 
 #			0 of inputs
 			<offset><point>-1.7,-2.1</point>
@@ -5891,6 +5913,10 @@
     <name>OUT_2</name>
     <point>3,-2.5</point>
   </output>
+  <output>
+    <name>VALID</name>
+    <point>3,-1.5</point>
+  </output>
   <input>
     <name>ENABLE</name>
     <point>-3,4.5</point>
@@ -5907,6 +5933,9 @@
     <line>2,-4.5,3,-4.5</line>
     <line>2,-3.5,3,-3.5</line>
     <line>2,-2.5,3,-2.5</line>
+
+#     Valid
+    <line>2, -1.5,3,-1.5</line>
 
     #			Encoder Input Lines
     <line>-2,-4.5,-3,-4.5</line>
@@ -5929,6 +5958,21 @@
       <line>0,-0.8,0,-0.4</line>
       <line>0,-0.4,0,0</line>
       <line>0,-0.4,0.4,-0.4</line>
+    </offset>
+
+#			VA
+    <offset>
+      <point>0.6,-1.2</point>
+      <line>0,0,0.2,-0.8</line>
+      <line>0.2,-0.8,0.4,0</line>
+    </offset>
+    <offset>
+      <point>1.2,-1.2</point>
+      <line>0,0,0.4,0</line>
+      <line>0,-0.4,0.4,-0.4</line>
+      <line>0.4,0,0.4,-0.4</line>
+      <line>0.4,-0.4,0.4,-0.8</line>
+      <line>0,0,0,-0.8</line>
     </offset>
 
     #			0 of inputs
@@ -6040,7 +6084,10 @@
     <name>OUT_3</name>
     <point>3,-5.5</point>
   </output>
-    
+  <output>
+    <name>VALID</name>
+    <point>3,-4.5</point>
+  </output>   
   <input>
     <name>ENABLE</name>
     <point>-3,8.5</point>
@@ -6058,6 +6105,9 @@
     <line>2,-7.5,3,-7.5</line>
     <line>2,-6.5,3,-6.5</line>
     <line>2,-5.5,3,-5.5</line>
+
+    #     Valid
+    <line>2, -4.5,3,-4.5</line>
 
     #			Encoder Input Lines
     <line>-2,-8.5,-3,-8.5</line>
@@ -6089,6 +6139,21 @@
       <line>0,-0.8,0,-0.4</line>
       <line>0,-0.4,0,0</line>
       <line>0,-0.4,0.4,-0.4</line>
+    </offset>
+
+    #			VA
+    <offset>
+      <point>0.6,-4.2</point>
+      <line>0,0,0.2,-0.8</line>
+      <line>0.2,-0.8,0.4,0</line>
+    </offset>
+    <offset>
+      <point>1.2,-4.2</point>
+      <line>0,0,0.4,0</line>
+      <line>0,-0.4,0.4,-0.4</line>
+      <line>0.4,0,0.4,-0.4</line>
+      <line>0.4,-0.4,0.4,-0.8</line>
+      <line>0,0,0,-0.8</line>
     </offset>
 
     #			0 of inputs
