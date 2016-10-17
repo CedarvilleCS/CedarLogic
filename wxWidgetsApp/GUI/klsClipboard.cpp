@@ -51,35 +51,41 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
 
 				string numEnd = "";	// String of numbers on end that we will build
 				string temp2 = temp;
-				// Loop from end of temp to beginning, gathering up numbers to build unto numEnd
-				// Starts at temp.length() - 2 so that it starts at the end minus one because 
-				// temp always ends with a /t
-				for (int i = temp.length() - 2; i > 0; i--) {	
-					if (isdigit(temp[i])) {
-						numEnd = temp[i] + numEnd;
+
+				// If we are copying more than one thing, don't increment them -- that would be annoying
+				if (pasteText.find("creategate", pasteText.find("creategate") + 1) == std::string::npos) {
+
+					// Loop from end of temp to beginning, gathering up numbers to build unto numEnd
+					// Starts at temp.length() - 2 so that it starts at the end minus one because 
+					// temp always ends with a /t
+					for (int i = temp.length() - 2; i > 0; i--) {
+						if (isdigit(temp[i])) {
+							numEnd = temp[i] + numEnd;
+						}
+						else {
+							break;
+						}
 					}
-					else {
-						break;
-					}
-				}
 
-				if (numEnd != "") {
-					string *newPasteText = new string();
-					*newPasteText = pasteText; // This string will be modified and rewritten to the clipboard so that subsequent pastes continue to increment
+					// If we have numbers to add and we are naming a junction_id
+					if (numEnd != "" && temp.find("JUNCTION_ID") != std::string::npos) {
+						string *newPasteText = new string();
+						*newPasteText = pasteText; // This string will be modified and rewritten to the clipboard so that subsequent pastes continue to increment
 
-					temp.erase(temp.length() - 1 - numEnd.length(), numEnd.length() + 1); // Erase number at end of tag, add 1 to erase the \t also
-					newPasteText->erase(newPasteText->length() - 2 - numEnd.length(), numEnd.length() + 2);  // Modify clipboard data similarly, but +2 so it erases the \n also
+						temp.erase(temp.length() - 1 - numEnd.length(), numEnd.length() + 1); // Erase number at end of tag, add 1 to erase the \t also
+						newPasteText->erase(newPasteText->length() - 2 - numEnd.length(), numEnd.length() + 2);  // Modify clipboard data similarly, but +2 so it erases the \n also
 
-					int holder = stoi(numEnd);
-					holder++; // The whole point of this -- increment number at end of tag by 1
-					string s = to_string(holder) + "\t";
+						int holder = stoi(numEnd);
+						holder++; // The whole point of this -- increment number at end of tag by 1
+						string s = to_string(holder) + "\t";
 
-					temp += s; // Add it back to temp string
-					*newPasteText += s + "\n"; 
+						temp += s; // Add it back to temp string
+						*newPasteText += s + "\n";
 
-					wxTheClipboard->AddData(new wxTextDataObject ((wxChar*)newPasteText->c_str())); // Update clipboard data so subsequent pastes carry on 
-
+						wxTheClipboard->AddData(new wxTextDataObject((wxChar*)newPasteText->c_str())); // Update clipboard data so subsequent pastes carry 
 					/* END OF EDIT */
+					}
+
 				}
 				cg = new cmdSetParams(temp);
 			}
