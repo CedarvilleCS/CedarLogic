@@ -270,7 +270,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	this->openedFilename = (const wxChar *)cmdFilename.c_str(); // KAS
 
 	if (ifstream(CRASH_FILENAME)) {
-		wxMessageDialog dialog(this, wxT("Oops! It seems like there may have been a crash. Would you like to try to recover your work?"), wxT("Recover File"), wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+		wxMessageDialog dialog(this, wxT("Oops! It seems like there may have been a crash.\nWould you like to try to recover your work?"), wxT("Recover File"), wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 		if (dialog.ShowModal() == wxID_YES)
 		{
 			doOpenFile = false;
@@ -278,10 +278,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 			load(CRASH_FILENAME);
 			this->SetTitle(_T("CEDAR Logic Simulator - ") + openedFilename);
 		}
-		else
-		{
-			removeTempFile();
-		}
+		removeTempFile();
 	}
 
 	if (autoThread->Run() != wxTHREAD_NO_ERROR)
