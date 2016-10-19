@@ -68,8 +68,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 			gCanvases.push_back(gCanvas);
 		}
 		else {
-			gCanvas = gCanvases[(int)pageNum];
-			
+			gCanvas = gCanvases[(int)pageNum];			
 		}
 		
 		string pageTag = temp;
