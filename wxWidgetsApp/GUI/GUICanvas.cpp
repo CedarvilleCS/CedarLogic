@@ -865,8 +865,6 @@ wxGetApp().logfile << renderTime/(double)renderNum << "ms avg for " << renderNum
 					if (drawWireHover) { // Target is wire
 						if (!(hitGate->isConnected(startHS))) // source is not connected, so connect
 							gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdConnectWire ( gCircuit, wireHoverID, hitGate->getID(), startHS )) );
-						else 								  // source is connected, so merge
-							if (hitGate->getConnection(startHS)->getID() != wireHoverID) gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdMergeWire ( gCircuit, this, hitGate->getConnection(startHS)->getID(), wireHoverID, getSnappedPoint( m ) )) );
 						handled = true;
 					}
 					else if (!drawWireHover && startHS.size() > 0 && !(startHS == targetConnection && hitGate->getID() == targetGate)) {	 // Target is hotspot
@@ -876,8 +874,7 @@ wxGetApp().logfile << renderTime/(double)renderNum << "ms avg for " << renderNum
 							cmdConnectWire* connectwire2 = new cmdConnectWire( gCircuit, newWID, targetGate, targetConnection );
 							gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdCreateWire ( this, gCircuit, newWID, connectwire, connectwire2 )) );
 						}
-						else if ((hitGate->isConnected(startHS)) && (gateList[targetGate]->isConnected(targetConnection))) { // Both connected, merge the wires
-							if (hitGate->getConnection(startHS)->getID() != gateList[targetGate]->getConnection(targetConnection)->getID()) gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdMergeWire ( gCircuit, this, hitGate->getConnection(startHS)->getID(), gateList[targetGate]->getConnection(targetConnection)->getID(), getSnappedPoint( m ) )) );
+						else if ((hitGate->isConnected(startHS)) && (gateList[targetGate]->isConnected(targetConnection))) {
 						} else if ((hitGate->isConnected(startHS))) { // source is connected, so connect target to source's wire
 							gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdConnectWire ( gCircuit, hitGate->getConnection(startHS)->getID(), targetGate, targetConnection )) );
 						} else if ((gateList[targetGate]->isConnected(targetConnection))) {
@@ -893,11 +890,7 @@ wxGetApp().logfile << renderTime/(double)renderNum << "ms avg for " << renderNum
 						if (!drawWireHover) { // Source is wire, target is hotspot
 							// Source is gate but we're targeting a wire
 							if (!(gateList[targetGate]->isConnected(targetConnection))) // target is not connected, so connect
-								gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdConnectWire(gCircuit, hitWire->getID(), targetGate, targetConnection)) );
-							else 														// target is connected, so merge
-								if (hitWire->getID() != gateList[targetGate]->getConnection(targetConnection)->getID()) gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdMergeWire ( gCircuit, this, hitWire->getID(), gateList[targetGate]->getConnection(targetConnection)->getID(), getSnappedPoint( m ) )) );							
-						} else { // Source is wire, target is wire, so merge
-							if (hitWire->getID() != wireHoverID) gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdMergeWire(gCircuit, this, hitWire->getID(), wireHoverID, getSnappedPoint( m ))) );
+								gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdConnectWire(gCircuit, hitWire->getID(), targetGate, targetConnection)) );						
 						}
 						handled = true;
 					}

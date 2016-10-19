@@ -286,17 +286,12 @@ bool guiWire::hover(float cx, float cy, float delta) {
 	if (this->overlaps(&mouse)) {
 		CollisionGroup cg = this->checkSubsToObj(&mouse);
 		if (!cg.empty()) {
-			hoverSegmentID = ((wireSegment*)(*(cg.begin())))->id;
 			return true;
 		}
 	}
 
 	return false;
 }
-
-long guiWire::getHoverSegmentID() {
-	return hoverSegmentID;
-};
 
 // Return the begin point of the initial vertical bar seg segMap[headSegment].  All other segs
 //	hold a delta to this so we know where to move them when the 
