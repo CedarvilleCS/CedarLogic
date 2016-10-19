@@ -19,6 +19,7 @@
 #include "wx/help.h"
 #include "wx/fs_zip.h"
 #include "threadLogic.h"
+#include "autoSaveThread.h"
 #include "../logic/logic_values.h"
 #include "LibraryParse.h"
 #include "gl_defs.h"
@@ -91,6 +92,7 @@ public:
 	ApplicationSettings appSettings;
 	
 	threadLogic* logicThread;
+	autoSaveThread* saveThread;
 	
 	ofstream logfile;
 	

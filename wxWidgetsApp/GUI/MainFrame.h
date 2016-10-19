@@ -25,6 +25,7 @@
 //#include "OscopeFrame.h"
 class OscopeFrame;
 #include "klsMiniMap.h"
+#include "autoSaveThread.h"
 
 enum
 {
@@ -92,10 +93,23 @@ public:
 	void PauseSim( void );
 	
 	void loadCircuitFile( string fileName );
+
+
+	//Julian: Added functions to help with auto save functionality
+	void autosave();
+	bool fileIsDirty();
+	void removeTempFile();
+	bool isHandlingEvent();
+	void lock();
+	void unlock();
+	void save(string filename);
+	void load(string filename);
 	
 private:
     // helper function - creates a new thread (but doesn't run it)
 	threadLogic *CreateThread();
+	autoSaveThread *CreateSaveThread(); //Julian
+	
 
 	vector< GUICanvas* > canvases;
 	GUICircuit* gCircuit;
@@ -106,8 +120,6 @@ private:
 
 	wxPanel* mainPanel;
 	wxToolBar* toolBar;
-	wxTimer* mTimer;
-	wxTimer* idleTimer;
 	wxNotebook* canvasBook;
 	
 	// Instance variables
@@ -115,6 +127,10 @@ private:
 	bool doOpenFile;
 	wxString lastDirectory;
 	wxString openedFilename;
+	unsigned int currentTempNum;
+
+	bool handlingEvent; //Julian: Prevents autosaving from occuring during an open/new/saveas/etc...
+	const string CRASH_FILENAME = "crashfile.temp"; //Julian: Filename to check.
 	
 	wxSlider* timeStepModSlider;
 	wxStaticText* timeStepModVal;
