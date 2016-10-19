@@ -37,6 +37,7 @@
     </Filter>
     <Filter Include="Source Files\GUI\Collision">
       <UniqueIdentifier>{13dcca07-59ee-407b-b7c1-286daa227b39}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\GUI\XML">
       <UniqueIdentifier>{1c39cde8-b31d-475b-839c-2e9cd0dbfb97}</UniqueIdentifier>
     </Filter>
