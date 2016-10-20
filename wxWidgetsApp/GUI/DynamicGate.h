@@ -8,17 +8,18 @@ heirarchy.
 #ifndef DYNAMICGATE_H_
 #define DYNAMICGATE_H_
 
-#include <map>
-#include <hash_map>
-#include <string>
-#include <stack>
-#include <vector>
-#include "wx/cmdproc.h"
-#include "gl_defs.h"
-#include "wireSegment.h"
-#include "GUICanvas.h"  // GateState, WireState
+#include "LibraryParse.h"
+
 using namespace std;
 
 class DynamicGate {
-	public DynamicGate();
+public:
+	int inputs;
+	int x, y;
+	string logicType;
+	DynamicGate(int inputs, string lType, int xLoc, int yLoc);
+
+private:
+	calculateShape();
+	createGate();
 };
