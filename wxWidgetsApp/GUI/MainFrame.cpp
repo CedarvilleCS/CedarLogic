@@ -287,6 +287,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	}
 	currentTempNum = 0;
 	handlingEvent = false;
+	createTestGate();
 }
 
 MainFrame::~MainFrame() {
