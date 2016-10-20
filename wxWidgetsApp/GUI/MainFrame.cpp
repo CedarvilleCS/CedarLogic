@@ -895,7 +895,9 @@ void MainFrame::save(string filename) {
 		wxGetApp().appSystemTime.Start(0);
 	}
 	gCircuit->setSimulate(true);
-	unlock();
+	if (!(toolBar->GetToolState(Tool_Lock))) {
+		unlock();
+	}
 }
 
 void MainFrame::load(string filename) {
