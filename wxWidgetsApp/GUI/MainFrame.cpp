@@ -55,7 +55,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_SCROLL(MainFrame::OnTimeStepModSlider)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
 	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
-	EVT_TOOL(Tool_DeleteTab, MainFrame::OnDeleteTab)
 	
     //EVT_SIZE(MainFrame::OnSize)
     //EVT_MAXIMIZE(MainFrame::OnMaximize)
@@ -64,6 +63,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_TIMER(IDLETIMER_ID, MainFrame::OnIdle)
 
 	EVT_NOTEBOOK_PAGE_CHANGED(NOTEBOOK_ID, MainFrame::OnNotebookPage)
+	EVT_AUINOTEBOOK_PAGE_CLOSE(NOTEBOOK_ID, MainFrame::OnDeleteTab)
 	
 	EVT_CLOSE(MainFrame::OnClose)
 END_EVENT_TABLE()
@@ -228,7 +228,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	gCircuit->GetCommandProcessor()->SetEditMenu(editMenu);
 	gCircuit->GetCommandProcessor()->Initialize();
 
-	canvasBook = new wxNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400));
+	canvasBook = new wxAuiNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400), wxAUI_NB_CLOSE_ON_ACTIVE_TAB| wxAUI_NB_SCROLL_BUTTONS| wxAUI_NB_TAB_FIXED_WIDTH);
 	mainSizer->Add( canvasBook, wxSizerFlags(1).Expand().Border(wxALL, 0) );
 
 	//add 1 tab: Left loop to allow for different default
@@ -871,7 +871,13 @@ void MainFrame::OnNewTab(wxCommandEvent& event) {
 
 }
 
-void MainFrame::OnDeleteTab(wxCommandEvent& event) {
-
+void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
+	signed int canvasID = event.GetSelection();
+	signed int canSize = (signed int)canvases.size();
+	if (canvasID < (canSize - 1)) {
+		for (int i = canvasID + 1; i < canvases.size(); i++) {
+			canvasBook->GetPage(i)->SetLabel("Page " + i - 1);
+		}
+	}
 
 }

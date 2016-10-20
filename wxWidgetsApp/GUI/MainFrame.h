@@ -18,6 +18,7 @@
 #include "wx/toolbar.h"
 #include "wx/gbsizer.h"
 #include "wx/notebook.h"
+#include "wx/aui/auibook.h"
 #include "wx/slider.h"
 #include "threadLogic.h"
 #include "GUICanvas.h"
@@ -87,7 +88,7 @@ public:
 	void OnTimeStepModSlider(wxScrollEvent& event);
 	void OnLock(wxCommandEvent& event);
 	void OnNewTab(wxCommandEvent& event);
-	void OnDeleteTab(wxCommandEvent& event);
+	void OnDeleteTab(wxAuiNotebookEvent& event);
 	
 	void saveSettings( void );
 	
@@ -112,7 +113,7 @@ private:
 	wxToolBar* toolBar;
 	wxTimer* mTimer;
 	wxTimer* idleTimer;
-	wxNotebook* canvasBook;
+	wxAuiNotebook* canvasBook;
 	
 	// Instance variables
 	bool sizeChanged;
