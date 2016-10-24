@@ -44,11 +44,13 @@ friend class guiGate;
 public:
 	gateHotspot() : klsCollisionObject(COLL_GATE_HOTSPOT) {
 		modelLocation = worldLocation = GLPoint2f( 0, 0 );
+		isBusConnection = false;
 		calcBBox();
 	};
 
 	gateHotspot( string hsName ) : klsCollisionObject(COLL_GATE_HOTSPOT), name( hsName ) {
 		gateHotspot();
+		isBusConnection = false;
 	};
 
 	// Create the bbox for this hotspot:
@@ -66,8 +68,17 @@ public:
 
 	GLPoint2f getLocation( void ) { return worldLocation; };
 
+	void setBus(bool is) {
+		isBusConnection = is;
+	}
+
+	bool isBus() {
+		return isBusConnection;
+	}
+
 public:
 	string name;
+	bool isBusConnection;
 
 protected:
 	GLPoint2f modelLocation, worldLocation;
@@ -164,7 +175,7 @@ public:
 
 
 	// Insert a hotspot in the hotspot list.
-	void insertHotspot( float x1, float y1, string connection );
+	void insertHotspot( float x1, float y1, string connection, bool isBus );
 
 	// Check if any of the hotspots of this gate are within the delta
 	// of the world coordinates sX and sY. delta is in gl coords.

@@ -120,7 +120,7 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	}
 	for (unsigned int i = 0; i < gateDef.hotspots.size(); i++) {
 		lgHotspot tempHS = gateDef.hotspots[i];
-		newGate->insertHotspot(tempHS.x, tempHS.y, tempHS.name);
+		newGate->insertHotspot(tempHS.x, tempHS.y, tempHS.name, tempHS.isBus);
 		if (tempHS.isInput) newGate->declareInput(tempHS.name);
 		else newGate->declareOutput(tempHS.name);
 	}
