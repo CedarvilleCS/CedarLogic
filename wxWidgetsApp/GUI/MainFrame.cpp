@@ -62,7 +62,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_TIMER(TIMER_ID, MainFrame::OnTimer)
 	EVT_TIMER(IDLETIMER_ID, MainFrame::OnIdle)
 
-	EVT_NOTEBOOK_PAGE_CHANGED(NOTEBOOK_ID, MainFrame::OnNotebookPage)
+	EVT_AUINOTEBOOK_PAGE_CHANGED(NOTEBOOK_ID, MainFrame::OnNotebookPage)
 	EVT_AUINOTEBOOK_PAGE_CLOSE(NOTEBOOK_ID, MainFrame::OnDeleteTab)
 	
 	EVT_CLOSE(MainFrame::OnClose)
@@ -228,7 +228,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	gCircuit->GetCommandProcessor()->SetEditMenu(editMenu);
 	gCircuit->GetCommandProcessor()->Initialize();
 
-	canvasBook = new wxAuiNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400), wxAUI_NB_CLOSE_ON_ACTIVE_TAB| wxAUI_NB_SCROLL_BUTTONS| wxAUI_NB_TAB_FIXED_WIDTH);
+	canvasBook = new wxAuiNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400), wxAUI_NB_CLOSE_ON_ACTIVE_TAB| wxAUI_NB_SCROLL_BUTTONS);
 	mainSizer->Add( canvasBook, wxSizerFlags(1).Expand().Border(wxALL, 0) );
 
 	//add 1 tab: Left loop to allow for different default
@@ -656,7 +656,7 @@ void MainFrame::OnMaximize(wxMaximizeEvent& event) {
 	sizeChanged = true;
 }
 
-void MainFrame::OnNotebookPage(wxNotebookEvent& event) {
+void MainFrame::OnNotebookPage(wxAuiNotebookEvent& event) {
 	long canvasID = event.GetSelection();
 	if (currentCanvas == NULL || canvases[canvasID] == currentCanvas) return;
 	//**********************************
@@ -872,12 +872,21 @@ void MainFrame::OnNewTab(wxCommandEvent& event) {
 }
 
 void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
-	signed int canvasID = event.GetSelection();
-	signed int canSize = (signed int)canvases.size();
-	if (canvasID < (canSize - 1)) {
-		for (int i = canvasID + 1; i < canvases.size(); i++) {
-			canvasBook->GetPage(i)->SetLabel("Page " + i - 1);
+	int canvasID = event.GetSelection();
+	int canSize = canvases.size();
+	if (canSize > 1) {
+		canvases.erase(canvases.begin() + canvasID);
+
+		if (canvasID < (canSize - 1)) {
+			for (unsigned int i = canvasID; i < canSize; i++) {
+				string text = "Page " + to_string(i);
+				canvasBook->SetPageText(i, text);
+			}
 		}
+	}
+	else {
+		wxMessageBox(_T("Tab cannot be closed"), _T("Close"), wxOK);
+		event.Veto();
 	}
 
 }
