@@ -183,20 +183,8 @@ public:
 	void setZoomAll( void );
 
 	// Zoom the canvas in or out:
-	void zoomInOrOut( bool in = true ) {
-		if( in ) {
-			// Only allow zooming during a non-dragging state!
-			if (currentDragState == DRAG_NONE) {
-				setZoom( getZoom() * ZOOM_STEP );
-			}
-		} else {
-			// Zoom out:
-			// Only allow zooming during a non-dragging state!
-			if (currentDragState == DRAG_NONE) {
-				setZoom( getZoom() / ZOOM_STEP );
-			}
-		}
-	};
+	void zoomIn();
+	void zoomOut();
 
 	void printLists();
 private:

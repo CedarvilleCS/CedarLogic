@@ -765,3 +765,67 @@ void klsGLCanvas::wxKeyUp(wxKeyEvent& event) {
 	OnKeyUp( event );
 }
 
+//Julian: Moved implementation from header
+void klsGLCanvas::OnMouseWheel(long numOfLines) {
+	if (numOfLines > 0) {
+		setZoom(getZoom() * (ZOOM_STEP * numOfLines));
+	}
+	else {
+		setZoom(getZoom() / (ZOOM_STEP * (-numOfLines)));
+	}
+}
+
+GLPoint2f klsGLCanvas::getSnappedPoint(GLPoint2f c) {
+	GLfloat x = grid.horizSpacing * floor(c.x / grid.horizSpacing + 0.5);
+	GLfloat y = grid.vertSpacing * floor(c.y / grid.vertSpacing + 0.5);
+	return GLPoint2f(x, y);
+}
+
+void klsGLCanvas::setHorizGrid(GLfloat hSpacing) {
+	grid.horizOn = true;
+	if (hSpacing != 0.0) grid.horizSpacing = hSpacing;
+}
+
+void klsGLCanvas::setHorizGridColor(GLfloat a, GLfloat b, GLfloat c, GLfloat d) {
+	grid.hColor[0] = a;
+	grid.hColor[1] = b;
+	grid.hColor[2] = c;
+	grid.hColor[3] = d;
+}
+
+void klsGLCanvas::disableHorizGrid() {
+	grid.horizOn = false;
+}
+
+void klsGLCanvas::setVertGrid(GLfloat vSpacing) {
+	grid.vertOn = true;
+	if (vSpacing != 0.0) grid.vertSpacing = vSpacing;
+}
+
+void klsGLCanvas::setVertGridColor(GLfloat a, GLfloat b, GLfloat c, GLfloat d) {
+	grid.vColor[0] = a;
+	grid.vColor[1] = b;
+	grid.vColor[2] = c;
+	grid.vColor[3] = d;
+}
+
+void klsGLCanvas::disableVertGrid() {
+	grid.vertOn = false;
+}
+
+void klsGLCanvas::setMouseCoords() {
+	int w, h;
+	GetClientSize(&w, &h);
+	wxPoint m = getMouseScreenCoords();
+	float glX = panX + (m.x * viewZoom);
+	float glY = panY - (m.y * viewZoom);
+
+	setMouseCoords(GLPoint2f(glX, glY));
+}
+
+//Julian: Added to allow for zoom to mouse
+void klsGLCanvas::panToMouse()
+{
+	/*this->
+	setPan()*/
+}

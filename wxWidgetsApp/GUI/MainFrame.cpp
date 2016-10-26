@@ -777,12 +777,12 @@ void MainFrame::OnLock(wxCommandEvent& event) {
 
 void MainFrame::OnZoomIn(wxCommandEvent& event) {
 	//TODO: There is no way to check if currentCanvas is valid first!!!
-	currentCanvas->zoomInOrOut( true );
+	currentCanvas->zoomIn();
 }
 
 void MainFrame::OnZoomOut(wxCommandEvent& event) {
 	//TODO: There is no way to check if currentCanvas is valid first!!!
-	currentCanvas->zoomInOrOut( false );
+	currentCanvas->zoomOut();
 }
 
 void MainFrame::OnHelpContents(wxCommandEvent& event) {

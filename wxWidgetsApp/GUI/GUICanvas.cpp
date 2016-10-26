@@ -1039,11 +1039,11 @@ void GUICanvas::OnKeyDown(wxKeyEvent& event) {
 		break;
 	case 43: // + key on top row
 	case WXK_NUMPAD_ADD:
-		zoomInOrOut( true );
+		zoomIn();
 		break;
 	case 45: // - key on top row
 	case WXK_NUMPAD_SUBTRACT:
-		zoomInOrOut( false );
+		zoomOut();
 		break;
 	case WXK_SPACE:
 		setZoomAll();
@@ -1269,4 +1269,20 @@ void GUICanvas::Update() {
 	updateMiniMap();
 	Refresh();
 	wxWindow::Update();
+}
+
+//Julian: Moved implementation of zoom fuctions out of header.
+
+void GUICanvas::zoomIn() {
+	//Only zoom when not dragging
+	if (currentDragState == DRAG_NONE) {
+		setZoom(getZoom() * ZOOM_STEP);
+	}
+}
+
+void GUICanvas::zoomOut() {
+	//Only zoom when not dragging
+	if (currentDragState == DRAG_NONE) {
+		setZoom(getZoom() / ZOOM_STEP);
+	}
 }
