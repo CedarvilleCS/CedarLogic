@@ -272,7 +272,7 @@ void klsGLCanvas::klsGLCanvasRender( bool noColor ) {
 	glColor4f( 0, 0, 0, 1 );
 
 	// Render the background grid:
-	if( (grid.horizOn || grid.vertOn) && wxGetApp().appSettings.gridlineVisible ) {
+	if( (horizOn || vertOn) && wxGetApp().appSettings.gridlineVisible ) {
 		// Note: since adding a very few line primitives is a small price to pay,
 		//	we not only draw the grid for the visible area, but also (PAN_STEP*viewZoom)
 		//	around the visible area.  This is so when the user pans, there will be no
@@ -286,13 +286,13 @@ void klsGLCanvas::klsGLCanvasRender( bool noColor ) {
 		GLdouble vS = panY - (h * viewZoom);
 		GLdouble vN = panY;
 
-		if( grid.horizOn ) {
-			long gridSpacing = max( (long) (grid.horizSpacing + 0.5), (long) 1 ); // Limit the grid spacing options to integer values!
+		if( horizOn ) {
+			long gridSpacing = max( (long) (horizSpacing + 0.5), (long) 1 ); // Limit the grid spacing options to integer values!
 			long glSpacing = max( (long) gridSpacing, (long) (MIN_GRID_SCREEN_SPACING * viewZoom) );
 
 			long firstX = (long)(glSpacing * floor( (vW-(PAN_STEP*viewZoom)) / (float) glSpacing + 0.5 ));
 
-			glColor4fv( grid.hColor );
+			glColor4fv( hColor );
 			glBegin(GL_LINES);
 			for( long x = firstX; x < vE + (PAN_STEP*viewZoom); x += glSpacing ) {
 				glVertex2f( x, vS-(PAN_STEP*viewZoom) );
@@ -301,13 +301,13 @@ void klsGLCanvas::klsGLCanvasRender( bool noColor ) {
 			glEnd();
 		}
 
-		if( grid.vertOn ) {
-			long gridSpacing = max( (long) (grid.vertSpacing + 0.5), (long) 1 ); // Limit the grid spacing options to integer values!
+		if( vertOn ) {
+			long gridSpacing = max( (long) (vertSpacing + 0.5), (long) 1 ); // Limit the grid spacing options to integer values!
 			long glSpacing = max( (long) gridSpacing, (long) (MIN_GRID_SCREEN_SPACING * viewZoom) );
 
 			long firstY = (long)(glSpacing * floor( (vS-(PAN_STEP*viewZoom)) / (float) glSpacing + 0.5 ));
 
-			glColor4fv( grid.vColor );
+			glColor4fv( vColor );
 			glBegin(GL_LINES);
 			for( long y = firstY; y < vN + (PAN_STEP*viewZoom); y += glSpacing ) {
 				glVertex2f( vW-(PAN_STEP*viewZoom), y );
@@ -776,41 +776,41 @@ void klsGLCanvas::OnMouseWheel(long numOfLines) {
 }
 
 GLPoint2f klsGLCanvas::getSnappedPoint(GLPoint2f c) {
-	GLfloat x = grid.horizSpacing * floor(c.x / grid.horizSpacing + 0.5);
-	GLfloat y = grid.vertSpacing * floor(c.y / grid.vertSpacing + 0.5);
+	GLfloat x = horizSpacing * floor(c.x / horizSpacing + 0.5);
+	GLfloat y = vertSpacing * floor(c.y / vertSpacing + 0.5);
 	return GLPoint2f(x, y);
 }
 
 void klsGLCanvas::setHorizGrid(GLfloat hSpacing) {
-	grid.horizOn = true;
-	if (hSpacing != 0.0) grid.horizSpacing = hSpacing;
+	horizOn = true;
+	if (hSpacing != 0.0) horizSpacing = hSpacing;
 }
 
 void klsGLCanvas::setHorizGridColor(GLfloat a, GLfloat b, GLfloat c, GLfloat d) {
-	grid.hColor[0] = a;
-	grid.hColor[1] = b;
-	grid.hColor[2] = c;
-	grid.hColor[3] = d;
+	hColor[0] = a;
+	hColor[1] = b;
+	hColor[2] = c;
+	hColor[3] = d;
 }
 
 void klsGLCanvas::disableHorizGrid() {
-	grid.horizOn = false;
+	horizOn = false;
 }
 
 void klsGLCanvas::setVertGrid(GLfloat vSpacing) {
-	grid.vertOn = true;
-	if (vSpacing != 0.0) grid.vertSpacing = vSpacing;
+	vertOn = true;
+	if (vSpacing != 0.0) vertSpacing = vSpacing;
 }
 
 void klsGLCanvas::setVertGridColor(GLfloat a, GLfloat b, GLfloat c, GLfloat d) {
-	grid.vColor[0] = a;
-	grid.vColor[1] = b;
-	grid.vColor[2] = c;
-	grid.vColor[3] = d;
+	vColor[0] = a;
+	vColor[1] = b;
+	vColor[2] = c;
+	vColor[3] = d;
 }
 
 void klsGLCanvas::disableVertGrid() {
-	grid.vertOn = false;
+	vertOn = false;
 }
 
 void klsGLCanvas::setMouseCoords() {
