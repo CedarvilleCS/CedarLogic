@@ -131,30 +131,16 @@ public:
 
 	// Methods and data for handling parameter updates to be
 	// sent to the GUI from the logic core:
-	void addUpdateParam( IDType gateID, string paramName ) {
-		paramUpdateList.push_back( changedParam( gateID, paramName ) );
-	};
+	void addUpdateParam(IDType gateID, string paramName);
 
-	vector < changedParam > getParamUpdateList( ) {
-		return paramUpdateList;
-	};
+	vector < changedParam > getParamUpdateList();
 
-	void clearParamUpdateList( ) {
-		paramUpdateList.clear();
-	};
+	void clearParamUpdateList();
 
 	// ************ Circuit inspection methods **************
 
 	// Get the IDs of all gates in the circuit:
-	ID_SET< IDType > getGateIDs( ) {
-		ID_SET< IDType > idList;
-		ID_MAP< IDType, GATE_PTR >::iterator thisGate = gateList.begin();
-		while( thisGate != gateList.end() ) {
-			idList.insert( thisGate->first );
-			thisGate++;
-		}
-		return idList;
-	};
+	ID_SET< IDType > getGateIDs();
 
 	// Get the value of a gate parameter:
 	string getGateParameter( IDType gateID, string paramName );
@@ -176,13 +162,13 @@ public:
 	set< WIRE_PTR > getJunctionGroup( set< IDType >* wireGroupIDs );
 
 	// Returns maps of junction items for use in gate functions
-	ID_MAP< string, IDType >* getJunctionIDs( ) { return &junctionIDs; };
-	ID_MAP< string, unsigned long >* getJunctionUseCounter( ) { return &junctionUseCounter; };
+	ID_MAP< string, IDType >* getJunctionIDs();
+	ID_MAP< string, unsigned long >* getJunctionUseCounter();
 
 protected:
 	// For use by the Junction and Wire classes only:
-	WIRE_PTR getWire( IDType theWire ) { return wireList[theWire]; };
-	JUNC_PTR getJunction( IDType theJunc ) { return juncList[theJunc]; };
+	WIRE_PTR getWire(IDType theWire);
+	JUNC_PTR getJunction(IDType theJunc);
 
 private:
 	// All the gates in the circuit, and the ID counter:

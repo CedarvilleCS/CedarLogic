@@ -83,9 +83,6 @@ void Circuit::stepOnlyGates(){
 //End of Edit*****************************
 
 
-// Step the simulation forward by one timestep:
-// If a pointer to a set is passed, then it will
-// return a set of all the changed wires to the calling function.
 void Circuit::step( ID_SET< IDType > *changedWires )
 {
 	// NOTE: Should activate the polled gates here:
@@ -209,8 +206,6 @@ void Circuit::step( ID_SET< IDType > *changedWires )
 		delete changedWires;
 } // step()
 
-
-// Create a new gate, and return its ID:
 IDType Circuit::newGate( string type, IDType gateID ) {
 	IDType thisGateID;
 
@@ -311,8 +306,6 @@ IDType Circuit::newGate( string type, IDType gateID ) {
 	return thisGateID;
 }
 
-	
-// Create a new wire and return its ID:
 IDType Circuit::newWire( IDType wireID ) {
 	IDType thisWireID;
 	WIRE_PTR myWire(new Wire);
@@ -338,8 +331,6 @@ IDType Circuit::newWire( IDType wireID ) {
 	return thisWireID;
 }
 
-
-// Create a new junction and return its ID:
 IDType Circuit::newJunction( IDType juncID  ) {
 	IDType thisJuncID;
 	
@@ -366,9 +357,6 @@ IDType Circuit::newJunction( IDType juncID  ) {
 	return thisJuncID;
 }
 
-
-
-// Delete a gate, removing its connections to wires first:
 void Circuit::deleteGate( IDType theGate ) {
 	if( gateList.find( theGate ) == gateList.end() ) {
 		WARNING("Circuit::deleteGate() - Invalid gate ID.");
@@ -395,10 +383,6 @@ void Circuit::deleteGate( IDType theGate ) {
 	if ( polledGates.find( theGate ) != polledGates.end() ) polledGates.erase( theGate );
 }
 
-
-// Delete a wire, removing its connections from gates first:
-// (The implementation of this may require that wires keep track
-// of their input gates.)
 void Circuit::deleteWire( IDType theWire ) {
 	if( wireList.find( theWire ) == wireList.end() ) {
 		WARNING("Circuit::deleteWire() - Invalid wire ID.");
@@ -439,8 +423,6 @@ void Circuit::deleteWire( IDType theWire ) {
 	wireList.erase( theWire );
 }
 
-
-// Delete a junction, removing all its connections from wires first:
 void Circuit::deleteJunction( IDType theJunc ) {
 	if( juncList.find( theJunc ) == juncList.end() ) {
 		WARNING("Circuit::deleteJunction() - Invalid junction ID.");
@@ -480,23 +462,6 @@ void Circuit::deleteJunction( IDType theJunc ) {
 	juncList.erase( theJunc );
 }
 
-/*OBSOLETE
-// Connect an external event output to this wire, and return a new wire input ID
-// which the output can connect to:
-IDType extCount = 0;
-IDType Circuit::connectExternalWireInput( IDType theWire ) {
-	if( wireList.find( theWire ) != wireList.end() ) {
-		extCount++; // Get a unique ID for the external input.
-		(wireList[theWire])->connectInput(ID_NONE, extCount);
-		return extCount;
-	} else {
-		WARNING("Circuit::connectExternalWireInput() - Invalid wire ID.");
-		return ID_NONE;
-	}
-}
-*/
-
-// Connect a gate input to the output of a wire:
 IDType Circuit::connectGateInput( IDType gateID, string gateInputID, IDType wireID ) {
 	IDType returnWireID = 0;
 	
@@ -520,9 +485,6 @@ IDType Circuit::connectGateInput( IDType gateID, string gateInputID, IDType wire
 	return returnWireID;
 }
 
-	
-// Connect a gate output to the input of a wire:
-// (The wire will create one unique input for each unique gateID/gateOutputID combination.)
 IDType Circuit::connectGateOutput( IDType gateID, string gateOutputID, IDType wireID) {
 	IDType returnWireID = 0;
 	
@@ -555,8 +517,6 @@ IDType Circuit::connectGateOutput( IDType gateID, string gateOutputID, IDType wi
 	return returnWireID;
 }
 
-	
-// Disconnect a gate input from the output of a wire:
 void Circuit::disconnectGateInput( IDType gateID, string gateInputID ) {
 	if( gateList.find( gateID ) == gateList.end() ) {
 		WARNING("Circuit::disconnectGateInput() - Invalid gate ID.");
@@ -581,8 +541,6 @@ void Circuit::disconnectGateInput( IDType gateID, string gateInputID ) {
 	gateUpdateList.insert( gateID );
 }
 
-	
-// Disconnect a gate output from the input of a wire:
 void Circuit::disconnectGateOutput( IDType gateID, string gateOutputID ) {
 	if( gateList.find( gateID ) == gateList.end() ) {
 		WARNING("Circuit::disconnectGateOutput() - Invalid gate ID.");
@@ -632,8 +590,6 @@ void Circuit::disconnectGateOutput( IDType gateID, string gateOutputID ) {
 	return;
 }
 
-
-// Connect a junction to a wire:
 void Circuit::connectJunction( IDType juncID, IDType wireID ) {
 //TODO: Warn the user when a junction cannot happen!
 	if( juncList.find( juncID ) == juncList.end() ) return;
@@ -657,7 +613,6 @@ void Circuit::connectJunction( IDType juncID, IDType wireID ) {
 	wireUpdateList.insert( juncWires.begin(), juncWires.end() );
 }
 
-// Unhook a junction from a wire:
 void Circuit::disconnectJunction( IDType juncID, IDType wireID ) {
 //TODO: Warn the user when a junction cannot happen!
 	if( juncList.find( juncID ) == juncList.end() ) return;
@@ -681,9 +636,6 @@ void Circuit::disconnectJunction( IDType juncID, IDType wireID ) {
 	}
 }
 
-
-
-// Create an event and put it in the event queue:
 void Circuit::createEvent( TimeType eventTime, IDType wireID, IDType gateID, string gateOutputID, StateType newState ) {
 	Event myEvent;
 	myEvent.eventTime = eventTime;
@@ -721,8 +673,6 @@ void Circuit::createEvent( TimeType eventTime, IDType wireID, IDType gateID, str
 	eventQueue.push(myEvent);
 }
 
-
-// Create an event that occurs at systemTime + delay:
 TimeType Circuit::createDelayedEvent( TimeType delay, IDType wireID, IDType gateID, string gateOutputID, StateType newState ) {
 	if( (wireID != ID_NONE) && (gateOutputID != "") ) {
 		createEvent( delay + getSystemTime(), wireID, gateID, gateOutputID, newState );
@@ -730,8 +680,6 @@ TimeType Circuit::createDelayedEvent( TimeType delay, IDType wireID, IDType gate
 	return delay + getSystemTime();
 }
 
-
-// Create Junction Event and put it in the event queue:
 void Circuit::createJunctionEvent( TimeType eventTime, IDType juncID, bool newState ) {
 	Event myEvent;
 	myEvent.eventTime = eventTime;
@@ -765,12 +713,6 @@ void Circuit::createJunctionEvent( TimeType eventTime, IDType juncID, bool newSt
 	eventQueue.push(myEvent);
 }
 
-
-// Clear out the event queue, destroying all events,
-// and also erase all events in the gateUpdateList and wireUpdateList.
-// This is used if we wanted a simulation where all of the wires
-// start with "UNKNOWN" state and don't update until a signal
-// from the outside world reaches them.
 void Circuit::destroyAllEvents( void ) {
 
 	while( !eventQueue.empty() ) {
@@ -781,10 +723,6 @@ void Circuit::destroyAllEvents( void ) {
 	wireUpdateList.clear();
 }
 
-
-// Set a gate parameter:
-// (If the gate's parameter change requires the gate to be
-// re-evaluated during the next cycle, then add it to the 
 void Circuit::setGateParameter( IDType gateID, string paramName, string value ) {
 	if( gateList.find( gateID ) != gateList.end() ) {
 		WARNING("test");
@@ -826,10 +764,31 @@ void Circuit::setGateOutputParameter( IDType gateID, string outputID, string par
 	return;
 }
 
+void Circuit::addUpdateParam(IDType gateID, string paramName) {
+	paramUpdateList.push_back(changedParam(gateID, paramName));
+};
+
+vector < changedParam > Circuit::getParamUpdateList() {
+	return paramUpdateList;
+};
+
+void Circuit::clearParamUpdateList() {
+	paramUpdateList.clear();
+};
+
+ID_SET< IDType > Circuit::getGateIDs() {
+	ID_SET< IDType > idList;
+	ID_MAP< IDType, GATE_PTR >::iterator thisGate = gateList.begin();
+	while (thisGate != gateList.end()) {
+		idList.insert(thisGate->first);
+		thisGate++;
+	}
+	return idList;
+};
+
 
 // ************ Circuit inspection methods **************
 
-// Get the value of a gate parameter:
 string Circuit::getGateParameter( IDType gateID, string paramName ) {
 
 	if( gateList.find( gateID ) != gateList.end() ) {
@@ -840,8 +799,6 @@ string Circuit::getGateParameter( IDType gateID, string paramName ) {
 	return "";
 }
 
-
-// Get a wire state by ID:
 StateType Circuit::getWireState( IDType wireID ) {
 	if( wireList.find( wireID ) != wireList.end() ) {
 		return wireList[wireID]->getState();
@@ -851,7 +808,6 @@ StateType Circuit::getWireState( IDType wireID ) {
 	}
 }
 
-// Get and set a junction's on/off toggle state:
 void Circuit::setJunctionState( IDType juncID, bool newState ) {
 //TODO: Warn the user when a junction doesn't exist!
 	if( juncList.find( juncID ) == juncList.end() ) return;
@@ -881,15 +837,10 @@ bool Circuit::getJunctionState( IDType juncID ) {
 	return myJunc->getEnableState();
 }
 
-
-// Return the current simulation time:
 TimeType Circuit::getSystemTime( void ) {
 	return systemTime;
 }
 
-
-// Returns a list of IDs of wires that are connected to this
-// wire via junctions:
 set< IDType > Circuit::getJunctionGroupIDs( IDType wireID ) {
 	// This is the wire group IDs that will be returned:
 	set< IDType > wireGroupIDs;
@@ -942,9 +893,6 @@ set< IDType > Circuit::getJunctionGroupIDs( IDType wireID ) {
 	return wireGroupIDs;
 }
 
-
-// Returns a list of all wires that are connected to this
-// wire via junctions:
 set< WIRE_PTR > Circuit::getJunctionGroup( IDType wireID ) {
 	// This is the wire group that will be returned:
 	set< WIRE_PTR > wireGroup;
@@ -964,8 +912,6 @@ set< WIRE_PTR > Circuit::getJunctionGroup( IDType wireID ) {
 	return wireGroup;
 }
 
-
-// Convert the wire IDs to wire pointers:
 set< WIRE_PTR > Circuit::getJunctionGroup( set< IDType >* wireGroupIDs ) {
 	// This is the wire group that will be returned:
 	set< WIRE_PTR > wireGroup;
@@ -982,11 +928,16 @@ set< WIRE_PTR > Circuit::getJunctionGroup( set< IDType >* wireGroupIDs ) {
 	return wireGroup;
 }
 
+ID_MAP< string, IDType >* Circuit::getJunctionIDs() {
+	return &junctionIDs;
+}
+ID_MAP< string, unsigned long >* Circuit::getJunctionUseCounter() {
+	return &junctionUseCounter;
+}
 
-
-
-
-
-// ************* End of the visible interface of the circuit ****************
-
-
+WIRE_PTR Circuit::getWire(IDType theWire) {
+	return wireList[theWire];
+}
+JUNC_PTR Circuit::getJunction(IDType theJunc) {
+	return juncList[theJunc];
+}
