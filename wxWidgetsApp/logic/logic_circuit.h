@@ -34,11 +34,16 @@ struct changedParam {
 	changedParam( IDType nGateID, string nParamName ) : gateID( nGateID ), paramName( nParamName ) {};
 };
 
-class Circuit  
-{
-friend class Junction;
-friend class Wire;
+class Circuit {
+
+	friend class Junction;
+	friend class Wire;
+
 public:
+
+	Circuit();
+
+	virtual ~Circuit();
 
 // **************** The visible interface of the circuit ********************
 
@@ -82,12 +87,6 @@ public:
 	// Delete a junction, removing all its connections from wires first:
 	void deleteJunction( IDType theJunc );
 
-/*OBSOLETE
-	// Connect an external event output to this wire, and return a new wire input ID
-	// which the output can connect to:
-	IDType connectExternalWireInput( IDType theWire );
-*/
-
 	// Connect a gate input to the output of a wire:
 	IDType connectGateInput( IDType gateID, string gateInputID, IDType wireID );
 	
@@ -121,7 +120,7 @@ public:
 	// This is used if we wanted a simulation where all of the wires
 	// start with "UNKNOWN" state and don't update until a signal
 	// from the outside world reaches them.
-	void destroyAllEvents( void );
+	void destroyAllEvents( );
 
 	// Set a gate parameter:
 	// (If the gate's parameter change requires the gate to be
@@ -136,22 +135,18 @@ public:
 		paramUpdateList.push_back( changedParam( gateID, paramName ) );
 	};
 
-	vector < changedParam > getParamUpdateList( void ) {
+	vector < changedParam > getParamUpdateList( ) {
 		return paramUpdateList;
 	};
 
-	void clearParamUpdateList( void ) {
+	void clearParamUpdateList( ) {
 		paramUpdateList.clear();
 	};
 
-protected:
-	vector < changedParam > paramUpdateList;
-public:
-
-// ************ Circuit inspection methods **************
+	// ************ Circuit inspection methods **************
 
 	// Get the IDs of all gates in the circuit:
-	ID_SET< IDType > getGateIDs( void ) {
+	ID_SET< IDType > getGateIDs( ) {
 		ID_SET< IDType > idList;
 		ID_MAP< IDType, GATE_PTR >::iterator thisGate = gateList.begin();
 		while( thisGate != gateList.end() ) {
@@ -172,7 +167,7 @@ public:
 	bool getJunctionState( IDType juncID );
 
 	// Return the current simulation time:
-	TimeType getSystemTime( void );
+	TimeType getSystemTime( );
 
 	// Returns a list of all wires that are connected to this
 	// wire via junctions:
@@ -181,16 +176,11 @@ public:
 	set< WIRE_PTR > getJunctionGroup( set< IDType >* wireGroupIDs );
 
 	// Returns maps of junction items for use in gate functions
-	ID_MAP< string, IDType >* getJunctionIDs( void ) { return &junctionIDs; };
-	ID_MAP< string, unsigned long >* getJunctionUseCounter( void ) { return &junctionUseCounter; };
-	
-// ************* End of the visible interface of the circuit ****************
-
-	Circuit();
-	virtual ~Circuit();
+	ID_MAP< string, IDType >* getJunctionIDs( ) { return &junctionIDs; };
+	ID_MAP< string, unsigned long >* getJunctionUseCounter( ) { return &junctionUseCounter; };
 
 protected:
-// For use by the Junction and Wire classes only:
+	// For use by the Junction and Wire classes only:
 	WIRE_PTR getWire( IDType theWire ) { return wireList[theWire]; };
 	JUNC_PTR getJunction( IDType theJunc ) { return juncList[theJunc]; };
 
@@ -226,16 +216,13 @@ private:
 	// either connected or disconnected:
 	ID_SET< IDType > wireUpdateList;
 
-	
 	// This is the event queue for the Circuit:
 	priority_queue< Event, vector< Event >, greater< Event > > eventQueue;
 	
 	// This is the current system time:
 	TimeType systemTime;
+
+	vector < changedParam > paramUpdateList;
 };
-
-
-// An operator to sort events by their event time. Used by the eventQueue;
-bool operator > (const Event &left, const Event &right);
 
 #endif // LOGIC_CIRCUIT_H

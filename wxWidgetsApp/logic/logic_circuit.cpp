@@ -25,15 +25,6 @@ ofstream* logiclog;
 // ************************** Event class ********************************
 unsigned long long Event::globalCreationTime = 0;
 
-// Definition of operator for Events:
-bool operator > (const Event &left, const Event &right) {
-	if( left.eventTime == right.eventTime ) {
-		return ( left.getCreationTime() > right.getCreationTime() );
-	} else {
-		return (left.eventTime > right.eventTime);
-	}
-}
-
 // ************************** End Event class ********************************
 
 

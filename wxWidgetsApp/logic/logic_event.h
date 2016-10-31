@@ -54,6 +54,18 @@ public:
 		return myCreationTime;
 	};
 
+	// Sort events by time.
+	// Used in logic_circuit event queue.
+	bool operator > (const Event &other) {
+
+		if (eventTime == other.eventTime) {
+			return (getCreationTime() > other.getCreationTime());
+		}
+		else {
+			return (eventTime > other.eventTime);
+		}
+	}
+
 private:
 	unsigned long long myCreationTime;
 	static unsigned long long globalCreationTime;
