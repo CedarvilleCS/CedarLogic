@@ -6,10 +6,6 @@
    For license information see license.txt included with distribution.   
 *****************************************************************************/
 
-// logic_gate.h: interface for the Gate class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #ifndef LOGIC_GATE_H
 #define LOGIC_GATE_H
 

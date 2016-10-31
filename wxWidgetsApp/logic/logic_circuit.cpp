@@ -52,7 +52,6 @@ Circuit::~Circuit()
 
 // **************** The visible interface of the circuit ********************
 
-// ********** Circuit input methods *************
 
 //***************************************
 //Edit by Joshua Lansford 3/27/07
@@ -200,7 +199,7 @@ void Circuit::step( ID_SET< IDType > *changedWires )
 		delete changedWires;
 } // step()
 
-IDType Circuit::newGate( string type, IDType gateID ) {
+IDType Circuit::newGate(const string &type, IDType gateID ) {
 	IDType thisGateID;
 
 	if( gateID == ID_NONE ) {
@@ -439,7 +438,7 @@ void Circuit::deleteJunction( IDType theJunc ) {
 	juncList.erase( theJunc );
 }
 
-IDType Circuit::connectGateInput( IDType gateID, string gateInputID, IDType wireID ) {
+IDType Circuit::connectGateInput( IDType gateID, const string &gateInputID, IDType wireID ) {
 	IDType returnWireID = 0;
 	
 	// First of all, create the wire if it doesn't already exist:
@@ -462,7 +461,7 @@ IDType Circuit::connectGateInput( IDType gateID, string gateInputID, IDType wire
 	return returnWireID;
 }
 
-IDType Circuit::connectGateOutput( IDType gateID, string gateOutputID, IDType wireID) {
+IDType Circuit::connectGateOutput( IDType gateID, const string &gateOutputID, IDType wireID) {
 	IDType returnWireID = 0;
 	
 	// First of all, create the wire if it doesn't already exist:
@@ -477,24 +476,13 @@ IDType Circuit::connectGateOutput( IDType gateID, string gateOutputID, IDType wi
 	(gateList[gateID])->connectOutput( gateOutputID, wireID );
 	
 	
-	//TODO: Should trigger some kind of event since the gate is now providing a new input
-	// to this wire, and the wire's state has changed!
-			// Should be: wireinput.state == gate.lastoutput, unless an event is already
-			// scheduled for this gate output.
-			// Could do weird things if we connect a wire between the time a gate issued
-			// an event and the time that it is processed. ,'o)
-			// We need to force the gate to update and re-issue the last event for just this wire.
-			// But it needs to be an event so that the wire will update its output gates, too.
-		// My decision:
-			// I'm going to have the gate output keep track of its last event, and when the
-			// wire is connected, we will simply tell the gate to resend its last event to
-			// the newly connected wire.
+	// Send an event putting the output's value on the wire.
 	(gateList[gateID])->resendLastEvent( gateID, gateOutputID, this );
 	
 	return returnWireID;
 }
 
-void Circuit::disconnectGateInput( IDType gateID, string gateInputID ) {
+void Circuit::disconnectGateInput( IDType gateID, const string &gateInputID ) {
 	if( gateList.find( gateID ) == gateList.end() ) {
 		WARNING("Circuit::disconnectGateInput() - Invalid gate ID.");
 		return;
@@ -518,7 +506,7 @@ void Circuit::disconnectGateInput( IDType gateID, string gateInputID ) {
 	gateUpdateList.insert( gateID );
 }
 
-void Circuit::disconnectGateOutput( IDType gateID, string gateOutputID ) {
+void Circuit::disconnectGateOutput( IDType gateID, const string &gateOutputID ) {
 	if( gateList.find( gateID ) == gateList.end() ) {
 		WARNING("Circuit::disconnectGateOutput() - Invalid gate ID.");
 		return;
@@ -557,7 +545,7 @@ void Circuit::disconnectGateOutput( IDType gateID, string gateOutputID ) {
 		}
 		eventQueue.pop();
 	}
-		
+	
 	// Push the stack back into the event queue:
 	while( !tempEventStack.empty() ) {
 		eventQueue.push( tempEventStack.top() );
@@ -613,7 +601,7 @@ void Circuit::disconnectJunction( IDType juncID, IDType wireID ) {
 	}
 }
 
-void Circuit::createEvent( TimeType eventTime, IDType wireID, IDType gateID, string gateOutputID, StateType newState ) {
+void Circuit::createEvent( TimeType eventTime, IDType wireID, IDType gateID, const string &gateOutputID, StateType newState ) {
 	Event myEvent;
 	myEvent.eventTime = eventTime;
 	myEvent.wireID = wireID;
@@ -629,7 +617,7 @@ void Circuit::createEvent( TimeType eventTime, IDType wireID, IDType gateID, str
 	eventQueue.push(myEvent);
 }
 
-TimeType Circuit::createDelayedEvent( TimeType delay, IDType wireID, IDType gateID, string gateOutputID, StateType newState ) {
+TimeType Circuit::createDelayedEvent( TimeType delay, IDType wireID, IDType gateID, const string &gateOutputID, StateType newState ) {
 	if( (wireID != ID_NONE) && (gateOutputID != "") ) {
 		createEvent( delay + getSystemTime(), wireID, gateID, gateOutputID, newState );
 	}
@@ -657,7 +645,7 @@ void Circuit::destroyAllEvents( void ) {
 	wireUpdateList.clear();
 }
 
-void Circuit::setGateParameter( IDType gateID, string paramName, string value ) {
+void Circuit::setGateParameter( IDType gateID, const string &paramName, const string &value ) {
 	if( gateList.find( gateID ) != gateList.end() ) {
 		WARNING("test");
 		WARNING(paramName);
@@ -672,7 +660,7 @@ void Circuit::setGateParameter( IDType gateID, string paramName, string value ) 
 	return;
 }
 
-void Circuit::setGateInputParameter( IDType gateID, string inputID, string paramName, string value ) {
+void Circuit::setGateInputParameter( IDType gateID, const string & inputID, const string & paramName, const string & value ) {
 	if( gateList.find( gateID ) != gateList.end() ) {
 		if( gateList[gateID]->setInputParameter( inputID, paramName, value ) ) {
 			// If the gate has changed parameters and needs updated, then
@@ -685,7 +673,7 @@ void Circuit::setGateInputParameter( IDType gateID, string inputID, string param
 	return;
 }
 
-void Circuit::setGateOutputParameter( IDType gateID, string outputID, string paramName, string value ) {
+void Circuit::setGateOutputParameter( IDType gateID, const string & outputID, const string & paramName, const string & value ) {
 	if( gateList.find( gateID ) != gateList.end() ) {
 		if( gateList[gateID]->setOutputParameter( outputID, paramName, value ) ) {
 			// If the gate has changed parameters and needs updated, then
@@ -698,7 +686,7 @@ void Circuit::setGateOutputParameter( IDType gateID, string outputID, string par
 	return;
 }
 
-void Circuit::addUpdateParam(IDType gateID, string paramName) {
+void Circuit::addUpdateParam(IDType gateID, const string & paramName) {
 	paramUpdateList.push_back(changedParam(gateID, paramName));
 };
 
@@ -723,7 +711,7 @@ ID_SET< IDType > Circuit::getGateIDs() {
 
 // ************ Circuit inspection methods **************
 
-string Circuit::getGateParameter( IDType gateID, string paramName ) {
+string Circuit::getGateParameter( IDType gateID, const string & paramName ) {
 
 	if( gateList.find( gateID ) != gateList.end() ) {
 		return gateList[ gateID ]->getParameter( paramName );
@@ -865,6 +853,7 @@ set< WIRE_PTR > Circuit::getJunctionGroup( set< IDType >* wireGroupIDs ) {
 ID_MAP< string, IDType >* Circuit::getJunctionIDs() {
 	return &junctionIDs;
 }
+
 ID_MAP< string, unsigned long >* Circuit::getJunctionUseCounter() {
 	return &junctionUseCounter;
 }
@@ -872,6 +861,7 @@ ID_MAP< string, unsigned long >* Circuit::getJunctionUseCounter() {
 WIRE_PTR Circuit::getWire(IDType theWire) {
 	return wireList[theWire];
 }
+
 JUNC_PTR Circuit::getJunction(IDType theJunc) {
 	return juncList[theJunc];
 }

@@ -31,7 +31,7 @@
 struct changedParam {
 	IDType gateID;
 	string paramName;
-	changedParam( IDType nGateID, string nParamName ) : gateID( nGateID ), paramName( nParamName ) {};
+	changedParam( IDType nGateID, const string &nParamName ) : gateID( nGateID ), paramName( nParamName ) {};
 };
 
 class Circuit {
@@ -68,7 +68,7 @@ public:
 	// Create a new gate, and return its ID:
 	// NOTE: There should also be some way to pass
 	// parameters back and forth to gates that use them.
-	IDType newGate( string type, IDType gateID = ID_NONE  );
+	IDType newGate(const string &type, IDType gateID = ID_NONE  );
 	
 	// Create a new wire and return its ID:
 	IDType newWire( IDType wireID = ID_NONE  );
@@ -88,17 +88,17 @@ public:
 	void deleteJunction( IDType theJunc );
 
 	// Connect a gate input to the output of a wire:
-	IDType connectGateInput( IDType gateID, string gateInputID, IDType wireID );
+	IDType connectGateInput( IDType gateID, const string &gateInputID, IDType wireID );
 	
 	// Connect a gate output to the input of a wire:
 	// (The wire will create one unique input for each unique gateID/gateOutputID combination.)
-	IDType connectGateOutput( IDType gateID, string gateOutputID, IDType wireID);
+	IDType connectGateOutput( IDType gateID, const string &gateOutputID, IDType wireID);
 	
 	// Disconnect a gate input from the output of a wire:
-	void disconnectGateInput( IDType gateID, string gateInputID );
+	void disconnectGateInput( IDType gateID, const string &gateInputID );
 	
 	// Disconnect a gate output from the input of a wire:
-	void disconnectGateOutput( IDType gateID, string gateOutputID );
+	void disconnectGateOutput( IDType gateID, const string &gateOutputID );
 
 	// Connect a junction to a wire:
 	void connectJunction( IDType juncID, IDType wireID );
@@ -107,10 +107,10 @@ public:
 	void disconnectJunction( IDType juncID, IDType wireID );
 
 	// Create an event and put it in the event queue:
-	void createEvent( TimeType eventTime, IDType wireID, IDType gateID, string gateOutputID, StateType newState );
+	void createEvent( TimeType eventTime, IDType wireID, IDType gateID, const string &gateOutputID, StateType newState );
 	
 	// Create an event that occurs at systemTime + delay:
-	TimeType createDelayedEvent( TimeType delay, IDType wireID, IDType gateID, string gateOutputID, StateType newState );
+	TimeType createDelayedEvent( TimeType delay, IDType wireID, IDType gateID, const string &gateOutputID, StateType newState );
 
 	// Create Junction Event and put it in the event queue:
 	void createJunctionEvent( TimeType eventTime, IDType juncID, bool newState );
@@ -125,13 +125,13 @@ public:
 	// Set a gate parameter:
 	// (If the gate's parameter change requires the gate to be
 	// re-evaluated during the next cycle, then add it to the update list.)
-	void setGateParameter( IDType gateID, string paramName, string value );
-	void setGateInputParameter( IDType gateID, string inputID, string paramName, string value );
-	void setGateOutputParameter( IDType gateID, string outputID, string paramName, string value );
+	void setGateParameter( IDType gateID, const string &paramName, const string &value );
+	void setGateInputParameter( IDType gateID, const string &inputID, const string &paramName, const string &value );
+	void setGateOutputParameter( IDType gateID, const string &outputID, const string &paramName, const string &value );
 
 	// Methods and data for handling parameter updates to be
 	// sent to the GUI from the logic core:
-	void addUpdateParam(IDType gateID, string paramName);
+	void addUpdateParam(IDType gateID, const string &paramName);
 
 	vector < changedParam > getParamUpdateList();
 
@@ -143,7 +143,7 @@ public:
 	ID_SET< IDType > getGateIDs();
 
 	// Get the value of a gate parameter:
-	string getGateParameter( IDType gateID, string paramName );
+	string getGateParameter( IDType gateID, const string &paramName );
 
 	// Get a wire state by ID:
 	StateType getWireState( IDType wireID );
