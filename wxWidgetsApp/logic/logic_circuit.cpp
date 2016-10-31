@@ -22,12 +22,6 @@
 ofstream* logiclog;
 #endif
 
-// ************************** Event class ********************************
-unsigned long long Event::globalCreationTime = 0;
-
-// ************************** End Event class ********************************
-
-
 // If this is defined, use inertial delay, otherwise default to transport delay
 //#define INERTIAL_DELAY
 
