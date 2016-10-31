@@ -22,13 +22,7 @@
 ofstream* logiclog;
 #endif
 
-// If this is defined, use inertial delay, otherwise default to transport delay
-//#define INERTIAL_DELAY
 
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
 
 Circuit::Circuit()
 {
@@ -237,7 +231,6 @@ IDType Circuit::newGate( string type, IDType gateID ) {
 		} else if( type == "DECODER" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_DECODER );
 		} else if (type == "PRI_ENCODER") {
-			// Added 10/4/16 -- Colin Broberg
 			gateList[thisGateID] = GATE_PTR( new Gate_PRI_ENCODER );
 		} else if( type == "CLOCK" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_CLOCK );
@@ -267,28 +260,12 @@ IDType Circuit::newGate( string type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_NODE( this ) );
 		} else if( type == "EQUIVALENCE" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_EQUIVALENCE );
-//*******************************************************************
-//  Edit by Joshua Lansford 1/22/06
-//  This edit is added because Nathan Harro and I are adding a new
-//  gate type!!
 		} else if( type == "Z80" ){
 			gateList[thisGateID] = GATE_PTR( new Z_80LogicGate() );
-// End of edit*******************************************************
-
-//********************************
-//  Edit by Joshua Lansford 4/10/07
-//  now adding the ADC
 		} else if( type == "ADC" ){
 			gateList[thisGateID] = GATE_PTR( new Gate_ADC() );
-// End of edit********************
-
-//********************************
-//  Edit by Joshua Lansford 6/05/07
-//  now adding the pauseulator
 		} else if( type == "Pauseulator" ){
 			gateList[thisGateID] = GATE_PTR( new Gate_pauseulator() );
-// End of edit*******************
-
 		} else {
 			WARNING( "Circuit::newGate() - Invalid logic type!" );
 		}
@@ -648,27 +625,6 @@ void Circuit::createEvent( TimeType eventTime, IDType wireID, IDType gateID, str
 	oss << "Creating event for gate " << gateID << " output " << gateOutputID << " to state " << (int) newState << " at time = " << eventTime << "." << endl;
 	WARNING(oss.str());
 
-#ifdef INERTIAL_DELAY
-	// Erase any other events in the queue with this gate output:
-	// Clear the event queue of any events scheduled for this gate/gateOutput combination:
-	
-	// Empty the priority queue into a temporary stack, filtering out outdated events:
-	stack< Event > tempEventStack;
-	while( !eventQueue.empty() ) {
-		Event tempEvent = eventQueue.top();
-		if( !((!tempEvent.isJunctionEvent) && (tempEvent.gateID == gateID) && (tempEvent.gateOutputID == gateOutputID)) ) {
-			tempEventStack.push( tempEvent );
-		}
-		eventQueue.pop();
-	}
-		
-	// Push the stack back into the event queue:
-	while( !tempEventStack.empty() ) {
-		eventQueue.push( tempEventStack.top() );
-		tempEventStack.pop();
-	}
-#endif
-
 	// Push the event onto the event queue:
 	eventQueue.push(myEvent);
 }
@@ -686,28 +642,6 @@ void Circuit::createJunctionEvent( TimeType eventTime, IDType juncID, bool newSt
 	myEvent.isJunctionEvent = true;
 	myEvent.newJunctionState = newState;
 	myEvent.junctionID = juncID;
-
-#ifdef INERTIAL_DELAY
-	// Erase any other events in the queue with this gate output:
-	// Clear the event queue of any events scheduled for this gate/gateOutput combination:
-	
-	// Empty the priority queue into a temporary stack, filtering out outdated events:
-	stack< Event > tempEventStack;
-	while( !eventQueue.empty() ) {
-		Event tempEvent = eventQueue.top();
-		if( !((tempEvent.isJunctionEvent) && (tempEvent.junctionID == juncID)) ) {
-			tempEventStack.push( tempEvent );
-		}
-		eventQueue.pop();
-	}
-		
-	// Push the stack back into the event queue:
-	while( !tempEventStack.empty() ) {
-		eventQueue.push( tempEventStack.top() );
-		tempEventStack.pop();
-	}
-#endif
-
 
 	// Push the event onto the event queue:
 	eventQueue.push(myEvent);
