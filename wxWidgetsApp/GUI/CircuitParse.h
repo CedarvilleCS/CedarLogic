@@ -43,6 +43,7 @@ public:
 	virtual ~CircuitParse();
 	
 	void loadFile(string);
+	//JV - Changed to return new canvases
 	vector<GUICanvas*> parseFile();
 	void saveCircuit(string, vector< GUICanvas* >, unsigned int currPage = 0);
 	

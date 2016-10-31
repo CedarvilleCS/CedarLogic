@@ -197,12 +197,13 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddTool(Tool_Lock, _T("Lock state"), *bmp[13], wxT("Lock state"), wxITEM_CHECK);
 	toolBar->AddSeparator();
 	toolBar->AddTool(wxID_ABOUT, _T("About"), *bmp[8], wxT("About"));
+	//JV - Temporary tab button
 	toolBar->AddTool(Tool_NewTab, _T("New Tab"), *bmp[14], wxT("New Tab"));
 	SetToolBar(toolBar);
 	toolBar->Show(true);
 
 	//finished with the bitmaps, so we can release the pointers  KAS
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 15; i++) {
 		delete bmp[i];
 	}
 
@@ -437,10 +438,17 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	idleTimer->Stop();
 	wxGetApp().dGUItoLOGIC.clear();
 	wxGetApp().dLOGICtoGUI.clear();
+
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->clearCircuit();
 	gCircuit->reInitializeLogicCircuit();
 	commandProcessor->ClearCommands();
 	commandProcessor->SetMenuStrings();
+	//JV - Added so that new starts with one tab
+	for (unsigned int j = canvases.size() - 1; j > 0; j--) {
+		canvasBook->DeletePage(j);
+		canvases.erase(canvases.end() - 1);
+	}
+
 	currentCanvas->Update(); // Render();
 	this->SetTitle((const wxChar *)"CEDAR Logic Simulator"); // KAS
     openedFilename = _T("");
@@ -504,6 +512,7 @@ void MainFrame::loadCircuitFile( string fileName ){
 	gCircuit->reInitializeLogicCircuit();
 	commandProcessor->ClearCommands();
 	commandProcessor->SetMenuStrings();
+	//JV - Delete all but the first tab
 	for (unsigned int j = canvases.size() - 1; j > 0; j--) {
 		canvasBook->DeletePage(j);
 		canvases.erase(canvases.end()-1);
@@ -512,6 +521,7 @@ void MainFrame::loadCircuitFile( string fileName ){
     CircuitParse cirp((const char *)path.c_str(), canvases); // KAS
 	canvases = cirp.parseFile();
 	
+	//JV - Put pages back into canvas book
 	for (unsigned int i = 1; i < canvases.size(); i++) 
 	{
 		ostringstream oss;
@@ -863,6 +873,8 @@ void MainFrame::PauseSim() {
 	}
 }
 
+//JV - Make new canvas and add it to canvases and canvasBook
+//TODO - Find a way to put a tab button in correct place
 void MainFrame::OnNewTab(wxCommandEvent& event) {
 	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 	ostringstream oss;
@@ -871,10 +883,23 @@ void MainFrame::OnNewTab(wxCommandEvent& event) {
 
 }
 
+//JV - Handle deletetab event. Remove tab and decrement all following tabs numbers
+//TODO - Check if tab has gates on it. Fix input/output error. 
 void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 	int canvasID = event.GetSelection();
 	int canSize = canvases.size();
+	
 	if (canSize > 1) {
+		if (TRUE) {
+			wxMessageDialog dialog(this, wxT("All work on this tab will be lost. Would you like to close it?"), wxT("Close Tab"), wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+			switch (dialog.ShowModal()) {
+				case wxID_YES:
+					break;
+				case wxID_NO:
+					event.Veto();
+					return;
+			}
+		}
 		canvases.erase(canvases.begin() + canvasID);
 
 		if (canvasID < (canSize - 1)) {
@@ -888,5 +913,4 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 		wxMessageBox(_T("Tab cannot be closed"), _T("Close"), wxOK);
 		event.Veto();
 	}
-
 }

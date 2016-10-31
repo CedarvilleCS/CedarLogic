@@ -113,6 +113,7 @@ private:
 	wxToolBar* toolBar;
 	wxTimer* mTimer;
 	wxTimer* idleTimer;
+	//JV - Changed to AuiNoteBook to allow for close tab button
 	wxAuiNotebook* canvasBook;
 	
 	// Instance variables
