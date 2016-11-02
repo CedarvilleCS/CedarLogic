@@ -53,15 +53,7 @@ Circuit::~Circuit()
 // **************** The visible interface of the circuit ********************
 
 
-//***************************************
-//Edit by Joshua Lansford 3/27/07
-//purpose of edit: The ram gate needs to
-//update its pop-up right after it loads
-//even if it is paused.  Thus this method
-//is created, so that the pop-ups
-//can request that the core proces
-//thegateUpdateList without advanceing
-//the system time
+
 void Circuit::stepOnlyGates(){
 	// Update the gates that have been connected or disconnected or had a 
 	// parameter change within the last call to step() so that they can
@@ -76,70 +68,56 @@ void Circuit::stepOnlyGates(){
 //End of Edit*****************************
 
 
-void Circuit::step( ID_SET< IDType > *changedWires )
+void Circuit::step(ID_SET< IDType > *changedWires)
 {
 	// NOTE: Should activate the polled gates here:
 	// Basically just loop through the things in polledGates and call updateGate() on them.
 	ID_SET< IDType >::iterator gateToPoll = polledGates.begin();
-	while( gateToPoll != polledGates.end() ) {
-		gateList[*gateToPoll]->updateGate( *gateToPoll, this );
+	while (gateToPoll != polledGates.end()) {
+		gateList[*gateToPoll]->updateGate(*gateToPoll, this);
 		gateToPoll++;
 	}
 
-	// Update the gates that have been connected or disconnected or had a 
-	// parameter change within the last call to step() so that they can
-	// recalculate correctly:
-	ID_SET< IDType >::iterator updateGate = gateUpdateList.begin();
-	while( updateGate != gateUpdateList.end() ) {
-		gateList[*updateGate]->updateGate( *updateGate, this );
-		updateGate++;
-	}
-	gateUpdateList.clear();
-
-	// Loop through all of the events with time == now, and 
-	// activate them.
-	bool makeYourOwnFreakinChangedWiresList = (changedWires == NULL);
-	
-	if( makeYourOwnFreakinChangedWiresList )
-		changedWires = new ID_SET< IDType >;
+	stepOnlyGates();
 
 	int processedEvents = 0;
 	Event myEvent;
-	if(!eventQueue.empty()) myEvent = eventQueue.top();
-	while ( !eventQueue.empty() && (myEvent.eventTime <= systemTime) ) {
+	if (!eventQueue.empty()) myEvent = eventQueue.top();
+	while (!eventQueue.empty() && (myEvent.eventTime <= systemTime)) {
 		// Pop the event off of the event queue:
 		eventQueue.pop();
-		
+
 		// If the event is a junction event, handle it as a junction:
-		if( myEvent.isJunctionEvent ) {
+		if (myEvent.isJunctionEvent) {
 			// Handle the junction event:
-			setJunctionState( myEvent.junctionID, myEvent.newJunctionState );
+			setJunctionState(myEvent.junctionID, myEvent.newJunctionState);
 
 			// Also adds all of the wires hooked up to this junction to
 			// the "wireUpdateList" list.
 			// (Handled inside of a setJunctionState() method, to allow
 			// it to be called from outside of an event handle - for zero delay.)
-		} else {
+		}
+		else {
 			// Else, make the event happen to the wire:
 			WIRE_PTR myWire = wireList[myEvent.wireID];
 			myWire->setInputState(myEvent.gateID, myEvent.gateOutputID, myEvent.newState);
 
 			// Insert all attached wires into the changed wires list:
-			set< IDType > wireGroup = getJunctionGroupIDs( myEvent.wireID );
-			changedWires->insert( wireGroup.begin(), wireGroup.end() );
+			set< IDType > wireGroup = getJunctionGroupIDs(myEvent.wireID);
+			changedWires->insert(wireGroup.begin(), wireGroup.end());
 		}
-		
+
 		// Look at the next thing in the list:
 		if (!eventQueue.empty()) myEvent = eventQueue.top();
-		
+
 		processedEvents++;
 	}
-	
+
 	// Insert the wires that have been disconnected (or were part of a junction that changed) within
 	// the last call to step() so that they will be properly updated:
-	changedWires->insert( wireUpdateList.begin(), wireUpdateList.end() );
+	changedWires->insert(wireUpdateList.begin(), wireUpdateList.end());
 	wireUpdateList.clear();	// Empty the wireUpdateList, since we are handling the updates.
-	
+
 
 	// Calculate the new wire states, and make a list of affected gates:
 	ID_SET< IDType > changedGates;
@@ -149,55 +127,52 @@ void Circuit::step( ID_SET< IDType > *changedWires )
 	// calculated their state:
 	ID_SET< IDType > doneWires;
 	ID_SET< IDType >::iterator chgWireIterator = changedWires->begin();
-	while ( chgWireIterator != changedWires->end() ) {
+	while (chgWireIterator != changedWires->end()) {
 		WIRE_PTR myWire = wireList[*chgWireIterator];
-		
+
 		// Calculate the new state of a wire:
 		// (Note: It sends the group of attached wires to the Wire::calculateState() method.
-		if( doneWires.find( *chgWireIterator ) == doneWires.end() ) {
-			set< IDType > wireGroupIDs = getJunctionGroupIDs( *chgWireIterator );
-			set< WIRE_PTR > wireGroup = getJunctionGroup( &wireGroupIDs );
-			StateType juncState = myWire->calculateState( wireGroup );
-			
+		if (doneWires.find(*chgWireIterator) == doneWires.end()) {
+			set< IDType > wireGroupIDs = getJunctionGroupIDs(*chgWireIterator);
+			set< WIRE_PTR > wireGroup = getJunctionGroup(&wireGroupIDs);
+			StateType juncState = myWire->calculateState(wireGroup);
+
 			set< WIRE_PTR >::iterator wgWire = wireGroup.begin();
-			while( wgWire != wireGroup.end() ) {
-				(*wgWire)->forceState( juncState );
+			while (wgWire != wireGroup.end()) {
+				(*wgWire)->forceState(juncState);
 				wgWire++;
 			}
-			
-			doneWires.insert( wireGroupIDs.begin(), wireGroupIDs.end() );
+
+			doneWires.insert(wireGroupIDs.begin(), wireGroupIDs.end());
 		}
-		
+
 		// Add this wire's gates to the overall gate list:
 		affectedGates = myWire->getOutputGates();
-		changedGates.insert( affectedGates.begin(), affectedGates.end() );
+		changedGates.insert(affectedGates.begin(), affectedGates.end());
 		// NOTE: Aparently MSVCC doesn't like this last *STL standard and legal* line
 		// of code.
-		
+
 		// Move on to the next wire in the list:
 		chgWireIterator++;
 	}
-	
+
 	// Update the gate's states and post the events from the gates:
 	ID_SET< IDType >::iterator changedGatesIterator = changedGates.begin();
-	
+
 
 	// Update all of the gates and retrieve the events from them:
-	while( changedGatesIterator != changedGates.end() ) {
+	while (changedGatesIterator != changedGates.end()) {
 		GATE_PTR myGate = gateList[*changedGatesIterator];
-		
-		myGate->updateGate( *changedGatesIterator, this );
-		
+
+		myGate->updateGate(*changedGatesIterator, this);
+
 		changedGatesIterator++;
 	}
 
 	// Increment the system timer, because this timestep is complete:
 	systemTime++;
-	
-	// Remove the changedWiresList if we created it ourselves:
-	if( makeYourOwnFreakinChangedWiresList )
-		delete changedWires;
-} // step()
+
+}
 
 IDType Circuit::newGate(const string &type, IDType gateID ) {
 	IDType thisGateID;
@@ -272,12 +247,6 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 	} else {
 		WARNING( "Circuit::newGate() - Re-used gate ID!" );
 	}
-	
-	// Always initialize the non-polled gates, so that it drives some value:
-//NOTE: Crashed the small computer file for some reason.
-//	if( polledGates.find( thisGateID ) == polledGates.end() ) {
-//		gateUpdateList.insert( gateID );
-//	}
 	
 	return thisGateID;
 }
@@ -647,8 +616,6 @@ void Circuit::destroyAllEvents( void ) {
 
 void Circuit::setGateParameter( IDType gateID, const string &paramName, const string &value ) {
 	if( gateList.find( gateID ) != gateList.end() ) {
-		WARNING("test");
-		WARNING(paramName);
 		if( gateList[gateID]->setParameter( paramName, value ) ) {
 			// If the gate has changed parameters and needs updated, then
 			// add it to the gateUpdateList:
@@ -810,7 +777,7 @@ set< IDType > Circuit::getJunctionGroupIDs( IDType wireID ) {
 			thisJunc++;
 		}
 
-	} // while( !searchList.empty() )
+	}
 	
 	return wireGroupIDs;
 }

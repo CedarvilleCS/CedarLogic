@@ -48,11 +48,7 @@ public:
 // **************** The visible interface of the circuit ********************
 
 // ********** Circuit input methods *************
-	// Step the simulation forward by one timestep:
-	// If a pointer to a set is passed, then it will
-	// return a set of all the changed wires to the calling function.
-	void step(  ID_SET< IDType > *changedWires = NULL );
-	
+
 	//***************************************
 	//Edit by Joshua Lansford 3/27/07
 	//purpose of edit: The ram gate needs to
@@ -63,7 +59,11 @@ public:
 	//thegateUpdateList without advanceing
 	//the system time
 	void stepOnlyGates();
-	//End of Edit***************************
+
+	// Step the simulation forward by one timestep:
+	// If a pointer to a set is passed, then it will
+	// return a set of all the changed wires to the calling function.
+	void step(  ID_SET< IDType > *changedWires = NULL );
 	
 	// Create a new gate, and return its ID:
 	// NOTE: There should also be some way to pass
