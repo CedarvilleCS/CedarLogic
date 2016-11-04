@@ -884,13 +884,14 @@ void MainFrame::OnNewTab(wxCommandEvent& event) {
 }
 
 //JV - Handle deletetab event. Remove tab and decrement all following tabs numbers
-//TODO - Check if tab has gates on it. Fix input/output error. 
+//TODO - Fix input/output error. 
 void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 	int canvasID = event.GetSelection();
 	int canSize = canvases.size();
+
 	
 	if (canSize > 1) {
-		if (TRUE) {
+		if (!canvases[canvasID]->getGateList()->empty()) {
 			wxMessageDialog dialog(this, wxT("All work on this tab will be lost. Would you like to close it?"), wxT("Close Tab"), wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 			switch (dialog.ShowModal()) {
 				case wxID_YES:
