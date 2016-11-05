@@ -649,7 +649,7 @@ void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool Ct
 			hit++;
 		}
 	}
-
+	
 	// Check potential hotspot connections (on gate/gate collisions)
 	CollisionGroup ovrList = collisionChecker.overlaps[COLL_GATE];
 	CollisionGroup::iterator obj = ovrList.begin();
@@ -708,11 +708,7 @@ void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool Ct
 
 void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 	GLPoint2f m = getMouseCoords();
-/*//RENDER PROFILE
-renderNum = renderTime = 0;
-for (int i = 0; i < 500; i++) klsGLCanvasRender();
-wxGetApp().logfile << renderTime/(double)renderNum << "ms avg for " << renderNum << " renders: " << 1000/(renderTime/(double)renderNum) << "FPS" << endl;
-//END PROFILE */
+
 	bool handled = false;
 	SetCursor(wxCursor(wxCURSOR_ARROW));
 	hash_map < unsigned long, guiGate* >::iterator thisGate;
@@ -840,6 +836,7 @@ wxGetApp().logfile << renderTime/(double)renderNum << "ms avg for " << renderNum
 
 		// if we have a target gate, search for the source
 		if (targetConnection.size() > 0 || (drawWireHover && currentDragState == DRAG_CONNECT)) {
+
 			// Check my drag start coordinate collisions
 //			CollisionGroup potentialSources = dragselectbox->getOverlaps();
 //			CollisionGroup::iterator hit = potentialSources.begin();
@@ -857,30 +854,41 @@ wxGetApp().logfile << renderTime/(double)renderNum << "ms avg for " << renderNum
 				// Source is wire and target is wire:
 				//		merge
 //				if ((*hit)->getType() == COLL_GATE) { // Source is hotspot
+
+
 				if ( currentConnectionSource.isGate ) {
-					guiGate* hitGate = gateList[currentConnectionSource.objectID]; // ((guiGate*)(*hit));
-					string startHS = currentConnectionSource.connection; //hitGate->checkHotspots( getDragStartCoords(BUTTON_LEFT).x, getDragStartCoords(BUTTON_LEFT).y, HOTSPOT_SCREEN_DELTA * getZoom() );
-					//if (startHS == "") // Didn't find a source with this gate
-					//	{ hit++; continue; }
-					if (drawWireHover) { // Target is wire
+
+					guiGate* hitGate = gateList[currentConnectionSource.objectID];
+					string startHS = currentConnectionSource.connection;
+
+					// Target is wire
+					if (drawWireHover) {
 						if (!(hitGate->isConnected(startHS))) // source is not connected, so connect
 							gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdConnectWire ( gCircuit, wireHoverID, hitGate->getID(), startHS )) );
 						handled = true;
 					}
-					else if (!drawWireHover && startHS.size() > 0 && !(startHS == targetConnection && hitGate->getID() == targetGate)) {	 // Target is hotspot
-						if (!(hitGate->isConnected(startHS)) && !(gateList[targetGate]->isConnected(targetConnection))) { // Neither connected, so create wire
-							long newWID = gCircuit->getNextAvailableWireID();
-							cmdConnectWire* connectwire = new cmdConnectWire( gCircuit, newWID, hitGate->getID(), startHS );
-							cmdConnectWire* connectwire2 = new cmdConnectWire( gCircuit, newWID, targetGate, targetConnection );
-							gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdCreateWire ( this, gCircuit, newWID, connectwire, connectwire2 )) );
+					else {
+						// Target is hotspot
+						if (!drawWireHover && startHS.size() > 0 && !(startHS == targetConnection && hitGate->getID() == targetGate)) {
+
+							// Neither connected, so create wire
+							if (!(hitGate->isConnected(startHS)) && !(gateList[targetGate]->isConnected(targetConnection))) {
+
+								long newWID = gCircuit->getNextAvailableWireID();
+								cmdConnectWire* connectwire = new cmdConnectWire(gCircuit, newWID, hitGate->getID(), startHS);
+								cmdConnectWire* connectwire2 = new cmdConnectWire(gCircuit, newWID, targetGate, targetConnection);
+								gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdCreateWire(this, gCircuit, newWID, connectwire, connectwire2)));
+							}
+							else if ((hitGate->isConnected(startHS)) && (gateList[targetGate]->isConnected(targetConnection))) {
+							}
+							else if ((hitGate->isConnected(startHS))) { // source is connected, so connect target to source's wire
+								gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdConnectWire(gCircuit, hitGate->getConnection(startHS)->getID(), targetGate, targetConnection)));
+							}
+							else if ((gateList[targetGate]->isConnected(targetConnection))) {
+								gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdConnectWire(gCircuit, gateList[targetGate]->getConnection(targetConnection)->getID(), hitGate->getID(), startHS)));
+							}
+							handled = true;
 						}
-						else if ((hitGate->isConnected(startHS)) && (gateList[targetGate]->isConnected(targetConnection))) {
-						} else if ((hitGate->isConnected(startHS))) { // source is connected, so connect target to source's wire
-							gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdConnectWire ( gCircuit, hitGate->getConnection(startHS)->getID(), targetGate, targetConnection )) );
-						} else if ((gateList[targetGate]->isConnected(targetConnection))) {
-							gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdConnectWire ( gCircuit, gateList[targetGate]->getConnection(targetConnection)->getID(), hitGate->getID(), startHS )) );						
-						}
-						handled = true;
 					}
 				}
 //				else if ((*hit)->getType() == COLL_WIRE) {
