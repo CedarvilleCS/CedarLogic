@@ -1235,7 +1235,7 @@ void GUICanvas::submitWireConnection(IDType gateId, const string &hotspot, IDTyp
 		return;
 	}
 
-	wxCommand *command = new cmdConnectWire(gCircuit, wireId, gateId, hotspot);
+	cmdConnectWire *command = new cmdConnectWire(gCircuit, wireId, gateId, hotspot);
 
 	if (command->validateBusLines()) {
 		gCircuit->GetCommandProcessor()->Submit(command);

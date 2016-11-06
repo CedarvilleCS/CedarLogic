@@ -130,7 +130,7 @@ protected:
 	unsigned long wid;
 	string hotspot;
 	bool noCalcShape;
-	
+
 	//edit by Joshua Lansford 10/21/06
 	//a hotspotPal is an input that is on top of a output
 	//or viseversa.  They make one bydirectional pin while
@@ -138,19 +138,21 @@ protected:
 	//we store the information here so that if we undo
 	//we can remember who we conned into getting connected with us.
 	string hotspotPal;
-	
+
 public:
-	cmdConnectWire( GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false );
-	cmdConnectWire( string def );
-	virtual ~cmdConnectWire( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
+	cmdConnectWire(GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false);
+	cmdConnectWire(string def);
+	virtual ~cmdConnectWire(void) { return; };
+
+	bool Do(void);
+	bool Undo(void);
 
 	bool validateBusLines();
 
 	string toString();
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
+	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
+	IDType getGateId() const { return gid; }
+	const std::string & getHotspot() const { return hotspot; }
 };
 
 // cmdCreateWire - creates a wire

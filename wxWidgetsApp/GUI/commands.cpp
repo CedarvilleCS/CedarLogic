@@ -400,6 +400,23 @@ bool cmdCreateWire::Undo() {
 	return true;
 }
 
+bool cmdCreateWire::validateBusLines() {
+
+	IDType gate1Id = conn1->getGateId();
+	IDType gate2Id = conn2->getGateId();
+
+	guiGate *gate1 = (*gCircuit->getGates())[gate1Id];
+	guiGate *gate2 = (*gCircuit->getGates())[gate2Id];
+
+	string hotspot1 = conn1->getHotspot();
+	string hotspot2 = conn2->getHotspot();
+
+	int busLines1 = gate1->getHotspot(hotspot1)->getBusLines();
+	int busLines2 = gate2->getHotspot(hotspot2)->getBusLines();
+
+	return busLines1 == busLines2;
+}
+
 string cmdCreateWire::toString() {
 	ostringstream oss;
 	oss << "createwire " << wid << " " << conn1->toString() << " " << conn2->toString();
@@ -711,6 +728,23 @@ bool cmdConnectWire::Undo() {
 	else
 		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, 0, true)));			
 	return true;
+}
+
+bool cmdConnectWire::validateBusLines() {
+
+	guiWire *wire = (*gCircuit->getWires())[wid];
+	guiGate *gate = (*gCircuit->getGates())[gid];
+
+	// No connections on this wire? Cool. It's a bus now.
+	if (wire->getConnections().empty()) {
+		return true;
+	}
+	wireConnection wireHotSpotData = wire->getConnections().front();
+
+	gateHotspot *hotspot1_gate = gate->getHotspot(hotspot);
+	gateHotspot *hotspot2_wire = wireHotSpotData.cGate->getHotspot(wireHotSpotData.connection);
+
+	return hotspot1_gate->getBusLines() == hotspot2_wire->getBusLines();
 }
 
 string cmdConnectWire::toString() {
