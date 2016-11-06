@@ -146,6 +146,9 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
+
+	bool validateBusLines();
+
 	string toString();
 	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
 };
@@ -163,6 +166,9 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
+
+	bool validateBusLines();
+
 	string toString();
 	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
 };

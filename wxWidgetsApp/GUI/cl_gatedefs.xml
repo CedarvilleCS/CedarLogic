@@ -2867,7 +2867,7 @@
     <input> 
       <name>Bus_out</name>
 		  <point>2,0</point>
-      <bus>true</bus>
+      <bus>4</bus>
 		</input>
 		<shape>
       # body
@@ -2941,7 +2941,7 @@
     <input> 
       <name>Bus_out</name>
 		  <point>2,0</point>
-      <bus>true</bus>
+      <bus>8</bus>
 		</input>
 		<shape>
       # body
@@ -3054,7 +3054,7 @@
     <input> 
       <name>Bus_out</name>
 		  <point>2,0</point>
-      <bus>true</bus>
+      <bus>16</bus>
 		</input>
 		<shape>
       # body

@@ -230,12 +230,12 @@ void guiGate::calcBBox( void ) {
 
 
 // Insert a hotspot in the hotspot list.
-void guiGate::insertHotspot( float x1, float y1, string connection, bool isBus ) {
+void guiGate::insertHotspot( float x1, float y1, string connection, int busLines) {
 	if (hotspots.find(connection) != hotspots.end()) return; // error: hotspot already exists
 	
 	gateHotspot* newHS = new gateHotspot( connection );
 	newHS->modelLocation = GLPoint2f( x1, y1 );
-	newHS->setBus(isBus);
+	newHS->setBusLines(busLines);
 
 	// Add the hs to the gate's struct:
 	hotspots[connection] = newHS;

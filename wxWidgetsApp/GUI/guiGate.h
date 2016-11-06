@@ -44,13 +44,13 @@ friend class guiGate;
 public:
 	gateHotspot() : klsCollisionObject(COLL_GATE_HOTSPOT) {
 		modelLocation = worldLocation = GLPoint2f( 0, 0 );
-		isBusConnection = false;
+		busLines = 1;
 		calcBBox();
 	};
 
 	gateHotspot( string hsName ) : klsCollisionObject(COLL_GATE_HOTSPOT), name( hsName ) {
 		gateHotspot();
-		isBusConnection = false;
+		busLines = 1;
 	};
 
 	// Create the bbox for this hotspot:
@@ -68,19 +68,19 @@ public:
 
 	GLPoint2f getLocation( void ) { return worldLocation; };
 
-	void setBus(bool is) {
-		isBusConnection = is;
+	void setBusLines(int _busLines) {
+		busLines = _busLines;
 	}
 
-	bool isBus() {
-		return isBusConnection;
+	int getBusLines() {
+		return busLines;
 	}
 
 public:
 	string name;
-	bool isBusConnection;
 
 protected:
+	int busLines;
 	GLPoint2f modelLocation, worldLocation;
 };
 
@@ -175,7 +175,7 @@ public:
 
 
 	// Insert a hotspot in the hotspot list.
-	void insertHotspot( float x1, float y1, string connection, bool isBus );
+	void insertHotspot( float x1, float y1, string connection, int busLines);
 
 	// Check if any of the hotspots of this gate are within the delta
 	// of the world coordinates sX and sY. delta is in gl coords.
@@ -192,6 +192,12 @@ public:
 	void updateConnectionMerges( void );
 	
 	klsBBox getModelBBox( void ) { return modelBBox; };
+
+	// Get a hotspot from its name.
+	gateHotspot * getHotspot(const std::string &hotspotName) {
+		return hotspots[hotspotName];
+	}
+
 protected:
 	// Convert model->world coordinates:
 	GLPoint2f modelToWorld( GLPoint2f c );
@@ -207,7 +213,7 @@ protected:
 public:
 
 	void addConnection(string, guiWire*);
-	guiWire* getConnection( string theWire ) { return connections[theWire]; };
+	guiWire* getConnection( string hotspot ) { return connections[hotspot]; };
 	void removeConnection(string, int&);
 	bool isConnected(string);
 	bool isSelected() { return selected; };

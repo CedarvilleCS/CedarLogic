@@ -200,6 +200,13 @@ public:
 
 	void printLists();
 private:
+
+	// Create and do a command to connect a wire to a gate.
+	void submitWireConnection(IDType gateId, const string &hotspot, IDType wireId);
+
+	// Create and do a command to connect a wire to a gate.
+	void submitWireConnection(IDType gate1Id, const string &hotspot1, IDType gate2Id, const string &hotspot2);
+
 	// Contains all collision information for the page
 	klsCollisionChecker collisionChecker;
 	klsCollisionObject* mouse;

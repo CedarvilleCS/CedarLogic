@@ -72,7 +72,7 @@ void LibraryParse::parseFile() {
 					x1 = y1 = 0.0;
 					string isInverted = "false";
 					string logicEInput = "";
-					bool isBus = false;
+					int busLines = 1;
 					
 					do {
 						temp = mParse->readTag();
@@ -95,13 +95,13 @@ void LibraryParse::parseFile() {
 							mParse->readCloseTag();
 						}
 						else if (temp == "bus") {
-							isBus = (mParse->readTagValue("bus") == "true");
+							busLines = atoi(mParse->readTagValue("bus").c_str());
 							mParse->readCloseTag();
 						}
 
 					} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end input/output
 
-					newGate.hotspots.push_back( lgHotspot( hsName, (hsType == "input"), x1, y1, (isInverted == "true"), logicEInput, isBus));
+					newGate.hotspots.push_back( lgHotspot( hsName, (hsType == "input"), x1, y1, (isInverted == "true"), logicEInput, busLines));
 
 					mParse->readCloseTag(); //input or output
 

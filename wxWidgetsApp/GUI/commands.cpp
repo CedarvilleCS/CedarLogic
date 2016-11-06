@@ -637,7 +637,6 @@ cmdConnectWire::cmdConnectWire(string def) : klsCommand(true, (const wxChar *)"C
 
 bool cmdConnectWire::Do() {
 	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
-	ostringstream oss;
 	guiGate* mGate = (*(gCircuit->getGates()))[gid];
 	
 	
