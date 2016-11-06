@@ -730,21 +730,42 @@ bool cmdConnectWire::Undo() {
 	return true;
 }
 
+/*
+
+TYLER DRAKE TODO BUS
+
+before next stuff can be done,
+guiWire needs to hold a vector of id's for its bus. (usually only 1)
+doesn't actually require new version of cedarlogic save file!
+
+cmdConnectWire
+do, undo
+cmdCreateWire
+do, undo
+cmdDisconnectWire
+do, undo
+
+Also note:
+cmdCreateGate
+cmdMoveSelection
+cmdDeleteWire
+cmdDeleteGate
+cmdDeleteSelection
+*/
+
 bool cmdConnectWire::validateBusLines() {
 
 	guiWire *wire = (*gCircuit->getWires())[wid];
 	guiGate *gate = (*gCircuit->getGates())[gid];
 
-	// No connections on this wire? Cool. It's a bus now.
+	int busLines = gate->getHotspot(hotspot)->getBusLines();
+
+	// No connections on this wire? Cool. We'll make it a bus when we connect.
 	if (wire->getConnections().empty()) {
 		return true;
 	}
-	wireConnection wireHotSpotData = wire->getConnections().front();
 
-	gateHotspot *hotspot1_gate = gate->getHotspot(hotspot);
-	gateHotspot *hotspot2_wire = wireHotSpotData.cGate->getHotspot(wireHotSpotData.connection);
-
-	return hotspot1_gate->getBusLines() == hotspot2_wire->getBusLines();
+	return wire->getIDs().size() == busLines;
 }
 
 string cmdConnectWire::toString() {
