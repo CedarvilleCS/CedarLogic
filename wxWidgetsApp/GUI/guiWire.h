@@ -69,9 +69,17 @@ public:
 	void select();
 	void unselect();
 
-	// ID functions
-	void setID(long nid);
-	unsigned long getID();
+	// Set the wire's first (and most likely only) Id.
+	void setID(IDType wireId);
+
+	// Get the wire's first (and most likely only) Id.
+	IDType getID() const;
+
+	// Set the all of the wire's Ids (For buses, really).
+	void setIDs(const std::vector<IDType> &ids);
+
+	// Set all of the wire's Ids (For buses, really).
+	const std::vector<IDType> & getIDs() const;
 	
 	// State functions
 	void setState(StateType ns);
@@ -140,7 +148,9 @@ private:
 	bool selected;
 	bool setVerticalBar;
 	long headSegment; // reference segment
-	unsigned long id;
+	
+	std::vector<IDType> ids;
+
 	StateType state;
 	klsBBox mouseCoords;
 

@@ -734,9 +734,7 @@ bool cmdConnectWire::Undo() {
 
 TYLER DRAKE TODO BUS
 
-before next stuff can be done,
-guiWire needs to hold a vector of id's for its bus. (usually only 1)
-doesn't actually require new version of cedarlogic save file!
+update wire loading to load all wire ids.
 
 cmdConnectWire
 do, undo

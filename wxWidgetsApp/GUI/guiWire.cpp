@@ -56,6 +56,9 @@ guiWire::guiWire() : klsCollisionObject(COLL_WIRE) {
 	// Reset state of currentDragSeg is -1
 	currentDragSegment = -1;
 	headSegment = 0; // since the base vertical seg is 0
+	
+	// By default, wires have only one line.
+	ids.resize(1);
 }
 
 // TJD. 9/26/2016
@@ -373,9 +376,21 @@ void guiWire::select(void) { selected = true; };
 
 void guiWire::unselect(void) { selected = false; };
 
-void guiWire::setID(long nid) { id = nid; };
+void guiWire::setID(IDType nid) {
+	ids[0] = nid;
+}
 
-unsigned long guiWire::getID(void) { return id; };
+IDType guiWire::getID() const {
+	return ids[0];
+}
+
+void guiWire::setIDs(const std::vector<IDType> &ids) {
+	this->ids = ids;
+}
+
+const std::vector<IDType> & guiWire::getIDs() const {
+	return ids;
+}
 
 void guiWire::setState(StateType ns) { state = ns; };
 
@@ -384,10 +399,12 @@ StateType guiWire::getState(void) { return state; };
 // Save segment tree and wire info
 void guiWire::saveWire(XMLParser* xparse) {
 	xparse->openTag("wire");
-	// Save the ID for the wire (of course)
+	// Save the IDs for the wire (of course)
 	xparse->openTag("ID");
 	ostringstream oss;
-	oss << id;
+	for (IDType id : ids) {
+		oss << id << ' ';
+	}
 	xparse->writeTag("ID", oss.str());
 	xparse->closeTag("ID");
 	// Save the tree
