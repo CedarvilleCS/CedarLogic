@@ -148,8 +148,8 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 	while (wireWalk != connectWireList.end()) {
 		if ( wireWalk->second < 2 ) { wireWalk++; continue; }
 		guiWire* wire = new guiWire();
-		// Set the ID
-		wire->setID( wireWalk->first );
+		// Set the IDs
+		wire->setIDs( (*gCircuit->getWires())[wireWalk->first]->getIDs() );
 		// Shove all the connections
 		vector < wireConnection > wireConns = (*(gCircuit->getWires()))[wireWalk->first]->getConnections();
 		for (unsigned int i = 0; i < wireConns.size(); i++) wire->addConnection( wireConns[i].cGate, wireConns[i].connection, true );

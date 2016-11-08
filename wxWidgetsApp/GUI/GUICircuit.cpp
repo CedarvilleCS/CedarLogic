@@ -168,11 +168,12 @@ void GUICircuit::deleteGate(unsigned long gid, bool waitToUpdate) {
 	}		
 }
 
-guiWire* GUICircuit::createWire(long wid) {
-	if (wireList.find(wid) == wireList.end()) { // wire does not exist yet
-		wireList[wid] = new guiWire();
+guiWire* GUICircuit::createWire(const std::vector<IDType> &wireIds) {
+	if (wireList.find(wireIds[0]) == wireList.end()) { // wire does not exist yet
+		wireList[wireIds[0]] = new guiWire();
+		wireList[wireIds[0]]->setIDs(wireIds);
 	}
-	return wireList[wid];
+	return wireList[wireIds[0]];
 }
 
 void GUICircuit::deleteWire(unsigned long wid) {
@@ -183,13 +184,12 @@ void GUICircuit::deleteWire(unsigned long wid) {
 	}
 }
 
-guiWire* GUICircuit::setWireConnection(long wid, long gid, string connection, bool openMode) {
+guiWire* GUICircuit::setWireConnection(const vector<IDType> &wireIds, long gid, string connection, bool openMode) {
 	if (gateList.find(gid) == gateList.end()) return NULL; // error: gate not found
-	createWire(wid); // do we need to init the wire first? if not then no effect.
-	wireList[wid]->setID(wid);
-	wireList[wid]->addConnection(gateList[gid], connection, openMode);
-	gateList[gid]->addConnection(connection, wireList[wid]);
-	return wireList[wid];
+	createWire(wireIds); // do we need to init the wire first? if not then no effect.
+	wireList[wireIds[0]]->addConnection(gateList[gid], connection, openMode);
+	gateList[gid]->addConnection(connection, wireList[wireIds[0]]);
+	return wireList[wireIds[0]];
 }
 
 void GUICircuit::Render() {

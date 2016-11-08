@@ -133,8 +133,12 @@ void CircuitParse::parseFile() {
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
+
+
 						istringstream iss(mParse->readTagValue("input"));
 						iss >> gc->wireID;
+
+
 						inputs.push_back(*gc);
 						delete gc;
 					} else if (temp == "output") { // get output
@@ -142,8 +146,12 @@ void CircuitParse::parseFile() {
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
+
+
 						istringstream iss(mParse->readTagValue("output"));
 						iss >> gc->wireID;
+
+
 						outputs.push_back(*gc);
 						delete gc;
 					} else if (temp == "gparam" || temp == "lparam") { // get parameter
@@ -245,7 +253,7 @@ void CircuitParse::parseWireToSend( void ) {
 	// Parse the wire right here, generate its map and set it
 	char dump;
 	// parse the ID
-	string ID; long id;
+	string ID; vector<IDType> ids;
 	map < long, wireSegment > wireShape;
 	do { // while next tag is not close wire
 		// tags in wire can be ID or shape
@@ -255,7 +263,12 @@ void CircuitParse::parseWireToSend( void ) {
 			mParse->readCloseTag(); // >ID
 			ostringstream oss;
 			istringstream iss(ID);
-			iss >> id;
+
+			IDType tempId;
+			while (iss >> tempId) {
+				ids.push_back(tempId);
+			}
+
 		} else if (temp == "shape") { //read tree
 			do {
 				// tags in shape can be hsegment or vsegment; they are identical aside from orientation
@@ -315,9 +328,12 @@ void CircuitParse::parseWireToSend( void ) {
 		}
 	} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // !closewire
 	mParse->readCloseTag(); // >wire
+
 	// Check to make sure the wire exists before we do things to it
-	if ((gCanvas->getCircuit()->getWires())->find(id) == (gCanvas->getCircuit()->getWires())->end()) return;
-	(*(gCanvas->getCircuit()->getWires()))[id]->setSegmentMap( wireShape );
+	if ((gCanvas->getCircuit()->getWires())->find(ids.front()) == (gCanvas->getCircuit()->getWires())->end()) return;
+
+	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setIDs(ids);
+	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setSegmentMap( wireShape );
 }
 
 void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsigned int currPage) {
