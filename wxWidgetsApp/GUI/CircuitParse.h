@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include "../logic/logic_values"
 using namespace std;
 
 class GUICanvas;
@@ -22,7 +23,7 @@ class XMLParser;
 class gateConnector {
 public:
 	string connectionID;
-	long wireID;
+	std::vector<IDType> wireIds;
 };
 
 // holds a parameter, whether gui or logic

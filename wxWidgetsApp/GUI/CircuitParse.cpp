@@ -134,10 +134,11 @@ void CircuitParse::parseFile() {
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
 
-
 						istringstream iss(mParse->readTagValue("input"));
-						iss >> gc->wireID;
-
+						IDType tempId;
+						while (iss >> tempId) {
+							gc->wireIds.push_back(tempId);
+						}
 
 						inputs.push_back(*gc);
 						delete gc;
@@ -147,10 +148,11 @@ void CircuitParse::parseFile() {
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
 
-
 						istringstream iss(mParse->readTagValue("output"));
-						iss >> gc->wireID;
-
+						IDType tempId;
+						while (iss >> tempId) {
+							gc->wireIds.push_back(tempId);
+						}
 
 						outputs.push_back(*gc);
 						delete gc;
@@ -237,12 +239,12 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	for (unsigned int i = 0; i < inputs.size(); i++) {
 		gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(id, inputs[i].connectionID, inputs[i].wireID)));
 		// Create gate input for GUI (setWireConnection returns a pointer to the wire)
-		gCanvas->insertWire(inputs[i].wireID, gCanvas->getCircuit()->setWireConnection( inputs[i].wireID, id, inputs[i].connectionID, true ));
+		gCanvas->insertWire(inputs[i].wireIds[0], gCanvas->getCircuit()->setWireConnection( inputs[i].wireIds, id, inputs[i].connectionID, true ));
 	}
 	for (unsigned int i = 0; i < outputs.size(); i++) {
 		gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(id, outputs[i].connectionID, outputs[i].wireID)));		
 		// Create gate output for GUI (setWireConnection returns a pointer to the wire)
-		gCanvas->insertWire(outputs[i].wireID, gCanvas->getCircuit()->setWireConnection( outputs[i].wireID, id, outputs[i].connectionID, true ));
+		gCanvas->insertWire(outputs[i].wireIds[0], gCanvas->getCircuit()->setWireConnection( outputs[i].wireIds, id, outputs[i].connectionID, true ));
 	}
 }
 

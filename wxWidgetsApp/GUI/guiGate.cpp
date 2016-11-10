@@ -322,7 +322,11 @@ void guiGate::saveGate(XMLParser* xparse) {
 		xparse->writeTag("ID", pC->first);
 		xparse->closeTag("ID");
 		oss.str("");
-		oss << (pC->second)->getID() << " ";
+
+		for (IDType thisId : pC->second->getIDs()) {
+			oss << (pC->second)->getID() << " ";
+		}
+		
 		xparse->writeTag((isInput[pC->first] ? "input" : "output"), oss.str());
 		xparse->closeTag((isInput[pC->first] ? "input" : "output"));
 		pC++;
