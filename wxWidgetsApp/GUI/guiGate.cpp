@@ -291,6 +291,23 @@ void guiGate::getHotspotCoords(string hsName, float &x, float &y) {
 	return;
 }
 
+
+std::string guiGate::getHotspotPal(const std::string &hotspot) {
+
+	GLPoint2f coords;
+	getHotspotCoords(hotspot, coords.x, coords.y);
+
+	//looping looking for another hotspot with the same location
+	map<string, GLPoint2f> hotspotList = getHotspotList();
+
+	for (const auto &possiblePal : hotspotList) {
+		if (possiblePal.first != hotspot && possiblePal.second != coords) {
+			return possiblePal.first;
+		}
+	}
+	return "";
+}
+
 bool guiGate::isVerticalHotspot( string hsName ) {
 	float x, y;
 	getHotspotCoords( hsName, x, y );

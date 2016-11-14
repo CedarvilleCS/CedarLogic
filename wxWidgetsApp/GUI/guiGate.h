@@ -184,6 +184,10 @@ public:
 	// Return the coordinates of the hotspot in GL world-space coords.
 	void getHotspotCoords(string hsName, float &x, float &y);
 
+	// Get the name of the hotspot that overlaps the one given.
+	// Return "" for no overlap or bad hotspot name.
+	std::string getHotspotPal(const std::string &hotspot);
+
 	// Is a particular hotspot aligned to the vertical or horizontal edge?
 	bool isVerticalHotspot( string hsName );
 
