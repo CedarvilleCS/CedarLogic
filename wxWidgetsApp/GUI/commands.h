@@ -20,6 +20,7 @@
 #include "gl_defs.h"
 #include "wireSegment.h"
 #include "GUICanvas.h"  // GateState, WireState
+#include "../logic/logic_values.h"
 using namespace std;
 
 class GUICircuit;
@@ -40,7 +41,7 @@ protected:
 	bool fromString;
 public:
 	// (1) changed NULL in init of name to nullptr and then to "", (2) added inits for gCircuit and gCanvas   KAS
-	klsCommand( bool canUndo = false, const wxString& name = "" ) : wxCommand(canUndo, name), gCircuit(nullptr), gCanvas(nullptr) {};
+	klsCommand( bool canUndo, const char *name) : wxCommand(canUndo, wxString(name)), gCircuit(nullptr), gCanvas(nullptr) {};
 	virtual ~klsCommand( void ) { return; };
 	virtual string toString() { return ""; };
 	virtual void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) { this->gCircuit = gCircuit; this->gCanvas = gCanvas; };
@@ -123,11 +124,42 @@ public:
 	vector < klsCommand* >* getConnections() { return &proxconnects; };
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // cmdConnectWire - connects a wire to a gate hotspot
 class cmdConnectWire : public klsCommand {
-protected:
-	unsigned long gid;
-	unsigned long wid;
+public:
+	cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid, const std::string &hotspot, bool noCalcShape = false);
+	cmdConnectWire(const std::string &def);
+
+	bool Do();
+	bool Undo();
+
+	bool validateBusLines() const;
+
+	std::string toString() const;
+	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
+	IDType getGateId() const;
+	const std::string & getHotspot() const;
+
+private:
+	IDType gateId;
+	IDType wireId;
 	string hotspot;
 	bool noCalcShape;
 
@@ -138,22 +170,42 @@ protected:
 	//we store the information here so that if we undo
 	//we can remember who we conned into getting connected with us.
 	string hotspotPal;
+};
 
+
+
+
+
+
+
+
+
+// cmdDisconnectWire - disconnects a wire from a gate hotspot
+class cmdDisconnectWire : public klsCommand {
+protected:
+	unsigned long gid;
+	unsigned long wid;
+	string hotspot;
+	bool noCalcShape;
 public:
-	cmdConnectWire(GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false);
-	cmdConnectWire(string def);
-	virtual ~cmdConnectWire(void) { return; };
+	cmdDisconnectWire(GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false);
+	virtual ~cmdDisconnectWire(void) { return; };
 
 	bool Do(void);
 	bool Undo(void);
-
-	bool validateBusLines();
-
 	string toString();
-	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
-	IDType getGateId() const { return gid; }
-	const std::string & getHotspot() const { return hotspot; }
 };
+
+
+
+
+
+
+
+
+
+
+
 
 // cmdCreateWire - creates a wire
 class cmdCreateWire : public klsCommand {
@@ -172,24 +224,34 @@ public:
 	bool validateBusLines();
 
 	string toString();
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
+	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
 };
 
-// cmdDisconnectWire - disconnects a wire from a gate hotspot
-class cmdDisconnectWire : public klsCommand {
-protected:
-	unsigned long gid;
-	unsigned long wid;
-	string hotspot;
-	bool noCalcShape;
-public:
-	cmdDisconnectWire( GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false );
-	virtual ~cmdDisconnectWire( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
-	string toString();
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // cmdDeleteWire - Deletes a wire
 class cmdDeleteWire : public klsCommand {
