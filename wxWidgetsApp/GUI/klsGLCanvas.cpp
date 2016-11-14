@@ -488,6 +488,19 @@ void klsGLCanvas::setPan( GLdouble newX, GLdouble newY ) {
 }
 
 
+//Julian: Added to assist in zoom to mouse
+void klsGLCanvas::setCenter(GLdouble newX, GLdouble newY)
+{
+	GLPoint2f topLeft;
+	GLPoint2f bottomRight;
+	GLPoint2f center;
+
+	getViewport(topLeft, bottomRight);
+	center = getCenter();
+
+	setPan(newX - (center.x - topLeft.x), newY - (center.y - topLeft.y));
+}
+
 void klsGLCanvas::translatePan( GLdouble relX, GLdouble relY ) {
 	GLdouble x, y;
 	getPan(x, y);
@@ -539,25 +552,20 @@ void klsGLCanvas::setZoom( GLdouble newZoom ) {
 	newZoom = max(newZoom, MIN_ZOOM);
 	newZoom = min(newZoom, MAX_ZOOM);
 
-// This zooms from the center of the canvas, by taking advantage of
-// these formulas:
-//		oldMidX = panX + (sz.GetWidth() * oldZoom)/2;
-//		newMidX = panX + (sz.GetWidth() * newZoom)/2;
-	wxSize sz = GetClientSize();
-	GLdouble oldZoom = viewZoom;
+	GLPoint2f center = getCenter();
+	GLPoint2f topLeft;
+	GLPoint2f bottomRight;
+	getViewport(topLeft, bottomRight);
+	
+	GLPoint2f oldDist = center - topLeft;
+	GLPoint2f newDist = oldDist;
+
+	oldDist.x *= newZoom / viewZoom;
+	oldDist.y *= newZoom / viewZoom;
+
 	viewZoom = newZoom;
 
-	translatePan(-(sz.GetWidth()/2)*(newZoom - oldZoom), (sz.GetHeight()/2)*(newZoom - oldZoom));
-	
-//NOTE: It would have to call these things if translatePan() didn't take care of it
-// via setPan().
-/*	// Reset the mouse coordinates to the new pan settings, and
-	// call OnMouseMove() because the mouse's gl coords have changed:
-	setMouseCoords();
-	GLPoint2f m = getMouseCoords();
-	OnMouseMove(m.x, m.y);
-	Refresh(); // Obviously it needs refreshed after a pan.
-*/
+	translatePan(newDist.x - oldDist.x, newDist.y - oldDist.y);
 }
 
 
@@ -767,12 +775,7 @@ void klsGLCanvas::wxKeyUp(wxKeyEvent& event) {
 
 //Julian: Moved implementation from header
 void klsGLCanvas::OnMouseWheel(long numOfLines) {
-	if (numOfLines > 0) {
-		setZoom(getZoom() * (ZOOM_STEP * numOfLines));
-	}
-	else {
-		setZoom(getZoom() / (ZOOM_STEP * (-numOfLines)));
-	}
+	zoomToMouse(numOfLines);
 }
 
 GLPoint2f klsGLCanvas::getSnappedPoint(GLPoint2f c) {
@@ -824,8 +827,34 @@ void klsGLCanvas::setMouseCoords() {
 }
 
 //Julian: Added to allow for zoom to mouse
-void klsGLCanvas::panToMouse()
+void klsGLCanvas::zoomToMouse(long numLines)
 {
-	/*this->
-	setPan()*/
+	GLPoint2f center = getCenter();
+	GLPoint2f mouse = getMouseCoords();
+
+	GLPoint2f centerToMouse = mouse - center;
+	centerToMouse.x /= getZoom();
+	centerToMouse.y /= getZoom();
+
+	if (numLines > 0) {
+		setZoom(getZoom() * (ZOOM_STEP * numLines));
+	} else {
+		setZoom(getZoom() / (ZOOM_STEP * (-numLines)));
+	}
+
+	centerToMouse.x *= getZoom();
+	centerToMouse.y *= getZoom();
+
+	setCenter(mouse.x - centerToMouse.x, mouse.y - centerToMouse.y);
+}
+
+GLPoint2f klsGLCanvas::getCenter() {
+	GLPoint2f topLeft, bottomRight;
+	getViewport(topLeft, bottomRight);
+
+	GLPoint2f center = bottomRight + topLeft;
+	center.x /= 2;
+	center.y /= 2;
+
+	return center;
 }

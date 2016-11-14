@@ -90,7 +90,6 @@ public:
 	void wxKeyUp(wxKeyEvent& event);
 
 
-
 	// Send events to subclassed canvas:
 	// NOTE: The coordinates of the wxMouseEvent are screen
 	// coordinates and should be ignored in these methods.
@@ -143,12 +142,14 @@ public:
 	// Zoom and Pan methods:
 	void getPan(GLdouble &x, GLdouble &y);
 	void setPan(GLdouble newX, GLdouble newY);
+	void setCenter(GLdouble newX, GLdouble newY);
 	void translatePan(GLdouble relX, GLdouble relY);
-	void panToMouse();
 	void OnScrollTimer(wxTimerEvent& event);
 
 	GLdouble getZoom() { return viewZoom; };
 	void setZoom(GLdouble newZoom);
+	void zoomToMouse(long); //Julian
+	GLPoint2f getCenter(); //Julian
 
 	// Grid background:
 	// (Can turn grid back on without changing the past
