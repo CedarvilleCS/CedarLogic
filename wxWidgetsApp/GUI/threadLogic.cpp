@@ -86,7 +86,6 @@ bool threadLogic::parseMessage(klsMessage::Message input) {
 		id = ((klsMessage::Message_CREATE_WIRE*)(input.mStruct))->wireId;
 		// tell logic core to create wire id
 		(*logicIDs)[id] = cir->newWire( id );
-		(*logicIDs)[id] = id;
 		delete ((klsMessage::Message_CREATE_WIRE*)(input.mStruct));
 		break;
 	}

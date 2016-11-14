@@ -569,10 +569,6 @@ Where am i?
 I want to change cmdConnectWire, but i need to change Message_SET_GATE_INPUT to do that.
 I want to change it to take a vector of guiWire ids.
 
-threadLogic.cpp 88 and 89.. what?
-klsClipboard 97.. gateids wireids.. what?
-
-
 cmdConnectWire
 do, undo
 cmdCreateWire
