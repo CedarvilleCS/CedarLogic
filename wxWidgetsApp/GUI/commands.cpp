@@ -565,6 +565,14 @@ bool cmdDeleteSelection::Undo() {
 
 TYLER DRAKE TODO BUS
 
+Where am i?
+I want to change cmdConnectWire, but i need to change Message_SET_GATE_INPUT to do that.
+I want to change it to take a vector of guiWire ids.
+
+threadLogic.cpp 88 and 89.. what?
+klsClipboard 97.. gateids wireids.. what?
+
+
 cmdConnectWire
 do, undo
 cmdCreateWire
@@ -608,81 +616,58 @@ bool cmdConnectWire::Do() {
 
 	// TODO: this should be logged.
 	// error: gate not found
-	if ( (gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end() ) return false;
+	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) {
+		return false;
+	}
 
 	guiGate* mGate = (*(gCircuit->getGates()))[gateId];
-	
-	
-	//Edit by Joshua Lansford 10/21/06------------------------
-	//Making it possable for a bydirectional pin.
-	//Main pourpose is to create a bydirectional port on a RAM chip
-	//This is created by defineing and input and an output at the same location.
-	//The only nesicary alteration to the code is that when a pin is connected, 
-	//it's partner needs to be connected as well.
-	
-	float hsX = 0;
-	float hsY = 0;
-	mGate->getHotspotCoords( hotspot, hsX, hsY );
-	
-	//looping looking for another hotspot with the same location
-	map<string, GLPoint2f> hotspotList = mGate->getHotspotList();
-	hotspotPal = "";
-	for( map< string, GLPoint2f>::iterator listWalk = hotspotList.begin(); 
-	     listWalk != hotspotList.end() && hotspotPal == ""; listWalk++ ){
-	     	string hotspot2 = listWalk->first;
-	     	GLPoint2f hotspot2GLPoint = listWalk->second;
-	     	if( hotspot2 != hotspot
-		     	&& hotspot2GLPoint.x == hsX
-		     	&& hotspot2GLPoint.y == hsY ){
-     				hotspotPal = hotspot2;
-	     	}
-	}
-	
-	if( hotspotPal != "" ){
+	hotspotPal = mGate->getHotspotPal(hotspot);
+
+	if (hotspotPal != "") {
 		ostringstream oss2;
 		gCircuit->setWireConnection(wid, gid, hotspotPal, noCalcShape);
 		if (mGate->isConnectionInput(hotspotPal))
 			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspotPal, wid)));
 		else
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspotPal, wid)));			
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspotPal, wid)));
 	}
 	//End edit--------------------------------------------------
 
-	
+
 	gCircuit->setWireConnection(wid, gid, hotspot, noCalcShape);
 	if (mGate->isConnectionInput(hotspot))
 		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, wid)));
 	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, wid)));			
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, wid)));
 	return true;
 }
 
 bool cmdConnectWire::Undo() {
-	if ( (gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end() ) return false; // error: wire not found
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
+	if ((gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
 	ostringstream oss;
 	guiGate* mGate = (*(gCircuit->getGates()))[gid];
 	int temp;
 	mGate->removeConnection(hotspot, temp);
 	(*(gCircuit->getWires()))[wid]->removeConnection(mGate, hotspot);
-	
+
 	//edit by Joshua Lansford 10/21/06: see comment in Do()--------
-	if( hotspotPal != "" ){
+	if (hotspotPal != "") {
 		ostringstream oss2;
-			mGate->removeConnection(hotspot, temp);
+		mGate->removeConnection(hotspot, temp);
 		(*(gCircuit->getWires()))[wid]->removeConnection(mGate, hotspotPal);
 		if (mGate->isConnectionInput(hotspotPal))
 			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspotPal, 0, true)));
 		else
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspotPal, 0, true)));			
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspotPal, 0, true)));
 	}
 	//end edit---------------------------------------------------
-	
-	
+
+
 	if (mGate->isConnectionInput(hotspot))
 		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, 0, true)));
 	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, 0, true)));			
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, 0, true)));
 	return true;
 }
 
@@ -707,7 +692,7 @@ string cmdConnectWire::toString() const {
 	return oss.str();
 }
 
-void cmdConnectWire::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) {
+void cmdConnectWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids) {
 	gateId = gateids[gateId];
 	wireId = wireids[wireId];
 	this->gCircuit = gCircuit;
@@ -733,7 +718,7 @@ const std::string & cmdConnectWire::getHotspot() const {
 
 // CMDDISCONNECTWIRE
 
-cmdDisconnectWire::cmdDisconnectWire( GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape ) : klsCommand(true, "Disconnection") {
+cmdDisconnectWire::cmdDisconnectWire(GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape) : klsCommand(true, "Disconnection") {
 	this->gCircuit = gCircuit;
 	this->wid = wid;
 	this->gid = gid;
@@ -742,8 +727,8 @@ cmdDisconnectWire::cmdDisconnectWire( GUICircuit* gCircuit, unsigned long wid, u
 }
 
 bool cmdDisconnectWire::Do() {
-	if ( (gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end() ) return false; // error: wire not found
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
+	if ((gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
 	ostringstream oss;
 	guiGate* mGate = (*(gCircuit->getGates()))[gid];
 	int temp;
@@ -752,162 +737,53 @@ bool cmdDisconnectWire::Do() {
 	if (mGate->isConnectionInput(hotspot))
 		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, 0, true)));
 	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, 0, true)));			
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, 0, true)));
 	return true;
 }
 
 bool cmdDisconnectWire::Undo() {
-	if ( (gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end() ) return false; // error: wire not found
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
+	if ((gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
 	ostringstream oss;
 	guiGate* mGate = (*(gCircuit->getGates()))[gid];
-	gCircuit->setWireConnection(wid, gid, hotspot,noCalcShape);
+	gCircuit->setWireConnection(wid, gid, hotspot, noCalcShape);
 	if (mGate->isConnectionInput(hotspot))
 		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, wid)));
 	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, wid)));			
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, wid)));
 	return true;
 }
 
 string cmdDisconnectWire::toString() {
 	ostringstream oss;
 	oss << "disconnectwire " << wid << " " << gid << " " << hotspot;
-	return oss.str();	
-}
-
-
-// CMDSETPARAMS
-
-cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid, paramSet pSet, bool setMode) : klsCommand(true, "Set Parameter") {
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return; // error: gate not found
-	this->gCircuit = gCircuit;
-	this->gid = gid;
-	this->fromString = setMode;
-	// Save the original set of parameters
-	map < string, string >::iterator paramWalk = (*(gCircuit->getGates()))[gid]->getAllGUIParams()->begin();
-	while (paramWalk != (*(gCircuit->getGates()))[gid]->getAllGUIParams()->end()) {
-		oldGUIParamList[paramWalk->first] = paramWalk->second;
-		paramWalk++;
-	}
-	paramWalk = (*(gCircuit->getGates()))[gid]->getAllLogicParams()->begin();
-	while (paramWalk != (*(gCircuit->getGates()))[gid]->getAllLogicParams()->end()) {
-		oldLogicParamList[paramWalk->first] = paramWalk->second;
-		paramWalk++;
-	}
-	// Now grab the new ones...
-	if ( pSet.gParams != NULL) {
-		paramWalk = pSet.gParams->begin();
-		while (paramWalk != pSet.gParams->end()) {		
-			newGUIParamList[paramWalk->first] = paramWalk->second;
-			paramWalk++;
-		}
-	}
-	if ( pSet.lParams != NULL) {
-		paramWalk = pSet.lParams->begin();
-		while (paramWalk != pSet.lParams->end()) {		
-			newLogicParamList[paramWalk->first] = paramWalk->second;
-			paramWalk++;
-		}
-	}
-}
-
-cmdSetParams::cmdSetParams(string def) : klsCommand(true, "Set Parameter") {
-	this->fromString = true;
-	istringstream iss(def);
-	string dump; char comma;
-	unsigned long numgParams, numlParams;
-	iss >> dump >> gid >> numgParams >> comma >> numlParams;
-	for (unsigned int i = 0; i < numgParams; i++) {
-		string paramName, paramVal;
-		iss >> paramName;
-		getline( iss, paramVal, '\t' );
-		newGUIParamList[paramName] = paramVal.substr(1, paramVal.size()-1);
-		oldGUIParamList[paramName] = newGUIParamList[paramName];
-	}
-	for (unsigned int i = 0; i < numlParams; i++) {
-		string paramName, paramVal;
-		iss >> paramName;
-		getline( iss, paramVal, '\t' );
-		newLogicParamList[paramName] = paramVal.substr(1, paramVal.size()-1);
-		oldLogicParamList[paramName] = newLogicParamList[paramName];
-	}
-}
-
-bool cmdSetParams::Do() {
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
-	map < string, string >::iterator paramWalk = newLogicParamList.begin();
-	vector < string > dontSendMessages;
-	LibraryGate lg = wxGetApp().libraries[(*(gCircuit->getGates()))[gid]->getLibraryName()][(*(gCircuit->getGates()))[gid]->getLibraryGateName()];
-	for (unsigned int i = 0; i < lg.dlgParams.size(); i++) {
-		if (lg.dlgParams[i].isGui) continue;
-		if (lg.dlgParams[i].type == "FILE_IN" || lg.dlgParams[i].type == "FILE_OUT") dontSendMessages.push_back(lg.dlgParams[i].name);
-	}
-	while (paramWalk != newLogicParamList.end()) {
-		(*(gCircuit->getGates()))[gid]->setLogicParam(paramWalk->first, paramWalk->second);
-		bool found = false;
-		for (unsigned int i = 0; i < dontSendMessages.size() && !found; i++) {
-			if (dontSendMessages[i] == paramWalk->first) found = true;
-		}
-		if (!found) gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gid, paramWalk->first, paramWalk->second)));
-		paramWalk++;
-	}
-	paramWalk = newGUIParamList.begin();
-	while (paramWalk != newGUIParamList.end()) {
-		(*(gCircuit->getGates()))[gid]->setGUIParam(paramWalk->first, paramWalk->second);
-		paramWalk++;
-	}
-	if (!fromString && (*(gCircuit->getGates()))[gid]->getGUIType() == "TO" && gCircuit->getOscope() != NULL) gCircuit->getOscope()->UpdateMenu();
-	return true;
-}
-
-bool cmdSetParams::Undo() {
- 	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
- 	map < string, string >::iterator paramWalk = oldLogicParamList.begin();
-	vector < string > dontSendMessages;
-	LibraryGate lg = wxGetApp().libraries[(*(gCircuit->getGates()))[gid]->getLibraryName()][(*(gCircuit->getGates()))[gid]->getLibraryGateName()];
-	for (unsigned int i = 0; i < lg.dlgParams.size(); i++) {
-		if (lg.dlgParams[i].isGui) continue;
-		if (lg.dlgParams[i].type == "FILE_IN" || lg.dlgParams[i].type == "FILE_OUT") dontSendMessages.push_back(lg.dlgParams[i].name);
-	}
-	while (paramWalk != oldLogicParamList.end()) {
-		(*(gCircuit->getGates()))[gid]->setLogicParam(paramWalk->first, paramWalk->second);
-		bool found = false;
-		for (unsigned int i = 0; i < dontSendMessages.size() && !found; i++) {
-			if (dontSendMessages[i] == paramWalk->first) found = true;
-		}
-		if (!found) gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gid, paramWalk->first, paramWalk->second)));
-		paramWalk++;
-	}
-	paramWalk = oldGUIParamList.begin();
-	while (paramWalk != oldGUIParamList.end()) {
-		(*(gCircuit->getGates()))[gid]->setGUIParam(paramWalk->first, paramWalk->second);
-		paramWalk++;
-	}
-	if (!fromString && (*(gCircuit->getGates()))[gid]->getGUIType() == "TO") gCircuit->getOscope()->UpdateMenu();
-	return true;
-}
-
-string cmdSetParams::toString() {
-	ostringstream oss;
-	oss << "setparams " << gid << " " << newGUIParamList.size() << "," << newLogicParamList.size() << " ";
-	map < string, string >::iterator paramWalk = newGUIParamList.begin();
-	while (paramWalk != newGUIParamList.end()) {
-		oss << paramWalk->first << " " << paramWalk->second << "\t";
-		paramWalk++;
-	}
-	paramWalk = newLogicParamList.begin();
-	while (paramWalk != newLogicParamList.end()) {
-		oss << paramWalk->first << " " << paramWalk->second << "\t";
-		paramWalk++;
-	}
 	return oss.str();
 }
 
-void cmdSetParams::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) {
-	gid = gateids[gid];
-	this->gCircuit = gCircuit;
-	this->gCanvas = gCanvas;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1026,6 +902,154 @@ void cmdCreateWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_m
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// CMDSETPARAMS
+
+cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid, paramSet pSet, bool setMode) : klsCommand(true, "Set Parameter") {
+	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return; // error: gate not found
+	this->gCircuit = gCircuit;
+	this->gid = gid;
+	this->fromString = setMode;
+	// Save the original set of parameters
+	map < string, string >::iterator paramWalk = (*(gCircuit->getGates()))[gid]->getAllGUIParams()->begin();
+	while (paramWalk != (*(gCircuit->getGates()))[gid]->getAllGUIParams()->end()) {
+		oldGUIParamList[paramWalk->first] = paramWalk->second;
+		paramWalk++;
+	}
+	paramWalk = (*(gCircuit->getGates()))[gid]->getAllLogicParams()->begin();
+	while (paramWalk != (*(gCircuit->getGates()))[gid]->getAllLogicParams()->end()) {
+		oldLogicParamList[paramWalk->first] = paramWalk->second;
+		paramWalk++;
+	}
+	// Now grab the new ones...
+	if (pSet.gParams != NULL) {
+		paramWalk = pSet.gParams->begin();
+		while (paramWalk != pSet.gParams->end()) {
+			newGUIParamList[paramWalk->first] = paramWalk->second;
+			paramWalk++;
+		}
+	}
+	if (pSet.lParams != NULL) {
+		paramWalk = pSet.lParams->begin();
+		while (paramWalk != pSet.lParams->end()) {
+			newLogicParamList[paramWalk->first] = paramWalk->second;
+			paramWalk++;
+		}
+	}
+}
+
+cmdSetParams::cmdSetParams(string def) : klsCommand(true, "Set Parameter") {
+	this->fromString = true;
+	istringstream iss(def);
+	string dump; char comma;
+	unsigned long numgParams, numlParams;
+	iss >> dump >> gid >> numgParams >> comma >> numlParams;
+	for (unsigned int i = 0; i < numgParams; i++) {
+		string paramName, paramVal;
+		iss >> paramName;
+		getline(iss, paramVal, '\t');
+		newGUIParamList[paramName] = paramVal.substr(1, paramVal.size() - 1);
+		oldGUIParamList[paramName] = newGUIParamList[paramName];
+	}
+	for (unsigned int i = 0; i < numlParams; i++) {
+		string paramName, paramVal;
+		iss >> paramName;
+		getline(iss, paramVal, '\t');
+		newLogicParamList[paramName] = paramVal.substr(1, paramVal.size() - 1);
+		oldLogicParamList[paramName] = newLogicParamList[paramName];
+	}
+}
+
+bool cmdSetParams::Do() {
+	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
+	map < string, string >::iterator paramWalk = newLogicParamList.begin();
+	vector < string > dontSendMessages;
+	LibraryGate lg = wxGetApp().libraries[(*(gCircuit->getGates()))[gid]->getLibraryName()][(*(gCircuit->getGates()))[gid]->getLibraryGateName()];
+	for (unsigned int i = 0; i < lg.dlgParams.size(); i++) {
+		if (lg.dlgParams[i].isGui) continue;
+		if (lg.dlgParams[i].type == "FILE_IN" || lg.dlgParams[i].type == "FILE_OUT") dontSendMessages.push_back(lg.dlgParams[i].name);
+	}
+	while (paramWalk != newLogicParamList.end()) {
+		(*(gCircuit->getGates()))[gid]->setLogicParam(paramWalk->first, paramWalk->second);
+		bool found = false;
+		for (unsigned int i = 0; i < dontSendMessages.size() && !found; i++) {
+			if (dontSendMessages[i] == paramWalk->first) found = true;
+		}
+		if (!found) gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gid, paramWalk->first, paramWalk->second)));
+		paramWalk++;
+	}
+	paramWalk = newGUIParamList.begin();
+	while (paramWalk != newGUIParamList.end()) {
+		(*(gCircuit->getGates()))[gid]->setGUIParam(paramWalk->first, paramWalk->second);
+		paramWalk++;
+	}
+	if (!fromString && (*(gCircuit->getGates()))[gid]->getGUIType() == "TO" && gCircuit->getOscope() != NULL) gCircuit->getOscope()->UpdateMenu();
+	return true;
+}
+
+bool cmdSetParams::Undo() {
+	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
+	map < string, string >::iterator paramWalk = oldLogicParamList.begin();
+	vector < string > dontSendMessages;
+	LibraryGate lg = wxGetApp().libraries[(*(gCircuit->getGates()))[gid]->getLibraryName()][(*(gCircuit->getGates()))[gid]->getLibraryGateName()];
+	for (unsigned int i = 0; i < lg.dlgParams.size(); i++) {
+		if (lg.dlgParams[i].isGui) continue;
+		if (lg.dlgParams[i].type == "FILE_IN" || lg.dlgParams[i].type == "FILE_OUT") dontSendMessages.push_back(lg.dlgParams[i].name);
+	}
+	while (paramWalk != oldLogicParamList.end()) {
+		(*(gCircuit->getGates()))[gid]->setLogicParam(paramWalk->first, paramWalk->second);
+		bool found = false;
+		for (unsigned int i = 0; i < dontSendMessages.size() && !found; i++) {
+			if (dontSendMessages[i] == paramWalk->first) found = true;
+		}
+		if (!found) gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gid, paramWalk->first, paramWalk->second)));
+		paramWalk++;
+	}
+	paramWalk = oldGUIParamList.begin();
+	while (paramWalk != oldGUIParamList.end()) {
+		(*(gCircuit->getGates()))[gid]->setGUIParam(paramWalk->first, paramWalk->second);
+		paramWalk++;
+	}
+	if (!fromString && (*(gCircuit->getGates()))[gid]->getGUIType() == "TO") gCircuit->getOscope()->UpdateMenu();
+	return true;
+}
+
+string cmdSetParams::toString() {
+	ostringstream oss;
+	oss << "setparams " << gid << " " << newGUIParamList.size() << "," << newLogicParamList.size() << " ";
+	map < string, string >::iterator paramWalk = newGUIParamList.begin();
+	while (paramWalk != newGUIParamList.end()) {
+		oss << paramWalk->first << " " << paramWalk->second << "\t";
+		paramWalk++;
+	}
+	paramWalk = newLogicParamList.begin();
+	while (paramWalk != newLogicParamList.end()) {
+		oss << paramWalk->first << " " << paramWalk->second << "\t";
+		paramWalk++;
+	}
+	return oss.str();
+}
+
+void cmdSetParams::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids) {
+	gid = gateids[gid];
+	this->gCircuit = gCircuit;
+	this->gCanvas = gCanvas;
+}
 
 // CMDPASTEBLOCK
 

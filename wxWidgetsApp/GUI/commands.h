@@ -182,11 +182,6 @@ private:
 
 // cmdDisconnectWire - disconnects a wire from a gate hotspot
 class cmdDisconnectWire : public klsCommand {
-protected:
-	unsigned long gid;
-	unsigned long wid;
-	string hotspot;
-	bool noCalcShape;
 public:
 	cmdDisconnectWire(GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false);
 	virtual ~cmdDisconnectWire(void) { return; };
@@ -194,6 +189,12 @@ public:
 	bool Do(void);
 	bool Undo(void);
 	string toString();
+
+private:
+	unsigned long gid;
+	unsigned long wid;
+	string hotspot;
+	bool noCalcShape;
 };
 
 
@@ -209,10 +210,6 @@ public:
 
 // cmdCreateWire - creates a wire
 class cmdCreateWire : public klsCommand {
-protected:
-	unsigned long wid;
-	cmdConnectWire* conn1;
-	cmdConnectWire* conn2;
 public:
 	cmdCreateWire( GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long wid, cmdConnectWire* conn1, cmdConnectWire* conn2 );
 	cmdCreateWire( string def );
@@ -225,6 +222,11 @@ public:
 
 	string toString();
 	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
+
+private:
+	unsigned long wid;
+	cmdConnectWire* conn1;
+	cmdConnectWire* conn2;
 };
 
 
