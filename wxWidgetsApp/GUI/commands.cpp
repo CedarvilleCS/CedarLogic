@@ -565,8 +565,6 @@ bool cmdDeleteSelection::Undo() {
 
 TYLER DRAKE TODO BUS
 
-cmdDisconnectWire
-do, undo
 cmdCreateWire
 do, undo
 
@@ -607,6 +605,9 @@ cmdConnectWire::cmdConnectWire(const string &def) : klsCommand(true, "Connection
 
 bool cmdConnectWire::Do() {
 
+	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
+
 	guiGate* gate = gCircuit->getGates()->at(gateId);
 	string hotspotPal = gate->getHotspotPal(hotspot);
 
@@ -619,6 +620,9 @@ bool cmdConnectWire::Do() {
 }
 
 bool cmdConnectWire::Undo() {
+
+	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
 
 	guiGate* gate = gCircuit->getGates()->at(gateId);
 	string hotspotPal = gate->getHotspotPal(hotspot);
@@ -756,45 +760,50 @@ void cmdConnectWire::sendMessagesToDisconnect(GUICircuit *gCircuit, IDType wireI
 
 // CMDDISCONNECTWIRE
 
-cmdDisconnectWire::cmdDisconnectWire(GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape) : klsCommand(true, "Disconnection") {
+cmdDisconnectWire::cmdDisconnectWire(GUICircuit* gCircuit, IDType wireId, IDType gateId, const string &hotspot, bool noCalcShape) : klsCommand(true, "Disconnection") {
 	this->gCircuit = gCircuit;
-	this->wid = wid;
-	this->gid = gid;
+	this->wireId = wireId;
+	this->gateId = gateId;
 	this->hotspot = hotspot;
 	this->noCalcShape = noCalcShape;
 }
 
 bool cmdDisconnectWire::Do() {
-	if ((gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end()) return false; // error: wire not found
-	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
-	ostringstream oss;
-	guiGate* mGate = (*(gCircuit->getGates()))[gid];
-	int temp;
-	mGate->removeConnection(hotspot, temp);
-	(*(gCircuit->getWires()))[wid]->removeConnection(mGate, hotspot);
-	if (mGate->isConnectionInput(hotspot))
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, 0, true)));
-	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, 0, true)));
+
+	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
+
+
+	guiGate* gate = gCircuit->getGates()->at(gateId);
+	string hotspotPal = gate->getHotspotPal(hotspot);
+
+	if (hotspotPal != "") {
+		cmdConnectWire::sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspotPal);
+	}
+	cmdConnectWire::sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspot);
+
 	return true;
 }
 
 bool cmdDisconnectWire::Undo() {
-	if ((gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end()) return false; // error: wire not found
-	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
-	ostringstream oss;
-	guiGate* mGate = (*(gCircuit->getGates()))[gid];
-	gCircuit->setWireConnection(wid, gid, hotspot, noCalcShape);
-	if (mGate->isConnectionInput(hotspot))
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, wid)));
-	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, wid)));
+
+	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
+
+	guiGate* gate = gCircuit->getGates()->at(gateId);
+	string hotspotPal = gate->getHotspotPal(hotspot);
+
+	if (hotspotPal != "") {
+		cmdConnectWire::sendMessagesToConnect(gCircuit, wireId, gateId, hotspotPal, noCalcShape);
+	}
+	cmdConnectWire::sendMessagesToConnect(gCircuit, wireId, gateId, hotspot, noCalcShape);
+
 	return true;
 }
 
-string cmdDisconnectWire::toString() {
+string cmdDisconnectWire::toString() const {
 	ostringstream oss;
-	oss << "disconnectwire " << wid << " " << gid << " " << hotspot;
+	oss << "disconnectwire " << wireId << " " << gateId << " " << hotspot;
 	return oss.str();
 }
 

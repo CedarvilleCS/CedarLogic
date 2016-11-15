@@ -178,17 +178,16 @@ private:
 // cmdDisconnectWire - disconnects a wire from a gate hotspot
 class cmdDisconnectWire : public klsCommand {
 public:
-	cmdDisconnectWire(GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false);
-	virtual ~cmdDisconnectWire(void) { return; };
+	cmdDisconnectWire(GUICircuit* gCircuit, IDType wid, IDType gid, const string &hotspot, bool noCalcShape = false);
 
-	bool Do(void);
-	bool Undo(void);
-	string toString();
+	bool Do();
+	bool Undo();
+	std::string toString() const;
 
 private:
-	unsigned long gid;
-	unsigned long wid;
-	string hotspot;
+	IDType gateId;
+	IDType wireId;
+	std::string hotspot;
 	bool noCalcShape;
 };
 
