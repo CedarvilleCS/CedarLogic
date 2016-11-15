@@ -527,7 +527,7 @@ cmdDeleteSelection::cmdDeleteSelection(GUICircuit* gCircuit, GUICanvas* gCanvas,
 
 cmdDeleteSelection::~cmdDeleteSelection( void ) {
 	while (!(cmdList.empty())) {
-//		delete cmdList.top();
+		delete cmdList.top();
 		cmdList.pop();
 	}	
 }
@@ -549,6 +549,7 @@ bool cmdDeleteSelection::Do() {
 bool cmdDeleteSelection::Undo() {
 	while (!(cmdList.empty())) {
 		cmdList.top()->Undo();
+		delete cmdList.top();
 		cmdList.pop();
 	}
 	if (gCircuit->getOscope() != NULL) gCircuit->getOscope()->UpdateMenu();
@@ -574,10 +575,7 @@ that one spot where submitWireConnection is not used.
 search TYLER
 
 Also note:
-cmdCreateGate
-cmdMoveSelection
 cmdDeleteWire
-cmdDeleteGate
 cmdDeleteSelection
 */
 
