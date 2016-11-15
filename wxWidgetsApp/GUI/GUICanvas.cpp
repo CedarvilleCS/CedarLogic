@@ -97,7 +97,7 @@ void GUICanvas::insertWire(guiWire* wire) {
 	if (wire == nullptr) return;
 
 	// Make sure that each of this wire's ids are used.
-	for (IDType id : wire->getIDs) {
+	for (IDType id : wire->getIDs()) {
 		wireList[id] = nullptr;
 	}
 
