@@ -157,19 +157,14 @@ public:
 	IDType getGateId() const;
 	const std::string & getHotspot() const;
 
+	static void sendMessagesToConnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot, bool noCalcShape);
+	static void sendMessagesToDisconnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot);
+
 private:
 	IDType gateId;
 	IDType wireId;
 	string hotspot;
 	bool noCalcShape;
-
-	//edit by Joshua Lansford 10/21/06
-	//a hotspotPal is an input that is on top of a output
-	//or viseversa.  They make one bydirectional pin while
-	//remaining two seperate hotspots.
-	//we store the information here so that if we undo
-	//we can remember who we conned into getting connected with us.
-	string hotspotPal;
 };
 
 

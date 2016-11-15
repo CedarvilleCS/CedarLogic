@@ -565,16 +565,13 @@ bool cmdDeleteSelection::Undo() {
 
 TYLER DRAKE TODO BUS
 
-Where am i?
-I want to change cmdConnectWire, but i need to change Message_SET_GATE_INPUT to do that.
-I want to change it to take a vector of guiWire ids.
-
-cmdConnectWire
+cmdDisconnectWire
 do, undo
 cmdCreateWire
 do, undo
-cmdDisconnectWire
-do, undo
+
+make sure the mapping of gui hotspots to logic hotspots is okay.
+So, buslines of 8 and hotspot "out" gives: out_0, out_1, ..., out_7.
 
 that one spot where submitWireConnection is not used.
 search TYLER
@@ -610,67 +607,34 @@ cmdConnectWire::cmdConnectWire(const string &def) : klsCommand(true, "Connection
 
 bool cmdConnectWire::Do() {
 
-	// TODO: this should be logged.
-	// error: gate not found
-	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) {
-		return false;
-	}
-
-	guiGate* mGate = (*(gCircuit->getGates()))[gateId];
-	hotspotPal = mGate->getHotspotPal(hotspot);
+	guiGate* gate = gCircuit->getGates()->at(gateId);
+	string hotspotPal = gate->getHotspotPal(hotspot);
 
 	if (hotspotPal != "") {
-		ostringstream oss2;
-		gCircuit->setWireConnection(wid, gid, hotspotPal, noCalcShape);
-		if (mGate->isConnectionInput(hotspotPal))
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspotPal, wid)));
-		else
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspotPal, wid)));
+		sendMessagesToConnect(gCircuit, wireId, gateId, hotspotPal, noCalcShape);
 	}
-	//End edit--------------------------------------------------
+	sendMessagesToConnect(gCircuit, wireId, gateId, hotspot, noCalcShape);
 
-
-	gCircuit->setWireConnection(wid, gid, hotspot, noCalcShape);
-	if (mGate->isConnectionInput(hotspot))
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, wid)));
-	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, wid)));
 	return true;
 }
 
 bool cmdConnectWire::Undo() {
-	if ((gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end()) return false; // error: wire not found
-	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
-	ostringstream oss;
-	guiGate* mGate = (*(gCircuit->getGates()))[gid];
-	int temp;
-	mGate->removeConnection(hotspot, temp);
-	(*(gCircuit->getWires()))[wid]->removeConnection(mGate, hotspot);
 
-	//edit by Joshua Lansford 10/21/06: see comment in Do()--------
+	guiGate* gate = gCircuit->getGates()->at(gateId);
+	string hotspotPal = gate->getHotspotPal(hotspot);
+
 	if (hotspotPal != "") {
-		ostringstream oss2;
-		mGate->removeConnection(hotspot, temp);
-		(*(gCircuit->getWires()))[wid]->removeConnection(mGate, hotspotPal);
-		if (mGate->isConnectionInput(hotspotPal))
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspotPal, 0, true)));
-		else
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspotPal, 0, true)));
+		sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspotPal);
 	}
-	//end edit---------------------------------------------------
+	sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspot);
 
-
-	if (mGate->isConnectionInput(hotspot))
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, 0, true)));
-	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, 0, true)));
 	return true;
 }
 
 bool cmdConnectWire::validateBusLines() const {
 
-	guiWire *wire = (*gCircuit->getWires())[wid];
-	guiGate *gate = (*gCircuit->getGates())[gid];
+	guiWire *wire = (*gCircuit->getWires())[wireId];
+	guiGate *gate = (*gCircuit->getGates())[gateId];
 
 	int busLines = gate->getHotspot(hotspot)->getBusLines();
 
@@ -684,7 +648,7 @@ bool cmdConnectWire::validateBusLines() const {
 
 string cmdConnectWire::toString() const {
 	ostringstream oss;
-	oss << "connectwire " << wid << " " << gid << " " << hotspot;
+	oss << "connectwire " << wireId << ' ' << gateId << ' ' << hotspot;
 	return oss.str();
 }
 
@@ -703,7 +667,85 @@ const std::string & cmdConnectWire::getHotspot() const {
 	return hotspot;
 }
 
+void cmdConnectWire::sendMessagesToConnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot, bool noCalcShape) {
 
+	guiGate *gate = gCircuit->getGates()->at(gateId);
+	guiWire *wire = gCircuit->getWires()->at(wireId);
+
+	// Grab the bus-lines from the wire.
+	vector<IDType> wireIds = wire->getIDs();
+
+	// Add the connection in the gui.
+	gCircuit->setWireConnection(wireIds, gateId, hotspot, noCalcShape);
+
+	// When connecting a gui hotspot to its underlying inputs/outputs,
+	// single wires require no changes to their hotspot name, but
+	// bus-lines need to have their bit appended.
+	vector<string> internalHotspots;
+	if (wireIds.size() == 1) {
+		internalHotspots.push_back(hotspot);
+	}
+	else {
+		for (int i = 0; i < wireIds.size(); i++) {
+			internalHotspots.push_back(hotspot + "_" + to_string(i));
+		}
+	}
+
+	bool isInput = gate->isConnectionInput(hotspot);
+
+	// Connect each of wire's bus-lines to its corresponding gate hotspot.
+	for (int i = 0; i < internalHotspots.size(); i++) {
+		if (isInput) {
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT,
+				new klsMessage::Message_SET_GATE_INPUT(gateId, internalHotspots[i], wireIds[i])));
+		}
+		else {
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT,
+				new klsMessage::Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], wireIds[i])));
+		}
+	}
+}
+
+void cmdConnectWire::sendMessagesToDisconnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot) {
+
+	guiGate *gate = gCircuit->getGates()->at(gateId);
+	guiWire *wire = gCircuit->getWires()->at(wireId);
+
+	// Grab the bus-lines from the wire.
+	vector<IDType> wireIds = wire->getIDs();
+	
+	// Remove the connection in the gui.
+	int temp;
+	gate->removeConnection(hotspot, temp);
+	wire->removeConnection(gate, hotspot);
+
+	// When disconnecting a gui hotspot from its underlying inputs/outputs,
+	// single wires require no changes to their hotspot name, but
+	// bus-lines need to have their bit appended.
+	vector<string> internalHotspots;
+	if (wireIds.size() == 1) {
+		internalHotspots.push_back(hotspot);
+	}
+	else {
+		for (int i = 0; i < wireIds.size(); i++) {
+			internalHotspots.push_back(hotspot + "_" + to_string(i));
+		}
+	}
+
+	bool isInput = gate->isConnectionInput(hotspot);
+
+	// Disconnect each of wire's bus-lines from its corresponding gate hotspot.
+	for (int i = 0; i < internalHotspots.size(); i++) {
+		if (isInput) {
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT,
+				new klsMessage::Message_SET_GATE_INPUT(gateId, internalHotspots[i], 0, true)));
+		}
+		else {
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT,
+				new klsMessage::Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], 0, true)));
+		}
+	}
+}
 
 
 
