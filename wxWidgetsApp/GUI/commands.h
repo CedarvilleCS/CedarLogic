@@ -251,17 +251,31 @@ private:
 
 // cmdDeleteWire - Deletes a wire
 class cmdDeleteWire : public klsCommand {
-protected:
-	unsigned long wid;
-	stack < klsCommand* > cmdList;
-	
 public:
-	cmdDeleteWire( GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wid);
-	virtual ~cmdDeleteWire( void );
+	cmdDeleteWire( GUICircuit* gCircuit, GUICanvas* gCanvas, IDType wireId);
+	virtual ~cmdDeleteWire();
 	
-	bool Do( void );
-	bool Undo( void );
+	bool Do();
+	bool Undo();
+
+private:
+	std::vector<IDType> wireIds;
+	stack < klsCommand* > cmdList;
+
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // cmdDeleteGate - Deletes a gate
 class cmdDeleteGate : public klsCommand {
