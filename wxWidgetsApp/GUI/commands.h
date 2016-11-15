@@ -205,20 +205,20 @@ private:
 // cmdCreateWire - creates a wire
 class cmdCreateWire : public klsCommand {
 public:
-	cmdCreateWire( GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long wid, cmdConnectWire* conn1, cmdConnectWire* conn2 );
-	cmdCreateWire( string def );
-	virtual ~cmdCreateWire( void );
-	
-	bool Do( void );
-	bool Undo( void );
+	cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit, const std::vector<IDType> &wireIds, cmdConnectWire* conn1, cmdConnectWire* conn2);
+	cmdCreateWire(const std::string &def);
+	virtual ~cmdCreateWire();
 
-	bool validateBusLines();
+	bool Do();
+	bool Undo();
 
-	string toString();
+	bool validateBusLines() const;
+
+	std::string toString() const;
 	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
 
 private:
-	unsigned long wid;
+	std::vector<IDType> wireIds;
 	cmdConnectWire* conn1;
 	cmdConnectWire* conn2;
 };

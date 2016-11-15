@@ -92,9 +92,16 @@ void GUICanvas::insertGate(unsigned long id, guiGate* gt, float x, float y) {
 }
 
 // Inserts an existing wire onto the canvas
-void GUICanvas::insertWire(unsigned long id, guiWire* wire) {
-	if (wire == NULL) return;
-	wireList[id] = wire;
+void GUICanvas::insertWire(guiWire* wire) {
+
+	if (wire == nullptr) return;
+
+	// Make sure that each of this wire's ids are used.
+	for (IDType id : wire->getIDs) {
+		wireList[id] = nullptr;
+	}
+
+	wireList[wire->getID()] = wire;
 
 	// Add the wire to the collision checker:
 	collisionChecker.addObject( wire );
@@ -116,14 +123,20 @@ void GUICanvas::removeGate(unsigned long gid) {
 }
 
 // If the wire exists on this page, then remove it from the page
-void GUICanvas::removeWire(unsigned long wid) {
-	hash_map < unsigned long, guiWire* >::iterator thisWire = wireList.find(wid);
-	if (thisWire != wireList.end()) {
-		// Take the wire out of the collision checker:
-		collisionChecker.removeObject( thisWire->second );
-		collisionChecker.update();
+void GUICanvas::removeWire(unsigned long wireId) {
 
-		wireList.erase(thisWire);
+	if (wireList.find(wireId) == wireList.end()) return;
+
+	guiWire *wire = wireList.at(wireId);
+	collisionChecker.removeObject(wire);
+	collisionChecker.update();
+
+	// Release ID's owned by the wire.
+	for (int busLineId : wire->getIDs()) {
+		auto thisWire = wireList.find(busLineId);
+		if (thisWire != wireList.end()) {
+			wireList.erase(thisWire);
+		}
 	}
 }
 

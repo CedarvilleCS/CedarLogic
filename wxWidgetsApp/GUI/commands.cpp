@@ -565,8 +565,7 @@ bool cmdDeleteSelection::Undo() {
 
 TYLER DRAKE TODO BUS
 
-cmdCreateWire
-do, undo
+
 
 make sure the mapping of gui hotspots to logic hotspots is okay.
 So, buslines of 8 and hotspot "out" gives: out_0, out_1, ..., out_7.
@@ -849,18 +848,26 @@ string cmdDisconnectWire::toString() const {
 
 // CMDCREATEWIRE
 
-cmdCreateWire::cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long wid, cmdConnectWire* conn1, cmdConnectWire* conn2) : klsCommand(true, "Create Wire") {
+cmdCreateWire::cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit, const vector<IDType> &wireIds, cmdConnectWire* conn1, cmdConnectWire* conn2) : klsCommand(true, "Create Wire") {
 	this->gCanvas = gCanvas;
 	this->gCircuit = gCircuit;
-	this->wid = wid;
+	this->wireIds = wireIds;
 	this->conn1 = conn1;
 	this->conn2 = conn2;
 }
 
-cmdCreateWire::cmdCreateWire(string def) : klsCommand(true, "Create Wire") {
+cmdCreateWire::cmdCreateWire(const string &def) : klsCommand(true, "Create Wire") {
 	istringstream iss(def);
 	string dump;
-	iss >> dump >> wid;
+	iss >> dump;
+	
+	// The list of id's is followed by a non-integer.
+	// So we can just read until we can't get an integer.
+	IDType tempId;
+	while (iss >> tempId) {
+		wireIds.push_back(tempId);
+	}
+
 	string wireid, gateid, hotspot;
 	iss >> dump >> wireid >> gateid >> hotspot;
 	conn1 = new cmdConnectWire(dump + " " + wireid + " " + gateid + " " + hotspot);
@@ -868,29 +875,44 @@ cmdCreateWire::cmdCreateWire(string def) : klsCommand(true, "Create Wire") {
 	conn2 = new cmdConnectWire(dump + " " + wireid + " " + gateid + " " + hotspot);
 }
 
-cmdCreateWire::~cmdCreateWire(void) {
-	//	delete conn1;
-	//	delete conn2;
+cmdCreateWire::~cmdCreateWire() {
+	delete conn1;
+	delete conn2;
 }
 
 bool cmdCreateWire::Do() {
-	gCircuit->createWire(wid);
-	gCanvas->insertWire(wid, (*(gCircuit->getWires()))[wid]);
+
+	guiWire *wire = gCircuit->createWire(wireIds);
+	gCanvas->insertWire(wire);
+
+	for (IDType wireId : wireIds) {
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE,
+			new klsMessage::Message_CREATE_WIRE(wireId)));
+	}
+
 	conn1->Do();
 	conn2->Do();
+
 	return true;
 }
 
 bool cmdCreateWire::Undo() {
+
 	conn1->Undo();
 	conn2->Undo();
-	gCanvas->removeWire(wid);
-	gCircuit->deleteWire(wid);
-	gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE, new klsMessage::Message_DELETE_WIRE(wid)));
+	
+	for (IDType wireId : wireIds) {
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE,
+			new klsMessage::Message_DELETE_WIRE(wireId)));
+	}
+
+	gCanvas->removeWire(wireIds[0]);
+	gCircuit->deleteWire(wireIds[0]);
+
 	return true;
 }
 
-bool cmdCreateWire::validateBusLines() {
+bool cmdCreateWire::validateBusLines() const {
 
 	IDType gate1Id = conn1->getGateId();
 	IDType gate2Id = conn2->getGateId();
@@ -907,21 +929,33 @@ bool cmdCreateWire::validateBusLines() {
 	return busLines1 == busLines2;
 }
 
-string cmdCreateWire::toString() {
+string cmdCreateWire::toString() const {
 	ostringstream oss;
-	oss << "createwire " << wid << " " << conn1->toString() << " " << conn2->toString();
+	oss << "createwire ";
+
+	// No need to put a count because thing after ids is a non-int.
+	for (IDType id : wireIds) {
+		oss << id << ' ';
+	}
+		
+	oss << conn1->toString() << ' ' << conn2->toString();
 	return oss.str();
 }
 
 void cmdCreateWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids) {
-	// Find myself an appropriate id
-	if (wireids.find(wid) != wireids.end()) {
-		wid = wireids[wid];
+	
+	// remap ids.
+	// notice the difference between wireIds and wireids.
+	for (IDType &id : wireIds) {
+		if (wireids.find(id) != wireids.end()) {
+			id = wireids[id];
+		}
+		else {
+			wireids[id] = gCircuit->getNextAvailableWireID();
+			id = wireids[id];
+		}
 	}
-	else {
-		wireids[wid] = gCircuit->getNextAvailableWireID();
-		wid = wireids[wid];
-	}
+
 	conn1->setPointers(gCircuit, gCanvas, gateids, wireids);
 	conn2->setPointers(gCircuit, gCanvas, gateids, wireids);
 	this->gCircuit = gCircuit;

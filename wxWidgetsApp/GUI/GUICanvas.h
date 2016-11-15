@@ -154,7 +154,7 @@ public:
 	// Insert and remove gates and wires from this canvas
 	void insertGate(unsigned long, guiGate*, float, float);
 	void removeGate(unsigned long);
-	void insertWire(unsigned long, guiWire*);
+	void insertWire(guiWire*);
 	void removeWire(unsigned long);
 	
 	// Remove the selection flag from all gates or wires on the canvas

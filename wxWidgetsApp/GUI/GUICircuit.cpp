@@ -170,18 +170,34 @@ void GUICircuit::deleteGate(unsigned long gid, bool waitToUpdate) {
 
 guiWire* GUICircuit::createWire(const std::vector<IDType> &wireIds) {
 	if (wireList.find(wireIds[0]) == wireList.end()) { // wire does not exist yet
+
+		// Make sure that each used wireId has a spot in the wireList.
+		// This lets getNextAvailableWireId() give an unused id.
+		for (IDType id : wireIds) {
+			wireList[id] = nullptr;
+		}
+
 		wireList[wireIds[0]] = new guiWire();
 		wireList[wireIds[0]]->setIDs(wireIds);
 	}
 	return wireList[wireIds[0]];
 }
 
-void GUICircuit::deleteWire(unsigned long wid) {
-	hash_map < unsigned long, guiWire* >::iterator thisWire = wireList.find(wid);
-	if (thisWire != wireList.end()) {
-		delete thisWire->second;
-		wireList.erase(thisWire);
+void GUICircuit::deleteWire(unsigned long wireId) {
+
+	if (wireList.find(wireId) == wireList.end()) return;
+
+	guiWire *wire = wireList.at(wireId);
+
+	// Release ID's owned by the wire.
+	for (int busLineId : wire->getIDs()) {
+		auto thisWire = wireList.find(busLineId);
+		if (thisWire != wireList.end()) {
+			wireList.erase(thisWire);
+		}
 	}
+
+	delete wire;
 }
 
 guiWire* GUICircuit::setWireConnection(const vector<IDType> &wireIds, long gid, string connection, bool openMode) {
