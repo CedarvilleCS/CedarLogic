@@ -876,6 +876,7 @@ void MainFrame::PauseSim() {
 //JV - Make new canvas and add it to canvases and canvasBook
 //TODO - Find a way to put a tab button in correct place
 void MainFrame::OnNewTab(wxCommandEvent& event) {
+	 
 	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 	ostringstream oss;
 	oss << "Page " << canvases.size();
@@ -901,14 +902,17 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 					return;
 			}
 		}
-		canvases.erase(canvases.begin() + canvasID);
+		gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdDeleteTab(gCircuit, currentCanvas, canvasBook, &canvases, canvasID)));
+/*		canvases.erase(canvases.begin() + canvasID);
 
 		if (canvasID < (canSize - 1)) {
 			for (unsigned int i = canvasID; i < canSize; i++) {
 				string text = "Page " + to_string(i);
 				canvasBook->SetPageText(i, text);
 			}
-		}
+		}*/
+		//canvasBook->RemovePage(canvasID - 1);
+		event.Veto();
 	}
 	else {
 		wxMessageBox(_T("Tab cannot be closed"), _T("Close"), wxOK);
