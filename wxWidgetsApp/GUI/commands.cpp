@@ -524,6 +524,8 @@ bool cmdDeleteSelection::Undo() {
 
 TYLER DRAKE TODO BUS
 
+Right now, the failing command in copy-paste is nullptr.
+
 make sure the mapping of gui hotspots to logic hotspots is okay.
 So, buslines of 8 and hotspot "out" gives: out_0, out_1, ..., out_7.
 
