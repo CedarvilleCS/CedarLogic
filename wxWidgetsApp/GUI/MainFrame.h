@@ -29,8 +29,7 @@ class OscopeFrame;
 
 enum
 {
-	Edit_Export_BW = 5901, // out of range of wxWidgets constants
-	Edit_Export_C,
+	File_Export = 5901, // out of range of wxWidgets constants
 	
 	View_Oscope,
 	View_Gridline,
@@ -65,8 +64,7 @@ public:
     void OnSaveAs(wxCommandEvent& event);
 	void OnPrint(wxCommandEvent& event);
 	void OnPrintPreview(wxCommandEvent& event);
-	void OnExportBitmapBW(wxCommandEvent& event);
-	void OnExportBitmapC(wxCommandEvent& event);
+	void OnExportBitmap(wxCommandEvent& event);
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxTimerEvent& event);
 	void OnSize(wxSizeEvent& event);
