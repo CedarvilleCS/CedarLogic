@@ -95,6 +95,10 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_PRINT, _T("&Print\tCtrl+P"), _T("Print circuit"));
 	fileMenu->Append(wxID_PREVIEW, _T("P&rint Preview"), _T("Preview circuit printout"));
+	wxMenu *exportMenu = new wxMenu;
+	exportMenu->Append(Edit_Export_BW, _T("Black and White"), _T("Export B&W circuit bitmap to clipboard"));
+	exportMenu->Append(Edit_Export_C, _T("Color"), _T("Export color circuit bitmap to clipboard"));
+	fileMenu->AppendSubMenu(exportMenu, _T("Export Bitmap"));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _T("E&xit\tAlt+X"), _T("Quit this program"));
 
@@ -117,11 +121,6 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	editMenu->AppendSeparator();
 	editMenu->Append(wxID_COPY, _T("Copy\tCtrl+C"), _T("Copy selection to clipboard"));
 	editMenu->Append(wxID_PASTE, _T("Paste\tCtrl+V"), _T("Paste selection from clipboard"));
-	editMenu->AppendSeparator();
-	wxMenu *exportMenu = new wxMenu;
-	exportMenu->Append(Edit_Export_BW, _T("Black and White"), _T("Export B&W circuit bitmap to clipboard"));
-	exportMenu->Append(Edit_Export_C, _T("Color"), _T("Export color circuit bitmap to clipboard"));
-	editMenu->AppendSubMenu(exportMenu, _T("Export bitmap"));
 	
     // now append the freshly created menu to the menu bar...
     wxMenuBar *menuBar = new wxMenuBar();
