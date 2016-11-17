@@ -314,4 +314,18 @@ public:
 	bool Undo(void);
 };
 
+//JV - cmdAddTab - add a new tab into canvasBook
+class cmdAddTab : public klsCommand {
+protected:
+	wxAuiNotebook* canvasBook;
+	vector< GUICanvas* >* canvases;
+
+public:
+	cmdAddTab(GUICircuit* gCircuit, wxAuiNotebook* book, vector< GUICanvas* >* canvases);
+	virtual ~cmdAddTab(void);
+
+	bool Do(void);
+	bool Undo(void);
+};
+
 #endif /*COMMANDS_H_*/

@@ -876,11 +876,12 @@ void MainFrame::PauseSim() {
 //JV - Make new canvas and add it to canvases and canvasBook
 //TODO - Find a way to put a tab button in correct place
 void MainFrame::OnNewTab(wxCommandEvent& event) {
+	gCircuit->GetCommandProcessor()->Submit((wxCommand*)new cmdAddTab(gCircuit, canvasBook, &canvases));
 	 
-	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
+/*	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 	ostringstream oss;
 	oss << "Page " << canvases.size();
-	canvasBook->AddPage(canvases[canvases.size()-1], (const wxChar *)oss.str().c_str(), (false));
+	canvasBook->AddPage(canvases[canvases.size()-1], (const wxChar *)oss.str().c_str(), (false));*/
 
 }
 

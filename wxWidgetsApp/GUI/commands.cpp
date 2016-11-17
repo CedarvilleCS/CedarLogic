@@ -1090,7 +1090,7 @@ bool cmdWireSegDrag::Undo() {
 	return true;
 }
 
-// JV - CMDDELETETAB
+// JV
 
 cmdDeleteTab::cmdDeleteTab(GUICircuit* gCircuit, GUICanvas* gCanvas, wxAuiNotebook* book, vector< GUICanvas* >* canvases, unsigned long ID) : klsCommand(true, (const wxChar *)"Delete Tab") {
 	this->gCircuit = gCircuit;
@@ -1126,16 +1126,19 @@ bool cmdDeleteTab::Do() {
 	unsigned int canSize = canvases->size();
 	//canvases->erase(canvases->begin() + canvasID);
 	remove(canvases->begin(), canvases->end(), gCanvas);
-	canvases->shrink_to_fit();
+	canvases->pop_back();
 
+	unsigned int sizes = canvases->size();
 	
-	if (this->canvasID < (canSize - 1)) {
+	if (canvasID < (canSize - 1)) {
 		for (unsigned int i = canvasID; i < canSize; i++) {
 			string text = "Page " + to_string(i);
 			canvasBook->SetPageText(i, text);
 		}
 	}
 	canvasBook->RemovePage(canvasID);
+	//TODO fix canvases not refreshing
+	//canvases->at(canvasBook->GetSelection())->Refresh();
 	return true;
 }
 bool cmdDeleteTab::Undo() {
@@ -1144,13 +1147,6 @@ bool cmdDeleteTab::Undo() {
 	ostringstream oss;
 	oss << "Page " << canvasID+1;
 	canvasBook->InsertPage(canvasID, gCanvas, (const wxChar *)oss.str().c_str(), (false));
-	unsigned int indexPage = canvasBook->GetPageCount();
-	if (wxNOT_FOUND == indexPage) {
-		printf("OHNO");
-	}
-	else {
-		printf("%d", indexPage);
-	}
 	if (canvasID < (canSize)) {
 		for (unsigned int i = canvasID+1; i < canSize+1; i++) {
 			string text = "Page " + to_string(i+1);
@@ -1161,5 +1157,30 @@ bool cmdDeleteTab::Undo() {
 		cmdList.top()->Undo();
 		cmdList.pop();
 	}
+	return true;
+}
+
+//JV
+cmdAddTab::cmdAddTab(GUICircuit* gCircuit, wxAuiNotebook* book, vector< GUICanvas* >* canvases) : klsCommand(true, (const wxChar *)"Add Tab") {
+	this->gCircuit = gCircuit;
+	this->canvasBook = book;
+	this->canvases = canvases;
+}
+
+cmdAddTab::~cmdAddTab() {
+
+}
+
+bool cmdAddTab::Do() {
+	canvases->push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
+	ostringstream oss;
+	oss << "Page " << canvases->size();
+	canvasBook->AddPage(canvases->at(canvases->size() - 1), (const wxChar *)oss.str().c_str(), (false));
+	return true;
+}
+
+bool cmdAddTab::Undo() {
+	canvases->erase(canvases->end()-1);
+	canvasBook->DeletePage(canvasBook->GetPageCount()-1);
 	return true;
 }
