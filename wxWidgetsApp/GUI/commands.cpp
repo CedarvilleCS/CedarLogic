@@ -524,16 +524,13 @@ bool cmdDeleteSelection::Undo() {
 
 TYLER DRAKE TODO BUS
 
-
-
 make sure the mapping of gui hotspots to logic hotspots is okay.
 So, buslines of 8 and hotspot "out" gives: out_0, out_1, ..., out_7.
 
-that one spot where submitWireConnection is not used.
-search TYLER
+make sure the querying of values is okay.
+Looking for "out" should give a multi-value, I think.
+Looking for "out_7" should give a single value.
 
-Also note:
-cmdDeleteWire
 */
 
 
@@ -881,7 +878,11 @@ bool cmdCreateWire::validateBusLines() const {
 	int busLines1 = gate1->getHotspot(hotspot1)->getBusLines();
 	int busLines2 = gate2->getHotspot(hotspot2)->getBusLines();
 
-	return busLines1 == busLines2;
+	return busLines1 == busLines2 && busLines1 == wireIds.size();
+}
+
+const vector<IDType> & cmdCreateWire::getWireIds() const {
+	return wireIds;
 }
 
 string cmdCreateWire::toString() const {

@@ -214,6 +214,8 @@ public:
 
 	bool validateBusLines() const;
 
+	const std::vector<IDType> & getWireIds() const;
+
 	std::string toString() const;
 	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
 

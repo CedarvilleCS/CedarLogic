@@ -301,7 +301,7 @@ std::string guiGate::getHotspotPal(const std::string &hotspot) {
 	map<string, GLPoint2f> hotspotList = getHotspotList();
 
 	for (const auto &possiblePal : hotspotList) {
-		if (possiblePal.first != hotspot && possiblePal.second != coords) {
+		if (possiblePal.first != hotspot && possiblePal.second == coords) {
 			return possiblePal.first;
 		}
 	}

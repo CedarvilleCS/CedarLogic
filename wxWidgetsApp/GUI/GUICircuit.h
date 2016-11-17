@@ -50,6 +50,7 @@ public:
 	guiGate* createGate(string gt, long id = -1, bool noOscope = false);
 
 	// Creates a new wire/bus. 'wireIds' are each of the bus-line's ids.
+	// Returns pointer to existing wire if called for ids that already exist.
 	guiWire* createWire(const std::vector<IDType> &wireIds);
 
 	// Sets a named input/output of a gate to be connected; returns pointer to wire

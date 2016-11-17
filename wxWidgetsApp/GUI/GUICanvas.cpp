@@ -842,19 +842,27 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 			// Oh yeah, we only drag from gates...
 			if (currentConnectionSource.isGate) {
 
+				wxCommand *command = nullptr;
+
 				// Target is a wire...
 				if (drawWireHover) {
-					submitWireConnection(currentConnectionSource.objectID,
+					command = createGateWireConnectionCommand(
+						currentConnectionSource.objectID,
 						currentConnectionSource.connection, wireHoverID);
 				}
 				else {
 
 					// Target is a gate...
 					if (hotspotHighlight.size() > 0) {
-						submitWireConnection(currentConnectionSource.objectID,
+						command = createGateConnectionCommand(
+							currentConnectionSource.objectID,
 							currentConnectionSource.connection,
 							hotspotGate, hotspotHighlight);
 					}
+				}
+
+				if (command != nullptr) {
+					gCircuit->GetCommandProcessor()->Submit(command);
 				}
 			}
 		}
@@ -883,16 +891,11 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 					while (hsWalk != hshits.end()) {
 						if ( !(((guiGate*)(*obj))->isConnected(((gateHotspot*)(*hotspotCollide))->name)) && !(((guiGate*)(*hit))->isConnected(((gateHotspot*)(*hsWalk))->name)) &&
 							(((guiGate*)(*obj))->isSelected() || ((guiGate*)(*hit))->isSelected())) {
-							// potential connection found, so hook it up
-							long newWID = gCircuit->getNextAvailableWireID();
 
+							cmdCreateWire* createwire = (cmdCreateWire *)createGateConnectionCommand(
+								((guiGate*)(*obj))->getID(), ((gateHotspot*)(*hotspotCollide))->name,
+								((guiGate*)(*hit))->getID(), ((gateHotspot*)(*hsWalk))->name);
 
-							// TODO TODO BUS TODO TYLER DRAKE
-							// reuse submitWireConnection here.
-
-							cmdConnectWire* connectwire = new cmdConnectWire( gCircuit, newWID, ((guiGate*)(*obj))->getID(), ((gateHotspot*)(*hotspotCollide))->name );
-							cmdConnectWire* connectwire2 = new cmdConnectWire(gCircuit, newWID, ((guiGate*)(*hit))->getID(), ((gateHotspot*)(*hsWalk))->name);
-							cmdCreateWire* createwire = new cmdCreateWire( this, gCircuit, newWID, connectwire, connectwire2 );
 							createwire->Do();
 							//collisionChecker.update();
 							if (currentDragState == DRAG_SELECTION) {
@@ -1237,7 +1240,7 @@ void GUICanvas::Update() {
 	wxWindow::Update();
 }
 
-void GUICanvas::submitWireConnection(IDType gateId, const string &hotspot, IDType wireId) {
+klsCommand * GUICanvas::createGateWireConnectionCommand(IDType gateId, const string &hotspot, IDType wireId) {
 
 	guiGate *gate = gateList[gateId];
 	guiWire *wire = wireList[wireId];
@@ -1245,61 +1248,78 @@ void GUICanvas::submitWireConnection(IDType gateId, const string &hotspot, IDTyp
 	// Make sure not already connected.
 	if (gate->isConnected(hotspot) &&
 		gate->getConnection(hotspot) == wire) {
-		return;
+		return nullptr;
 	}
 
 	cmdConnectWire *command = new cmdConnectWire(gCircuit, wireId, gateId, hotspot);
 
 	if (command->validateBusLines()) {
-		gCircuit->GetCommandProcessor()->Submit(command);
+		return command;
 	}
 	else {
 		delete command;
+		return nullptr;
 	}
 }
 
-void GUICanvas::submitWireConnection(IDType gate1Id, const string &hotspot1, IDType gate2Id, const string &hotspot2) {
+klsCommand * GUICanvas::createGateConnectionCommand(IDType gate1Id, const string &hotspot1, IDType gate2Id, const string &hotspot2) {
 
 	guiGate *gate1 = gateList[gate1Id];
 	guiGate *gate2 = gateList[gate2Id];
 
 	// Don't connect a hotspot to itself.
 	if (gate1 == gate2 && hotspot1 == hotspot2) {
-		return;
+		return nullptr;
 	}
 
 	// Make sure not already connected.
 	if (gate1->isConnected(hotspot1) &&
 		gate2->isConnected(hotspot2) &&
 		gate1->getConnection(hotspot1) == gate2->getConnection(hotspot2)) {
-		return;
+		return nullptr;
 	}
 
 	// Neither connected, so create wire.
 	if (!gate1->isConnected(hotspot1) &&
 		!gate2->isConnected(hotspot2)) {
 
-		long newWireId = gCircuit->getNextAvailableWireID();
 
-		cmdConnectWire *connectwire = new cmdConnectWire(gCircuit, newWireId, gate1Id, hotspot1);
-		cmdConnectWire *connectwire2 = new cmdConnectWire(gCircuit, newWireId, gate2Id, hotspot2);
-		cmdCreateWire *createWire = new cmdCreateWire(this, gCircuit, newWireId, connectwire, connectwire2);
+		vector<IDType> wireIds(gCircuit->getGates()->at(gate1Id)
+			->getHotspot(hotspot1)->getBusLines());
+
+		// Get the correct number of new, unique wire ids.
+		for (int i = 0; i < wireIds.size(); i++) {
+			wireIds[i] = gCircuit->getNextAvailableWireID();
+		}
+
+		cmdConnectWire *connectwire =
+			new cmdConnectWire(gCircuit, wireIds[0], gate1Id, hotspot1);
+
+		cmdConnectWire *connectwire2 =
+			new cmdConnectWire(gCircuit, wireIds[0], gate2Id, hotspot2);
+
+		cmdCreateWire *createWire =
+			new cmdCreateWire(this, gCircuit, wireIds, connectwire, connectwire2);
 
 		if (createWire->validateBusLines()) {
-			gCircuit->GetCommandProcessor()->Submit(createWire);
+			return createWire;
 		}
 		else {
 			delete createWire;
+			return nullptr;
 		}
 	}
 	else {
 		
 		// One of the gates is connected.
 		if (gate1->isConnected(hotspot1)) {
-			submitWireConnection(gate2Id, hotspot2, gate1->getConnection(hotspot1)->getID());
+			return createGateWireConnectionCommand(gate2Id,
+				hotspot2, gate1->getConnection(hotspot1)->getID());
 		}
 		else if (gate2->isConnected(hotspot2)) {
-			submitWireConnection(gate1Id, hotspot1, gate2->getConnection(hotspot2)->getID());
+			return createGateWireConnectionCommand(gate1Id,
+				hotspot1, gate2->getConnection(hotspot2)->getID());
 		}
+		return nullptr;
 	}
 }

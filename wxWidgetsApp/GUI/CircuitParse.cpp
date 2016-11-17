@@ -236,15 +236,27 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 			}
 		} // for( loop through the hotspots )
 	} // if( logic type is non-null )
+
+
+	// Connect inputs and outputs.
+	GUICircuit *gCircuit = gCanvas->getCircuit();
 	for (unsigned int i = 0; i < inputs.size(); i++) {
-		gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(id, inputs[i].connectionID, inputs[i].wireID)));
-		// Create gate input for GUI (setWireConnection returns a pointer to the wire)
-		gCanvas->insertWire(inputs[i].wireIds[0], gCanvas->getCircuit()->setWireConnection( inputs[i].wireIds, id, inputs[i].connectionID, true ));
+
+		guiWire *wire = gCircuit->createWire(inputs[i].wireIds);
+
+		cmdConnectWire::sendMessagesToConnect(gCircuit, wire->getID(),
+			newGate->getID(), inputs[i].connectionID, true);
+
+		gCanvas->insertWire(wire);
 	}
 	for (unsigned int i = 0; i < outputs.size(); i++) {
-		gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(id, outputs[i].connectionID, outputs[i].wireID)));		
-		// Create gate output for GUI (setWireConnection returns a pointer to the wire)
-		gCanvas->insertWire(outputs[i].wireIds[0], gCanvas->getCircuit()->setWireConnection( outputs[i].wireIds, id, outputs[i].connectionID, true ));
+
+		guiWire *wire = gCircuit->createWire(inputs[i].wireIds);
+
+		cmdConnectWire::sendMessagesToConnect(gCircuit, wire->getID(),
+			newGate->getID(), inputs[i].connectionID, true);
+
+		gCanvas->insertWire(wire);
 	}
 }
 

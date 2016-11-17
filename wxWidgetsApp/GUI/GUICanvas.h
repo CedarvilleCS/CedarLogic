@@ -28,6 +28,7 @@ class cmdPasteBlock;
 #include "klsCollisionChecker.h"
 #include "wireSegment.h"
 
+class klsCommand;
 class guiWire;
 
 // Struct GateState
@@ -199,13 +200,14 @@ public:
 	};
 
 	void printLists();
+
+	// Create a command to connect a wire to a gate.
+	klsCommand * createGateWireConnectionCommand(IDType gateId, const string &hotspot, IDType wireId);
+
+	// Create a command to connect a gate to a gate.
+	klsCommand * createGateConnectionCommand(IDType gate1Id, const string &hotspot1, IDType gate2Id, const string &hotspot2);
+
 private:
-
-	// Create and do a command to connect a wire to a gate.
-	void submitWireConnection(IDType gateId, const string &hotspot, IDType wireId);
-
-	// Create and do a command to connect a wire to a gate.
-	void submitWireConnection(IDType gate1Id, const string &hotspot1, IDType gate2Id, const string &hotspot2);
 
 	// Contains all collision information for the page
 	klsCollisionChecker collisionChecker;
