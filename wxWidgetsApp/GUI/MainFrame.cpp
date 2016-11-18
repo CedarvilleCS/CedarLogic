@@ -97,7 +97,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	//wxMenu *exportMenu = new wxMenu;
 	//exportMenu->Append(Edit_Export_BW, _T("Black and White"), _T("Export B&W circuit bitmap to clipboard"));
 	//exportMenu->Append(Edit_Export_C, _T("Color"), _T("Export color circuit bitmap to clipboard"));
-	fileMenu->Append(File_Export, _T("Export Bitmap"));
+	fileMenu->Append(File_Export, _T("Export"));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _T("E&xit\tAlt+X"), _T("Quit this program"));
 
@@ -285,6 +285,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	}
 	currentTempNum = 0;
 	handlingEvent = false;
+	wxInitAllImageHandlers(); //Julian: Added to allow saving all types of image files
 }
 
 MainFrame::~MainFrame() {
@@ -718,18 +719,56 @@ void MainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event)) {
 }
 
 void MainFrame::OnExportBitmap(wxCommandEvent& event) {
+	bool showGrid = false;
+	wxMessageDialog gridDialog(this, wxT("Export with Grid?"), wxT("Export"), wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
+	switch (gridDialog.ShowModal()) {
+	case wxID_YES:
+		showGrid = true;
+		break;
+	case wxID_CANCEL:
+		return;
+	}
 	// disable the grid display
 	bool gridlineVisible = wxGetApp().appSettings.gridlineVisible;
-	wxGetApp().appSettings.gridlineVisible = false;
+	wxGetApp().appSettings.gridlineVisible = showGrid;
 	wxGetApp().doingBitmapExport = true;
 	// render the image
 	wxSize imageSize = currentCanvas->GetClientSize();
 	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth()*2, imageSize.GetHeight()*2, 32);
 	wxBitmap circuitBitmap(circuitImage);
-	if (wxTheClipboard->Open()) {
+
+	wxString caption = wxT("Export Circuit");
+	wxString wildcard = wxT("Bitmap (*.bmp)|*.bmp|PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg");
+	wxString defaultFilename = wxT("");
+	wxFileDialog saveDialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	saveDialog.SetDirectory(lastDirectory);
+	if (saveDialog.ShowModal() == wxID_OK) {
+		wxString path = saveDialog.GetPath();
+		wxBitmapType fileType;
+		if (path.SubString(path.find_last_of(".") + 1, path.length()) == "bmp")
+		{
+			fileType = wxBITMAP_TYPE_BMP;
+		}
+		else if (path.SubString(path.find_last_of(".") + 1, path.length()) == "png")
+		{
+			fileType = wxBITMAP_TYPE_PNG;
+		}
+		else
+		{
+			fileType = wxBITMAP_TYPE_JPEG;
+		}
+
+		circuitBitmap.SaveFile(_T(path),fileType);
+	}
+	else
+	{
+		return;
+	}
+
+	/*if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(circuitBitmap));
 		wxTheClipboard->Close();
-	}
+	}*/
 	// restore grid display setting
 	wxGetApp().appSettings.gridlineVisible = gridlineVisible;
 	wxGetApp().doingBitmapExport = false;
