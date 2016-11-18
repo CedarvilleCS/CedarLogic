@@ -728,14 +728,16 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 	case wxID_CANCEL:
 		return;
 	}
-	// disable the grid display
+
 	bool gridlineVisible = wxGetApp().appSettings.gridlineVisible;
 	wxGetApp().appSettings.gridlineVisible = showGrid;
 	wxGetApp().doingBitmapExport = true;
+
 	// render the image
-	wxSize imageSize = currentCanvas->GetClientSize();
-	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth()*2, imageSize.GetHeight()*2, 32);
-	wxBitmap circuitBitmap(circuitImage);
+	CircuitPrint* printer = new CircuitPrint(currentCanvas, openedFilename, _T("Logic Circuit"));
+	wxBitmap circuitBitmap = printer->printCanvas(currentCanvas);
+	delete printer;
+	printer == NULL;
 
 	wxString caption = wxT("Export Circuit");
 	wxString wildcard = wxT("Bitmap (*.bmp)|*.bmp|PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg");
@@ -765,10 +767,6 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 		return;
 	}
 
-	/*if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(circuitBitmap));
-		wxTheClipboard->Close();
-	}*/
 	// restore grid display setting
 	wxGetApp().appSettings.gridlineVisible = gridlineVisible;
 	wxGetApp().doingBitmapExport = false;
