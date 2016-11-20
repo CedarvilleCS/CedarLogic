@@ -193,7 +193,9 @@ void klsMiniMap::renderMap() {
 	glLoadIdentity ();
 	hash_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
 	while( thisWire != wireList->end() ) {
-		(thisWire->second)->draw(false);
+		if (thisWire->second != nullptr) {
+			(thisWire->second)->draw(false);
+		}
 		thisWire++;
 	}
 

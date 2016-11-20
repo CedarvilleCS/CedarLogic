@@ -47,7 +47,7 @@ bool cmdMoveGate::Undo() {
 	return true;
 }
 
-string cmdMoveGate::toString() {
+string cmdMoveGate::toString() const {
 	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return ""; // error, gate not found
 	ostringstream oss;
 	oss << "movegate " << gid << " " << startX << " " << startY << " " << endX << " " << endY;
@@ -172,13 +172,13 @@ void cmdMoveWire::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_ma
 	oldSegList = newSegList;
 }
 
-string cmdMoveWire::toString() {
+string cmdMoveWire::toString() const {
 	if ( (gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end() ) return ""; // error, wire not found
 	ostringstream oss;
 	oss << "movewire " << wid << " ";
 	// Step through the map, save each seg's info
-	map < long, wireSegment >::iterator segWalk = newSegList.begin();
-	while (segWalk != newSegList.end()) {
+	map < long, wireSegment >::const_iterator segWalk = newSegList.cbegin();
+	while (segWalk != newSegList.cend()) {
 		// seg looks like "segment id bx,by,ex,ey connection gid,name isect key,id"
 		if ((segWalk->second).isVertical()) oss << "vsegment ";
 		else oss << "hsegment ";
@@ -192,8 +192,8 @@ string cmdMoveWire::toString() {
 			oss << (segWalk->second).connections[i].gid << " " << (segWalk->second).connections[i].connection << " ";
 		}
 		// intersections - must store the intersection map
-		map < GLfloat, vector < long > >::iterator isectWalk = (segWalk->second).intersects.begin();
-		while (isectWalk != (segWalk->second).intersects.end()) {
+		map < GLfloat, vector < long > >::const_iterator isectWalk = (segWalk->second).intersects.cbegin();
+		while (isectWalk != (segWalk->second).intersects.cend()) {
 			for (unsigned int j = 0; j < (isectWalk->second).size(); j++) {
 				oss << "isect ";
 				oss << isectWalk->first << " " << (isectWalk->second)[j] << " ";
@@ -339,7 +339,7 @@ bool cmdCreateGate::Undo() {
 	return true;
 }
 
-string cmdCreateGate::toString() {
+string cmdCreateGate::toString() const {
 	ostringstream oss;
 	oss << "creategate " << gid << " " << gateType << " " << x << " " << y;
 	return oss.str();	
@@ -821,6 +821,7 @@ cmdCreateWire::cmdCreateWire(const string &def) : klsCommand(true, "Create Wire"
 	while (iss >> tempId) {
 		wireIds.push_back(tempId);
 	}
+	iss.clear();
 
 	string wireid, gateid, hotspot;
 	iss >> dump >> wireid >> gateid >> hotspot;
@@ -1146,11 +1147,11 @@ bool cmdSetParams::Undo() {
 	return true;
 }
 
-string cmdSetParams::toString() {
+string cmdSetParams::toString() const {
 	ostringstream oss;
 	oss << "setparams " << gid << " " << newGUIParamList.size() << "," << newLogicParamList.size() << " ";
-	map < string, string >::iterator paramWalk = newGUIParamList.begin();
-	while (paramWalk != newGUIParamList.end()) {
+	map < string, string >::const_iterator paramWalk = newGUIParamList.cbegin();
+	while (paramWalk != newGUIParamList.cend()) {
 		oss << paramWalk->first << " " << paramWalk->second << "\t";
 		paramWalk++;
 	}

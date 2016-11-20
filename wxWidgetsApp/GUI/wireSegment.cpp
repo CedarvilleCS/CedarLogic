@@ -20,11 +20,11 @@ void wireSegment::calcBBox() {
 	this->setBBox(newBBox);
 }
 
-bool wireSegment::isHorizontal() {
+bool wireSegment::isHorizontal() const {
 	return !verticalSeg;
 }
 
-bool wireSegment::isVertical() {
+bool wireSegment::isVertical() const {
 	return verticalSeg;
 }
 

@@ -214,14 +214,28 @@ void guiWire::draw(bool color) {
 	if (!color) glColor4f(0.0, 0.0, 0.0, 1.0);
 
 	// Draw the wire from the previously-saved render info
-
 	vector< GLLine2f >* lineSegments = &(renderInfo.lineSegments);
+	glLineWidth(ids.size() != 1 ? 4 : 1);
 	glBegin(GL_LINES);
 	for (unsigned int i = 0; i < lineSegments->size(); i++) {
 		glVertex2f((*lineSegments)[i].begin.x, (*lineSegments)[i].begin.y);
 		glVertex2f((*lineSegments)[i].end.x, (*lineSegments)[i].end.y);
 	}
 	glEnd();
+	glLineWidth(1);
+
+	// Add caps to bus wire ends to prevent weird joints.
+	if (ids.size() != 1) {
+		glPointSize(4);
+		glBegin(GL_POINTS);
+		for (unsigned int i = 0; i < lineSegments->size(); i++) {
+			glVertex2f((*lineSegments)[i].begin.x, (*lineSegments)[i].begin.y);
+			glVertex2f((*lineSegments)[i].end.x, (*lineSegments)[i].end.y);
+		}
+		glEnd();
+		glPointSize(1);
+	}
+
 
 	vector< GLPoint2f >* isectPoints = &(renderInfo.intersectPoints);
 	for (unsigned int i = 0; i < isectPoints->size(); i++) {
@@ -1096,6 +1110,7 @@ void guiWire::generateRenderInfo() {
 	while (segWalk != segMap.end()) {
 		glLine.begin = GLPoint2f((segWalk->second).begin.x, (segWalk->second).begin.y);
 		glLine.end = GLPoint2f((segWalk->second).end.x, (segWalk->second).end.y);
+
 		renderInfo.lineSegments.push_back(glLine);
 
 		// Save the intersection points for non-elbows:

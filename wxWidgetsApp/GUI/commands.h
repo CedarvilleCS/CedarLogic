@@ -43,7 +43,7 @@ public:
 	// (1) changed NULL in init of name to nullptr and then to "", (2) added inits for gCircuit and gCanvas   KAS
 	klsCommand( bool canUndo, const char *name) : wxCommand(canUndo, wxString(name)), gCircuit(nullptr), gCanvas(nullptr) {};
 	virtual ~klsCommand( void ) { return; };
-	virtual string toString() { return ""; };
+	virtual string toString() const { return ""; };
 	virtual void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) { this->gCircuit = gCircuit; this->gCanvas = gCanvas; };
 };
 
@@ -60,7 +60,7 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
-	string toString();
+	virtual std::string toString() const override;
 };
 
 // cmdMoveWire - moving a wire and storing it's segment maps (old and new)
@@ -80,7 +80,7 @@ public:
 	bool Do( void );
 	bool Undo( void );
 	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
-	string toString();
+	virtual std::string toString() const override;
 };
 
 // cmdMoveSelection - move passed gates and wires
@@ -118,7 +118,7 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
-	string toString();
+	virtual std::string toString() const override;
 	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
 	
 	vector < klsCommand* >* getConnections() { return &proxconnects; };
@@ -152,7 +152,7 @@ public:
 
 	bool validateBusLines() const;
 
-	std::string toString() const;
+	virtual std::string toString() const override;
 	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
 	IDType getGateId() const;
 	const std::string & getHotspot() const;
@@ -182,7 +182,7 @@ public:
 
 	bool Do();
 	bool Undo();
-	std::string toString() const;
+	virtual std::string toString() const override;
 
 private:
 	IDType gateId;
@@ -216,7 +216,7 @@ public:
 
 	const std::vector<IDType> & getWireIds() const;
 
-	std::string toString() const;
+	virtual std::string toString() const override;
 	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
 
 private:
@@ -325,7 +325,7 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
-	string toString();
+	virtual std::string toString() const override;
 	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
 };
 

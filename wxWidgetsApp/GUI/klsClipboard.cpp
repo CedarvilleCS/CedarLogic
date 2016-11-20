@@ -107,7 +107,10 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
 		}
 		hash_map < unsigned long, unsigned long >::iterator wireWalk = wireids.begin();
 		while (wireWalk != wireids.end()) {
-			(*(gCircuit->getWires()))[wireWalk->second]->select();
+			guiWire *wire = (*(gCircuit->getWires()))[wireWalk->second];
+			if (wire != nullptr) {
+				wire->select();
+			}
 			wireWalk++;
 		}
 		gCircuit->getOscope()->UpdateMenu();
@@ -172,22 +175,18 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		vector < wireConnection > wconns = copyWires[i]->getConnections();
 		// now generate the connections - connections 1 and 2 must be passed to create the wire
 		//	after which all connections may be done in succession.
-		cmdTemp = gCanvas->createGateConnectionCommand(
-			wconns[0].cGate->getID(), wconns[0].connection,
-			wconns[1].cGate->getID(), wconns[1].connection);
-
-		IDType wireId = ((cmdCreateWire*)(cmdTemp))->getWireIds()[0];
-
+		cmdConnectWire *conn1 = new cmdConnectWire(gCircuit, copyWires[i]->getID(), wconns[0].cGate->getID(), wconns[0].connection);
+		cmdConnectWire *conn2 = new cmdConnectWire(gCircuit, copyWires[i]->getID(), wconns[1].cGate->getID(), wconns[1].connection);
+		cmdTemp = new cmdCreateWire(gCanvas, gCircuit, gCircuit->getWires()->at(copyWires[i]->getID())->getIDs(), conn1, conn2);
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
-
 		for (unsigned int j = 2; j < wconns.size(); j++) {
-			cmdTemp = new cmdConnectWire( gCircuit, wireId, wconns[j].cGate->getID(), wconns[j].connection );
+			cmdTemp = new cmdConnectWire(gCircuit, copyWires[i]->getID(), wconns[j].cGate->getID(), wconns[j].connection);
 			oss << cmdTemp->toString() << endl;
 			delete cmdTemp;
 		}
 		// now track the wire's shape:
-		cmdTemp = new cmdMoveWire( gCircuit, wireId, copyWires[i]->getSegmentMap(), copyWires[i]->getSegmentMap());
+		cmdTemp = new cmdMoveWire(gCircuit, copyWires[i]->getID(), copyWires[i]->getSegmentMap(), copyWires[i]->getSegmentMap());
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
 		delete copyWires[i];

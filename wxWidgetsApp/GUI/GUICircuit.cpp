@@ -37,7 +37,9 @@ void GUICircuit::reInitializeLogicCircuit() {
 	waitToSendMessage = iswaiting;
 	hash_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while( thisWire != wireList.end() ) {
-		delete thisWire->second;
+		if (thisWire->second != nullptr) {
+			delete thisWire->second;
+		}
 		thisWire++;
 	}
 	hash_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
@@ -305,7 +307,9 @@ void GUICircuit::printState() {
 	wxGetApp().logfile << "print state" << endl << flush;
 	hash_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while (thisWire != wireList.end()) {
-		wxGetApp().logfile << "wire " << thisWire->first << endl << flush;
+		if (thisWire->second != nullptr) {
+			wxGetApp().logfile << "wire " << thisWire->first << endl << flush;
+		}
 		thisWire++;
 	}
 	hash_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();

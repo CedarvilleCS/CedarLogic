@@ -139,6 +139,7 @@ void CircuitParse::parseFile() {
 						while (iss >> tempId) {
 							gc->wireIds.push_back(tempId);
 						}
+						iss.clear();
 
 						inputs.push_back(*gc);
 						delete gc;
@@ -153,6 +154,7 @@ void CircuitParse::parseFile() {
 						while (iss >> tempId) {
 							gc->wireIds.push_back(tempId);
 						}
+						iss.clear();
 
 						outputs.push_back(*gc);
 						delete gc;
@@ -282,6 +284,7 @@ void CircuitParse::parseWireToSend( void ) {
 			while (iss >> tempId) {
 				ids.push_back(tempId);
 			}
+			iss.clear();
 
 		} else if (temp == "shape") { //read tree
 			do {
