@@ -394,7 +394,9 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 		
 		hash_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
 		while (thisWire != wireList->end()) {
-			(thisWire->second)->saveWire(mParse);
+			if (thisWire->second != nullptr) {
+				(thisWire->second)->saveWire(mParse);
+			}
 			thisWire++;
 		}
 		
