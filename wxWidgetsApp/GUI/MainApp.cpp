@@ -92,7 +92,8 @@ bool MainApp::OnInit()
     
     // success: wxApp::OnRun() will be called which will enter the main message
     // loop and the application will run. If we returned false here, the
-    // application would exit immediately.
+    // application would exit immediately
+	
     return true;
 }
 
@@ -239,5 +240,6 @@ void MainApp::loadSettings() {
 			appSettings.mainFrameWidth = appSettings.mainFrameHeight = 600;
 			appSettings.mainFrameLeft = appSettings.mainFrameTop = 20;	
 		}
+
 	}
 }
