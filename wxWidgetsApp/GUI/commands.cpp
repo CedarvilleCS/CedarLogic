@@ -524,14 +524,18 @@ bool cmdDeleteSelection::Undo() {
 
 TYLER DRAKE TODO BUS
 
-Right now, the failing command in copy-paste is nullptr.
+Alright... We're like 'THIS' close.
+Right now, the messages sent to the logic core look like: connect gate1, out_0 to wire[busline0].
+Basically, the way I think it should look.
+Also, in the gui, the buses look mostly right.
+
+I need to create a logic gate for bus-ends!
+It should take the buslines data and make hotspot *underscore* *number* outputs/inputs.
+Use the junction logic_gate as a template!
+
 
 make sure the mapping of gui hotspots to logic hotspots is okay.
 So, buslines of 8 and hotspot "out" gives: out_0, out_1, ..., out_7.
-
-make sure the querying of values is okay.
-Looking for "out" should give a multi-value, I think.
-Looking for "out_7" should give a single value.
 
 */
 
