@@ -1099,6 +1099,7 @@ cmdDeleteTab::cmdDeleteTab(GUICircuit* gCircuit, GUICanvas* gCanvas, wxAuiNotebo
 	this->canvases = canvases;
 	this->canvasID = ID;
 
+
 	hash_map< unsigned long, guiGate* >* gateList = gCanvas->getGateList();
 	hash_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
 	while (thisGate != gateList->end()) {
@@ -1127,9 +1128,6 @@ bool cmdDeleteTab::Do() {
 	//canvases->erase(canvases->begin() + canvasID);
 	remove(canvases->begin(), canvases->end(), gCanvas);
 	canvases->pop_back();
-
-	unsigned int sizes = canvases->size();
-	
 	if (canvasID < (canSize - 1)) {
 		for (unsigned int i = canvasID; i < canSize; i++) {
 			string text = "Page " + to_string(i);
@@ -1138,7 +1136,7 @@ bool cmdDeleteTab::Do() {
 	}
 	canvasBook->RemovePage(canvasID);
 	//TODO fix canvases not refreshing
-	//canvases->at(canvasBook->GetSelection())->Refresh();
+	gCanvas->Hide();
 	return true;
 }
 bool cmdDeleteTab::Undo() {
