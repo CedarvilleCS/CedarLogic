@@ -2607,8 +2607,8 @@ void Gate_BUS_END::gateProcess() { }
 void Gate_BUS_END::connectInput(string inputID, IDType wireID) {
 	Gate::connectInput(inputID, wireID);
 	
-	// Skip the "IN_" part and parse the number.
-	int id = atoi(inputID.substr(3).c_str());
+	// Grab the bus line from the back of the inputID.
+	int id = atoi(inputID.substr(inputID.find('_') + 1).c_str());
 
 	// Connect the wire to the junction in the Circuit:
 	myCircuit->connectJunction(junctionIDs[id], wireID);
@@ -2620,8 +2620,8 @@ IDType Gate_BUS_END::disconnectInput(string inputID) {
 	// Call the gate's method:
 	wireID = Gate::disconnectInput(inputID);
 
-	// Skip the "OUT_" part and parse the number.
-	int id = atoi(inputID.substr(4).c_str());
+	// Grab the bus line from the back of the inputID.
+	int id = atoi(inputID.substr(inputID.find('_') + 1).c_str());
 
 	if (wireID != ID_NONE) {
 		// Unhook the wire from the Junction in the Circuit:
