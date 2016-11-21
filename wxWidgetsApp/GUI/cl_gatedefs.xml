@@ -2848,25 +2848,25 @@
     <name>BV_4x1_BUS_END</name>
 		<caption>4x1 Bus End</caption>
     <logic_type>BUS_END</logic_type>
-    <logic_param>BUS_LINES 4</logic_param>
+    <logic_param>INPUT_BITS 4</logic_param>
 		<input> 
-      <name>Bus_in_0</name>
+      <name>IN_0</name>
 		  <point>-2,-1.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_1</name>
+      <name>IN_1</name>
 		  <point>-2,-0.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_2</name>
+      <name>IN_2</name>
 		  <point>-2,0.5</point> 
 		</input>
     <input> 
-      <name>Bus_in_3</name>
+      <name>IN_3</name>
 		  <point>-2,1.5</point> 
 		</input>
     <input> 
-      <name>Bus_out</name>
+      <name>OUT</name>
 		  <point>2,0</point>
       <bus>4</bus>
 		</input>
@@ -2905,43 +2905,43 @@
     <name>BW_8X1_BUS_END</name>
 		<caption>8x1 Bus End</caption>
     <logic_type>BUS_END</logic_type>
-    <logic_param>BUS_LINES 8</logic_param>
+    <logic_param>INPUT_BITS 8</logic_param>
 		<input> 
-      <name>Bus_in_0</name>
+      <name>IN_0</name>
 		  <point>-2,-3.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_1</name>
+      <name>IN_1</name>
 		  <point>-2,-2.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_2</name>
+      <name>IN_2</name>
 		  <point>-2,-1.5</point> 
 		</input>
     <input> 
-      <name>Bus_in_3</name>
+      <name>IN_3</name>
 		  <point>-2,-0.5</point> 
 		</input>
     
     <input> 
-      <name>Bus_in_4</name>
+      <name>IN_4</name>
 		  <point>-2,0.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_5</name>
+      <name>IN_5</name>
 		  <point>-2,1.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_6</name>
+      <name>IN_6</name>
 		  <point>-2,2.5</point> 
 		</input>
     <input> 
-      <name>Bus_in_7</name>
+      <name>IN_7</name>
 		  <point>-2,3.5</point> 
 		</input>
     
     <input> 
-      <name>Bus_out</name>
+      <name>OUT</name>
 		  <point>2,0</point>
       <bus>8</bus>
 		</input>
@@ -2985,77 +2985,77 @@
     <name>BX_16X1_BUS_END</name>
 		<caption>16x1 Bus End</caption>
     <logic_type>BUS_END</logic_type>
-    <logic_param>BUS_LINES 16</logic_param>
+    <logic_param>INPUT_BITS 16</logic_param>
 		<input> 
       <name>Bus_in_0</name>
 		  <point>-2,-7.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_1</name>
+      <name>IN_1</name>
 		  <point>-2,-6.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_2</name>
+      <name>IN_2</name>
 		  <point>-2,-5.5</point> 
 		</input>
     <input> 
-      <name>Bus_in_3</name>
+      <name>IN_3</name>
 		  <point>-2,-4.5</point> 
 		</input>
     
     <input> 
-      <name>Bus_in_4</name>
+      <name>IN_4</name>
 		  <point>-2,-3.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_5</name>
+      <name>IN_5</name>
 		  <point>-2,-2.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_6</name>
+      <name>IN_6</name>
 		  <point>-2,-1.5</point> 
 		</input>
     <input> 
-      <name>Bus_in_7</name>
+      <name>IN_7</name>
 		  <point>-2,-0.5</point> 
 		</input>
     
     <input>
-    <name>Bus_in_8</name>
+    <name>IN_8</name>
 		  <point>-2,0.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_9</name>
+      <name>IN_9</name>
 		  <point>-2,1.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_10</name>
+      <name>IN_10</name>
 		  <point>-2,2.5</point> 
 		</input>
     <input> 
-      <name>Bus_in_11</name>
+      <name>IN_11</name>
 		  <point>-2,3.5</point> 
 		</input>
     
     <input> 
-      <name>Bus_in_12</name>
+      <name>IN_12</name>
 		  <point>-2,4.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_13</name>
+      <name>IN_13</name>
 		  <point>-2,5.5</point> 
 		</input>
 		<input> 
-      <name>Bus_in_14</name>
+      <name>IN_14</name>
 		  <point>-2,6.5</point> 
 		</input>
     <input> 
-      <name>Bus_in_15</name>
+      <name>IN_15</name>
 		  <point>-2,7.5</point> 
 		</input>
     
     <input> 
-      <name>Bus_out</name>
+      <name>OUT</name>
 		  <point>2,0</point>
       <bus>16</bus>
 		</input>

@@ -2593,63 +2593,89 @@ Gate_BUS_END::Gate_BUS_END(Circuit *newCircuit) : Gate() {
 
 	// Keep the circuit pointer, to use to access the Junctions
 	myCircuit = newCircuit;
-
-	// Create the Junction object in the Circuit:
-	junctionID = myCircuit->newJunction();
-
-	// The Junction is always connected:
-	myCircuit->setJunctionState(junctionID, true);
-
-	// Declare the gate inputs and output:
-	declareInput("N_in0");
-	declareInput("N_in1");
-	declareInput("N_in2");
-	declareInput("N_in3");
-
-	declareInput("N_in4");
-	declareInput("N_in5");
-	declareInput("N_in6");
-	declareInput("N_in7");
+	busWidth = 0;
 }
 
-
-// Destroy the gate, and remove the Junction object from the
-// Circuit:
 Gate_BUS_END::~Gate_BUS_END() {
-	//NOTE: This doesn't crash the system when the Circuit object is destroyed,
-	//      because Circuit::~Circuit() always explicitly destroys all gates.
-	myCircuit->deleteJunction(junctionID);
+	for (IDType id : junctionIDs) {
+		myCircuit->deleteJunction(id);
+	}
 }
 
+void Gate_BUS_END::gateProcess() { }
 
-// Handle gate events:
-void Gate_BUS_END::gateProcess(void) {
-	// The Junction handles all of the processing for the Gate_NODE.
-}
-
-
-// Connect a wire to the input of this gate:
 void Gate_BUS_END::connectInput(string inputID, IDType wireID) {
 	Gate::connectInput(inputID, wireID);
+	
+	// Skip the "IN_" part and parse the number.
+	int id = atoi(inputID.substr(3).c_str());
 
 	// Connect the wire to the junction in the Circuit:
-	myCircuit->connectJunction(junctionID, wireID);
+	myCircuit->connectJunction(junctionIDs[id], wireID);
 }
 
-// Disconnect a wire from the input of this gate:
-// (Returns the wireID of the wire that was connected.)
 IDType Gate_BUS_END::disconnectInput(string inputID) {
 	IDType wireID = ID_NONE;
 
 	// Call the gate's method:
 	wireID = Gate::disconnectInput(inputID);
 
+	// Skip the "OUT_" part and parse the number.
+	int id = atoi(inputID.substr(4).c_str());
+
 	if (wireID != ID_NONE) {
 		// Unhook the wire from the Junction in the Circuit:
-		myCircuit->disconnectJunction(junctionID, wireID);
+		myCircuit->disconnectJunction(junctionIDs[id], wireID);
 	}
 
 	return wireID;
+}
+
+bool Gate_BUS_END::setParameter(string paramName, string value) {
+
+	istringstream iss(value);
+	if (paramName == "INPUT_BITS") {
+
+		if (busWidth != 0) {
+			return false;
+		}
+
+		iss >> busWidth;
+
+		// Declare the address pins!		
+		if (busWidth > 0) {
+
+			// Declare inputs and outputs for connect/disconnect routines.
+			declareInputBus("IN", busWidth);
+			declareInputBus("OUT", busWidth);
+
+			// Create internal junctions.
+			for (int i = 0; i < busWidth; i++) {
+				junctionIDs.push_back(myCircuit->newJunction());
+				myCircuit->setJunctionState(junctionIDs[i], true);
+			}
+		}
+
+		//NOTE: Don't return "true" from this, because
+		// you shouldn't be setting this param during simulation while
+		// anything is connected anyhow!
+	}
+	else {
+		return Gate::setParameter(paramName, value);
+	}
+	return false;
+}
+
+string Gate_BUS_END::getParameter(string paramName) {
+
+	ostringstream oss;
+	if (paramName == "INPUT_BITS") {
+		oss << busWidth;
+		return oss.str();
+	}
+	else {
+		return Gate::getParameter(paramName);
+	}
 }
 
 

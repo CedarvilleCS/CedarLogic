@@ -253,10 +253,10 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	}
 	for (unsigned int i = 0; i < outputs.size(); i++) {
 
-		guiWire *wire = gCircuit->createWire(inputs[i].wireIds);
+		guiWire *wire = gCircuit->createWire(outputs[i].wireIds);
 
 		cmdConnectWire::sendMessagesToConnect(gCircuit, wire->getID(),
-			newGate->getID(), inputs[i].connectionID, true);
+			newGate->getID(), outputs[i].connectionID, true);
 
 		gCanvas->insertWire(wire);
 	}
