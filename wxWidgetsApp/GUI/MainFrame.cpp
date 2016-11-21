@@ -734,10 +734,9 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 	wxGetApp().doingBitmapExport = true;
 
 	// render the image
-	CircuitPrint* printer = new CircuitPrint(currentCanvas, openedFilename, _T("Logic Circuit"));
-	wxBitmap circuitBitmap = printer->printCanvas(currentCanvas);
-	delete printer;
-	printer == NULL;
+	wxSize imageSize = currentCanvas->GetClientSize();
+	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth() * 2, imageSize.GetHeight() * 2, 32);
+	wxBitmap circuitBitmap(circuitImage);
 
 	wxString caption = wxT("Export Circuit");
 	wxString wildcard = wxT("Bitmap (*.bmp)|*.bmp|PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg");

@@ -112,13 +112,3 @@ void CircuitPrint::DrawPageOne(wxDC *dc)
 
 	dc->DrawBitmap( printBmp, (int)posX, (int)posY );
 }
-
-
-//Julian: Added to improve printing/exporting
-wxBitmap CircuitPrint::printCanvas(GUICanvas* canvas)
-{
-	wxSize imageSize = canvas->GetClientSize();
-	wxImage circuitImage = canvas->renderToImage(imageSize.GetWidth() * 2, imageSize.GetHeight() * 2, 32);
-	wxBitmap circuitBitmap(circuitImage);
-	return circuitImage;
-}

@@ -31,8 +31,6 @@ public:
 		
 	void DrawPageOne(wxDC *dc);
 
-	wxBitmap printCanvas(GUICanvas* canvas); //Julian: Added to improve printing/exporting
-
 private:
 	wxString filename;
 	GUICanvas* sourceCanvas;
