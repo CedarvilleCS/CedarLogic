@@ -81,9 +81,11 @@ public:
 	// Set all of the wire's Ids (For buses, really).
 	const std::vector<IDType> & getIDs() const;
 	
-	// State functions
-	void setState(StateType ns);
-	StateType getState();
+	// Set the state for each wire id. (again multiple because buses)
+	void setState(std::vector<StateType> state);
+
+	// Get the state for each wire id.
+	const std::vector<StateType> & getState() const;
 
 	// Give directions for XML tag definition of wire
 	void saveWire(XMLParser* xparse);
@@ -149,9 +151,17 @@ private:
 	bool setVerticalBar;
 	long headSegment; // reference segment
 	
+	// The wire ids for each wire in the bus.
+	// These same ids are used in the gui and logic systems.
+	// There are maps of id to guiWire in GUICircuit and GUICanvas.
+	// In these maps, the first bus id is used to look up the wire.
+	// The other ids all point to null.
 	std::vector<IDType> ids;
 
-	StateType state;
+	// The state for each wire in the bus.
+	// Most wires will have a vector of size 1.
+	std::vector<StateType> state;
+	
 	klsBBox mouseCoords;
 
 	// Handle a pointer for the segment being moved, -1 if not set

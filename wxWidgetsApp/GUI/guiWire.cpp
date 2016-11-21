@@ -47,7 +47,6 @@ float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2) {
 
 guiWire::guiWire() : klsCollisionObject(COLL_WIRE) {
 	selected = false;
-	state = HI_Z;
 	setVerticalBar = true;
 	// Start segs at 1, since 0 is reserved for the base vertical segment
 	nextSegID = 1;
@@ -58,7 +57,9 @@ guiWire::guiWire() : klsCollisionObject(COLL_WIRE) {
 	headSegment = 0; // since the base vertical seg is 0
 	
 	// By default, wires have only one line.
+	// Also by default, the state of this line is HI_Z.
 	ids.resize(1);
+	state.resize(1, HI_Z);
 }
 
 // TJD. 9/26/2016
@@ -193,25 +194,51 @@ void guiWire::draw(bool color) {
 		glLineStipple(1, 0x9999);
 	}
 
-	// make color:
-	switch (state) {
-	case ZERO:
-		glColor4f(0.0, 0.0, 0.0, 1.0);
-		break;
-	case ONE:
-		glColor4f(1.0, 0.0, 0.0, 1.0);
-		break;
-	case HI_Z:
-		glColor4f(0.0, 0.78f, 0.0, 1.0);
-		break;
-	case UNKNOWN:
-		glColor4f(0.3f, 0.3f, 1.0, 1.0);
-		break;
-	case CONFLICT:
-		glColor4f(0.0, 1.0, 1.0, 1.0);
-		break;
+	// Calculate color
+	if (color) {
+		bool conflict = false;
+		bool unknown = false;
+		bool hiz = false;
+		float redness = 0;
+
+		// Find color as a gradient base on decimal value.
+		// If there's a conflict, unknown, or hi_z, show that instead.
+		for (int i = 0; i < (int)state.size(); i++) {
+			switch (state[i]) {
+			case ZERO:
+				break;
+			case ONE:
+				redness += pow(2, i);
+				break;
+			case HI_Z:
+				hiz = true;
+				break;
+			case UNKNOWN:
+				unknown = true;
+				break;
+			case CONFLICT:
+				conflict = true;
+				break;
+			}
+		}
+		redness /= pow(2, state.size()) - 1;
+
+		if (conflict) {
+			glColor4f(0.0, 1.0, 1.0, 1.0);
+		}
+		else if (unknown) {
+			glColor4f(0.3f, 0.3f, 1.0, 1.0);
+		}
+		else if (hiz) {
+			glColor4f(0.0, 0.78f, 0.0, 1.0);
+		}
+		else {
+			glColor4f(redness, 0.0, 0.0, 1.0);
+		}
 	}
-	if (!color) glColor4f(0.0, 0.0, 0.0, 1.0);
+	else {
+		glColor4f(0.0, 0.0, 0.0, 1.0);
+	}
 
 	// Draw the wire from the previously-saved render info
 	vector< GLLine2f >* lineSegments = &(renderInfo.lineSegments);
@@ -406,9 +433,13 @@ const std::vector<IDType> & guiWire::getIDs() const {
 	return ids;
 }
 
-void guiWire::setState(StateType ns) { state = ns; };
+void guiWire::setState(vector<StateType> state) {
+	this->state = state;
+};
 
-StateType guiWire::getState(void) { return state; };
+const vector<StateType> & guiWire::getState() const {
+	return state;
+};
 
 // Save segment tree and wire info
 void guiWire::saveWire(XMLParser* xparse) {
