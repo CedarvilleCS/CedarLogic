@@ -83,6 +83,9 @@ public:
 	
 	// Set the state for each wire id. (again multiple because buses)
 	void setState(std::vector<StateType> state);
+	
+	// Set the state of a busline in this wire from its id.
+	void setSubState(IDType buslineId, StateType state);
 
 	// Get the state for each wire id.
 	const std::vector<StateType> & getState() const;

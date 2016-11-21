@@ -173,13 +173,17 @@ void GUICircuit::deleteGate(unsigned long gid, bool waitToUpdate) {
 guiWire* GUICircuit::createWire(const std::vector<IDType> &wireIds) {
 	if (wireList.find(wireIds[0]) == wireList.end()) { // wire does not exist yet
 
+		guiWire *wire = new guiWire();
+
 		// Make sure that each used wireId has a spot in the wireList.
 		// This lets getNextAvailableWireId() give an unused id.
+		// Also add all buslines to the busline map.
 		for (IDType id : wireIds) {
 			wireList[id] = nullptr;
+			buslineToWire[id] = wire;
 		}
 
-		wireList[wireIds[0]] = new guiWire();
+		wireList[wireIds[0]] = wire;
 		wireList[wireIds[0]]->setIDs(wireIds);
 	}
 	return wireList[wireIds[0]];
@@ -193,10 +197,8 @@ void GUICircuit::deleteWire(unsigned long wireId) {
 
 	// Release ID's owned by the wire.
 	for (int busLineId : wire->getIDs()) {
-		auto thisWire = wireList.find(busLineId);
-		if (thisWire != wireList.end()) {
-			wireList.erase(thisWire);
-		}
+		wireList.erase(busLineId);
+		buslineToWire.erase(busLineId);
 	}
 
 	delete wire;
@@ -298,7 +300,7 @@ void GUICircuit::setWireState( long wid, long state ) {
 	// If the wire doesn't exist, then don't set it's state!
 	if( wireList.find(wid) == wireList.end() ) return;
 	
-	wireList[wid]->setState(state);
+	buslineToWire[wid]->setSubState(wid, state);
 	gCanvas->Refresh();
 	return;
 }

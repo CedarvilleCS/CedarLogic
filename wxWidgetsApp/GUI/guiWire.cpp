@@ -427,6 +427,7 @@ IDType guiWire::getID() const {
 
 void guiWire::setIDs(const std::vector<IDType> &ids) {
 	this->ids = ids;
+	this->state.resize(ids.size(), HI_Z);
 }
 
 const std::vector<IDType> & guiWire::getIDs() const {
@@ -436,6 +437,14 @@ const std::vector<IDType> & guiWire::getIDs() const {
 void guiWire::setState(vector<StateType> state) {
 	this->state = state;
 };
+
+void guiWire::setSubState(IDType buslineId, StateType state) {
+	for (int i = 0; i < this->state.size(); i++) {
+		if (ids[i] == buslineId) {
+			this->state[i] = state;
+		}
+	}
+}
 
 const vector<StateType> & guiWire::getState() const {
 	return state;

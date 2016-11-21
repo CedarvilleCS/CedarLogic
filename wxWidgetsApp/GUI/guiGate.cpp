@@ -756,7 +756,7 @@ void guiGateLED::draw( bool color ) {
 	// map i/o name to wire id
 	map< string, guiWire* >::iterator theCnk = connections.begin();
 	if( theCnk != connections.end() ) {
-		outputState = (theCnk->second)->getState();
+		outputState = (theCnk->second)->getState()[0];
 	}
 
 	switch( outputState ) {

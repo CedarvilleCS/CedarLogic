@@ -92,6 +92,8 @@ private:
 	hash_map< unsigned long, guiGate* > gateList;
 	hash_map< unsigned long, guiWire* > wireList;
 
+	hash_map<IDType, guiWire *> buslineToWire;
+
 	unsigned long nextGateID;
 	unsigned long nextWireID;
 	
