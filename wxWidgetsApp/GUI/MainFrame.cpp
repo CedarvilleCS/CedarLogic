@@ -37,13 +37,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(wxID_SAVEAS, MainFrame::OnSaveAs)
 	EVT_MENU(wxID_PRINT, MainFrame::OnPrint)
 	EVT_MENU(wxID_PREVIEW, MainFrame::OnPrintPreview)
+	EVT_MENU(File_Export, MainFrame::OnExportBitmap)
 	
 	EVT_MENU(wxID_UNDO, MainFrame::OnUndo)
 	EVT_MENU(wxID_REDO, MainFrame::OnRedo)
 	EVT_MENU(wxID_COPY, MainFrame::OnCopy)
 	EVT_MENU(wxID_PASTE, MainFrame::OnPaste)
-	EVT_MENU(Edit_Export_BW, MainFrame::OnExportBitmapBW)
-	EVT_MENU(Edit_Export_C, MainFrame::OnExportBitmapC)
 	
     EVT_MENU(View_Oscope, MainFrame::OnOscope)
     EVT_MENU(View_Gridline, MainFrame::OnViewGridline)
@@ -97,6 +96,10 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_PRINT, _T("&Print\tCtrl+P"), _T("Print circuit"));
 	fileMenu->Append(wxID_PREVIEW, _T("P&rint Preview"), _T("Preview circuit printout"));
+	//wxMenu *exportMenu = new wxMenu;
+	//exportMenu->Append(Edit_Export_BW, _T("Black and White"), _T("Export B&W circuit bitmap to clipboard"));
+	//exportMenu->Append(Edit_Export_C, _T("Color"), _T("Export color circuit bitmap to clipboard"));
+	fileMenu->Append(File_Export, _T("Export"));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _T("E&xit\tAlt+X"), _T("Quit this program"));
 
@@ -119,11 +122,6 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	editMenu->AppendSeparator();
 	editMenu->Append(wxID_COPY, _T("Copy\tCtrl+C"), _T("Copy selection to clipboard"));
 	editMenu->Append(wxID_PASTE, _T("Paste\tCtrl+V"), _T("Paste selection from clipboard"));
-	editMenu->AppendSeparator();
-	wxMenu *exportMenu = new wxMenu;
-	exportMenu->Append(Edit_Export_BW, _T("Black and White"), _T("Export B&W circuit bitmap to clipboard"));
-	exportMenu->Append(Edit_Export_C, _T("Color"), _T("Export color circuit bitmap to clipboard"));
-	editMenu->AppendSubMenu(exportMenu, _T("Export bitmap"));
 	
     // now append the freshly created menu to the menu bar...
     wxMenuBar *menuBar = new wxMenuBar();
@@ -291,6 +289,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	}
 	currentTempNum = 0;
 	handlingEvent = false;
+	wxInitAllImageHandlers(); //Julian: Added to allow saving all types of image files
 }
 
 MainFrame::~MainFrame() {
@@ -750,37 +749,54 @@ void MainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event)) {
     frame->Show();
 }
 
-void MainFrame::OnExportBitmapBW(wxCommandEvent& event) {
-	// disable the grid display
-	bool gridlineVisible = wxGetApp().appSettings.gridlineVisible;
-	wxGetApp().appSettings.gridlineVisible = false;
-	wxGetApp().doingBitmapExport = true;
-	// render the image
-	wxSize imageSize = currentCanvas->GetClientSize();
-	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth()*2, imageSize.GetHeight()*2, 32, true);
-	wxBitmap circuitBitmap(circuitImage);
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(circuitBitmap));
-		wxTheClipboard->Close();
+void MainFrame::OnExportBitmap(wxCommandEvent& event) {
+	bool showGrid = false;
+	wxMessageDialog gridDialog(this, wxT("Export with Grid?"), wxT("Export"), wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
+	switch (gridDialog.ShowModal()) {
+	case wxID_YES:
+		showGrid = true;
+		break;
+	case wxID_CANCEL:
+		return;
 	}
-	// restore grid display setting
-	wxGetApp().appSettings.gridlineVisible = gridlineVisible;
-	wxGetApp().doingBitmapExport = false;
-}
 
-void MainFrame::OnExportBitmapC(wxCommandEvent& event) {
-	// disable the grid display
 	bool gridlineVisible = wxGetApp().appSettings.gridlineVisible;
-	wxGetApp().appSettings.gridlineVisible = false;
+	wxGetApp().appSettings.gridlineVisible = showGrid;
 	wxGetApp().doingBitmapExport = true;
+
 	// render the image
 	wxSize imageSize = currentCanvas->GetClientSize();
-	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth()*2, imageSize.GetHeight()*2, 32);
+	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth() * 2, imageSize.GetHeight() * 2, 32);
 	wxBitmap circuitBitmap(circuitImage);
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(circuitBitmap));
-		wxTheClipboard->Close();
+
+	wxString caption = wxT("Export Circuit");
+	wxString wildcard = wxT("Bitmap (*.bmp)|*.bmp|PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg");
+	wxString defaultFilename = wxT("");
+	wxFileDialog saveDialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	saveDialog.SetDirectory(lastDirectory);
+	if (saveDialog.ShowModal() == wxID_OK) {
+		wxString path = saveDialog.GetPath();
+		wxBitmapType fileType;
+		if (path.SubString(path.find_last_of(".") + 1, path.length()) == "bmp")
+		{
+			fileType = wxBITMAP_TYPE_BMP;
+		}
+		else if (path.SubString(path.find_last_of(".") + 1, path.length()) == "png")
+		{
+			fileType = wxBITMAP_TYPE_PNG;
+		}
+		else
+		{
+			fileType = wxBITMAP_TYPE_JPEG;
+		}
+
+		circuitBitmap.SaveFile(_T(path),fileType);
 	}
+	else
+	{
+		return;
+	}
+
 	// restore grid display setting
 	wxGetApp().appSettings.gridlineVisible = gridlineVisible;
 	wxGetApp().doingBitmapExport = false;
