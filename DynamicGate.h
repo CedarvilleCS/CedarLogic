@@ -10,19 +10,30 @@ heirarchy.
 
 #include "LibraryParse.h"
 #include "guiGate.h"
+#include "GUICanvas.h"
 
 using namespace std;
 
 class DynamicGate {
 public:
+	const int MIN_HEIGHT = 5;
+	const int MIN_WIDTH = 4;
 	int inputs;
 	int outputs;
 	int x, y;
+	string libName = "Dynamic Gates";
+	string name;
+	string caption;
 	string logicType;
-	LibraryGate* libGate;
-	DynamicGate(int inputs, string lType, int xLoc, int yLoc);
+	LibraryGate libGate;
+	DynamicGate(GUICanvas* canvas, GUICircuit* circuit, unsigned long gid, int in, int xLoc, int yLoc, string lType, 
+				string gName = "Black Box", string gCaption = "This is a black box.", string guiType = "");
 
 private:
-	calculateShape();
-	createGate();
+	void calculateShape();
+	void calculateParams();
+	void addGateToLibrary();
+	void createGate(GUICanvas* canvas, GUICircuit* circuit, unsigned long gid, float xLoc, float yLoc);
 };
+
+#endif
