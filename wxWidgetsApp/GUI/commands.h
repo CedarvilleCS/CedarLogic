@@ -20,6 +20,9 @@
 #include "gl_defs.h"
 #include "wireSegment.h"
 #include "GUICanvas.h"  // GateState, WireState
+
+//JV
+#include "wx/aui/auibook.h"
 using namespace std;
 
 class GUICircuit;
@@ -274,6 +277,38 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
+};
+
+//JV - cmdDeleteTab - delete a tab from canvasBook
+class cmdDeleteTab : public klsCommand {
+protected:
+	vector < unsigned long > gates;
+	vector < unsigned long > wires;
+	stack < klsCommand* > cmdList;
+	wxAuiNotebook* canvasBook;
+	vector< GUICanvas* >* canvases;
+	unsigned long canvasID;
+
+public:
+	cmdDeleteTab(GUICircuit* gCircuit, GUICanvas* gCanvas, wxAuiNotebook* book, vector< GUICanvas* >* canvases, unsigned long ID);
+	virtual ~cmdDeleteTab(void);
+
+	bool Do(void);
+	bool Undo(void);
+};
+
+//JV - cmdAddTab - add a new tab into canvasBook
+class cmdAddTab : public klsCommand {
+protected:
+	wxAuiNotebook* canvasBook;
+	vector< GUICanvas* >* canvases;
+
+public:
+	cmdAddTab(GUICircuit* gCircuit, wxAuiNotebook* book, vector< GUICanvas* >* canvases);
+	virtual ~cmdAddTab(void);
+
+	bool Do(void);
+	bool Undo(void);
 };
 
 #endif /*COMMANDS_H_*/

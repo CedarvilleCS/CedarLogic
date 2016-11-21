@@ -55,6 +55,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_TOOL(Tool_ZoomOut, MainFrame::OnZoomOut)
 	EVT_SCROLL(MainFrame::OnTimeStepModSlider)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
+	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
 	
     //EVT_SIZE(MainFrame::OnSize)
     //EVT_MAXIMIZE(MainFrame::OnMaximize)
@@ -62,7 +63,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_TIMER(TIMER_ID, MainFrame::OnTimer)
 	EVT_TIMER(IDLETIMER_ID, MainFrame::OnIdle)
 
-	EVT_NOTEBOOK_PAGE_CHANGED(NOTEBOOK_ID, MainFrame::OnNotebookPage)
+	EVT_AUINOTEBOOK_PAGE_CHANGED(NOTEBOOK_ID, MainFrame::OnNotebookPage)
+	EVT_AUINOTEBOOK_PAGE_CLOSE(NOTEBOOK_ID, MainFrame::OnDeleteTab)
 	
 	EVT_CLOSE(MainFrame::OnClose)
 END_EVENT_TABLE()
@@ -157,10 +159,10 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 
 	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
 	// to read the bitmaps from file directly, without the use of a resource file.  KAS
-	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked"};
-	wxBitmap *bmp[14];
+	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab"};
+	wxBitmap *bmp[15];
 
-	for (int  i = 0; i < 14; i++) {
+	for (int  i = 0; i < 15; i++) {
 		bitmaps[i] = "GUI/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
@@ -196,11 +198,13 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddTool(Tool_Lock, _T("Lock state"), *bmp[13], wxT("Lock state"), wxITEM_CHECK);
 	toolBar->AddSeparator();
 	toolBar->AddTool(wxID_ABOUT, _T("About"), *bmp[8], wxT("About"));
+	//JV - Temporary tab button
+	toolBar->AddTool(Tool_NewTab, _T("New Tab"), *bmp[14], wxT("New Tab"));
 	SetToolBar(toolBar);
 	toolBar->Show(true);
 
 	//finished with the bitmaps, so we can release the pointers  KAS
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 15; i++) {
 		delete bmp[i];
 	}
 
@@ -226,21 +230,21 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	gCircuit->GetCommandProcessor()->SetEditMenu(editMenu);
 	gCircuit->GetCommandProcessor()->Initialize();
 
-	canvasBook = new wxNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400));
+	canvasBook = new wxAuiNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400), wxAUI_NB_CLOSE_ON_ACTIVE_TAB| wxAUI_NB_SCROLL_BUTTONS);
 	mainSizer->Add( canvasBook, wxSizerFlags(1).Expand().Border(wxALL, 0) );
 
-	//add 10 tabs
-	for (int i = 0; i < 10; i++) {
+	//add 1 tab: Left loop to allow for different default
+	for (int i = 0; i < 1; i++) {
 		canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 		ostringstream oss;
 		oss << "Page " << (i+1);
 		canvasBook->AddPage(canvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));  // KAS
 	}
-	
+
 	currentCanvas = canvases[0];
 	gCircuit->setCurrentCanvas(currentCanvas);
 	currentCanvas->setMinimap(miniMap);
-	mainSizer->Show( canvasBook );
+	mainSizer->Show(canvasBook);
 	currentCanvas->SetFocus();
 
 	SetSizer( mainSizer);
@@ -459,10 +463,17 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	wxGetApp().appSystemTime.Pause();
 	wxGetApp().dGUItoLOGIC.clear();
 	wxGetApp().dLOGICtoGUI.clear();
+
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->clearCircuit();
 	gCircuit->reInitializeLogicCircuit();
 	commandProcessor->ClearCommands();
 	commandProcessor->SetMenuStrings();
+	//JV - Added so that new starts with one tab
+	for (unsigned int j = canvases.size() - 1; j > 0; j--) {
+		canvasBook->DeletePage(j);
+		canvases.erase(canvases.end() - 1);
+	}
+
 	currentCanvas->Update(); // Render();
 	this->SetTitle((const wxChar *)"CEDAR Logic Simulator"); // KAS
 	removeTempFile();
@@ -531,8 +542,28 @@ void MainFrame::loadCircuitFile( string fileName ){
 	gCircuit->reInitializeLogicCircuit();
 	commandProcessor->ClearCommands();
 	commandProcessor->SetMenuStrings();
+	//JV - Delete all but the first tab
+	for (unsigned int j = canvases.size() - 1; j > 0; j--) {
+		canvasBook->DeletePage(j);
+		canvases.erase(canvases.end()-1);
+	}
+	
     CircuitParse cirp((const char *)path.c_str(), canvases); // KAS
-	cirp.parseFile();
+	canvases = cirp.parseFile();
+	
+	//JV - Put pages back into canvas book
+	for (unsigned int i = 1; i < canvases.size(); i++) 
+	{
+		ostringstream oss;
+		oss << "Page " << (i + 1);
+		canvasBook->AddPage(canvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));
+	}
+	currentCanvas = canvases[0];
+	gCircuit->setCurrentCanvas(currentCanvas);
+	currentCanvas->setMinimap(miniMap);
+	mainSizer->Show(canvasBook);
+	currentCanvas->SetFocus();
+
 }
 
 void MainFrame::OnSave(wxCommandEvent& event) {
@@ -644,7 +675,7 @@ void MainFrame::OnMaximize(wxMaximizeEvent& event) {
 	sizeChanged = true;
 }
 
-void MainFrame::OnNotebookPage(wxNotebookEvent& event) {
+void MainFrame::OnNotebookPage(wxAuiNotebookEvent& event) {
 	long canvasID = event.GetSelection();
 	if (currentCanvas == NULL || canvases[canvasID] == currentCanvas) return;
 	//**********************************
@@ -905,3 +936,51 @@ void MainFrame::load(string filename) {
 	cirp.parseFile();
 	currentCanvas->Update(); // Render();
 }
+
+//JV - Make new canvas and add it to canvases and canvasBook
+//TODO - Find a way to put a tab button in correct place
+void MainFrame::OnNewTab(wxCommandEvent& event) {
+	gCircuit->GetCommandProcessor()->Submit((wxCommand*)new cmdAddTab(gCircuit, canvasBook, &canvases));
+	 
+/*	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
+	ostringstream oss;
+	oss << "Page " << canvases.size();
+	canvasBook->AddPage(canvases[canvases.size()-1], (const wxChar *)oss.str().c_str(), (false));*/
+
+}
+
+//JV - Handle deletetab event. Remove tab and decrement all following tabs numbers
+void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
+	int canvasID = event.GetSelection();
+	int canSize = canvases.size();
+
+	
+	if (canSize > 1) {
+		if (!canvases[canvasID]->getGateList()->empty()) {
+			wxMessageDialog dialog(this, wxT("All work on this tab will be lost. Would you like to close it?"), wxT("Close Tab"), wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+			switch (dialog.ShowModal()) {
+				case wxID_YES:
+					break;
+				case wxID_NO:
+					event.Veto();
+					return;
+			}
+		}
+		gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdDeleteTab(gCircuit, currentCanvas, canvasBook, &canvases, canvasID)));
+/*		canvases.erase(canvases.begin() + canvasID);
+
+		if (canvasID < (canSize - 1)) {
+			for (unsigned int i = canvasID; i < canSize; i++) {
+				string text = "Page " + to_string(i);
+				canvasBook->SetPageText(i, text);
+			}
+		}*/
+		//canvasBook->RemovePage(canvasID - 1);
+		event.Veto();
+	}
+	else {
+		wxMessageBox(_T("Tab cannot be closed"), _T("Close"), wxOK);
+		event.Veto();
+	}
+}
+

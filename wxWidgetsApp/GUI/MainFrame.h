@@ -18,6 +18,7 @@
 #include "wx/toolbar.h"
 #include "wx/gbsizer.h"
 #include "wx/notebook.h"
+#include "wx/aui/auibook.h"
 #include "wx/slider.h"
 #include "threadLogic.h"
 #include "GUICanvas.h"
@@ -45,7 +46,9 @@ enum
     Tool_Step,
     Tool_ZoomIn,
     Tool_ZoomOut,
-    Tool_Lock
+    Tool_Lock,
+	Tool_NewTab,
+	Tool_DeleteTab
 };
 
 class MainFrame : public wxFrame {
@@ -70,7 +73,7 @@ public:
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxTimerEvent& event);
 	void OnSize(wxSizeEvent& event);
-	void OnNotebookPage(wxNotebookEvent& event);
+	void OnNotebookPage(wxAuiNotebookEvent& event);
 	void OnMaximize(wxMaximizeEvent& event);
 	void OnUndo(wxCommandEvent& event);
 	void OnRedo(wxCommandEvent& event);
@@ -85,6 +88,8 @@ public:
 	void OnZoomOut(wxCommandEvent& event);
 	void OnTimeStepModSlider(wxScrollEvent& event);
 	void OnLock(wxCommandEvent& event);
+	void OnNewTab(wxCommandEvent& event);
+	void OnDeleteTab(wxAuiNotebookEvent& event);
 	
 	void saveSettings( void );
 	
@@ -120,7 +125,9 @@ private:
 
 	wxPanel* mainPanel;
 	wxToolBar* toolBar;
-	wxNotebook* canvasBook;
+
+	//JV - Changed to AuiNoteBook to allow for close tab button
+	wxAuiNotebook* canvasBook;
 	
 	// Instance variables
 	bool sizeChanged;
