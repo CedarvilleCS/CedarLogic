@@ -31,23 +31,24 @@
 struct changedParam {
 	IDType gateID;
 	string paramName;
-	changedParam( IDType nGateID, string nParamName ) : gateID( nGateID ), paramName( nParamName ) {};
+	changedParam( IDType nGateID, const string &nParamName ) : gateID( nGateID ), paramName( nParamName ) {};
 };
 
-class Circuit  
-{
-friend class Junction;
-friend class Wire;
+class Circuit {
+
+	friend class Junction;
+	friend class Wire;
+
 public:
+
+	Circuit();
+
+	virtual ~Circuit();
 
 // **************** The visible interface of the circuit ********************
 
 // ********** Circuit input methods *************
-	// Step the simulation forward by one timestep:
-	// If a pointer to a set is passed, then it will
-	// return a set of all the changed wires to the calling function.
-	void step(  ID_SET< IDType > *changedWires = NULL );
-	
+
 	//***************************************
 	//Edit by Joshua Lansford 3/27/07
 	//purpose of edit: The ram gate needs to
@@ -58,12 +59,16 @@ public:
 	//thegateUpdateList without advanceing
 	//the system time
 	void stepOnlyGates();
-	//End of Edit***************************
+
+	// Step the simulation forward by one timestep:
+	// If a pointer to a set is passed, then it will
+	// return a set of all the changed wires to the calling function.
+	void step(  ID_SET< IDType > *changedWires = NULL );
 	
 	// Create a new gate, and return its ID:
 	// NOTE: There should also be some way to pass
 	// parameters back and forth to gates that use them.
-	IDType newGate( string type, IDType gateID = ID_NONE  );
+	IDType newGate(const string &type, IDType gateID = ID_NONE  );
 	
 	// Create a new wire and return its ID:
 	IDType newWire( IDType wireID = ID_NONE  );
@@ -82,24 +87,18 @@ public:
 	// Delete a junction, removing all its connections from wires first:
 	void deleteJunction( IDType theJunc );
 
-/*OBSOLETE
-	// Connect an external event output to this wire, and return a new wire input ID
-	// which the output can connect to:
-	IDType connectExternalWireInput( IDType theWire );
-*/
-
 	// Connect a gate input to the output of a wire:
-	IDType connectGateInput( IDType gateID, string gateInputID, IDType wireID );
+	IDType connectGateInput( IDType gateID, const string &gateInputID, IDType wireID );
 	
 	// Connect a gate output to the input of a wire:
 	// (The wire will create one unique input for each unique gateID/gateOutputID combination.)
-	IDType connectGateOutput( IDType gateID, string gateOutputID, IDType wireID);
+	IDType connectGateOutput( IDType gateID, const string &gateOutputID, IDType wireID);
 	
 	// Disconnect a gate input from the output of a wire:
-	void disconnectGateInput( IDType gateID, string gateInputID );
+	void disconnectGateInput( IDType gateID, const string &gateInputID );
 	
 	// Disconnect a gate output from the input of a wire:
-	void disconnectGateOutput( IDType gateID, string gateOutputID );
+	void disconnectGateOutput( IDType gateID, const string &gateOutputID );
 
 	// Connect a junction to a wire:
 	void connectJunction( IDType juncID, IDType wireID );
@@ -108,10 +107,10 @@ public:
 	void disconnectJunction( IDType juncID, IDType wireID );
 
 	// Create an event and put it in the event queue:
-	void createEvent( TimeType eventTime, IDType wireID, IDType gateID, string gateOutputID, StateType newState );
+	void createEvent( TimeType eventTime, IDType wireID, IDType gateID, const string &gateOutputID, StateType newState );
 	
 	// Create an event that occurs at systemTime + delay:
-	TimeType createDelayedEvent( TimeType delay, IDType wireID, IDType gateID, string gateOutputID, StateType newState );
+	TimeType createDelayedEvent( TimeType delay, IDType wireID, IDType gateID, const string &gateOutputID, StateType newState );
 
 	// Create Junction Event and put it in the event queue:
 	void createJunctionEvent( TimeType eventTime, IDType juncID, bool newState );
@@ -121,48 +120,30 @@ public:
 	// This is used if we wanted a simulation where all of the wires
 	// start with "UNKNOWN" state and don't update until a signal
 	// from the outside world reaches them.
-	void destroyAllEvents( void );
+	void destroyAllEvents( );
 
 	// Set a gate parameter:
 	// (If the gate's parameter change requires the gate to be
 	// re-evaluated during the next cycle, then add it to the update list.)
-	void setGateParameter( IDType gateID, string paramName, string value );
-	void setGateInputParameter( IDType gateID, string inputID, string paramName, string value );
-	void setGateOutputParameter( IDType gateID, string outputID, string paramName, string value );
+	void setGateParameter( IDType gateID, const string &paramName, const string &value );
+	void setGateInputParameter( IDType gateID, const string &inputID, const string &paramName, const string &value );
+	void setGateOutputParameter( IDType gateID, const string &outputID, const string &paramName, const string &value );
 
 	// Methods and data for handling parameter updates to be
 	// sent to the GUI from the logic core:
-	void addUpdateParam( IDType gateID, string paramName ) {
-		paramUpdateList.push_back( changedParam( gateID, paramName ) );
-	};
+	void addUpdateParam(IDType gateID, const string &paramName);
 
-	vector < changedParam > getParamUpdateList( void ) {
-		return paramUpdateList;
-	};
+	vector < changedParam > getParamUpdateList();
 
-	void clearParamUpdateList( void ) {
-		paramUpdateList.clear();
-	};
+	void clearParamUpdateList();
 
-protected:
-	vector < changedParam > paramUpdateList;
-public:
-
-// ************ Circuit inspection methods **************
+	// ************ Circuit inspection methods **************
 
 	// Get the IDs of all gates in the circuit:
-	ID_SET< IDType > getGateIDs( void ) {
-		ID_SET< IDType > idList;
-		ID_MAP< IDType, GATE_PTR >::iterator thisGate = gateList.begin();
-		while( thisGate != gateList.end() ) {
-			idList.insert( thisGate->first );
-			thisGate++;
-		}
-		return idList;
-	};
+	ID_SET< IDType > getGateIDs();
 
 	// Get the value of a gate parameter:
-	string getGateParameter( IDType gateID, string paramName );
+	string getGateParameter( IDType gateID, const string &paramName );
 
 	// Get a wire state by ID:
 	StateType getWireState( IDType wireID );
@@ -172,7 +153,7 @@ public:
 	bool getJunctionState( IDType juncID );
 
 	// Return the current simulation time:
-	TimeType getSystemTime( void );
+	TimeType getSystemTime( );
 
 	// Returns a list of all wires that are connected to this
 	// wire via junctions:
@@ -181,18 +162,13 @@ public:
 	set< WIRE_PTR > getJunctionGroup( set< IDType >* wireGroupIDs );
 
 	// Returns maps of junction items for use in gate functions
-	ID_MAP< string, IDType >* getJunctionIDs( void ) { return &junctionIDs; };
-	ID_MAP< string, unsigned long >* getJunctionUseCounter( void ) { return &junctionUseCounter; };
-	
-// ************* End of the visible interface of the circuit ****************
-
-	Circuit();
-	virtual ~Circuit();
+	ID_MAP< string, IDType >* getJunctionIDs();
+	ID_MAP< string, unsigned long >* getJunctionUseCounter();
 
 protected:
-// For use by the Junction and Wire classes only:
-	WIRE_PTR getWire( IDType theWire ) { return wireList[theWire]; };
-	JUNC_PTR getJunction( IDType theJunc ) { return juncList[theJunc]; };
+	// For use by the Junction and Wire classes only:
+	WIRE_PTR getWire(IDType theWire);
+	JUNC_PTR getJunction(IDType theJunc);
 
 private:
 	// All the gates in the circuit, and the ID counter:
@@ -226,16 +202,13 @@ private:
 	// either connected or disconnected:
 	ID_SET< IDType > wireUpdateList;
 
-	
 	// This is the event queue for the Circuit:
 	priority_queue< Event, vector< Event >, greater< Event > > eventQueue;
 	
 	// This is the current system time:
 	TimeType systemTime;
+
+	vector < changedParam > paramUpdateList;
 };
-
-
-// An operator to sort events by their event time. Used by the eventQueue;
-bool operator > (const Event &left, const Event &right);
 
 #endif // LOGIC_CIRCUIT_H

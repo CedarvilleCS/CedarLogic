@@ -44,11 +44,13 @@ friend class guiGate;
 public:
 	gateHotspot() : klsCollisionObject(COLL_GATE_HOTSPOT) {
 		modelLocation = worldLocation = GLPoint2f( 0, 0 );
+		busLines = 1;
 		calcBBox();
 	};
 
 	gateHotspot( string hsName ) : klsCollisionObject(COLL_GATE_HOTSPOT), name( hsName ) {
 		gateHotspot();
+		busLines = 1;
 	};
 
 	// Create the bbox for this hotspot:
@@ -66,10 +68,19 @@ public:
 
 	GLPoint2f getLocation( void ) { return worldLocation; };
 
+	void setBusLines(int _busLines) {
+		busLines = _busLines;
+	}
+
+	int getBusLines() {
+		return busLines;
+	}
+
 public:
 	string name;
 
 protected:
+	int busLines;
 	GLPoint2f modelLocation, worldLocation;
 };
 
@@ -164,7 +175,7 @@ public:
 
 
 	// Insert a hotspot in the hotspot list.
-	void insertHotspot( float x1, float y1, string connection );
+	void insertHotspot( float x1, float y1, string connection, int busLines);
 
 	// Check if any of the hotspots of this gate are within the delta
 	// of the world coordinates sX and sY. delta is in gl coords.
@@ -172,6 +183,10 @@ public:
 
 	// Return the coordinates of the hotspot in GL world-space coords.
 	void getHotspotCoords(string hsName, float &x, float &y);
+
+	// Get the name of the hotspot that overlaps the one given.
+	// Return "" for no overlap or bad hotspot name.
+	std::string getHotspotPal(const std::string &hotspot);
 
 	// Is a particular hotspot aligned to the vertical or horizontal edge?
 	bool isVerticalHotspot( string hsName );
@@ -181,6 +196,12 @@ public:
 	void updateConnectionMerges( void );
 	
 	klsBBox getModelBBox( void ) { return modelBBox; };
+
+	// Get a hotspot from its name.
+	gateHotspot * getHotspot(const std::string &hotspotName) {
+		return hotspots[hotspotName];
+	}
+
 protected:
 	// Convert model->world coordinates:
 	GLPoint2f modelToWorld( GLPoint2f c );
@@ -196,7 +217,7 @@ protected:
 public:
 
 	void addConnection(string, guiWire*);
-	guiWire* getConnection( string theWire ) { return connections[theWire]; };
+	guiWire* getConnection( string hotspot ) { return connections[hotspot]; };
 	void removeConnection(string, int&);
 	bool isConnected(string);
 	bool isSelected() { return selected; };

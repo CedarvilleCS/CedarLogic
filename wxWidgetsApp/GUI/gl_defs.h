@@ -15,7 +15,9 @@ struct GLPoint2f {
 
 	void operator-=(const GLPoint2f &other);
 
-	bool operator==(const GLPoint2f &other);
+	bool operator==(const GLPoint2f &other) const;
+
+	bool operator!=(const GLPoint2f &other) const;
 };
 
 struct GLLine2f {

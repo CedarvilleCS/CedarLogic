@@ -140,8 +140,14 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
+
 						istringstream iss(mParse->readTagValue("input"));
-						iss >> gc->wireID;
+						IDType tempId;
+						while (iss >> tempId) {
+							gc->wireIds.push_back(tempId);
+						}
+						iss.clear();
+
 						inputs.push_back(*gc);
 						delete gc;
 					} else if (temp == "output") { // get output
@@ -149,8 +155,14 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
+
 						istringstream iss(mParse->readTagValue("output"));
-						iss >> gc->wireID;
+						IDType tempId;
+						while (iss >> tempId) {
+							gc->wireIds.push_back(tempId);
+						}
+						iss.clear();
+
 						outputs.push_back(*gc);
 						delete gc;
 					} else if (temp == "gparam" || temp == "lparam") { // get parameter
@@ -234,15 +246,27 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 			}
 		} // for( loop through the hotspots )
 	} // if( logic type is non-null )
+
+
+	// Connect inputs and outputs.
+	GUICircuit *gCircuit = gCanvas->getCircuit();
 	for (unsigned int i = 0; i < inputs.size(); i++) {
-		gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(id, inputs[i].connectionID, inputs[i].wireID)));
-		// Create gate input for GUI (setWireConnection returns a pointer to the wire)
-		gCanvas->insertWire(inputs[i].wireID, gCanvas->getCircuit()->setWireConnection( inputs[i].wireID, id, inputs[i].connectionID, true ));
+
+		guiWire *wire = gCircuit->createWire(inputs[i].wireIds);
+
+		cmdConnectWire::sendMessagesToConnect(gCircuit, wire->getID(),
+			newGate->getID(), inputs[i].connectionID, true);
+
+		gCanvas->insertWire(wire);
 	}
 	for (unsigned int i = 0; i < outputs.size(); i++) {
-		gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(id, outputs[i].connectionID, outputs[i].wireID)));		
-		// Create gate output for GUI (setWireConnection returns a pointer to the wire)
-		gCanvas->insertWire(outputs[i].wireID, gCanvas->getCircuit()->setWireConnection( outputs[i].wireID, id, outputs[i].connectionID, true ));
+
+		guiWire *wire = gCircuit->createWire(outputs[i].wireIds);
+
+		cmdConnectWire::sendMessagesToConnect(gCircuit, wire->getID(),
+			newGate->getID(), outputs[i].connectionID, true);
+
+		gCanvas->insertWire(wire);
 	}
 }
 
@@ -253,7 +277,7 @@ void CircuitParse::parseWireToSend( void ) {
 	// Parse the wire right here, generate its map and set it
 	char dump;
 	// parse the ID
-	string ID; long id;
+	string ID; vector<IDType> ids;
 	map < long, wireSegment > wireShape;
 	do { // while next tag is not close wire
 		// tags in wire can be ID or shape
@@ -263,7 +287,13 @@ void CircuitParse::parseWireToSend( void ) {
 			mParse->readCloseTag(); // >ID
 			ostringstream oss;
 			istringstream iss(ID);
-			iss >> id;
+
+			IDType tempId;
+			while (iss >> tempId) {
+				ids.push_back(tempId);
+			}
+			iss.clear();
+
 		} else if (temp == "shape") { //read tree
 			do {
 				// tags in shape can be hsegment or vsegment; they are identical aside from orientation
@@ -323,9 +353,12 @@ void CircuitParse::parseWireToSend( void ) {
 		}
 	} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // !closewire
 	mParse->readCloseTag(); // >wire
+
 	// Check to make sure the wire exists before we do things to it
-	if ((gCanvas->getCircuit()->getWires())->find(id) == (gCanvas->getCircuit()->getWires())->end()) return;
-	(*(gCanvas->getCircuit()->getWires()))[id]->setSegmentMap( wireShape );
+	if ((gCanvas->getCircuit()->getWires())->find(ids.front()) == (gCanvas->getCircuit()->getWires())->end()) return;
+
+	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setIDs(ids);
+	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setSegmentMap( wireShape );
 }
 
 void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsigned int currPage) {
@@ -369,7 +402,9 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 		
 		hash_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
 		while (thisWire != wireList->end()) {
-			(thisWire->second)->saveWire(mParse);
+			if (thisWire->second != nullptr) {
+				(thisWire->second)->saveWire(mParse);
+			}
 			thisWire++;
 		}
 		

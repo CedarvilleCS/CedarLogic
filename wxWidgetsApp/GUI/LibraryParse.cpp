@@ -63,13 +63,16 @@ void LibraryParse::parseFile() {
 			mParse->readCloseTag();
 			do {
 				temp = mParse->readTag();
+
 				if ( (temp == "input") || (temp == "output") ) {
+
 					string hsType = temp; // The type is determined by the tag name.
 					// Assign defaults:
 					hsName = "";
 					x1 = y1 = 0.0;
 					string isInverted = "false";
 					string logicEInput = "";
+					int busLines = 1;
 					
 					do {
 						temp = mParse->readTag();
@@ -91,10 +94,19 @@ void LibraryParse::parseFile() {
 							}
 							mParse->readCloseTag();
 						}
+						else if (temp == "bus") {
+							busLines = atoi(mParse->readTagValue("bus").c_str());
+							mParse->readCloseTag();
+						}
+
 					} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end input/output
-					newGate.hotspots.push_back( lgHotspot( hsName, (hsType == "input"), x1, y1, (isInverted == "true"), logicEInput));
+
+					newGate.hotspots.push_back( lgHotspot( hsName, (hsType == "input"), x1, y1, (isInverted == "true"), logicEInput, busLines));
+
 					mParse->readCloseTag(); //input or output
+
 				} else if (temp == "shape") {
+
 					do {
 						temp = mParse->readTag();
 						if (temp == "") break;
@@ -122,7 +134,9 @@ void LibraryParse::parseFile() {
 						}
 					} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end shape
 					mParse->readCloseTag();
+
 				} else if (temp == "param_dlg_data") {
+
 					// Parse the parameters for the params dialog.
 					do {
 						temp = mParse->readTag();
@@ -160,6 +174,7 @@ void LibraryParse::parseFile() {
 						}
 					} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end param_dlg_data
 					mParse->readCloseTag();
+
 				} else if (temp == "gui_type") {
 					newGate.guiType = mParse->readTagValue("gui_type");
 					mParse->readCloseTag();

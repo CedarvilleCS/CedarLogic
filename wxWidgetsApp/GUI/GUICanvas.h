@@ -28,6 +28,7 @@ class cmdPasteBlock;
 #include "klsCollisionChecker.h"
 #include "wireSegment.h"
 
+class klsCommand;
 class guiWire;
 
 // Struct GateState
@@ -154,7 +155,7 @@ public:
 	// Insert and remove gates and wires from this canvas
 	void insertGate(unsigned long, guiGate*, float, float);
 	void removeGate(unsigned long);
-	void insertWire(unsigned long, guiWire*);
+	void insertWire(guiWire*);
 	void removeWire(unsigned long);
 	
 	// Remove the selection flag from all gates or wires on the canvas
@@ -187,7 +188,15 @@ public:
 	void zoomOut();
 
 	void printLists();
+
+	// Create a command to connect a wire to a gate.
+	klsCommand * createGateWireConnectionCommand(IDType gateId, const string &hotspot, IDType wireId);
+
+	// Create a command to connect a gate to a gate.
+	klsCommand * createGateConnectionCommand(IDType gate1Id, const string &hotspot1, IDType gate2Id, const string &hotspot2);
+
 private:
+
 	// Contains all collision information for the page
 	klsCollisionChecker collisionChecker;
 	klsCollisionObject* mouse;

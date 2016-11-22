@@ -47,7 +47,6 @@ float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2) {
 
 guiWire::guiWire() : klsCollisionObject(COLL_WIRE) {
 	selected = false;
-	state = HI_Z;
 	setVerticalBar = true;
 	// Start segs at 1, since 0 is reserved for the base vertical segment
 	nextSegID = 1;
@@ -56,6 +55,11 @@ guiWire::guiWire() : klsCollisionObject(COLL_WIRE) {
 	// Reset state of currentDragSeg is -1
 	currentDragSegment = -1;
 	headSegment = 0; // since the base vertical seg is 0
+	
+	// By default, wires have only one line.
+	// Also by default, the state of this line is HI_Z.
+	ids.resize(1);
+	state.resize(1, HI_Z);
 }
 
 // TJD. 9/26/2016
@@ -190,35 +194,75 @@ void guiWire::draw(bool color) {
 		glLineStipple(1, 0x9999);
 	}
 
-	// make color:
-	switch (state) {
-	case ZERO:
-		glColor4f(0.0, 0.0, 0.0, 1.0);
-		break;
-	case ONE:
-		glColor4f(1.0, 0.0, 0.0, 1.0);
-		break;
-	case HI_Z:
-		glColor4f(0.0, 0.78f, 0.0, 1.0);
-		break;
-	case UNKNOWN:
-		glColor4f(0.3f, 0.3f, 1.0, 1.0);
-		break;
-	case CONFLICT:
-		glColor4f(0.0, 1.0, 1.0, 1.0);
-		break;
+	// Calculate color
+	if (color) {
+		bool conflict = false;
+		bool unknown = false;
+		bool hiz = false;
+		float redness = 0;
+
+		// Find color as a gradient base on decimal value.
+		// If there's a conflict, unknown, or hi_z, show that instead.
+		for (int i = 0; i < (int)state.size(); i++) {
+			switch (state[i]) {
+			case ZERO:
+				break;
+			case ONE:
+				redness += pow(2, i);
+				break;
+			case HI_Z:
+				hiz = true;
+				break;
+			case UNKNOWN:
+				unknown = true;
+				break;
+			case CONFLICT:
+				conflict = true;
+				break;
+			}
+		}
+		redness /= pow(2, state.size()) - 1;
+
+		if (conflict) {
+			glColor4f(0.0, 1.0, 1.0, 1.0);
+		}
+		else if (unknown) {
+			glColor4f(0.3f, 0.3f, 1.0, 1.0);
+		}
+		else if (hiz) {
+			glColor4f(0.0, 0.78f, 0.0, 1.0);
+		}
+		else {
+			glColor4f(redness, 0.0, 0.0, 1.0);
+		}
 	}
-	if (!color) glColor4f(0.0, 0.0, 0.0, 1.0);
+	else {
+		glColor4f(0.0, 0.0, 0.0, 1.0);
+	}
 
 	// Draw the wire from the previously-saved render info
-
 	vector< GLLine2f >* lineSegments = &(renderInfo.lineSegments);
+	glLineWidth(ids.size() != 1 ? 4 : 1);
 	glBegin(GL_LINES);
 	for (unsigned int i = 0; i < lineSegments->size(); i++) {
 		glVertex2f((*lineSegments)[i].begin.x, (*lineSegments)[i].begin.y);
 		glVertex2f((*lineSegments)[i].end.x, (*lineSegments)[i].end.y);
 	}
 	glEnd();
+	glLineWidth(1);
+
+	// Add caps to bus wire ends to prevent weird joints.
+	if (ids.size() != 1) {
+		glPointSize(4);
+		glBegin(GL_POINTS);
+		for (unsigned int i = 0; i < lineSegments->size(); i++) {
+			glVertex2f((*lineSegments)[i].begin.x, (*lineSegments)[i].begin.y);
+			glVertex2f((*lineSegments)[i].end.x, (*lineSegments)[i].end.y);
+		}
+		glEnd();
+		glPointSize(1);
+	}
+
 
 	vector< GLPoint2f >* isectPoints = &(renderInfo.intersectPoints);
 	for (unsigned int i = 0; i < isectPoints->size(); i++) {
@@ -373,21 +417,48 @@ void guiWire::select(void) { selected = true; };
 
 void guiWire::unselect(void) { selected = false; };
 
-void guiWire::setID(long nid) { id = nid; };
+void guiWire::setID(IDType nid) {
+	ids[0] = nid;
+}
 
-unsigned long guiWire::getID(void) { return id; };
+IDType guiWire::getID() const {
+	return ids[0];
+}
 
-void guiWire::setState(StateType ns) { state = ns; };
+void guiWire::setIDs(const std::vector<IDType> &ids) {
+	this->ids = ids;
+	this->state.resize(ids.size(), HI_Z);
+}
 
-StateType guiWire::getState(void) { return state; };
+const std::vector<IDType> & guiWire::getIDs() const {
+	return ids;
+}
+
+void guiWire::setState(vector<StateType> state) {
+	this->state = state;
+};
+
+void guiWire::setSubState(IDType buslineId, StateType state) {
+	for (int i = 0; i < this->state.size(); i++) {
+		if (ids[i] == buslineId) {
+			this->state[i] = state;
+		}
+	}
+}
+
+const vector<StateType> & guiWire::getState() const {
+	return state;
+};
 
 // Save segment tree and wire info
 void guiWire::saveWire(XMLParser* xparse) {
 	xparse->openTag("wire");
-	// Save the ID for the wire (of course)
+	// Save the IDs for the wire (of course)
 	xparse->openTag("ID");
 	ostringstream oss;
-	oss << id;
+	for (IDType id : ids) {
+		oss << id << ' ';
+	}
 	xparse->writeTag("ID", oss.str());
 	xparse->closeTag("ID");
 	// Save the tree
@@ -1079,6 +1150,7 @@ void guiWire::generateRenderInfo() {
 	while (segWalk != segMap.end()) {
 		glLine.begin = GLPoint2f((segWalk->second).begin.x, (segWalk->second).begin.y);
 		glLine.end = GLPoint2f((segWalk->second).end.x, (segWalk->second).end.y);
+
 		renderInfo.lineSegments.push_back(glLine);
 
 		// Save the intersection points for non-elbows:

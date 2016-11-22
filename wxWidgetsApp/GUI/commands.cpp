@@ -28,7 +28,7 @@ DECLARE_APP(MainApp)
 
 // CMDMOVEGATE
 
-cmdMoveGate::cmdMoveGate( GUICircuit* gCircuit, unsigned long gid, float startX, float startY, float endX, float endY, bool uW ) : klsCommand(true, _T("Move Gate")) {
+cmdMoveGate::cmdMoveGate( GUICircuit* gCircuit, unsigned long gid, float startX, float startY, float endX, float endY, bool uW ) : klsCommand(true, "Move Gate") {
 	this->gCircuit = gCircuit;
 	this->gid = gid;
 	this->startX = startX;
@@ -50,7 +50,7 @@ bool cmdMoveGate::Undo() {
 	return true;
 }
 
-string cmdMoveGate::toString() {
+string cmdMoveGate::toString() const {
 	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return ""; // error, gate not found
 	ostringstream oss;
 	oss << "movegate " << gid << " " << startX << " " << startY << " " << endX << " " << endY;
@@ -59,7 +59,7 @@ string cmdMoveGate::toString() {
 
 // CMDMOVEWIRE
 
-cmdMoveWire::cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, wireSegment > oldList, map < long, wireSegment > newList ) : klsCommand(true, _T("Move Wire")) {
+cmdMoveWire::cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, wireSegment > oldList, map < long, wireSegment > newList ) : klsCommand(true, "Move Wire") {
 	this->gCircuit = gCircuit;
 	this->wid = wid;
 	oldSegList = oldList;
@@ -67,14 +67,14 @@ cmdMoveWire::cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, w
 	delta = GLPoint2f(0,0);
 }
 
-cmdMoveWire::cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, wireSegment > oldList, GLPoint2f delta ) : klsCommand(true, _T("Move Wire")) {
+cmdMoveWire::cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, wireSegment > oldList, GLPoint2f delta ) : klsCommand(true, "Move Wire") {
 	this->gCircuit = gCircuit;
 	this->wid = wid;
 	oldSegList = oldList;
 	this->delta = delta;
 }
 
-cmdMoveWire::cmdMoveWire( string def ) : klsCommand( true, _T("Move Wire") ) {
+cmdMoveWire::cmdMoveWire( string def ) : klsCommand( true, "Move Wire") {
 	istringstream iss(def);
 	// wire looks like "movewire wid" then series of segments
 	string temp; char dump;
@@ -175,13 +175,13 @@ void cmdMoveWire::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_ma
 	oldSegList = newSegList;
 }
 
-string cmdMoveWire::toString() {
+string cmdMoveWire::toString() const {
 	if ( (gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end() ) return ""; // error, wire not found
 	ostringstream oss;
 	oss << "movewire " << wid << " ";
 	// Step through the map, save each seg's info
-	map < long, wireSegment >::iterator segWalk = newSegList.begin();
-	while (segWalk != newSegList.end()) {
+	map < long, wireSegment >::const_iterator segWalk = newSegList.cbegin();
+	while (segWalk != newSegList.cend()) {
 		// seg looks like "segment id bx,by,ex,ey connection gid,name isect key,id"
 		if ((segWalk->second).isVertical()) oss << "vsegment ";
 		else oss << "hsegment ";
@@ -195,8 +195,8 @@ string cmdMoveWire::toString() {
 			oss << (segWalk->second).connections[i].gid << " " << (segWalk->second).connections[i].connection << " ";
 		}
 		// intersections - must store the intersection map
-		map < GLfloat, vector < long > >::iterator isectWalk = (segWalk->second).intersects.begin();
-		while (isectWalk != (segWalk->second).intersects.end()) {
+		map < GLfloat, vector < long > >::const_iterator isectWalk = (segWalk->second).intersects.cbegin();
+		while (isectWalk != (segWalk->second).intersects.cend()) {
 			for (unsigned int j = 0; j < (isectWalk->second).size(); j++) {
 				oss << "isect ";
 				oss << isectWalk->first << " " << (isectWalk->second)[j] << " ";
@@ -211,7 +211,7 @@ string cmdMoveWire::toString() {
 
 // CMDMOVESELECTION
 
-cmdMoveSelection::cmdMoveSelection( GUICircuit* gCircuit, vector < GateState > &preMove, vector < WireState > &preMoveWire, float startX, float startY, float endX, float endY ) : klsCommand(true, (const wxChar *)"Move Selection") {  // added cast KAS
+cmdMoveSelection::cmdMoveSelection( GUICircuit* gCircuit, vector < GateState > &preMove, vector < WireState > &preMoveWire, float startX, float startY, float endX, float endY ) : klsCommand(true, "Move Selection") {
 	for (unsigned int i = 0; i < preMove.size(); i++) gateList.push_back(preMove[i].id);
 	for (unsigned int i = 0; i < preMoveWire.size(); i++) {
 		wireList.push_back(preMoveWire[i].id);
@@ -262,7 +262,7 @@ bool cmdMoveSelection::Undo() {
 
 // CMDCREATEGATE
 
-cmdCreateGate::cmdCreateGate( GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long gid, string gateType, float x, float y) : klsCommand( true, (const wxChar *)"Create Gate" ) {  // KAS
+cmdCreateGate::cmdCreateGate( GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long gid, string gateType, float x, float y) : klsCommand( true, "Create Gate") {
 	this->gCanvas = gCanvas;
 	this->gCircuit = gCircuit;
 	this->gid = gid;
@@ -272,7 +272,7 @@ cmdCreateGate::cmdCreateGate( GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned
 	this->fromString = false;
 }
 
-cmdCreateGate::cmdCreateGate( string def ) : klsCommand( true, (const wxChar *)"Create Gate" ) { // KAS
+cmdCreateGate::cmdCreateGate( string def ) : klsCommand( true, "Create Gate" ) {
 	istringstream iss(def);
 	string dump;
 	iss >> dump >> gid >> gateType >> x >> y;
@@ -342,7 +342,7 @@ bool cmdCreateGate::Undo() {
 	return true;
 }
 
-string cmdCreateGate::toString() {
+string cmdCreateGate::toString() const {
 	ostringstream oss;
 	oss << "creategate " << gid << " " << gateType << " " << x << " " << y;
 	return oss.str();	
@@ -360,72 +360,9 @@ void cmdCreateGate::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_
 	this->gCanvas = gCanvas;
 }
 
-// CMDCREATEWIRE
-
-cmdCreateWire::cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long wid, cmdConnectWire* conn1, cmdConnectWire* conn2) : klsCommand(true, (const wxChar *)"Create Wire") {  // KAS
-	this->gCanvas = gCanvas;
-	this->gCircuit = gCircuit;
-	this->wid = wid;
-	this->conn1 = conn1;
-	this->conn2 = conn2;
-}
-
-cmdCreateWire::cmdCreateWire(string def) : klsCommand(true, (const wxChar *)"Create Wire") { // KAS
-	istringstream iss(def);
-	string dump;
-	iss >> dump >> wid;
-	string wireid, gateid, hotspot;
-	iss >> dump >> wireid >> gateid >> hotspot;
-	conn1 = new cmdConnectWire(dump + " " + wireid + " " + gateid + " " + hotspot);
-	iss >> dump >> wireid >> gateid >> hotspot;
-	conn2 = new cmdConnectWire(dump + " " + wireid + " " + gateid + " " + hotspot);
-}
-
-cmdCreateWire::~cmdCreateWire( void ) {
-//	delete conn1;
-//	delete conn2;
-}
-
-bool cmdCreateWire::Do() {
-	gCircuit->createWire(wid);
-	gCanvas->insertWire(wid, (*(gCircuit->getWires()))[wid]);
-	conn1->Do();
-	conn2->Do();
-	return true;
-}
-
-bool cmdCreateWire::Undo() {
-	conn1->Undo();
-	conn2->Undo();
-	gCanvas->removeWire(wid);
-	gCircuit->deleteWire(wid);
-	gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE, new klsMessage::Message_DELETE_WIRE(wid)));
-	return true;
-}
-
-string cmdCreateWire::toString() {
-	ostringstream oss;
-	oss << "createwire " << wid << " " << conn1->toString() << " " << conn2->toString();
-	return oss.str();	
-}
-
-void cmdCreateWire::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) {
-	// Find myself an appropriate id
-	if (wireids.find(wid) != wireids.end()) {
-		wid = wireids[wid];
-	} else {
-		wireids[wid] = gCircuit->getNextAvailableWireID();
-		wid = wireids[wid];
-	}
-	conn1->setPointers(gCircuit, gCanvas, gateids, wireids);
-	conn2->setPointers(gCircuit, gCanvas, gateids, wireids);
-	this->gCircuit = gCircuit;
-	this->gCanvas = gCanvas;
-}
-
 // CMDDELETEGATE
 
-cmdDeleteGate::cmdDeleteGate(GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long gid) : klsCommand(true, (const wxChar *)"Delete Gate") {  // KAS
+cmdDeleteGate::cmdDeleteGate(GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long gid) : klsCommand(true, "Delete Gate") {
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
 	this->gid = gid;
@@ -540,51 +477,9 @@ bool cmdDeleteGate::Undo() {
 	return true;
 }
 
-// CMDDELETEWIRE
-
-cmdDeleteWire::cmdDeleteWire(GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wid) : klsCommand(true, (const wxChar *)"Delete Wire") {  // KAS
-	this->gCircuit = gCircuit;
-	this->gCanvas = gCanvas;
-	this->wid = wid;
-}
-
-cmdDeleteWire::~cmdDeleteWire ( void ) {
-	while (!(cmdList.empty())) {
-//		delete cmdList.top();
-		cmdList.pop();
-	}
-}
-
-bool cmdDeleteWire::Do() {
-	if ( (gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end() ) return false; //error: wire not found
-	vector < wireConnection > destroyList = (*(gCircuit->getWires()))[wid]->getConnections();
-	cmdMoveWire* movewire = new cmdMoveWire( gCircuit, wid, (*(gCircuit->getWires()))[wid]->getSegmentMap(), GLPoint2f(0,0));
-	cmdList.push( movewire );
-	for (unsigned int j = 0; j < destroyList.size(); j++) {
-		cmdDisconnectWire* disconn = new cmdDisconnectWire( gCircuit, wid, destroyList[j].cGate->getID(), destroyList[j].connection, true ); 
-		cmdList.push( disconn );
-		disconn->Do();
-	}
-	gCanvas->removeWire(wid);
-	gCircuit->deleteWire(wid);
-	gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE, new klsMessage::Message_DELETE_WIRE(wid)));
-	return true;
-}
-
-bool cmdDeleteWire::Undo() {
-	guiWire* gWire = gCircuit->createWire(wid);
-	gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_WIRE, new klsMessage::Message_CREATE_WIRE(wid)));
-	while (!(cmdList.empty())) {
-		cmdList.top()->Undo();
-		cmdList.pop();
-	}
-	gCanvas->insertWire(wid, gWire);
-	return true;
-}
-
 // CMDDELETESELECTION
 
-cmdDeleteSelection::cmdDeleteSelection(GUICircuit* gCircuit, GUICanvas* gCanvas, vector < unsigned long > &gates, vector < unsigned long > &wires) : klsCommand(true, (const wxChar *)"Delete Selection") { // KAS
+cmdDeleteSelection::cmdDeleteSelection(GUICircuit* gCircuit, GUICanvas* gCanvas, vector < unsigned long > &gates, vector < unsigned long > &wires) : klsCommand(true, "Delete Selection") {
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
 	for (unsigned int i = 0; i < gates.size(); i++) this->gates.push_back(gates[i]);
@@ -593,7 +488,7 @@ cmdDeleteSelection::cmdDeleteSelection(GUICircuit* gCircuit, GUICanvas* gCanvas,
 
 cmdDeleteSelection::~cmdDeleteSelection( void ) {
 	while (!(cmdList.empty())) {
-//		delete cmdList.top();
+		delete cmdList.top();
 		cmdList.pop();
 	}	
 }
@@ -615,170 +510,516 @@ bool cmdDeleteSelection::Do() {
 bool cmdDeleteSelection::Undo() {
 	while (!(cmdList.empty())) {
 		cmdList.top()->Undo();
+		delete cmdList.top();
 		cmdList.pop();
 	}
 	if (gCircuit->getOscope() != NULL) gCircuit->getOscope()->UpdateMenu();
 	return true;
 }
 
+
+
 // CMDCONNECTWIRE
 
-cmdConnectWire::cmdConnectWire(GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape) : klsCommand(true, (const wxChar *)"Connection") { // KAS
+cmdConnectWire::cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid, const string &hotspot, bool noCalcShape) : klsCommand(true, "Connection") {
 	this->gCircuit = gCircuit;
-	this->wid = wid;
-	this->gid = gid;
+	this->wireId = wid;
+	this->gateId = gid;
 	this->hotspot = hotspot;
 	this->noCalcShape = noCalcShape;
 }
 
-cmdConnectWire::cmdConnectWire(string def) : klsCommand(true, (const wxChar *)"Connection") {  // KAS
+cmdConnectWire::cmdConnectWire(const string &def) : klsCommand(true, "Connection") {
 	istringstream iss(def);
 	string dump;
-	iss >> dump >> wid >> gid >> hotspot;
+	iss >> dump >> wireId >> gateId >> hotspot;
 	noCalcShape = true;
 }
 
 bool cmdConnectWire::Do() {
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
-	ostringstream oss;
-	guiGate* mGate = (*(gCircuit->getGates()))[gid];
-	
-	
-	//Edit by Joshua Lansford 10/21/06------------------------
-	//Making it possable for a bydirectional pin.
-	//Main pourpose is to create a bydirectional port on a RAM chip
-	//This is created by defineing and input and an output at the same location.
-	//The only nesicary alteration to the code is that when a pin is connected, 
-	//it's partner needs to be connected as well.
-	
-	float hsX = 0;
-	float hsY = 0;
-	mGate->getHotspotCoords( hotspot, hsX, hsY );
-	
-	//looping looking for another hotspot with the same location
-	map<string, GLPoint2f> hotspotList = mGate->getHotspotList();
-	hotspotPal = "";
-	for( map< string, GLPoint2f>::iterator listWalk = hotspotList.begin(); 
-	     listWalk != hotspotList.end() && hotspotPal == ""; listWalk++ ){
-	     	string hotspot2 = listWalk->first;
-	     	GLPoint2f hotspot2GLPoint = listWalk->second;
-	     	if( hotspot2 != hotspot
-		     	&& hotspot2GLPoint.x == hsX
-		     	&& hotspot2GLPoint.y == hsY ){
-     				hotspotPal = hotspot2;
-	     	}
-	}
-	
-	if( hotspotPal != "" ){
-		ostringstream oss2;
-		gCircuit->setWireConnection(wid, gid, hotspotPal, noCalcShape);
-		if (mGate->isConnectionInput(hotspotPal))
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspotPal, wid)));
-		else
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspotPal, wid)));			
-	}
-	//End edit--------------------------------------------------
 
-	
-	gCircuit->setWireConnection(wid, gid, hotspot, noCalcShape);
-	if (mGate->isConnectionInput(hotspot))
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, wid)));
-	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, wid)));			
+	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
+
+	guiGate* gate = gCircuit->getGates()->at(gateId);
+	string hotspotPal = gate->getHotspotPal(hotspot);
+
+	if (hotspotPal != "") {
+		sendMessagesToConnect(gCircuit, wireId, gateId, hotspotPal, noCalcShape);
+	}
+	sendMessagesToConnect(gCircuit, wireId, gateId, hotspot, noCalcShape);
+
 	return true;
 }
 
 bool cmdConnectWire::Undo() {
-	if ( (gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end() ) return false; // error: wire not found
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
-	ostringstream oss;
-	guiGate* mGate = (*(gCircuit->getGates()))[gid];
-	int temp;
-	mGate->removeConnection(hotspot, temp);
-	(*(gCircuit->getWires()))[wid]->removeConnection(mGate, hotspot);
-	
-	//edit by Joshua Lansford 10/21/06: see comment in Do()--------
-	if( hotspotPal != "" ){
-		ostringstream oss2;
-			mGate->removeConnection(hotspot, temp);
-		(*(gCircuit->getWires()))[wid]->removeConnection(mGate, hotspotPal);
-		if (mGate->isConnectionInput(hotspotPal))
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspotPal, 0, true)));
-		else
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspotPal, 0, true)));			
+
+	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
+
+	guiGate* gate = gCircuit->getGates()->at(gateId);
+	string hotspotPal = gate->getHotspotPal(hotspot);
+
+	if (hotspotPal != "") {
+		sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspotPal);
 	}
-	//end edit---------------------------------------------------
-	
-	
-	if (mGate->isConnectionInput(hotspot))
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, 0, true)));
-	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, 0, true)));			
+	sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspot);
+
 	return true;
 }
 
-string cmdConnectWire::toString() {
-	ostringstream oss;
-	oss << "connectwire " << wid << " " << gid << " " << hotspot;
-	return oss.str();	
+bool cmdConnectWire::validateBusLines() const {
+
+	guiWire *wire = (*gCircuit->getWires())[wireId];
+	guiGate *gate = (*gCircuit->getGates())[gateId];
+
+	int busLines = gate->getHotspot(hotspot)->getBusLines();
+
+	// No connections on this wire? Cool. We'll make it a bus when we connect.
+	if (wire->getConnections().empty()) {
+		return true;
+	}
+
+	return wire->getIDs().size() == busLines;
 }
 
-void cmdConnectWire::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) {
-	gid = gateids[gid];
-	wid = wireids[wid];
+string cmdConnectWire::toString() const {
+	ostringstream oss;
+	oss << "connectwire " << wireId << ' ' << gateId << ' ' << hotspot;
+	return oss.str();
+}
+
+void cmdConnectWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids) {
+	gateId = gateids[gateId];
+	wireId = wireids[wireId];
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
 }
 
+IDType cmdConnectWire::getGateId() const {
+	return gateId;
+}
+
+const std::string & cmdConnectWire::getHotspot() const {
+	return hotspot;
+}
+
+void cmdConnectWire::sendMessagesToConnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot, bool noCalcShape) {
+
+	guiGate *gate = gCircuit->getGates()->at(gateId);
+	guiWire *wire = gCircuit->getWires()->at(wireId);
+
+	// Grab the bus-lines from the wire.
+	vector<IDType> wireIds = wire->getIDs();
+
+	// Add the connection in the gui.
+	gCircuit->setWireConnection(wireIds, gateId, hotspot, noCalcShape);
+
+	// When connecting a gui hotspot to its underlying inputs/outputs,
+	// single wires require no changes to their hotspot name, but
+	// bus-lines need to have their bit appended.
+	vector<string> internalHotspots;
+	if (wireIds.size() == 1) {
+		internalHotspots.push_back(hotspot);
+	}
+	else {
+		for (int i = 0; i < wireIds.size(); i++) {
+			internalHotspots.push_back(hotspot + "_" + to_string(i));
+		}
+	}
+
+	bool isInput = gate->isConnectionInput(hotspot);
+
+	// Connect each of wire's bus-lines to its corresponding gate hotspot.
+	for (int i = 0; i < internalHotspots.size(); i++) {
+		if (isInput) {
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT,
+				new klsMessage::Message_SET_GATE_INPUT(gateId, internalHotspots[i], wireIds[i])));
+		}
+		else {
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT,
+				new klsMessage::Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], wireIds[i])));
+		}
+	}
+}
+
+void cmdConnectWire::sendMessagesToDisconnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot) {
+
+	guiGate *gate = gCircuit->getGates()->at(gateId);
+	guiWire *wire = gCircuit->getWires()->at(wireId);
+
+	// Grab the bus-lines from the wire.
+	vector<IDType> wireIds = wire->getIDs();
+	
+	// Remove the connection in the gui.
+	int temp;
+	gate->removeConnection(hotspot, temp);
+	wire->removeConnection(gate, hotspot);
+
+	// When disconnecting a gui hotspot from its underlying inputs/outputs,
+	// single wires require no changes to their hotspot name, but
+	// bus-lines need to have their bit appended.
+	vector<string> internalHotspots;
+	if (wireIds.size() == 1) {
+		internalHotspots.push_back(hotspot);
+	}
+	else {
+		for (int i = 0; i < wireIds.size(); i++) {
+			internalHotspots.push_back(hotspot + "_" + to_string(i));
+		}
+	}
+
+	bool isInput = gate->isConnectionInput(hotspot);
+
+	// Disconnect each of wire's bus-lines from its corresponding gate hotspot.
+	for (int i = 0; i < internalHotspots.size(); i++) {
+		if (isInput) {
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT,
+				new klsMessage::Message_SET_GATE_INPUT(gateId, internalHotspots[i], 0, true)));
+		}
+		else {
+			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT,
+				new klsMessage::Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], 0, true)));
+		}
+	}
+}
+
+
+
+
+
+
+
+
 // CMDDISCONNECTWIRE
 
-cmdDisconnectWire::cmdDisconnectWire( GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape ) : klsCommand(true, (const wxChar *)"Disconnection") { // KAS
+cmdDisconnectWire::cmdDisconnectWire(GUICircuit* gCircuit, IDType wireId, IDType gateId, const string &hotspot, bool noCalcShape) : klsCommand(true, "Disconnection") {
 	this->gCircuit = gCircuit;
-	this->wid = wid;
-	this->gid = gid;
+	this->wireId = wireId;
+	this->gateId = gateId;
 	this->hotspot = hotspot;
 	this->noCalcShape = noCalcShape;
 }
 
 bool cmdDisconnectWire::Do() {
-	if ( (gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end() ) return false; // error: wire not found
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
-	ostringstream oss;
-	guiGate* mGate = (*(gCircuit->getGates()))[gid];
-	int temp;
-	mGate->removeConnection(hotspot, temp);
-	(*(gCircuit->getWires()))[wid]->removeConnection(mGate, hotspot);
-	if (mGate->isConnectionInput(hotspot))
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, 0, true)));
-	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, 0, true)));			
+
+	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
+
+
+	guiGate* gate = gCircuit->getGates()->at(gateId);
+	string hotspotPal = gate->getHotspotPal(hotspot);
+
+	if (hotspotPal != "") {
+		cmdConnectWire::sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspotPal);
+	}
+	cmdConnectWire::sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspot);
+
 	return true;
 }
 
 bool cmdDisconnectWire::Undo() {
-	if ( (gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end() ) return false; // error: wire not found
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
-	ostringstream oss;
-	guiGate* mGate = (*(gCircuit->getGates()))[gid];
-	gCircuit->setWireConnection(wid, gid, hotspot,noCalcShape);
-	if (mGate->isConnectionInput(hotspot))
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT, new klsMessage::Message_SET_GATE_INPUT(gid, hotspot, wid)));
-	else
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT, new klsMessage::Message_SET_GATE_OUTPUT(gid, hotspot, wid)));			
+
+	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
+	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
+
+	guiGate* gate = gCircuit->getGates()->at(gateId);
+	string hotspotPal = gate->getHotspotPal(hotspot);
+
+	if (hotspotPal != "") {
+		cmdConnectWire::sendMessagesToConnect(gCircuit, wireId, gateId, hotspotPal, noCalcShape);
+	}
+	cmdConnectWire::sendMessagesToConnect(gCircuit, wireId, gateId, hotspot, noCalcShape);
+
 	return true;
 }
 
-string cmdDisconnectWire::toString() {
+string cmdDisconnectWire::toString() const {
 	ostringstream oss;
-	oss << "disconnectwire " << wid << " " << gid << " " << hotspot;
-	return oss.str();	
+	oss << "disconnectwire " << wireId << " " << gateId << " " << hotspot;
+	return oss.str();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// CMDCREATEWIRE
+
+cmdCreateWire::cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit, const vector<IDType> &wireIds, cmdConnectWire* conn1, cmdConnectWire* conn2) : klsCommand(true, "Create Wire") {
+	this->gCanvas = gCanvas;
+	this->gCircuit = gCircuit;
+	this->wireIds = wireIds;
+	this->conn1 = conn1;
+	this->conn2 = conn2;
+}
+
+cmdCreateWire::cmdCreateWire(const string &def) : klsCommand(true, "Create Wire") {
+	istringstream iss(def);
+	string dump;
+	iss >> dump;
+	
+	// The list of id's is followed by a non-integer.
+	// So we can just read until we can't get an integer.
+	IDType tempId;
+	while (iss >> tempId) {
+		wireIds.push_back(tempId);
+	}
+	iss.clear();
+
+	string wireid, gateid, hotspot;
+	iss >> dump >> wireid >> gateid >> hotspot;
+	conn1 = new cmdConnectWire(dump + " " + wireid + " " + gateid + " " + hotspot);
+	iss >> dump >> wireid >> gateid >> hotspot;
+	conn2 = new cmdConnectWire(dump + " " + wireid + " " + gateid + " " + hotspot);
+}
+
+cmdCreateWire::~cmdCreateWire() {
+	delete conn1;
+	delete conn2;
+}
+
+bool cmdCreateWire::Do() {
+
+	guiWire *wire = gCircuit->createWire(wireIds);
+	gCanvas->insertWire(wire);
+
+	for (IDType wireId : wireIds) {
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_WIRE,
+			new klsMessage::Message_CREATE_WIRE(wireId)));
+	}
+
+	conn1->Do();
+	conn2->Do();
+
+	return true;
+}
+
+bool cmdCreateWire::Undo() {
+
+	conn1->Undo();
+	conn2->Undo();
+	
+	for (IDType wireId : wireIds) {
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE,
+			new klsMessage::Message_DELETE_WIRE(wireId)));
+	}
+
+	gCanvas->removeWire(wireIds[0]);
+	gCircuit->deleteWire(wireIds[0]);
+
+	return true;
+}
+
+bool cmdCreateWire::validateBusLines() const {
+
+	IDType gate1Id = conn1->getGateId();
+	IDType gate2Id = conn2->getGateId();
+
+	guiGate *gate1 = (*gCircuit->getGates())[gate1Id];
+	guiGate *gate2 = (*gCircuit->getGates())[gate2Id];
+
+	string hotspot1 = conn1->getHotspot();
+	string hotspot2 = conn2->getHotspot();
+
+	int busLines1 = gate1->getHotspot(hotspot1)->getBusLines();
+	int busLines2 = gate2->getHotspot(hotspot2)->getBusLines();
+
+	return busLines1 == busLines2 && busLines1 == wireIds.size();
+}
+
+const vector<IDType> & cmdCreateWire::getWireIds() const {
+	return wireIds;
+}
+
+string cmdCreateWire::toString() const {
+	ostringstream oss;
+	oss << "createwire ";
+
+	// No need to put a count because thing after ids is a non-int.
+	for (IDType id : wireIds) {
+		oss << id << ' ';
+	}
+		
+	oss << conn1->toString() << ' ' << conn2->toString();
+	return oss.str();
+}
+
+void cmdCreateWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids) {
+	
+	// remap ids.
+	// notice the difference between wireIds and wireids.
+	for (IDType &id : wireIds) {
+		if (wireids.find(id) != wireids.end()) {
+			id = wireids[id];
+		}
+		else {
+			wireids[id] = gCircuit->getNextAvailableWireID();
+			id = wireids[id];
+		}
+	}
+
+	conn1->setPointers(gCircuit, gCanvas, gateids, wireids);
+	conn2->setPointers(gCircuit, gCanvas, gateids, wireids);
+	this->gCircuit = gCircuit;
+	this->gCanvas = gCanvas;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// CMDDELETEWIRE
+
+cmdDeleteWire::cmdDeleteWire(GUICircuit* gCircuit, GUICanvas* gCanvas, IDType wireId) : klsCommand(true, "Delete Wire") {
+	this->gCircuit = gCircuit;
+	this->gCanvas = gCanvas;
+	this->wireIds = { wireId };
+}
+
+cmdDeleteWire::~cmdDeleteWire() {
+	while (!(cmdList.empty())) {
+		delete cmdList.top();
+		cmdList.pop();
+	}
+}
+
+bool cmdDeleteWire::Do() {
+
+	if ((gCircuit->getWires())->find(wireIds[0]) == (gCircuit->getWires())->end()) return false; //error: wire not found
+
+	guiWire *wire = gCircuit->getWires()->at(wireIds[0]);
+
+	wireIds = wire->getIDs();
+
+	vector < wireConnection > destroyList = wire->getConnections();
+	cmdMoveWire* movewire = new cmdMoveWire(gCircuit, wireIds[0], wire->getSegmentMap(), GLPoint2f(0, 0));
+	cmdList.push(movewire);
+
+	for (unsigned int j = 0; j < destroyList.size(); j++) {
+		cmdDisconnectWire* disconn = new cmdDisconnectWire(gCircuit, wireIds[0], destroyList[j].cGate->getID(), destroyList[j].connection, true);
+		cmdList.push(disconn);
+		disconn->Do();
+	}
+	gCanvas->removeWire(wireIds[0]);
+	gCircuit->deleteWire(wireIds[0]);
+
+	for (IDType id : wireIds) {
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE,
+			new klsMessage::Message_DELETE_WIRE(id)));
+	}
+
+	return true;
+}
+
+bool cmdDeleteWire::Undo() {
+
+	guiWire* gWire = gCircuit->createWire(wireIds);
+
+	for (IDType id : wireIds) {
+		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_WIRE,
+			new klsMessage::Message_CREATE_WIRE(id)));
+	}
+
+	while (!(cmdList.empty())) {
+		cmdList.top()->Undo();
+		delete cmdList.top();
+		cmdList.pop();
+	}
+
+	gCanvas->insertWire(gWire);
+
+	return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // CMDSETPARAMS
 
-cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid, paramSet pSet, bool setMode) : klsCommand(true, (const wxChar *)"Set Parameter") {// KAS
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return; // error: gate not found
+cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid, paramSet pSet, bool setMode) : klsCommand(true, "Set Parameter") {
+	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return; // error: gate not found
 	this->gCircuit = gCircuit;
 	this->gid = gid;
 	this->fromString = setMode;
@@ -794,23 +1035,23 @@ cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid, paramSet pSe
 		paramWalk++;
 	}
 	// Now grab the new ones...
-	if ( pSet.gParams != NULL) {
+	if (pSet.gParams != NULL) {
 		paramWalk = pSet.gParams->begin();
-		while (paramWalk != pSet.gParams->end()) {		
+		while (paramWalk != pSet.gParams->end()) {
 			newGUIParamList[paramWalk->first] = paramWalk->second;
 			paramWalk++;
 		}
 	}
-	if ( pSet.lParams != NULL) {
+	if (pSet.lParams != NULL) {
 		paramWalk = pSet.lParams->begin();
-		while (paramWalk != pSet.lParams->end()) {		
+		while (paramWalk != pSet.lParams->end()) {
 			newLogicParamList[paramWalk->first] = paramWalk->second;
 			paramWalk++;
 		}
 	}
 }
 
-cmdSetParams::cmdSetParams(string def) : klsCommand(true, (const wxChar *)"Set Parameter") { // KAS
+cmdSetParams::cmdSetParams(string def) : klsCommand(true, "Set Parameter") {
 	this->fromString = true;
 	istringstream iss(def);
 	string dump; char comma;
@@ -819,21 +1060,21 @@ cmdSetParams::cmdSetParams(string def) : klsCommand(true, (const wxChar *)"Set P
 	for (unsigned int i = 0; i < numgParams; i++) {
 		string paramName, paramVal;
 		iss >> paramName;
-		getline( iss, paramVal, '\t' );
-		newGUIParamList[paramName] = paramVal.substr(1, paramVal.size()-1);
+		getline(iss, paramVal, '\t');
+		newGUIParamList[paramName] = paramVal.substr(1, paramVal.size() - 1);
 		oldGUIParamList[paramName] = newGUIParamList[paramName];
 	}
 	for (unsigned int i = 0; i < numlParams; i++) {
 		string paramName, paramVal;
 		iss >> paramName;
-		getline( iss, paramVal, '\t' );
-		newLogicParamList[paramName] = paramVal.substr(1, paramVal.size()-1);
+		getline(iss, paramVal, '\t');
+		newLogicParamList[paramName] = paramVal.substr(1, paramVal.size() - 1);
 		oldLogicParamList[paramName] = newLogicParamList[paramName];
 	}
 }
 
 bool cmdSetParams::Do() {
-	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
+	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
 	map < string, string >::iterator paramWalk = newLogicParamList.begin();
 	vector < string > dontSendMessages;
 	LibraryGate lg = wxGetApp().libraries[(*(gCircuit->getGates()))[gid]->getLibraryName()][(*(gCircuit->getGates()))[gid]->getLibraryGateName()];
@@ -860,8 +1101,8 @@ bool cmdSetParams::Do() {
 }
 
 bool cmdSetParams::Undo() {
- 	if ( (gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end() ) return false; // error: gate not found
- 	map < string, string >::iterator paramWalk = oldLogicParamList.begin();
+	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
+	map < string, string >::iterator paramWalk = oldLogicParamList.begin();
 	vector < string > dontSendMessages;
 	LibraryGate lg = wxGetApp().libraries[(*(gCircuit->getGates()))[gid]->getLibraryName()][(*(gCircuit->getGates()))[gid]->getLibraryGateName()];
 	for (unsigned int i = 0; i < lg.dlgParams.size(); i++) {
@@ -886,11 +1127,11 @@ bool cmdSetParams::Undo() {
 	return true;
 }
 
-string cmdSetParams::toString() {
+string cmdSetParams::toString() const {
 	ostringstream oss;
 	oss << "setparams " << gid << " " << newGUIParamList.size() << "," << newLogicParamList.size() << " ";
-	map < string, string >::iterator paramWalk = newGUIParamList.begin();
-	while (paramWalk != newGUIParamList.end()) {
+	map < string, string >::const_iterator paramWalk = newGUIParamList.cbegin();
+	while (paramWalk != newGUIParamList.cend()) {
 		oss << paramWalk->first << " " << paramWalk->second << "\t";
 		paramWalk++;
 	}
@@ -902,7 +1143,7 @@ string cmdSetParams::toString() {
 	return oss.str();
 }
 
-void cmdSetParams::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) {
+void cmdSetParams::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids) {
 	gid = gateids[gid];
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
@@ -910,7 +1151,7 @@ void cmdSetParams::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_m
 
 // CMDPASTEBLOCK
 
-cmdPasteBlock::cmdPasteBlock(vector < klsCommand* > &cmdList) : klsCommand(true, (const wxChar *)"Paste") { // KAS
+cmdPasteBlock::cmdPasteBlock(vector < klsCommand* > &cmdList) : klsCommand(true, "Paste") {
 	for (unsigned int i = 0; i < cmdList.size(); i++) this->cmdList.push_back(cmdList[i]);
 	m_init = false;
 }
@@ -933,7 +1174,7 @@ bool cmdPasteBlock::Undo() {
 
 // CMDWIRESEGDRAG
 
-cmdWireSegDrag::cmdWireSegDrag(GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wireID) : klsCommand(true, (const wxChar *)"Wire Shape") { // KAS
+cmdWireSegDrag::cmdWireSegDrag(GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wireID) : klsCommand(true, "Wire Shape") {
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
 	this->wireID = wireID;

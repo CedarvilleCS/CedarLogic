@@ -21,8 +21,9 @@
 #include "wireSegment.h"
 #include "GUICanvas.h"  // GateState, WireState
 
-//JV
 #include "wx/aui/auibook.h"
+
+#include "../logic/logic_values.h"
 using namespace std;
 
 class GUICircuit;
@@ -43,9 +44,9 @@ protected:
 	bool fromString;
 public:
 	// (1) changed NULL in init of name to nullptr and then to "", (2) added inits for gCircuit and gCanvas   KAS
-	klsCommand( bool canUndo = false, const wxString& name = "" ) : wxCommand(canUndo, name), gCircuit(nullptr), gCanvas(nullptr) {};
+	klsCommand( bool canUndo, const char *name) : wxCommand(canUndo, wxString(name)), gCircuit(nullptr), gCanvas(nullptr) {};
 	virtual ~klsCommand( void ) { return; };
-	virtual string toString() { return ""; };
+	virtual string toString() const { return ""; };
 	virtual void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) { this->gCircuit = gCircuit; this->gCanvas = gCanvas; };
 };
 
@@ -62,7 +63,7 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
-	string toString();
+	virtual std::string toString() const override;
 };
 
 // cmdMoveWire - moving a wire and storing it's segment maps (old and new)
@@ -82,7 +83,7 @@ public:
 	bool Do( void );
 	bool Undo( void );
 	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
-	string toString();
+	virtual std::string toString() const override;
 };
 
 // cmdMoveSelection - move passed gates and wires
@@ -120,85 +121,166 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
-	string toString();
+	virtual std::string toString() const override;
 	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
 	
 	vector < klsCommand* >* getConnections() { return &proxconnects; };
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // cmdConnectWire - connects a wire to a gate hotspot
 class cmdConnectWire : public klsCommand {
-protected:
-	unsigned long gid;
-	unsigned long wid;
+public:
+	cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid, const std::string &hotspot, bool noCalcShape = false);
+	cmdConnectWire(const std::string &def);
+
+	bool Do();
+	bool Undo();
+
+	bool validateBusLines() const;
+
+	virtual std::string toString() const override;
+	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
+	IDType getGateId() const;
+	const std::string & getHotspot() const;
+
+	static void sendMessagesToConnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot, bool noCalcShape);
+	static void sendMessagesToDisconnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot);
+
+private:
+	IDType gateId;
+	IDType wireId;
 	string hotspot;
 	bool noCalcShape;
-	
-	//edit by Joshua Lansford 10/21/06
-	//a hotspotPal is an input that is on top of a output
-	//or viseversa.  They make one bydirectional pin while
-	//remaining two seperate hotspots.
-	//we store the information here so that if we undo
-	//we can remember who we conned into getting connected with us.
-	string hotspotPal;
-	
-public:
-	cmdConnectWire( GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false );
-	cmdConnectWire( string def );
-	virtual ~cmdConnectWire( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
-	string toString();
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
 };
 
-// cmdCreateWire - creates a wire
-class cmdCreateWire : public klsCommand {
-protected:
-	unsigned long wid;
-	cmdConnectWire* conn1;
-	cmdConnectWire* conn2;
-public:
-	cmdCreateWire( GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long wid, cmdConnectWire* conn1, cmdConnectWire* conn2 );
-	cmdCreateWire( string def );
-	virtual ~cmdCreateWire( void );
-	
-	bool Do( void );
-	bool Undo( void );
-	string toString();
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
-};
+
+
+
+
+
+
+
 
 // cmdDisconnectWire - disconnects a wire from a gate hotspot
 class cmdDisconnectWire : public klsCommand {
-protected:
-	unsigned long gid;
-	unsigned long wid;
-	string hotspot;
-	bool noCalcShape;
 public:
-	cmdDisconnectWire( GUICircuit* gCircuit, unsigned long wid, unsigned long gid, string hotspot, bool noCalcShape = false );
-	virtual ~cmdDisconnectWire( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
-	string toString();
+	cmdDisconnectWire(GUICircuit* gCircuit, IDType wid, IDType gid, const string &hotspot, bool noCalcShape = false);
+
+	bool Do();
+	bool Undo();
+	virtual std::string toString() const override;
+
+private:
+	IDType gateId;
+	IDType wireId;
+	std::string hotspot;
+	bool noCalcShape;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+// cmdCreateWire - creates a wire
+class cmdCreateWire : public klsCommand {
+public:
+	cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit, const std::vector<IDType> &wireIds, cmdConnectWire* conn1, cmdConnectWire* conn2);
+	cmdCreateWire(const std::string &def);
+	virtual ~cmdCreateWire();
+
+	bool Do();
+	bool Undo();
+
+	bool validateBusLines() const;
+
+	const std::vector<IDType> & getWireIds() const;
+
+	virtual std::string toString() const override;
+	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
+
+private:
+	std::vector<IDType> wireIds;
+	cmdConnectWire* conn1;
+	cmdConnectWire* conn2;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // cmdDeleteWire - Deletes a wire
 class cmdDeleteWire : public klsCommand {
-protected:
-	unsigned long wid;
-	stack < klsCommand* > cmdList;
-	
 public:
-	cmdDeleteWire( GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wid);
-	virtual ~cmdDeleteWire( void );
+	cmdDeleteWire( GUICircuit* gCircuit, GUICanvas* gCanvas, IDType wireId);
+	virtual ~cmdDeleteWire();
 	
-	bool Do( void );
-	bool Undo( void );
+	bool Do();
+	bool Undo();
+
+private:
+	std::vector<IDType> wireIds;
+	stack < klsCommand* > cmdList;
+
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // cmdDeleteGate - Deletes a gate
 class cmdDeleteGate : public klsCommand {
@@ -246,7 +328,7 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
-	string toString();
+	virtual std::string toString() const override;
 	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
 };
 

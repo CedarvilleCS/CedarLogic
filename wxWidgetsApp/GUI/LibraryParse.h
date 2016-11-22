@@ -24,12 +24,13 @@
 using namespace std;
 
 struct lgHotspot {
-	lgHotspot( string nName = "", bool nIsInput = true, float nX = 0, float nY = 0, bool nIsInverted = false, string nEInput = "" ) : name(nName), isInput(nIsInput), x(nX), y(nY), isInverted(nIsInverted), logicEInput(nEInput) {};
+	lgHotspot( string nName = "", bool nIsInput = true, float nX = 0, float nY = 0, bool nIsInverted = false, string nEInput = "", int busLines = 1) : name(nName), isInput(nIsInput), x(nX), y(nY), isInverted(nIsInverted), logicEInput(nEInput), busLines(busLines) {};
 	string name;
 	bool isInput;
 	float x, y;
 	bool isInverted;
 	string logicEInput;
+	int busLines;
 };
 
 struct lgLine {

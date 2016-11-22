@@ -107,7 +107,10 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
 		}
 		hash_map < unsigned long, unsigned long >::iterator wireWalk = wireids.begin();
 		while (wireWalk != wireids.end()) {
-			(*(gCircuit->getWires()))[wireWalk->second]->select();
+			guiWire *wire = (*(gCircuit->getWires()))[wireWalk->second];
+			if (wire != nullptr) {
+				wire->select();
+			}
 			wireWalk++;
 		}
 		gCircuit->getOscope()->UpdateMenu();
@@ -148,8 +151,8 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 	while (wireWalk != connectWireList.end()) {
 		if ( wireWalk->second < 2 ) { wireWalk++; continue; }
 		guiWire* wire = new guiWire();
-		// Set the ID
-		wire->setID( wireWalk->first );
+		// Set the IDs
+		wire->setIDs( (*gCircuit->getWires())[wireWalk->first]->getIDs() );
 		// Shove all the connections
 		vector < wireConnection > wireConns = (*(gCircuit->getWires()))[wireWalk->first]->getConnections();
 		for (unsigned int i = 0; i < wireConns.size(); i++) wire->addConnection( wireConns[i].cGate, wireConns[i].connection, true );
@@ -172,21 +175,21 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		vector < wireConnection > wconns = copyWires[i]->getConnections();
 		// now generate the connections - connections 1 and 2 must be passed to create the wire
 		//	after which all connections may be done in succession.
-		cmdConnectWire conn1( gCircuit, copyWires[i]->getID(), wconns[0].cGate->getID(), wconns[0].connection );
-		cmdConnectWire conn2( gCircuit, copyWires[i]->getID(), wconns[1].cGate->getID(), wconns[1].connection );
-		cmdTemp = new cmdCreateWire( gCanvas, gCircuit, copyWires[i]->getID(), &conn1, &conn2 );
+		cmdConnectWire *conn1 = new cmdConnectWire(gCircuit, copyWires[i]->getID(), wconns[0].cGate->getID(), wconns[0].connection);
+		cmdConnectWire *conn2 = new cmdConnectWire(gCircuit, copyWires[i]->getID(), wconns[1].cGate->getID(), wconns[1].connection);
+		cmdTemp = new cmdCreateWire(gCanvas, gCircuit, gCircuit->getWires()->at(copyWires[i]->getID())->getIDs(), conn1, conn2);
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
 		for (unsigned int j = 2; j < wconns.size(); j++) {
-			cmdTemp = new cmdConnectWire( gCircuit, copyWires[i]->getID(), wconns[j].cGate->getID(), wconns[j].connection );
+			cmdTemp = new cmdConnectWire(gCircuit, copyWires[i]->getID(), wconns[j].cGate->getID(), wconns[j].connection);
 			oss << cmdTemp->toString() << endl;
 			delete cmdTemp;
 		}
 		// now track the wire's shape:
-		cmdTemp = new cmdMoveWire( gCircuit, copyWires[i]->getID(), copyWires[i]->getSegmentMap(), copyWires[i]->getSegmentMap());
+		cmdTemp = new cmdMoveWire(gCircuit, copyWires[i]->getID(), copyWires[i]->getSegmentMap(), copyWires[i]->getSegmentMap());
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
-		//delete copyWires[i];
+		delete copyWires[i];
 	}
 	if (!wxTheClipboard->Open()) return;
 	wxTheClipboard->AddData(new wxTextDataObject((wxChar*)(oss.str().c_str())));

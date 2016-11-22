@@ -27,9 +27,9 @@ public:
 	// Create the bbox for this wire segment:
 	void calcBBox();
 
-	bool isHorizontal();
+	bool isHorizontal() const;
 
-	bool isVertical();
+	bool isVertical() const;
 
 	// Hold the orientation of the wire segment.  Once it is initialized,
 	//	the orientation does not change.

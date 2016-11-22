@@ -37,7 +37,9 @@ void GUICircuit::reInitializeLogicCircuit() {
 	waitToSendMessage = iswaiting;
 	hash_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while( thisWire != wireList.end() ) {
-		delete thisWire->second;
+		if (thisWire->second != nullptr) {
+			delete thisWire->second;
+		}
 		thisWire++;
 	}
 	hash_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
@@ -120,7 +122,7 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	}
 	for (unsigned int i = 0; i < gateDef.hotspots.size(); i++) {
 		lgHotspot tempHS = gateDef.hotspots[i];
-		newGate->insertHotspot(tempHS.x, tempHS.y, tempHS.name);
+		newGate->insertHotspot(tempHS.x, tempHS.y, tempHS.name, tempHS.busLines);
 		if (tempHS.isInput) newGate->declareInput(tempHS.name);
 		else newGate->declareOutput(tempHS.name);
 	}
@@ -168,28 +170,46 @@ void GUICircuit::deleteGate(unsigned long gid, bool waitToUpdate) {
 	}		
 }
 
-guiWire* GUICircuit::createWire(long wid) {
-	if (wireList.find(wid) == wireList.end()) { // wire does not exist yet
-		wireList[wid] = new guiWire();
+guiWire* GUICircuit::createWire(const std::vector<IDType> &wireIds) {
+	if (wireList.find(wireIds[0]) == wireList.end()) { // wire does not exist yet
+
+		guiWire *wire = new guiWire();
+
+		// Make sure that each used wireId has a spot in the wireList.
+		// This lets getNextAvailableWireId() give an unused id.
+		// Also add all buslines to the busline map.
+		for (IDType id : wireIds) {
+			wireList[id] = nullptr;
+			buslineToWire[id] = wire;
+		}
+
+		wireList[wireIds[0]] = wire;
+		wireList[wireIds[0]]->setIDs(wireIds);
 	}
-	return wireList[wid];
+	return wireList[wireIds[0]];
 }
 
-void GUICircuit::deleteWire(unsigned long wid) {
-	hash_map < unsigned long, guiWire* >::iterator thisWire = wireList.find(wid);
-	if (thisWire != wireList.end()) {
-		delete thisWire->second;
-		wireList.erase(thisWire);
+void GUICircuit::deleteWire(unsigned long wireId) {
+
+	if (wireList.find(wireId) == wireList.end()) return;
+
+	guiWire *wire = wireList.at(wireId);
+
+	// Release ID's owned by the wire.
+	for (int busLineId : wire->getIDs()) {
+		wireList.erase(busLineId);
+		buslineToWire.erase(busLineId);
 	}
+
+	delete wire;
 }
 
-guiWire* GUICircuit::setWireConnection(long wid, long gid, string connection, bool openMode) {
+guiWire* GUICircuit::setWireConnection(const vector<IDType> &wireIds, long gid, string connection, bool openMode) {
 	if (gateList.find(gid) == gateList.end()) return NULL; // error: gate not found
-	createWire(wid); // do we need to init the wire first? if not then no effect.
-	wireList[wid]->setID(wid);
-	wireList[wid]->addConnection(gateList[gid], connection, openMode);
-	gateList[gid]->addConnection(connection, wireList[wid]);
-	return wireList[wid];
+	createWire(wireIds); // do we need to init the wire first? if not then no effect.
+	wireList[wireIds[0]]->addConnection(gateList[gid], connection, openMode);
+	gateList[gid]->addConnection(connection, wireList[wireIds[0]]);
+	return wireList[wireIds[0]];
 }
 
 void GUICircuit::Render() {
@@ -280,7 +300,7 @@ void GUICircuit::setWireState( long wid, long state ) {
 	// If the wire doesn't exist, then don't set it's state!
 	if( wireList.find(wid) == wireList.end() ) return;
 	
-	wireList[wid]->setState(state);
+	buslineToWire[wid]->setSubState(wid, state);
 	gCanvas->Refresh();
 	return;
 }
@@ -289,7 +309,9 @@ void GUICircuit::printState() {
 	wxGetApp().logfile << "print state" << endl << flush;
 	hash_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while (thisWire != wireList.end()) {
-		wxGetApp().logfile << "wire " << thisWire->first << endl << flush;
+		if (thisWire->second != nullptr) {
+			wxGetApp().logfile << "wire " << thisWire->first << endl << flush;
+		}
 		thisWire++;
 	}
 	hash_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();

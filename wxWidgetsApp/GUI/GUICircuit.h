@@ -48,10 +48,14 @@ public:
     void Render();
 	// Creates a new gate with type, position, and id; returns used id
 	guiGate* createGate(string gt, long id = -1, bool noOscope = false);
-	// Creates a new wire with id wid
-	guiWire* createWire(long wid);
+
+	// Creates a new wire/bus. 'wireIds' are each of the bus-line's ids.
+	// Returns pointer to existing wire if called for ids that already exist.
+	guiWire* createWire(const std::vector<IDType> &wireIds);
+
 	// Sets a named input/output of a gate to be connected; returns pointer to wire
-	guiWire* setWireConnection(long wid, long gid, string connection, bool openMode = false);
+	guiWire* setWireConnection(const std::vector<IDType> &wireIds, long gid, string connection, bool openMode = false);
+
 	// Sets a wire's state
 	void setWireState(long wid, long state);
 	// Delete components and sync the core
@@ -87,6 +91,8 @@ public:
 private:
 	hash_map< unsigned long, guiGate* > gateList;
 	hash_map< unsigned long, guiWire* > wireList;
+
+	hash_map<IDType, guiWire *> buslineToWire;
 
 	unsigned long nextGateID;
 	unsigned long nextWireID;

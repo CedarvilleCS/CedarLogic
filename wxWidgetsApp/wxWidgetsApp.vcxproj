@@ -94,6 +94,7 @@
     <ClCompile Include="GUI\XMLParser.cpp" />
     <ClCompile Include="GUI\Z80PopupDialog.cpp" />
     <ClCompile Include="logic\logic_circuit.cpp" />
+    <ClCompile Include="logic\logic_event.cpp" />
     <ClCompile Include="logic\logic_gate.cpp" />
     <ClCompile Include="logic\logic_junction.cpp" />
     <ClCompile Include="logic\logic_wire.cpp" />

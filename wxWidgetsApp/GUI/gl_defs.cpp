@@ -22,11 +22,15 @@ void GLPoint2f::operator-=(const GLPoint2f &other) {
 	y -= other.y;
 }
 
-bool GLPoint2f::operator==(const GLPoint2f& other) {
+bool GLPoint2f::operator==(const GLPoint2f& other) const {
 	return (x >= other.x - EQUALRANGE &&
 		x <= other.x + EQUALRANGE &&
 		y <= other.y + EQUALRANGE &&
 		y >= other.y - EQUALRANGE);
+}
+
+bool GLPoint2f::operator!=(const GLPoint2f &other) const {
+	return !(*this == other);
 }
 
 void defineGLLists() {

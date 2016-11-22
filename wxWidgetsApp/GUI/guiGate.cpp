@@ -230,11 +230,12 @@ void guiGate::calcBBox( void ) {
 
 
 // Insert a hotspot in the hotspot list.
-void guiGate::insertHotspot( float x1, float y1, string connection ) {
+void guiGate::insertHotspot( float x1, float y1, string connection, int busLines) {
 	if (hotspots.find(connection) != hotspots.end()) return; // error: hotspot already exists
 	
 	gateHotspot* newHS = new gateHotspot( connection );
 	newHS->modelLocation = GLPoint2f( x1, y1 );
+	newHS->setBusLines(busLines);
 
 	// Add the hs to the gate's struct:
 	hotspots[connection] = newHS;
@@ -290,6 +291,23 @@ void guiGate::getHotspotCoords(string hsName, float &x, float &y) {
 	return;
 }
 
+
+std::string guiGate::getHotspotPal(const std::string &hotspot) {
+
+	GLPoint2f coords;
+	getHotspotCoords(hotspot, coords.x, coords.y);
+
+	//looping looking for another hotspot with the same location
+	map<string, GLPoint2f> hotspotList = getHotspotList();
+
+	for (const auto &possiblePal : hotspotList) {
+		if (possiblePal.first != hotspot && possiblePal.second == coords) {
+			return possiblePal.first;
+		}
+	}
+	return "";
+}
+
 bool guiGate::isVerticalHotspot( string hsName ) {
 	float x, y;
 	getHotspotCoords( hsName, x, y );
@@ -321,7 +339,11 @@ void guiGate::saveGate(XMLParser* xparse) {
 		xparse->writeTag("ID", pC->first);
 		xparse->closeTag("ID");
 		oss.str("");
-		oss << (pC->second)->getID() << " ";
+
+		for (IDType thisId : pC->second->getIDs()) {
+			oss << thisId << " ";
+		}
+		
 		xparse->writeTag((isInput[pC->first] ? "input" : "output"), oss.str());
 		xparse->closeTag((isInput[pC->first] ? "input" : "output"));
 		pC++;
@@ -734,7 +756,7 @@ void guiGateLED::draw( bool color ) {
 	// map i/o name to wire id
 	map< string, guiWire* >::iterator theCnk = connections.begin();
 	if( theCnk != connections.end() ) {
-		outputState = (theCnk->second)->getState();
+		outputState = (theCnk->second)->getState()[0];
 	}
 
 	switch( outputState ) {
