@@ -1,19 +1,31 @@
+
 # CedarLogic
+
 CedarLogic is Cedarville University's digital logic simulator.
 
-# Getting Started
-  1. Install Visual Studio 2015 (Community Edition is free)
-  2. Download wxWidgets 2.8.12 source for Windows.
- 3a. 3b is unnecessary if you install wxWidgets to
-    * `c:\wxWidgets-2.8.12`.
- 3b. Set Windows environment variables (assuming you install the binaries to `C:\`, if not adjust accordingly)
-    * `WXADDITIONS = C:\wxWidgets-2.8.12\additions`
-    * `WXWIN = C:\wxWidgets-2.8.12`
-  4. Clone this repository.
-  5. Copy `setup\config.vc` (from the cloned repo) to `%WXWIN%\build\msw`.
-  6. Copy `setup\setup.h` (from the cloned repo) to `%WXWIN%\include\wx\msw`.
-  7. Copy `setup\window.cpp` (from the cloned repo) to `%WXWIN%\src\msw`
-  8. Run `Developer Command Prompt for VS2015`, navigate to `%WXWIN%\build\msw`.
-  9. Run `nmake -f makefile.vc`
- 10. When that's done, you should be able to build and run CedarLogic in Visual Studio.
- 11. If you see errors about glcanvas not being defined, delete your wxwidgets directory and restart.
+# Getting Ready to Compile
+
+1. Install `Visual Studio 2015` or newer.
+
+2. Download `wxWidgets 2.8.12` source for windows. [link](http://www.wxwidgets.org/downloads/)
+
+3. Run wxWidgets source installer or extract zip.
+
+4. Skip step 5 if you used the installer and did not change the extraction directory.
+
+5. Set windows environment variable `WXWIN` to point to your wxWidgets directory.
+
+6. Edit `%WXWIN%\include\wx\msw\setup.h` so that `wxUSE_GLCANVAS` is `1` instead of `0`.
+
+7. Edit `%WXWIN%\src\msw\window.cpp` so that it does not include `pbt.h`.
+
+8. Open a developer command prompt and navigate to `%WXWIN%\build\msw`
+
+9. In the developer command prompt, run these commands.
+
+        nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
+        nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static TARGET_CPU=AMD64
+        nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
+        nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static TARGET_CPU=AMD64
+
+10. Now you should be able to build CedarLogic debug and release versions for both 32- and 64-bit architectures.
