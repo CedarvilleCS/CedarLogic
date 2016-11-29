@@ -19,13 +19,18 @@ CedarLogic is Cedarville University's digital logic simulator.
 
 7. Edit `%WXWIN%\src\msw\window.cpp` so that it does not include `pbt.h`.
 
-8. Open a developer command prompt and navigate to `%WXWIN%\build\msw`
+8. Open an `x86 native tools` command prompt and navigate to `%WXWIN%\build\msw`
 
-9. In the developer command prompt, run these commands.
+9. In the command prompt, run these commands.
 
-        nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
-        nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static TARGET_CPU=AMD64
-        nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
-        nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static TARGET_CPU=AMD64
+        nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static                  MONOLITHIC=1
+        nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static                  MONOLITHIC=1
+
+8. Open an `x64 native tools` command prompt and navigate to `%WXWIN%\build\msw`
+
+9. In the command prompt, run these commands.
+
+        nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static TARGET_CPU=AMD64 MONOLITHIC=1
+        nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static TARGET_CPU=AMD64 MONOLITHIC=1
 
 10. Now you should be able to build CedarLogic debug and release versions for both 32- and 64-bit architectures.

@@ -42,7 +42,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -96,15 +96,17 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;WIN32;WINVER=0x0400;__WXMSW__;_WINDOWS;wxUSE_GUI=1;__WXDEBUG__;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(WXWIN)\lib\vc_amd64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wxmsw28d.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;wxpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -146,4 +148,101 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <!--Manual Config Begin-->
+  <PropertyGroup>
+    <!--Define WXWIN if it is not an environment variable.-->
+    <WXWIN Condition="'$(WXWIN)' == ''">c:\wxWidgets-2.8.12</WXWIN>
+  </PropertyGroup>
+  <ItemGroup>
+    <!--Compile and link all source files in the src/ tree.-->
+    <ClCompile Include="src/gui\ADCPopupDialog.cpp" />
+    <ClCompile Include="src/gui\autoSaveThread.cpp" />
+    <ClCompile Include="src/gui\CircuitParse.cpp" />
+    <ClCompile Include="src/gui\CircuitPrint.cpp" />
+    <ClCompile Include="src/gui\commands.cpp" />
+    <ClCompile Include="src/gui\EditRegDialog.cpp" />
+    <ClCompile Include="src/gui\gateImage.cpp" />
+    <ClCompile Include="src/gui\GLFont\glfont2.cpp" />
+    <ClCompile Include="src/gui\gl_defs.cpp" />
+    <ClCompile Include="src/gui\GUICanvas.cpp" />
+    <ClCompile Include="src/gui\GUICircuit.cpp" />
+    <ClCompile Include="src/gui\guiGate.cpp" />
+    <ClCompile Include="src/gui\guiText.cpp" />
+    <ClCompile Include="src/gui\guiWire.cpp" />
+    <ClCompile Include="src/gui\klsClipboard.cpp" />
+    <ClCompile Include="src/gui\klsCollisionChecker.cpp" />
+    <ClCompile Include="src/gui\klsGLCanvas.cpp" />
+    <ClCompile Include="src/gui\klsMiniMap.cpp" />
+    <ClCompile Include="src/gui\LibraryParse.cpp" />
+    <ClCompile Include="src/gui\MainApp.cpp" />
+    <ClCompile Include="src/gui\MainFrame.cpp" />
+    <ClCompile Include="src/gui\OscopeCanvas.cpp" />
+    <ClCompile Include="src/gui\OscopeFrame.cpp" />
+    <ClCompile Include="src/gui\PaletteCanvas.cpp" />
+    <ClCompile Include="src/gui\PaletteFrame.cpp" />
+    <ClCompile Include="src/gui\paramDialog.cpp" />
+    <ClCompile Include="src/gui\RamPopupDialog.cpp" />
+    <ClCompile Include="src/gui\threadLogic.cpp" />
+    <ClCompile Include="src/gui\wireSegment.cpp" />
+    <ClCompile Include="src/gui\XMLParser.cpp" />
+    <ClCompile Include="src/gui\Z80PopupDialog.cpp" />
+    <ClCompile Include="src/logic\logic_circuit.cpp" />
+    <ClCompile Include="src/logic\logic_event.cpp" />
+    <ClCompile Include="src/logic\logic_gate.cpp" />
+    <ClCompile Include="src/logic\logic_junction.cpp" />
+    <ClCompile Include="src/logic\logic_wire.cpp" />
+    <ClCompile Include="src/z80\InstructionManager.cpp" />
+    <ClCompile Include="src/z80\WaveformFSM.cpp" />
+    <ClCompile Include="src/z80\Z_80LogicGate.cpp" />
+    <ClCompile Include="src/z80\Z_80Registers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--Include all header files in the src/ tree.-->
+    <ClInclude Include="src/gui\ADCPopupDialog.h" />
+    <ClInclude Include="src/gui\autoSaveThread.h" />
+    <ClInclude Include="src/gui\CircuitParse.h" />
+    <ClInclude Include="src/gui\CircuitPrint.h" />
+    <ClInclude Include="src/gui\commands.h" />
+    <ClInclude Include="src/gui\EditRegDialog.h" />
+    <ClInclude Include="src/gui\gateImage.h" />
+    <ClInclude Include="src/gui\GLFont\glfont2.h" />
+    <ClInclude Include="src/gui\gl_defs.h" />
+    <ClInclude Include="src/gui\gl_wrapper.h" />
+    <ClInclude Include="src/gui\GUICanvas.h" />
+    <ClInclude Include="src/gui\GUICircuit.h" />
+    <ClInclude Include="src/gui\guiGate.h" />
+    <ClInclude Include="src/gui\guiText.h" />
+    <ClInclude Include="src/gui\guiWire.h" />
+    <ClInclude Include="src/gui\klsBBox.h" />
+    <ClInclude Include="src/gui\klsClipboard.h" />
+    <ClInclude Include="src/gui\klsCollisionChecker.h" />
+    <ClInclude Include="src/gui\klsGLCanvas.h" />
+    <ClInclude Include="src/gui\klsMessage.h" />
+    <ClInclude Include="src/gui\klsMiniMap.h" />
+    <ClInclude Include="src/gui\LibraryParse.h" />
+    <ClInclude Include="src/gui\MainApp.h" />
+    <ClInclude Include="src/gui\MainFrame.h" />
+    <ClInclude Include="src/gui\OscopeCanvas.h" />
+    <ClInclude Include="src/gui\OscopeFrame.h" />
+    <ClInclude Include="src/gui\PaletteCanvas.h" />
+    <ClInclude Include="src/gui\PaletteFrame.h" />
+    <ClInclude Include="src/gui\paramDialog.h" />
+    <ClInclude Include="src/gui\RamPopupDialog.h" />
+    <ClInclude Include="src/gui\threadLogic.h" />
+    <ClInclude Include="src/gui\wireSegment.h" />
+    <ClInclude Include="src/gui\XMLParser.h" />
+    <ClInclude Include="src/gui\Z80PopupDialog.h" />
+    <ClInclude Include="src/logic\logic_circuit.h" />
+    <ClInclude Include="src/logic\logic_defaults.h" />
+    <ClInclude Include="src/logic\logic_event.h" />
+    <ClInclude Include="src/logic\logic_gate.h" />
+    <ClInclude Include="src/logic\logic_junction.h" />
+    <ClInclude Include="src/logic\logic_values.h" />
+    <ClInclude Include="src/logic\logic_wire.h" />
+    <ClInclude Include="src/z80\InstructionManager.h" />
+    <ClInclude Include="src/z80\WaveformFSM.h" />
+    <ClInclude Include="src/z80\Z_80LogicGate.h" />
+    <ClInclude Include="src/z80\Z_80Registers.h" />
+  </ItemGroup>
+  <!--Manual Config End-->
 </Project>
