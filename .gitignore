@@ -8,6 +8,7 @@
 !CedarLogic.vcxproj
 !README.md
 !LICENSE.txt
+!HISTORY.txt
 !Doxyfile
 
 # But do not exclude these directories...
