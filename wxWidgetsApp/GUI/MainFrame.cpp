@@ -35,8 +35,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(wxID_OPEN, MainFrame::OnOpen)
     EVT_MENU(wxID_SAVE, MainFrame::OnSave)
     EVT_MENU(wxID_SAVEAS, MainFrame::OnSaveAs)
-	EVT_MENU(wxID_PRINT, MainFrame::OnPrint)
-	EVT_MENU(wxID_PREVIEW, MainFrame::OnPrintPreview)
 	EVT_MENU(File_Export, MainFrame::OnExportBitmap)
 	
 	EVT_MENU(wxID_UNDO, MainFrame::OnUndo)
@@ -94,11 +92,6 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	fileMenu->Append(wxID_SAVE, _T("&Save\tCtrl+S"), _T("Save circuit"));
 	fileMenu->Append(wxID_SAVEAS, _T("Save &As"), _T("Save circuit"));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_PRINT, _T("&Print\tCtrl+P"), _T("Print circuit"));
-	fileMenu->Append(wxID_PREVIEW, _T("P&rint Preview"), _T("Preview circuit printout"));
-	//wxMenu *exportMenu = new wxMenu;
-	//exportMenu->Append(Edit_Export_BW, _T("Black and White"), _T("Export B&W circuit bitmap to clipboard"));
-	//exportMenu->Append(Edit_Export_C, _T("Color"), _T("Export color circuit bitmap to clipboard"));
 	fileMenu->Append(File_Export, _T("Export"));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _T("E&xit\tAlt+X"), _T("Quit this program"));
@@ -119,6 +112,8 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	wxMenu *editMenu = new wxMenu; // EDIT MENU
 	editMenu->Append(wxID_UNDO, _T("Undo\tCtrl+Z"), _T("Undo last operation"));
 	editMenu->Append(wxID_REDO, _T("Redo"), _T("Redo last operation"));
+	editMenu->AppendSeparator();
+	editMenu->Append(Tool_NewTab, _T("New Tab"), _T("New Tab"));
 	editMenu->AppendSeparator();
 	editMenu->Append(wxID_COPY, _T("Copy\tCtrl+C"), _T("Copy selection to clipboard"));
 	editMenu->Append(wxID_PASTE, _T("Paste\tCtrl+V"), _T("Paste selection from clipboard"));
@@ -172,8 +167,6 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddTool(wxID_NEW, _T("New"), *bmp[0], _T("New"));
 	toolBar->AddTool(wxID_OPEN, _T("Open"), *bmp[1], wxT("Open"));
 	toolBar->AddTool(wxID_SAVE, _T("Save"), *bmp[2], wxT("Save")); 
-	toolBar->AddSeparator();
-	toolBar->AddTool(wxID_PRINT, _T("Print"), *bmp[7], wxT("Print"));
 	toolBar->AddSeparator();
 	toolBar->AddTool(wxID_UNDO, _T("Undo"), *bmp[3], wxT("Undo"));
 	toolBar->AddTool(wxID_REDO, _T("Redo"), *bmp[4], wxT("Redo"));
@@ -712,43 +705,6 @@ void MainFrame::OnPaste(wxCommandEvent& event) {
 	currentCanvas->pasteBlockFromClipboard();
 }
 
-void MainFrame::OnPrint(wxCommandEvent& WXUNUSED(event)) {
-    wxPrintDialogData printDialogData(* g_printData);
-
-    wxPrinter printer(& printDialogData);
-    CircuitPrint printout(currentCanvas, openedFilename, _T("Logic Circuit"));
-
-    if (!printer.Print(this, &printout, true /*prompt*/))
-    {
-        if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
-            wxMessageBox(_T("There was a problem printing.\nPerhaps your current printer is not set correctly?"), _T("Printing"), wxOK);
-//        else
-//            wxMessageBox(_T("You canceled printing"), _T("Printing"), wxOK);
-    }
-    else
-    {
-        //(*g_printData) = printer.GetPrintDialogData().GetPrintData();
-	}
-}
-
-void MainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event)) {
-	wxPrintDialogData printDialogData(* g_printData);
-	CircuitPrint* printoutPreview = new CircuitPrint(currentCanvas, openedFilename, _T("Logic Circuit"));
-	CircuitPrint* printoutPrinter = new CircuitPrint(currentCanvas, openedFilename, _T("Logic Circuit"));
-	wxPrintPreview *preview = new wxPrintPreview(printoutPreview, printoutPrinter, &printDialogData);
-    if (!preview->Ok())
-    {
-        delete preview;
-        wxMessageBox(_T("There was a problem previewing.\nPerhaps your current printer is not set correctly?"), _T("Previewing"), wxOK);
-        return;
-    }
-//
-    wxPreviewFrame *frame = new wxPreviewFrame(preview, this, _T("Print Preview"), wxPoint(100, 100), wxSize(600, 650));
-    frame->Centre(wxBOTH);
-    frame->Initialize();
-    frame->Show();
-}
-
 void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 	bool showGrid = false;
 	wxMessageDialog gridDialog(this, wxT("Export with Grid?"), wxT("Export"), wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
@@ -770,7 +726,7 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 	wxBitmap circuitBitmap(circuitImage);
 
 	wxString caption = wxT("Export Circuit");
-	wxString wildcard = wxT("Bitmap (*.bmp)|*.bmp|PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg");
+	wxString wildcard = wxT("PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|Bitmap (*.bmp)|*.bmp");
 	wxString defaultFilename = wxT("");
 	wxFileDialog saveDialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	saveDialog.SetDirectory(lastDirectory);
