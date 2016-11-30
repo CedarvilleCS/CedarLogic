@@ -17,7 +17,6 @@
   <ItemGroup>
     <ClInclude Include="GUI\ADCPopupDialog.h" />
     <ClInclude Include="GUI\CircuitParse.h" />
-    <ClInclude Include="GUI\CircuitPrint.h" />
     <ClInclude Include="GUI\commands.h" />
     <ClInclude Include="GUI\EditRegDialog.h" />
     <ClInclude Include="GUI\gateImage.h" />
@@ -65,7 +64,6 @@
     <ClCompile Include="GUI\ADCPopupDialog.cpp" />
     <ClCompile Include="GUI\autoSaveThread.cpp" />
     <ClCompile Include="GUI\CircuitParse.cpp" />
-    <ClCompile Include="GUI\CircuitPrint.cpp" />
     <ClCompile Include="GUI\commands.cpp" />
     <ClCompile Include="GUI\EditRegDialog.cpp" />
     <ClCompile Include="GUI\gateImage.cpp" />

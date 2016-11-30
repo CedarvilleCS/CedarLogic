@@ -22,7 +22,6 @@
 #include "OscopeFrame.h"
 #include "wx/docview.h"
 #include "commands.h"
-#include "CircuitPrint.h"
 #include "autoSaveThread.h"
 
 DECLARE_APP(MainApp)
