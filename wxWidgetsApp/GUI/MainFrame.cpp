@@ -153,7 +153,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	//////////////////////////////////////////////////////////////////////////
     // create a toolbar
 	//////////////////////////////////////////////////////////////////////////
-	toolBar = new wxToolBar(this, TOOLBAR_ID, wxPoint(0,0), wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER);
+	toolBar = new wxToolBar(this, TOOLBAR_ID, wxPoint(0,0), wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER| wxTB_FLAT);
 
 	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
 	// to read the bitmaps from file directly, without the use of a resource file.  KAS
@@ -197,6 +197,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddSeparator();
 	toolBar->AddTool(wxID_ABOUT, _T("About"), *bmp[8], wxT("About"));
 	//JV - Temporary tab button
+	toolBar->AddSeparator();
 	toolBar->AddTool(Tool_NewTab, _T("New Tab"), *bmp[14], wxT("New Tab"));
 	SetToolBar(toolBar);
 	toolBar->Show(true);
