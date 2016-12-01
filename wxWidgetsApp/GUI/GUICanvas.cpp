@@ -450,7 +450,6 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 
 void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 	GLPoint2f m = getMouseCoords();
-	bool angleHandled = false; // flag to ensure only one gate is rotated (if any)
 	vector < unsigned long >::iterator sGate;
 
 	if (isWithinPaste || (currentDragState != DRAG_NONE)) return; // Left mouse up is the next event we are looking for
@@ -494,35 +493,33 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 		CollisionGroup::iterator hit = hitThings.begin();
 		unselectAllGates();
 		unselectAllWires();
-		while( hit != hitThings.end() && !angleHandled ) {
+		while( hit != hitThings.end()) {
 			if ((*hit)->getType() == COLL_GATE) {
 				guiGate* hitGate = ((guiGate*)(*hit));
-				if (!angleHandled) {
-					// BEGIN WORKAROUND
-					//	Gates that have connections cannot be rotated without sacrificing wire sanity
-					map < string, GLPoint2f > gateHotspots = hitGate->getHotspotList();
-					map < string, GLPoint2f >::iterator ghsWalk = gateHotspots.begin();
-					bool gateConnected = false;
-					while ( ghsWalk !=  gateHotspots.end() ) {
-						if ( hitGate->isConnected( ghsWalk->first ) ) {
-							gateConnected = true;
-							break;
-						}
-						ghsWalk++;
+				// BEGIN WORKAROUND
+				//	Gates that have connections cannot be rotated without sacrificing wire sanity
+				map < string, GLPoint2f > gateHotspots = hitGate->getHotspotList();
+				map < string, GLPoint2f >::iterator ghsWalk = gateHotspots.begin();
+				bool gateConnected = false;
+				while ( ghsWalk !=  gateHotspots.end() ) {
+					if ( hitGate->isConnected( ghsWalk->first ) ) {
+						gateConnected = true;
+						break;
 					}
-					if ( gateConnected ) { hit++; continue; }
-					// END WORKAROUND
-					map < string, string > newParams(*(hitGate->getAllGUIParams()));
-					istringstream issAngle(newParams["angle"]);
-					GLfloat angle;
-					issAngle >> angle;
-					angle += 90.0;
-					if (angle >= 360.0) angle -= 360.0;
-					ostringstream ossAngle;
-					ossAngle << angle;
-					newParams["angle"] = ossAngle.str();
-					gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL) )) );
+					ghsWalk++;
 				}
+				if ( gateConnected ) { hit++; continue; }
+				// END WORKAROUND
+				map < string, string > newParams(*(hitGate->getAllGUIParams()));
+				istringstream issAngle(newParams["angle"]);
+				GLfloat angle;
+				issAngle >> angle;
+				angle += 90.0;
+				if (angle >= 360.0) angle -= 360.0;
+				ostringstream ossAngle;
+				ossAngle << angle;
+				newParams["angle"] = ossAngle.str();
+				gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL) )) );
 			}
 			hit++;
 		}				

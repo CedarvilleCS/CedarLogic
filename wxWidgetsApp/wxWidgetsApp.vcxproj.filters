@@ -148,9 +148,6 @@
     <ClInclude Include="GUI\gl_wrapper.h">
       <Filter>Source Files\GUI\gl</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\CircuitPrint.h">
-      <Filter>Source Files\GUI\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="GUI\guiGate.h">
       <Filter>Source Files\GUI\Dragable Things</Filter>
     </ClInclude>
@@ -270,9 +267,6 @@
     <ClCompile Include="GUI\gl_defs.cpp">
       <Filter>Source Files\GUI\gl</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\CircuitPrint.cpp">
-      <Filter>Source Files\GUI\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="GUI\guiGate.cpp">
       <Filter>Source Files\GUI\Dragable Things</Filter>
     </ClCompile>
@@ -296,6 +290,7 @@
     </ClCompile>
     <ClCompile Include="GUI\autoSaveThread.cpp">
       <Filter>Source Files\GUI\Misc</Filter>
+    </ClCompile>
     <ClCompile Include="logic\logic_event.cpp">
       <Filter>Source Files\logic</Filter>
     </ClCompile>

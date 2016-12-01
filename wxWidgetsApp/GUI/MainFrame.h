@@ -65,8 +65,6 @@ public:
     void OnOpen(wxCommandEvent& event);
     void OnSave(wxCommandEvent& event);
     void OnSaveAs(wxCommandEvent& event);
-	void OnPrint(wxCommandEvent& event);
-	void OnPrintPreview(wxCommandEvent& event);
 	void OnExportBitmap(wxCommandEvent& event);
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxTimerEvent& event);
