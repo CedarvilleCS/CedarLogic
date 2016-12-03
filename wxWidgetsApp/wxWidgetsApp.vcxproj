@@ -18,6 +18,7 @@
     <ClInclude Include="GUI\ADCPopupDialog.h" />
     <ClInclude Include="GUI\CircuitParse.h" />
     <ClInclude Include="GUI\commands.h" />
+    <ClInclude Include="GUI\DynamicGate.h" />
     <ClInclude Include="GUI\EditRegDialog.h" />
     <ClInclude Include="GUI\gateImage.h" />
     <ClInclude Include="GUI\GLFont\glfont2.h" />
@@ -65,6 +66,7 @@
     <ClCompile Include="GUI\autoSaveThread.cpp" />
     <ClCompile Include="GUI\CircuitParse.cpp" />
     <ClCompile Include="GUI\commands.cpp" />
+    <ClCompile Include="GUI\DynamicGate.cpp" />
     <ClCompile Include="GUI\EditRegDialog.cpp" />
     <ClCompile Include="GUI\gateImage.cpp" />
     <ClCompile Include="GUI\GLFont\glfont2.cpp" />
@@ -100,6 +102,12 @@
     <ClCompile Include="Z80\WaveformFSM.cpp" />
     <ClCompile Include="Z80\Z_80LogicGate.cpp" />
     <ClCompile Include="Z80\Z_80Registers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\Downloads\FuturaExtended.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="GUI\cl_gatedefs.xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2A335184-7DE6-42E6-9D39-4E15466A3C46}</ProjectGuid>

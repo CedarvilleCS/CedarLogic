@@ -70,6 +70,9 @@ public:
 	
 	void parseFile();
 
+	// Added by Colin Broberg 11/16/16 -- need to make this a public function so that I can use it for dynamic gates
+	void addGate(string libName, LibraryGate newGate);
+
 	// Parse the shape object from the mParse file, adding an offset if needed:
 	bool parseShapeObject( string type, LibraryGate* newGate, double offX = 0.0, double offY = 0.0 );
 	

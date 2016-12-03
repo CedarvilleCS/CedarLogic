@@ -43,6 +43,11 @@ LibraryParse::~LibraryParse() {
 	//delete mParse;
 }
 
+// Added by Colin Broberg 11/16/16 -- need to make this a public function so that I can use it for dynamic gates
+void LibraryParse::addGate(string libName, LibraryGate newGate) {
+	gates[libName][newGate.gateName] = newGate;
+}
+
 void LibraryParse::parseFile() {
 	do { // Outer loop to parse all libraries
 		// need to throw exception

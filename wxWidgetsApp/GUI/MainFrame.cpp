@@ -10,6 +10,7 @@
 
 #include "MainApp.h"
 #include "MainFrame.h"
+#include "DynamicGate.h"
 #include "wx/filedlg.h"
 #include "wx/timer.h"
 #include "wx/wfstream.h"
@@ -72,7 +73,7 @@ wxPrintData *g_printData = (wxPrintData*) NULL;
 
 
 MainFrame::MainFrame(const wxString& title, string cmdFilename)
-       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600,600))
+       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(1800,900))
 {
     // set the frame icon
     //SetIcon(wxICON(sample));
@@ -283,6 +284,8 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	currentTempNum = 0;
 	handlingEvent = false;
 	wxInitAllImageHandlers(); //Julian: Added to allow saving all types of image files
+
+	DynamicGate* dg = new DynamicGate(currentCanvas, gCircuit, gCircuit->getNextAvailableGateID(), 3, 0, 0, "AND");
 }
 
 MainFrame::~MainFrame() {
