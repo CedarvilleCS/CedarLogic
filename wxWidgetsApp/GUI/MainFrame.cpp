@@ -285,7 +285,8 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	handlingEvent = false;
 	wxInitAllImageHandlers(); //Julian: Added to allow saving all types of image files
 
-	DynamicGate* dg = new DynamicGate(currentCanvas, gCircuit, gCircuit->getNextAvailableGateID(), 3, 0, 0, "AND");
+	// Colin: for testing dynamic gates
+	//DynamicGate* dg = new DynamicGate(currentCanvas, gCircuit, gCircuit->getNextAvailableGateID(), 3, 0, 0, "AND");
 }
 
 MainFrame::~MainFrame() {
