@@ -658,11 +658,12 @@ void klsGLCanvas::wxOnMouseWheel(wxMouseEvent& event) {
 	// Accumulate mouse wheel events until they amount
 	// to one "line", and then take them line at a time:
 	wheelRotation += event.GetWheelRotation();
-	int rotationLines = (int)(wheelRotation / event.GetWheelDelta());
+	int rotationLines = (int)wheelRotation / event.GetWheelDelta();
 	wheelRotation -= rotationLines * event.GetWheelDelta();
 
-	if( abs( rotationLines ) > 0 ) {
-		OnMouseWheel( rotationLines );
+
+	if (rotationLines != 0) {
+		OnMouseWheel(rotationLines / abs(rotationLines));
 	}
 
 	// Update the drag-pan event here if needed:
@@ -674,7 +675,7 @@ void klsGLCanvas::wxOnMouseWheel(wxMouseEvent& event) {
 	}
 
 	updateMiniMap();
-//	event.Skip(); // Send the event on to wxOnMouseEvent, so that the gl coordinates get updated.
+	event.Skip(); // Send the event on to wxOnMouseEvent, so that the gl coordinates get updated.
 }
 
 
@@ -837,9 +838,9 @@ void klsGLCanvas::zoomToMouse(long numLines)
 	centerToMouse.y /= getZoom();
 
 	if (numLines > 0) {
-		setZoom(getZoom() * (ZOOM_STEP * numLines));
+		setZoom(getZoom() * (pow(ZOOM_STEP, numLines)));
 	} else {
-		setZoom(getZoom() / (ZOOM_STEP * (-numLines)));
+		setZoom(getZoom() / (pow(ZOOM_STEP, -numLines)));
 	}
 
 	centerToMouse.x *= getZoom();
