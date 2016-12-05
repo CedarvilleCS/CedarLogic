@@ -17,7 +17,7 @@ public:
 private:
 
 	time_t timeout;
-	const int WAIT_TIME = 600;
+	const int WAIT_TIME = 300;
 
 };
 

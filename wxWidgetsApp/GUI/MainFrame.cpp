@@ -863,6 +863,26 @@ void MainFrame::autosave() {
 	save(CRASH_FILENAME);
 }
 
+void MainFrame::save(string filename) {
+	//Pause system so that user can't modify during save
+	lock();
+	gCircuit->setSimulate(false);
+	wxGetApp().appSystemTime.Pause();
+
+	//Save file
+	CircuitParse cirp(currentCanvas);
+	cirp.saveCircuit(filename, canvases);
+
+	//Resume system
+	if (!(toolBar->GetToolState(Tool_Pause))) {
+		wxGetApp().appSystemTime.Start(0);
+	}
+	gCircuit->setSimulate(true);
+	if (!(toolBar->GetToolState(Tool_Lock))) {
+		unlock();
+	}
+}
+
 bool MainFrame::fileIsDirty() {
 	return commandProcessor->IsDirty();
 }
@@ -884,26 +904,6 @@ void MainFrame::lock() {
 void MainFrame::unlock() {
 	for (unsigned int i = 0; i < canvases.size(); i++) {
 		canvases[i]->unlockCanvas();
-	}
-}
-
-void MainFrame::save(string filename) {
-	//Pause system so that user can't modify during save
-	lock();
-	gCircuit->setSimulate(false);
-	wxGetApp().appSystemTime.Pause();
-
-	//Save file
-	CircuitParse cirp(currentCanvas);
-	cirp.saveCircuit(filename, canvases);
-
-	//Resume system
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
-	gCircuit->setSimulate(true);
-	if (!(toolBar->GetToolState(Tool_Lock))) {
-		unlock();
 	}
 }
 
