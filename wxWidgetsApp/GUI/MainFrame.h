@@ -31,6 +31,7 @@ class OscopeFrame;
 enum
 {
 	File_Export = 5901, // out of range of wxWidgets constants
+	File_ClipCopy,
 	
 	View_Oscope,
 	View_Gridline,
@@ -66,6 +67,7 @@ public:
     void OnSave(wxCommandEvent& event);
     void OnSaveAs(wxCommandEvent& event);
 	void OnExportBitmap(wxCommandEvent& event);
+	void OnCopyToClipboard(wxCommandEvent& event);
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxTimerEvent& event);
 	void OnSize(wxSizeEvent& event);
@@ -105,6 +107,9 @@ public:
 	void unlock();
 	void save(string filename);
 	void load(string filename);
+
+	//Julian: Added to simplify exporting and copying to clipboard
+	wxBitmap getBitmap(bool withGrid);
 	
 private:
     // helper function - creates a new thread (but doesn't run it)

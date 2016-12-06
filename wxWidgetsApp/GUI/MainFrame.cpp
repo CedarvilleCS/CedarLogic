@@ -36,6 +36,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(wxID_SAVE, MainFrame::OnSave)
     EVT_MENU(wxID_SAVEAS, MainFrame::OnSaveAs)
 	EVT_MENU(File_Export, MainFrame::OnExportBitmap)
+	EVT_MENU(File_ClipCopy, MainFrame::OnCopyToClipboard)
 	
 	EVT_MENU(wxID_UNDO, MainFrame::OnUndo)
 	EVT_MENU(wxID_REDO, MainFrame::OnRedo)
@@ -92,7 +93,8 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	fileMenu->Append(wxID_SAVE, _T("&Save\tCtrl+S"), _T("Save circuit"));
 	fileMenu->Append(wxID_SAVEAS, _T("Save &As"), _T("Save circuit"));
 	fileMenu->AppendSeparator();
-	fileMenu->Append(File_Export, _T("Export"));
+	fileMenu->Append(File_Export, _T("Export to Image"));
+	fileMenu->Append(File_ClipCopy, _T("Copy Canvas to Clipboard"));
 	fileMenu->AppendSeparator();
 	fileMenu->Append(wxID_EXIT, _T("E&xit\tAlt+X"), _T("Quit this program"));
 
@@ -720,14 +722,7 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 		return;
 	}
 
-	bool gridlineVisible = wxGetApp().appSettings.gridlineVisible;
-	wxGetApp().appSettings.gridlineVisible = showGrid;
-	wxGetApp().doingBitmapExport = true;
-
-	// render the image
-	wxSize imageSize = currentCanvas->GetClientSize();
-	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth() * 2, imageSize.GetHeight() * 2, 32);
-	wxBitmap circuitBitmap(circuitImage);
+	wxBitmap bitmap = getBitmap(showGrid);
 
 	wxString caption = wxT("Export Circuit");
 	wxString wildcard = wxT("PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|Bitmap (*.bmp)|*.bmp");
@@ -750,16 +745,48 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 			fileType = wxBITMAP_TYPE_JPEG;
 		}
 
-		circuitBitmap.SaveFile(_T(path),fileType);
+		bitmap.SaveFile(_T(path),fileType);
 	}
 	else
 	{
 		return;
 	}
+}
+
+void MainFrame::OnCopyToClipboard(wxCommandEvent& event) {
+	bool showGrid = false;
+	wxMessageDialog gridDialog(this, wxT("Copy with Grid?"), wxT("Copy to Clipboard"), wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
+	switch (gridDialog.ShowModal()) {
+	case wxID_YES:
+		showGrid = true;
+		break;
+	case wxID_CANCEL:
+		return;
+	}
+
+	wxBitmap bitmap = getBitmap(showGrid);
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxBitmapDataObject(bitmap));
+		wxTheClipboard->Close();
+	}
+}
+
+wxBitmap MainFrame::getBitmap(bool withGrid) {
+	bool gridlineVisible = wxGetApp().appSettings.gridlineVisible;
+	wxGetApp().appSettings.gridlineVisible = withGrid;
+	wxGetApp().doingBitmapExport = true;
+
+	// render the image
+	wxSize imageSize = currentCanvas->GetClientSize();
+	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth() * 2, imageSize.GetHeight() * 2, 32);
+	wxBitmap circuitBitmap(circuitImage);
 
 	// restore grid display setting
 	wxGetApp().appSettings.gridlineVisible = gridlineVisible;
 	wxGetApp().doingBitmapExport = false;
+
+	return circuitBitmap;
 }
 
 void MainFrame::OnPause(wxCommandEvent& event) {
