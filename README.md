@@ -11,24 +11,16 @@ CedarLogic is Cedarville University's digital logic simulator.
 
 3. Run wxWidgets source installer or extract zip.
 
-4. Step #5 is not required unless you didn't use the installer or changed the installation directory.
+4. Set windows environment variable `WXWIN` to point to your wxWidgets directory.
 
-5. Set windows environment variable `WXWIN` to point to your wxWidgets directory.
+5. Edit `%WXWIN%\include\wx\msw\setup.h` so that `wxUSE_GLCANVAS` is `1` instead of `0`.
 
-6. Edit `%WXWIN%\include\wx\msw\setup.h` so that `wxUSE_GLCANVAS` is `1` instead of `0`.
+6. Edit `%WXWIN%\src\msw\window.cpp` so that it does not include `pbt.h`.
 
-7. Edit `%WXWIN%\src\msw\window.cpp` so that it does not include `pbt.h`.
-
-8. Open an `x86 native tools` command prompt and run these commands.
+7. Open an `x86 native tools` command prompt and run these commands.
 	
 		cd %WXWIN%\build\msw
-		nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static                  MONOLITHIC=1
-		nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static                  MONOLITHIC=1
+		nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
+		nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
 
-9. Open an `x64 native tools` command prompt and run these commands.
-
-		cd %WXWIN%\build\msw
-		nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static TARGET_CPU=AMD64 MONOLITHIC=1
-		nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static TARGET_CPU=AMD64 MONOLITHIC=1
-
-10. Now you should be able to build CedarLogic debug and release versions for both 32- and 64-bit architectures.
+9. Now you should be able to build CedarLogic debug and release versions.

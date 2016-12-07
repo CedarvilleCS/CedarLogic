@@ -98,53 +98,27 @@ bool MainApp::OnInit()
 }
 
 void MainApp::loadSettings() {
-	//*****************************************
-	//Edit by Joshua Lansford. 2/15/07
-	//This edit should make it so that cedarls
-	//will still run even when the working directory
-	//is not were the exe is
-	int lastCharToInclude = -1;
-	wxChar* arg0 = wxGetApp().argv[0];
-	for( int i = 0; arg0[i] != (char)NULL; ++i ){
-		if( arg0[i] == '\\' || arg0[i] == '/' ){
-			lastCharToInclude = i;
+
+	// Find path to exe so that files can be loaded relative to it
+	// even when the program is run from somewhere else.
+	pathToExe = (char)argv[0];
+	while (!pathToExe.empty()) {
+		if (pathToExe.back() != '/' && pathToExe.back() != '\\') {
+			pathToExe.pop_back();
+		}
+		else {
+			break;
 		}
 	}
-	for( int i = 0; i <= lastCharToInclude; ++i ){
-		pathToExe += (char)arg0[i];
-	}
-	//the paths down below have the var added to them
-	//**********************************
 	
-	//TODO: find the location that the appSettings
-	//get saved and make it change back relative there.
-	
-	
-	//Edit by Joshua Lansford 10/18/07
-	//Incoperate pathToExe so that the application can
-	//find the settings file even if it is executed from
-	//a different path then the directory that it itself
-	//is in.  This happens when Cedar logic is started
-	//by double clicking on a circuit file.
-	#ifdef _PRODUCTION_
-		string settingsIni = pathToExe + "../settings.ini";
-	#else
-		string settingsIni = pathToExe + "../settings.ini";
-	#endif
-	
+	string settingsIni = pathToExe + "res/settings.ini";
 	ifstream iniFile( settingsIni.c_str(), ios::in );
 	
 	if (!iniFile) {
 		// set defaults
-		appSettings.gateLibFile = pathToExe + "./cl_gatedefs.xml";
-		appSettings.helpFile = pathToExe + "./KLS_Logic.chm";
-		//Edit by Joshua Lansford 4/05/07
-		//Changed the default font from times_new1.glf to arial1.glf
-#ifdef _PRODUCTION_
-		appSettings.textFontFile = pathToExe + "./arial.glf";
-#else
-		appSettings.textFontFile = pathToExe + "../GUI/GLFont/arial.glf";
-#endif
+		appSettings.gateLibFile = pathToExe + "res/cl_gatedefs.xml";
+		appSettings.helpFile = pathToExe + "res/KLS_Logic.chm";
+		appSettings.textFontFile = pathToExe + "res/arial.glf";
 		appSettings.mainFrameWidth = appSettings.mainFrameHeight = 600;
 		appSettings.mainFrameLeft = appSettings.mainFrameTop = 20;
 		appSettings.timePerStep = timeStepMod = 25; // ms

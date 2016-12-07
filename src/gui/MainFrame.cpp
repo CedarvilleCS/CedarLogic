@@ -141,7 +141,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     // parse a gate library
 	//////////////////////////////////////////////////////////////////////////
 #ifndef _PRODUCTION_
-	string libPath = wxGetApp().pathToExe + "../GUI/cl_gatedefs.xml";
+	string libPath = wxGetApp().pathToExe + "res/cl_gatedefs.xml";
 	//WARNING( "just so you know argv[0] == " );
 	//WARNING( wxString(wxGetApp().argv[0]) );
 #else
@@ -161,7 +161,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	wxBitmap *bmp[15];
 
 	for (int  i = 0; i < 15; i++) {
-		bitmaps[i] = "GUI/bitmaps/" + bitmaps[i] + ".bmp";
+		bitmaps[i] = "res/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
 	}
@@ -853,11 +853,7 @@ void MainFrame::saveSettings() {
 	//of the part I put on.
 	int numCharAbsolute = wxGetApp().pathToExe.length();
 	
-	#ifdef _PRODUCTION_
-		string settingsIni = wxGetApp().pathToExe + "./settings.ini";
-	#else
-		string settingsIni = wxGetApp().pathToExe + "../settings.ini";
-	#endif
+	string settingsIni = wxGetApp().pathToExe + "res/settings.ini";
 	
 	ofstream iniFile(settingsIni.c_str(), ios::out);
 	iniFile << "GateLib=" << wxGetApp().appSettings.gateLibFile.substr(numCharAbsolute) << endl;

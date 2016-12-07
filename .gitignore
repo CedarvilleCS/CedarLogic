@@ -12,9 +12,10 @@
 !Doxyfile
 
 # But do not exclude these directories...
-!setup/
-!setup/**
 !src/
 !src/**
 !res/
 !res/**
+
+# Okay, but really do exclude these files...
+res/settings.ini
