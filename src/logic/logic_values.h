@@ -6,6 +6,7 @@
 
 #ifndef LOGIC_VALUES_H
 #define LOGIC_VALUES_H
+#include <climits>
 
 // Wire state type:
 typedef unsigned char StateType;

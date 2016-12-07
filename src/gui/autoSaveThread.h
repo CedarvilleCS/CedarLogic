@@ -5,6 +5,9 @@
 #ifndef AUTO_SAVE_THREAD_H
 #define AUTO_SAVE_THREAD_H
 
+#include <ctime>
+#include "wx/thread.h"
+
 class autoSaveThread : public wxThread
 {
 public:

@@ -2,23 +2,20 @@
 # Exclude everything by default.
 *
 
-# But do not exclude...
+# But do not exclude these files...
 !.gitignore
-!FormBuilderApps.sln
+!CedarLogic.sln
+!CedarLogic.vcxproj
 !README.md
+!LICENSE.txt
+!HISTORY.txt
 !Doxyfile
-!wxSetup/
-!wxSetup/**
-!wxWidgetsApp/
-!wxWidgetsApp/**
 
-# But seriously, do ignore...
-wxWidgetsApp/wxWidgetsApp.vcxproj.user
-wxWidgetsApp/Debug/
+# But do not exclude these directories...
+!src/
+!src/**
+!res/
+!res/**
 
-# These are temporary ignores.
-# These files were removed from the project and shouldn't be re-added.
-*.xpm
-resources.rc
-KLS_Logic.txt
-*.TMP
+# Okay, but really do exclude these files...
+res/settings.ini

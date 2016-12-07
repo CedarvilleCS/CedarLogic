@@ -14,104 +14,9 @@
     <WXWIN Condition="'$(WXWIN)' == ''">c:\wxWidgets-2.8.12</WXWIN>
     <WXADDITIONS Condition="'$(WXADDITIONS)' == ''">c:\wxWidgets-2.8.12\additions</WXADDITIONS>
   </PropertyGroup>
-  <ItemGroup>
-    <ClInclude Include="GUI\ADCPopupDialog.h" />
-    <ClInclude Include="GUI\CircuitParse.h" />
-    <ClInclude Include="GUI\commands.h" />
-    <ClInclude Include="GUI\DynamicGate.h" />
-    <ClInclude Include="GUI\EditRegDialog.h" />
-    <ClInclude Include="GUI\gateImage.h" />
-    <ClInclude Include="GUI\GLFont\glfont2.h" />
-    <ClInclude Include="GUI\gl_wrapper.h" />
-    <ClInclude Include="GUI\gl_defs.h" />
-    <ClInclude Include="GUI\GUICanvas.h" />
-    <ClInclude Include="GUI\GUICircuit.h" />
-    <ClInclude Include="GUI\guiGate.h" />
-    <ClInclude Include="GUI\guiText.h" />
-    <ClInclude Include="GUI\guiWire.h" />
-    <ClInclude Include="GUI\autoSaveThread.h" />
-    <ClInclude Include="GUI\klsBBox.h" />
-    <ClInclude Include="GUI\klsClipboard.h" />
-    <ClInclude Include="GUI\klsCollisionChecker.h" />
-    <ClInclude Include="GUI\klsGLCanvas.h" />
-    <ClInclude Include="GUI\klsMessage.h" />
-    <ClInclude Include="GUI\klsMiniMap.h" />
-    <ClInclude Include="GUI\LibraryParse.h" />
-    <ClInclude Include="GUI\MainApp.h" />
-    <ClInclude Include="GUI\MainFrame.h" />
-    <ClInclude Include="GUI\OscopeCanvas.h" />
-    <ClInclude Include="GUI\OscopeFrame.h" />
-    <ClInclude Include="GUI\PaletteCanvas.h" />
-    <ClInclude Include="GUI\PaletteFrame.h" />
-    <ClInclude Include="GUI\paramDialog.h" />
-    <ClInclude Include="GUI\RamPopupDialog.h" />
-    <ClInclude Include="GUI\threadLogic.h" />
-    <ClInclude Include="GUI\wireSegment.h" />
-    <ClInclude Include="GUI\XMLParser.h" />
-    <ClInclude Include="GUI\Z80PopupDialog.h" />
-    <ClInclude Include="logic\logic_circuit.h" />
-    <ClInclude Include="logic\logic_defaults.h" />
-    <ClInclude Include="logic\logic_event.h" />
-    <ClInclude Include="logic\logic_gate.h" />
-    <ClInclude Include="logic\logic_junction.h" />
-    <ClInclude Include="logic\logic_values.h" />
-    <ClInclude Include="logic\logic_wire.h" />
-    <ClInclude Include="Z80\InstructionManager.h" />
-    <ClInclude Include="Z80\WaveformFSM.h" />
-    <ClInclude Include="Z80\Z_80LogicGate.h" />
-    <ClInclude Include="Z80\Z_80Registers.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="GUI\ADCPopupDialog.cpp" />
-    <ClCompile Include="GUI\autoSaveThread.cpp" />
-    <ClCompile Include="GUI\CircuitParse.cpp" />
-    <ClCompile Include="GUI\commands.cpp" />
-    <ClCompile Include="GUI\DynamicGate.cpp" />
-    <ClCompile Include="GUI\EditRegDialog.cpp" />
-    <ClCompile Include="GUI\gateImage.cpp" />
-    <ClCompile Include="GUI\GLFont\glfont2.cpp" />
-    <ClCompile Include="GUI\gl_defs.cpp" />
-    <ClCompile Include="GUI\GUICanvas.cpp" />
-    <ClCompile Include="GUI\GUICircuit.cpp" />
-    <ClCompile Include="GUI\guiGate.cpp" />
-    <ClCompile Include="GUI\guiText.cpp" />
-    <ClCompile Include="GUI\guiWire.cpp" />
-    <ClCompile Include="GUI\klsClipboard.cpp" />
-    <ClCompile Include="GUI\klsCollisionChecker.cpp" />
-    <ClCompile Include="GUI\klsGLCanvas.cpp" />
-    <ClCompile Include="GUI\klsMiniMap.cpp" />
-    <ClCompile Include="GUI\LibraryParse.cpp" />
-    <ClCompile Include="GUI\MainApp.cpp" />
-    <ClCompile Include="GUI\MainFrame.cpp" />
-    <ClCompile Include="GUI\OscopeCanvas.cpp" />
-    <ClCompile Include="GUI\OscopeFrame.cpp" />
-    <ClCompile Include="GUI\PaletteCanvas.cpp" />
-    <ClCompile Include="GUI\PaletteFrame.cpp" />
-    <ClCompile Include="GUI\paramDialog.cpp" />
-    <ClCompile Include="GUI\RamPopupDialog.cpp" />
-    <ClCompile Include="GUI\threadLogic.cpp" />
-    <ClCompile Include="GUI\wireSegment.cpp" />
-    <ClCompile Include="GUI\XMLParser.cpp" />
-    <ClCompile Include="GUI\Z80PopupDialog.cpp" />
-    <ClCompile Include="logic\logic_circuit.cpp" />
-    <ClCompile Include="logic\logic_event.cpp" />
-    <ClCompile Include="logic\logic_gate.cpp" />
-    <ClCompile Include="logic\logic_junction.cpp" />
-    <ClCompile Include="logic\logic_wire.cpp" />
-    <ClCompile Include="Z80\InstructionManager.cpp" />
-    <ClCompile Include="Z80\WaveformFSM.cpp" />
-    <ClCompile Include="Z80\Z_80LogicGate.cpp" />
-    <ClCompile Include="Z80\Z_80Registers.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="..\..\..\Downloads\FuturaExtended.ttf" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="GUI\cl_gatedefs.xml" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2A335184-7DE6-42E6-9D39-4E15466A3C46}</ProjectGuid>
-    <ProjectName>wxWidgetsApp</ProjectName>
+    <ProjectName>CedarLogic</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -154,7 +59,7 @@
       <PreprocessorDefinitions>_PRODUCTION_;WIN32;STRICT;__WXMSW__;__WX__;__WXDEBUG__;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>$(WXWIN)/include/wx/wxprec.h</PrecompiledHeaderFile>
@@ -207,4 +112,10 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="src/**/*.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src/**/*.h" />
+  </ItemGroup>
 </Project>
