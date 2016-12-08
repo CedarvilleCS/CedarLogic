@@ -1,3 +1,6 @@
+# Makefile by tylerdrake.
+# Use freely
+
 ### [ Source & Output Files ] =======================================
 
 srcCpp := $(shell find $(srcDirCpp)  -type f -name '*.cpp')
