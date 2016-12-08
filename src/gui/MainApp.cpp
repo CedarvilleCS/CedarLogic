@@ -16,7 +16,7 @@ IMPLEMENT_APP(MainApp)
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-	{ wxCMD_LINE_PARAM, NULL, NULL, wxT("input file"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+	{ wxCMD_LINE_PARAM, NULL, NULL, "input file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
 	{ wxCMD_LINE_NONE }
 };
 
@@ -101,7 +101,7 @@ void MainApp::loadSettings() {
 
 	// Find path to exe so that files can be loaded relative to it
 	// even when the program is run from somewhere else.
-	pathToExe = (char)argv[0];
+	pathToExe = argv[0].c_str();
 	while (!pathToExe.empty()) {
 		if (pathToExe.back() != '/' && pathToExe.back() != '\\') {
 			pathToExe.pop_back();

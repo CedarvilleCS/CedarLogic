@@ -13,7 +13,6 @@
 
 #include "MainApp.h"
 #include "PaletteFrame.h"
-#include "wx/wxprec.h"
 #include "wx/thread.h"
 #include "wx/toolbar.h"
 #include "wx/gbsizer.h"

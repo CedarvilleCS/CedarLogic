@@ -12,7 +12,7 @@
 #include "OscopeFrame.h"
 #include <fstream>
 #include <map>
-#include <hash_map>   // removed .h  KAS
+#include <unordered_map>   // removed .h  KAS
 
 #include "MainApp.h"
 #include "commands.h"
@@ -34,13 +34,14 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
     wxTextDataObject text;
     vector < klsCommand* > cmdList;
     if ( wxTheClipboard->GetData(text) ) {
-    	string pasteText = (char*)(text.GetText().c_str());
+    	string pasteText = text.GetText().ToStdString();
+		
     	if (pasteText.find('\n',0) == string::npos) return NULL;
     	istringstream iss(pasteText);
     	string temp;
 		
-		hash_map < unsigned long, unsigned long > gateids;
-		hash_map < unsigned long, unsigned long > wireids;
+		unordered_map < unsigned long, unsigned long > gateids;
+		unordered_map < unsigned long, unsigned long > wireids;
     	while (getline( iss, temp, '\n' )) {
     		klsCommand* cg = NULL;
     		if (temp.substr(0,10) == "creategate") cg = new cmdCreateGate(temp);
@@ -100,12 +101,12 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
     	}
 		gCanvas->unselectAllGates();
 		gCanvas->unselectAllWires();
-		hash_map < unsigned long, unsigned long >::iterator gateWalk = gateids.begin();
+		unordered_map < unsigned long, unsigned long >::iterator gateWalk = gateids.begin();
 		while (gateWalk != gateids.end()) {
 			(*(gCircuit->getGates()))[gateWalk->second]->select();
 			gateWalk++;
 		}
-		hash_map < unsigned long, unsigned long >::iterator wireWalk = wireids.begin();
+		unordered_map < unsigned long, unsigned long >::iterator wireWalk = wireids.begin();
 		while (wireWalk != wireids.end()) {
 			guiWire *wire = (*(gCircuit->getWires()))[wireWalk->second];
 			if (wire != nullptr) {

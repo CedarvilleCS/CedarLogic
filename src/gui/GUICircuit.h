@@ -63,8 +63,8 @@ public:
 	void deleteGate(unsigned long gid, bool waitToUpdate = false);
 	
 	// Maps of gates and wires to their IDs
-	hash_map< unsigned long, guiGate* >* getGates() { return &gateList; };
-	hash_map< unsigned long, guiWire* >* getWires() { return &wireList; };
+	unordered_map< unsigned long, guiGate* >* getGates() { return &gateList; };
+	unordered_map< unsigned long, guiWire* >* getWires() { return &wireList; };
 	
 	unsigned long getNextAvailableGateID() { nextGateID++; while (gateList.find(nextGateID) != gateList.end()) nextGateID++; return nextGateID; };
 	unsigned long getNextAvailableWireID() { nextWireID++; while (wireList.find(nextWireID) != wireList.end()) nextWireID++; return nextWireID; };
@@ -89,10 +89,10 @@ public:
 	int lastTime;
 	
 private:
-	hash_map< unsigned long, guiGate* > gateList;
-	hash_map< unsigned long, guiWire* > wireList;
+	unordered_map< unsigned long, guiGate* > gateList;
+	unordered_map< unsigned long, guiWire* > wireList;
 
-	hash_map<IDType, guiWire *> buslineToWire;
+	unordered_map<IDType, guiWire *> buslineToWire;
 
 	unsigned long nextGateID;
 	unsigned long nextWireID;

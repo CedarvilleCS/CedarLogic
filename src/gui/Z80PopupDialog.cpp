@@ -1,9 +1,4 @@
-// For compilers that supports precompilation , includes "wx/wx.h"
-#include "wx/wxprec.h"
- 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
+#include "wx/wx.h"
 
 #include <ostream>
 #include <sstream>
@@ -15,7 +10,7 @@
 #include "guiGate.h"
 #include "GUICircuit.h"
 #include "MainFrame.h"
-#include "../Z80/Z_80LogicGate.h"
+#include "../z80/Z_80LogicGate.h"
 #include <stdlib.h>
 
 using namespace std;
@@ -127,11 +122,11 @@ Z80PopupDialog::Z80PopupDialog( guiGateZ80* newM_guiGateZ80,
 //Buttons
 	closeBtn = new wxButton( this, wxID_CLOSE );
 	wxStaticText* StepTitle = new wxStaticText(this, -1, (const wxChar *)"Step By:");  // cast here and following KAS
-	contBtn = new wxBitmapButton( this, ID_CONTSTEP, bmpCont );
+	//contBtn = new wxBitmapButton( this, ID_CONTSTEP, bmpCont );
 	wxStaticText* contBtnLabel = new wxStaticText(this, -1, (const wxChar *)"Continuous");
-	iStepBtn = new wxBitmapButton( this, ID_ISTEP, bmpIStep);
+	//iStepBtn = new wxBitmapButton( this, ID_ISTEP, bmpIStep);
 	wxStaticText* iStepBtnLabel = new wxStaticText(this, -1, (const wxChar *)"Instruction");
-	tStepBtn = new wxBitmapButton( this, ID_TSTEP, bmpTStep);
+	//tStepBtn = new wxBitmapButton( this, ID_TSTEP, bmpTStep);
 	wxStaticText* tStepBtnLabel = new wxStaticText(this, -1, (const wxChar *)"T-State");
 	editRegBtn = new wxButton(this, ID_EDITREG, (const wxChar *)"Edit Registers...");
 	
@@ -405,11 +400,11 @@ Z80PopupDialog::Z80PopupDialog( guiGateZ80* newM_guiGateZ80,
 	InstrSizer->Add( ZADMode, wxSizerFlags(0).Align(wxALIGN_LEFT).Border(wxALL, 5));
 	InstrSizer->Add( SMARTMode, wxSizerFlags(0).Align(wxALIGN_LEFT).Border(wxALL, 5));
 
-	StepSizer->Add( contBtn, wxSizerFlags(0).Align(wxALIGN_CENTER).Border(wxALL, 1));
+	//StepSizer->Add( contBtn, wxSizerFlags(0).Align(wxALIGN_CENTER).Border(wxALL, 1));
 	StepSizer->Add( contBtnLabel, wxSizerFlags(0).Align(wxALIGN_LEFT).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 1));
-	StepSizer->Add( iStepBtn, wxSizerFlags(0).Align(wxALIGN_CENTER).Border(wxALL, 1));
+	//StepSizer->Add( iStepBtn, wxSizerFlags(0).Align(wxALIGN_CENTER).Border(wxALL, 1));
 	StepSizer->Add( iStepBtnLabel, wxSizerFlags(0).Align(wxALIGN_LEFT).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 1));
-	StepSizer->Add( tStepBtn, wxSizerFlags(0).Align(wxALIGN_CENTER).Border(wxALL, 1));
+	//StepSizer->Add( tStepBtn, wxSizerFlags(0).Align(wxALIGN_CENTER).Border(wxALL, 1));
 	StepSizer->Add( tStepBtnLabel, wxSizerFlags(0).Align(wxALIGN_LEFT).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 1));
 	
 

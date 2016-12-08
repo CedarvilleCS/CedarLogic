@@ -11,7 +11,6 @@
 #ifndef MAINAPP_H_
 #define MAINAPP_H_
 
-#include "wx/wxprec.h"
 #include "wx/wx.h"
 #include "wx/thread.h"
 #include "wx/image.h"

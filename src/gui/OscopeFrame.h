@@ -16,7 +16,6 @@ class OscopeFrame;
 
 #include "MainApp.h"
 #include "PaletteCanvas.h"
-#include "wx/wxprec.h"
 #include "wx/thread.h"
 #include "wx/tglbtn.h"
 #include "threadLogic.h"

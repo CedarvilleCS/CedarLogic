@@ -16,7 +16,7 @@
 #include <stack>
 #include <iterator>
 
-#include "../Z80/Z_80LogicGate.h"
+#include "../z80/Z_80LogicGate.h"
 
 #ifndef _PRODUCTION_
 ofstream* logiclog;

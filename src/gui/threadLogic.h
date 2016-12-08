@@ -11,7 +11,6 @@
 #ifndef THREADLOGIC_H_
 #define THREADLOGIC_H_
 
-#include "wx/wxprec.h"
 #include "wx/wx.h"
 #include "wx/thread.h"
 #include "klsMessage.h"

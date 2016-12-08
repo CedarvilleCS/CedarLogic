@@ -107,7 +107,10 @@ void klsGLCanvas::updateMiniMap() {
 wxImage klsGLCanvas::renderToImage( unsigned long width, unsigned long height, unsigned long colorDepth, bool noColor ) {
 //WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
 // DIB Section OpenGL rendering.
-
+	
+	// TODO TYLER
+	/*
+	
 	// Create a DIB section.
 	// (The Windows wxBitmap implementation will create a DIB section for a bitmap if you set
 	// a color depth of 24 or greater.)
@@ -187,6 +190,7 @@ wxImage klsGLCanvas::renderToImage( unsigned long width, unsigned long height, u
 	SetCurrent();
 	
 	return theBM.ConvertToImage();
+	 */
 }
 
 

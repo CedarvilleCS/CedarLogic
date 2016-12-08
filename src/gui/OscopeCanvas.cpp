@@ -234,8 +234,8 @@ void OscopeCanvas::UpdateData(void){
 	deque<StateType> temp;
 
 	// Log the values of all of the gates:
-	hash_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
-	hash_map< unsigned long, guiGate* >::iterator theGate;
+	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
+	unordered_map< unsigned long, guiGate* >::iterator theGate;
 	
 	set< string > liveTOs;
 	vector < guiGate* > toGates;
@@ -351,14 +351,14 @@ void OscopeCanvas::UpdateMenu()
 	//what value they should be currently holding
 	//The edit ends with the end of this function
 	
-	hash_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
+	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
 	
 	vector< string > namesOfPossableFeeds;
 	
 	map< string, bool > alreadyAdded;
 	
 	//iterate over all gates
-	for( hash_map< unsigned long, guiGate* >::iterator 
+	for( unordered_map< unsigned long, guiGate* >::iterator 
 	       gateIterator = gateList->begin(); 
 	       gateIterator != gateList->end(); 
 	       gateIterator++ ){
@@ -383,8 +383,8 @@ void OscopeCanvas::UpdateMenu()
 	/*
 	
 	//Sets variables
-	hash_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
-	hash_map< unsigned long, guiGate* >::iterator theGate = gateList->begin();
+	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
+	unordered_map< unsigned long, guiGate* >::iterator theGate = gateList->begin();
 	
 	//Sets size
 	//unsigned int size = (parentFrame->comboBoxVector).size();
@@ -452,7 +452,9 @@ void OscopeCanvas::UpdateMenu()
 wxImage OscopeCanvas::generateImage(){ 
 //WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
 // DIB Section OpenGL rendering.
-
+	
+	// TODO TYLER
+	/**
 	wxSize sz = GetClientSize();
 
 	// Create a DIB section.
@@ -523,4 +525,5 @@ wxImage OscopeCanvas::generateImage(){
     ::wglDeleteContext( hRC );
 	myDC.SelectObject(wxNullBitmap);
 	return theBM.ConvertToImage();
+	 */
 }

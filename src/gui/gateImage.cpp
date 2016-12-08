@@ -125,7 +125,10 @@ void gateImage::setViewport() {
 void gateImage::generateImage() {
 //WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
 // DIB Section OpenGL rendering.
-
+	
+	
+	// TODO TYLER
+	/*
 	wxSize sz = GetClientSize();
 
 	// Create a DIB section.
@@ -203,6 +206,8 @@ void gateImage::generateImage() {
     ::wglDeleteContext( hRC );
 	myDC.SelectObject(wxNullBitmap);
 	gImage = theBM.ConvertToImage();
+	 * 
+	 */
 }
 
 void gateImage::renderMap() {

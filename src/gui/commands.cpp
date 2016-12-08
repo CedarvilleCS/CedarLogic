@@ -161,7 +161,7 @@ bool cmdMoveWire::Undo() {
 	return true;
 }
 
-void cmdMoveWire::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) {
+void cmdMoveWire::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids ) {
 	this->gCircuit = gCircuit;
 	wid = wireids[wid];
 	map < long, wireSegment >::iterator segWalk = newSegList.begin();
@@ -348,7 +348,7 @@ string cmdCreateGate::toString() const {
 	return oss.str();	
 }
 
-void cmdCreateGate::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) {
+void cmdCreateGate::setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids ) {
 	// Find myself an appropriate ID for a new environment
 	if (gateids.find(gid) != gateids.end()) {
 		gid = gateids[gid];
@@ -589,7 +589,7 @@ string cmdConnectWire::toString() const {
 	return oss.str();
 }
 
-void cmdConnectWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids) {
+void cmdConnectWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids) {
 	gateId = gateids[gateId];
 	wireId = wireids[wireId];
 	this->gCircuit = gCircuit;
@@ -881,7 +881,7 @@ string cmdCreateWire::toString() const {
 	return oss.str();
 }
 
-void cmdCreateWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids) {
+void cmdCreateWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids) {
 	
 	// remap ids.
 	// notice the difference between wireIds and wireids.
@@ -1143,7 +1143,7 @@ string cmdSetParams::toString() const {
 	return oss.str();
 }
 
-void cmdSetParams::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids) {
+void cmdSetParams::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids) {
 	gid = gateids[gid];
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
@@ -1197,7 +1197,7 @@ bool cmdWireSegDrag::Undo() {
 
 // JV
 
-cmdDeleteTab::cmdDeleteTab(GUICircuit* gCircuit, GUICanvas* gCanvas, wxAuiNotebook* book, vector< GUICanvas* >* canvases, unsigned long ID) : klsCommand(true, (const wxChar *)"Delete Tab") {
+cmdDeleteTab::cmdDeleteTab(GUICircuit* gCircuit, GUICanvas* gCanvas, wxAuiNotebook* book, vector< GUICanvas* >* canvases, unsigned long ID) : klsCommand(true, "Delete Tab") {
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
 	this->canvasBook = book;
@@ -1205,14 +1205,14 @@ cmdDeleteTab::cmdDeleteTab(GUICircuit* gCircuit, GUICanvas* gCanvas, wxAuiNotebo
 	this->canvasID = ID;
 
 
-	hash_map< unsigned long, guiGate* >* gateList = gCanvas->getGateList();
-	hash_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
+	unordered_map< unsigned long, guiGate* >* gateList = gCanvas->getGateList();
+	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
 	while (thisGate != gateList->end()) {
 		this->gates.push_back(thisGate->first);
 		thisGate++;
 	}
-	hash_map< unsigned long, guiWire* >* wireList = gCanvas->getWireList();
-	hash_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
+	unordered_map< unsigned long, guiWire* >* wireList = gCanvas->getWireList();
+	unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
 	while (thisWire != wireList->end()) {
 		this->wires.push_back(thisWire->first);
 		thisWire++;
@@ -1264,7 +1264,7 @@ bool cmdDeleteTab::Undo() {
 }
 
 //JV
-cmdAddTab::cmdAddTab(GUICircuit* gCircuit, wxAuiNotebook* book, vector< GUICanvas* >* canvases) : klsCommand(true, (const wxChar *)"Add Tab") {
+cmdAddTab::cmdAddTab(GUICircuit* gCircuit, wxAuiNotebook* book, vector< GUICanvas* >* canvases) : klsCommand(true, "Add Tab") {
 	this->gCircuit = gCircuit;
 	this->canvasBook = book;
 	this->canvases = canvases;

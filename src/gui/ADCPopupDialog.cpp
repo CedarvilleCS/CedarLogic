@@ -1,9 +1,4 @@
-// For compilers that supports precompilation , includes "wx/wx.h"
-#include "wx/wxprec.h"
- 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
+#include "wx/wx.h"
 
 #include "guiGate.h"
 #include "GUICircuit.h"

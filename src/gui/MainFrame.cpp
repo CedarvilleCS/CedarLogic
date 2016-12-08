@@ -744,7 +744,7 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 			fileType = wxBITMAP_TYPE_JPEG;
 		}
 
-		bitmap.SaveFile(_T(path),fileType);
+		bitmap.SaveFile(path,fileType);
 	}
 	else
 	{

@@ -12,7 +12,7 @@
 #define COMMANDS_H_
 
 #include <map>
-#include <hash_map>
+#include <unordered_map>
 #include <string>
 #include <stack>
 #include <vector>
@@ -47,7 +47,7 @@ public:
 	klsCommand( bool canUndo, const char *name) : wxCommand(canUndo, wxString(name)), gCircuit(nullptr), gCanvas(nullptr) {};
 	virtual ~klsCommand( void ) { return; };
 	virtual string toString() const { return ""; };
-	virtual void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) { this->gCircuit = gCircuit; this->gCanvas = gCanvas; };
+	virtual void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids ) { this->gCircuit = gCircuit; this->gCanvas = gCanvas; };
 };
 
 // cmdMoveGate - moving a gate from point a(x,y) to point b(x,y)
@@ -82,7 +82,7 @@ public:
 	
 	bool Do( void );
 	bool Undo( void );
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
+	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids );
 	virtual std::string toString() const override;
 };
 
@@ -122,7 +122,7 @@ public:
 	bool Do( void );
 	bool Undo( void );
 	virtual std::string toString() const override;
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
+	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids );
 	
 	vector < klsCommand* >* getConnections() { return &proxconnects; };
 };
@@ -156,7 +156,7 @@ public:
 	bool validateBusLines() const;
 
 	virtual std::string toString() const override;
-	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
+	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids);
 	IDType getGateId() const;
 	const std::string & getHotspot() const;
 
@@ -220,7 +220,7 @@ public:
 	const std::vector<IDType> & getWireIds() const;
 
 	virtual std::string toString() const override;
-	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
+	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids);
 
 private:
 	std::vector<IDType> wireIds;
@@ -329,7 +329,7 @@ public:
 	bool Do( void );
 	bool Undo( void );
 	virtual std::string toString() const override;
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
+	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, unordered_map < unsigned long, unsigned long > &gateids, unordered_map < unsigned long, unsigned long > &wireids );
 };
 
 
