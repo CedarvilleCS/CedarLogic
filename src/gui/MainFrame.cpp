@@ -10,7 +10,6 @@
 
 #include "MainApp.h"
 #include "MainFrame.h"
-#include "DynamicGate.h"
 #include "wx/filedlg.h"
 #include "wx/timer.h"
 #include "wx/wfstream.h"
