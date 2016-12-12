@@ -46,68 +46,8 @@ struct paramSet {
 #include "command/cmdCreateWire.h"
 #include "command/cmdDeleteWire.h"
 #include "command/cmdDeleteGate.h"
-// 6 left...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// cmdDeleteSelection - Deletes a selection of gates/wires
-class cmdDeleteSelection : public klsCommand {
-protected:
-	vector < unsigned long > gates;
-	vector < unsigned long > wires;
-	stack < klsCommand* > cmdList;
-	
-public:
-	cmdDeleteSelection( GUICircuit* gCircuit, GUICanvas* gCanvas, vector < unsigned long > &gates, vector < unsigned long > &wires);
-	virtual ~cmdDeleteSelection( void );
-	
-	bool Do( void );
-	bool Undo( void );
-};
-
-
-
-
-
-
-
-
+#include "command/cmdDeleteSelection.h"
+// 5 left...
 
 
 
