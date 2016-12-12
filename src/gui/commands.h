@@ -38,26 +38,7 @@ struct paramSet {
 
 #include "command/klsCommand.h"
 #include "command/cmdMoveGate.h"
-
-// cmdMoveWire - moving a wire and storing it's segment maps (old and new)
-class cmdMoveWire : public klsCommand {
-protected:
-	unsigned long wid;
-	map < long, wireSegment > oldSegList;
-	map < long, wireSegment > newSegList;
-	GLPoint2f delta;
-	
-public:
-	cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, wireSegment > oldList, map < long, wireSegment > newList );
-	cmdMoveWire( GUICircuit* gCircuit, unsigned long wid, map < long, wireSegment > oldList, GLPoint2f delta );
-	cmdMoveWire( string def );
-	virtual ~cmdMoveWire( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
-	virtual std::string toString() const override;
-};
+#include "command/cmdMoveWire.h"
 
 // cmdMoveSelection - move passed gates and wires
 class cmdMoveSelection : public klsCommand {
