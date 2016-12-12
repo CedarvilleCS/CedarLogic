@@ -5,7 +5,7 @@
 #include "../wireSegment.h"
 #include "../gl_wrapper.h"
 
-
+// Just a map of wire segments
 typedef std::map<long, wireSegment> SegmentMap;
 
 // cmdMoveWire - moving a wire and storing it's segment maps (old and new)

@@ -39,26 +39,8 @@ struct paramSet {
 #include "command/klsCommand.h"
 #include "command/cmdMoveGate.h"
 #include "command/cmdMoveWire.h"
+#include "command/cmdMoveSelection.h"
 
-// cmdMoveSelection - move passed gates and wires
-class cmdMoveSelection : public klsCommand {
-protected:
-	vector < unsigned long > gateList;
-	vector < unsigned long > wireList;
-	map < unsigned long, map < long, wireSegment > > oldSegMaps;
-	map < unsigned long, map < long, wireSegment > > newSegMaps;		
-	float startX, startY, endX, endY;
-	int wireMove;
-	vector < klsCommand* > proxconnects;
-public:
-	cmdMoveSelection( GUICircuit* gCircuit, vector < GateState > &preMove, vector < WireState > &preMoveWire, float startX, float startY, float endX, float endY );
-	virtual ~cmdMoveSelection( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
-	
-	vector < klsCommand* >* getConnections() { return &proxconnects; };
-};
 
 // cmdCreateGate - creates a gate on a given canvas at position (x,y)
 class cmdCreateGate : public klsCommand {
