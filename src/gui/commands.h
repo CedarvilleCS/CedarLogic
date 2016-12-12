@@ -8,28 +8,7 @@
    commands: Implements a klsCommand object for each user interface command
 *****************************************************************************/
 
-#ifndef COMMANDS_H_
-#define COMMANDS_H_
-
-#include <map>
-#include <hash_map>
-#include <string>
-#include <stack>
-#include <vector>
-#include "wx/cmdproc.h"
-#include "gl_defs.h"
-#include "wireSegment.h"
-#include "GUICanvas.h"  // GateState, WireState
-
-#include "wx/aui/auibook.h"
-
-#include "../logic/logic_values.h"
-using namespace std;
-
-class GUICircuit;
-class GUICanvas;
-
-
+#pragma once
 
 #include "command/klsCommand.h"
 #include "command/cmdMoveGate.h"
@@ -46,44 +25,4 @@ class GUICanvas;
 #include "command/cmdWireSegDrag.h"
 #include "command/cmdSetParams.h"
 #include "command/cmdDeleteTab.h"
-// 1 left...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//JV - cmdAddTab - add a new tab into canvasBook
-class cmdAddTab : public klsCommand {
-protected:
-	wxAuiNotebook* canvasBook;
-	vector< GUICanvas* >* canvases;
-
-public:
-	cmdAddTab(GUICircuit* gCircuit, wxAuiNotebook* book, vector< GUICanvas* >* canvases);
-	virtual ~cmdAddTab(void);
-
-	bool Do(void);
-	bool Undo(void);
-};
-
-#endif /*COMMANDS_H_*/
+#include "command/cmdAddTab.h"

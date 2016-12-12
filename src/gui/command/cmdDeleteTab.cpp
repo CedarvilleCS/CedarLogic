@@ -1,5 +1,6 @@
 
 #include "cmdDeleteTab.h"
+#include "wx/aui/auibook.h"
 #include "../GUICanvas.h"
 
 class guiGate;
