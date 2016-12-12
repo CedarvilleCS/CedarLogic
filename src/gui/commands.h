@@ -45,7 +45,8 @@ class GUICanvas;
 #include "command/cmdPasteBlock.h"
 #include "command/cmdWireSegDrag.h"
 #include "command/cmdSetParams.h"
-// 2 left...
+#include "command/cmdDeleteTab.h"
+// 1 left...
 
 
 
@@ -59,23 +60,7 @@ class GUICanvas;
 
 
 
-//JV - cmdDeleteTab - delete a tab from canvasBook
-class cmdDeleteTab : public klsCommand {
-protected:
-	vector < unsigned long > gates;
-	vector < unsigned long > wires;
-	stack < klsCommand* > cmdList;
-	wxAuiNotebook* canvasBook;
-	vector< GUICanvas* >* canvases;
-	unsigned long canvasID;
 
-public:
-	cmdDeleteTab(GUICircuit* gCircuit, GUICanvas* gCanvas, wxAuiNotebook* book, vector< GUICanvas* >* canvases, unsigned long ID);
-	virtual ~cmdDeleteTab(void);
-
-	bool Do(void);
-	bool Undo(void);
-};
 
 
 
