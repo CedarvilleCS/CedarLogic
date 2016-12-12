@@ -47,6 +47,7 @@ struct paramSet {
 #include "command/cmdDeleteWire.h"
 #include "command/cmdDeleteGate.h"
 #include "command/cmdDeleteSelection.h"
+#include "command/cmdPasteBlock.h"
 // 5 left...
 
 
@@ -89,20 +90,7 @@ public:
 
 
 
-// cmdPasteBlock - Paste's a block of gates/wires
-class cmdPasteBlock : public klsCommand {
-protected:
-	vector < klsCommand* > cmdList;
-	bool m_init;
-public:
-	cmdPasteBlock( vector < klsCommand* > &cmdList );
-	virtual ~cmdPasteBlock( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
-	
-	void addCommand ( klsCommand* cmd ) { cmdList.push_back( cmd ); };
-};
+
 
 
 

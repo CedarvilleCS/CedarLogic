@@ -15,7 +15,7 @@ public:
 
 	bool Undo();
 
-protected:
+private:
 	std::vector<unsigned long> gates;
 	std::vector<unsigned long> wires;
 	std::stack<klsCommand *> cmdList;
