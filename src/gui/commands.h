@@ -37,23 +37,7 @@ struct paramSet {
 };
 
 #include "command/klsCommand.h"
-
-
-// cmdMoveGate - moving a gate from point a(x,y) to point b(x,y)
-class cmdMoveGate : public klsCommand {
-protected:
-	unsigned long gid;
-	float startX, startY, endX, endY;
-	bool noUpdateWires;
-	
-public:
-	cmdMoveGate( GUICircuit* gCircuit, unsigned long gid, float startX, float startY, float endX, float endY, bool uW = false );
-	virtual ~cmdMoveGate( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
-	virtual std::string toString() const override;
-};
+#include "command/cmdMoveGate.h"
 
 // cmdMoveWire - moving a wire and storing it's segment maps (old and new)
 class cmdMoveWire : public klsCommand {
