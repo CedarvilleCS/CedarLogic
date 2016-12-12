@@ -42,32 +42,8 @@ struct paramSet {
 #include "command/cmdMoveSelection.h"
 #include "command/cmdCreateGate.h"
 #include "command/cmdConnectWire.h"
-// 10 left...
-
-
-
-// cmdDisconnectWire - disconnects a wire from a gate hotspot
-class cmdDisconnectWire : public klsCommand {
-public:
-	cmdDisconnectWire(GUICircuit* gCircuit, IDType wid, IDType gid, const string &hotspot, bool noCalcShape = false);
-
-	bool Do();
-	bool Undo();
-	virtual std::string toString() const override;
-
-private:
-	IDType gateId;
-	IDType wireId;
-	std::string hotspot;
-	bool noCalcShape;
-};
-
-
-
-
-
-
-
+#include "command/cmdDisconnectWire.h"
+// 9 left...
 
 
 

@@ -190,62 +190,6 @@ bool cmdDeleteSelection::Undo() {
 
 
 
-// CMDDISCONNECTWIRE
-
-cmdDisconnectWire::cmdDisconnectWire(GUICircuit* gCircuit, IDType wireId, IDType gateId, const string &hotspot, bool noCalcShape) : klsCommand(true, "Disconnection") {
-	this->gCircuit = gCircuit;
-	this->wireId = wireId;
-	this->gateId = gateId;
-	this->hotspot = hotspot;
-	this->noCalcShape = noCalcShape;
-}
-
-bool cmdDisconnectWire::Do() {
-
-	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
-	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
-
-
-	guiGate* gate = gCircuit->getGates()->at(gateId);
-	string hotspotPal = gate->getHotspotPal(hotspot);
-
-	if (hotspotPal != "") {
-		cmdConnectWire::sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspotPal);
-	}
-	cmdConnectWire::sendMessagesToDisconnect(gCircuit, wireId, gateId, hotspot);
-
-	return true;
-}
-
-bool cmdDisconnectWire::Undo() {
-
-	if ((gCircuit->getWires())->find(wireId) == (gCircuit->getWires())->end()) return false; // error: wire not found
-	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; // error: gate not found
-
-	guiGate* gate = gCircuit->getGates()->at(gateId);
-	string hotspotPal = gate->getHotspotPal(hotspot);
-
-	if (hotspotPal != "") {
-		cmdConnectWire::sendMessagesToConnect(gCircuit, wireId, gateId, hotspotPal, noCalcShape);
-	}
-	cmdConnectWire::sendMessagesToConnect(gCircuit, wireId, gateId, hotspot, noCalcShape);
-
-	return true;
-}
-
-string cmdDisconnectWire::toString() const {
-	ostringstream oss;
-	oss << "disconnectwire " << wireId << " " << gateId << " " << hotspot;
-	return oss.str();
-}
-
-
-
-
-
-
-
-
 
 
 
@@ -648,6 +592,25 @@ void cmdSetParams::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_ma
 	this->gCanvas = gCanvas;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // CMDPASTEBLOCK
 
 cmdPasteBlock::cmdPasteBlock(vector < klsCommand* > &cmdList) : klsCommand(true, "Paste") {
@@ -671,6 +634,23 @@ bool cmdPasteBlock::Undo() {
 	return true;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // CMDWIRESEGDRAG
 
 cmdWireSegDrag::cmdWireSegDrag(GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wireID) : klsCommand(true, "Wire Shape") {
@@ -693,6 +673,21 @@ bool cmdWireSegDrag::Undo() {
 	(*(gCircuit->getWires()))[wireID]->setSegmentMap(oldSegMap);
 	return true;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // JV
 
@@ -761,6 +756,17 @@ bool cmdDeleteTab::Undo() {
 	}
 	return true;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 //JV
 cmdAddTab::cmdAddTab(GUICircuit* gCircuit, wxAuiNotebook* book, vector< GUICanvas* >* canvases) : klsCommand(true, (const wxChar *)"Add Tab") {
