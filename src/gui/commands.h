@@ -43,52 +43,8 @@ struct paramSet {
 #include "command/cmdCreateGate.h"
 #include "command/cmdConnectWire.h"
 #include "command/cmdDisconnectWire.h"
-// 9 left...
-
-
-
-
-
-// cmdCreateWire - creates a wire
-class cmdCreateWire : public klsCommand {
-public:
-	cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit, const std::vector<IDType> &wireIds, cmdConnectWire* conn1, cmdConnectWire* conn2);
-	cmdCreateWire(const std::string &def);
-	virtual ~cmdCreateWire();
-
-	bool Do();
-	bool Undo();
-
-	bool validateBusLines() const;
-
-	const std::vector<IDType> & getWireIds() const;
-
-	virtual std::string toString() const override;
-	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
-
-private:
-	std::vector<IDType> wireIds;
-	cmdConnectWire* conn1;
-	cmdConnectWire* conn2;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "command/cmdCreateWire.h"
+// 8 left...
 
 
 
@@ -141,6 +97,19 @@ public:
 	bool Undo( void );
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // cmdDeleteSelection - Deletes a selection of gates/wires
 class cmdDeleteSelection : public klsCommand {
 protected:
@@ -155,6 +124,21 @@ public:
 	bool Do( void );
 	bool Undo( void );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // cmdSetParams - Sets a gate's parameters
 class cmdSetParams : public klsCommand {
@@ -177,6 +161,18 @@ public:
 };
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 // cmdPasteBlock - Paste's a block of gates/wires
 class cmdPasteBlock : public klsCommand {
 protected:
@@ -192,6 +188,20 @@ public:
 	void addCommand ( klsCommand* cmd ) { cmdList.push_back( cmd ); };
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // cmdWireSegDrag - Set's a wire's tree after dragging a segment
 class cmdWireSegDrag : public klsCommand {
 protected:
@@ -204,6 +214,19 @@ public:
 	bool Do( void );
 	bool Undo( void );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //JV - cmdDeleteTab - delete a tab from canvasBook
 class cmdDeleteTab : public klsCommand {
@@ -222,6 +245,16 @@ public:
 	bool Do(void);
 	bool Undo(void);
 };
+
+
+
+
+
+
+
+
+
+
 
 //JV - cmdAddTab - add a new tab into canvasBook
 class cmdAddTab : public klsCommand {
