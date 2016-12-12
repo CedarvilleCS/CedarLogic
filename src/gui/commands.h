@@ -41,40 +41,8 @@ struct paramSet {
 #include "command/cmdMoveWire.h"
 #include "command/cmdMoveSelection.h"
 #include "command/cmdCreateGate.h"
-
-
-
-// cmdConnectWire - connects a wire to a gate hotspot
-class cmdConnectWire : public klsCommand {
-public:
-	cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid, const std::string &hotspot, bool noCalcShape = false);
-	cmdConnectWire(const std::string &def);
-
-	bool Do();
-	bool Undo();
-
-	bool validateBusLines() const;
-
-	virtual std::string toString() const override;
-	void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids);
-	IDType getGateId() const;
-	const std::string & getHotspot() const;
-
-	static void sendMessagesToConnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot, bool noCalcShape);
-	static void sendMessagesToDisconnect(GUICircuit *gCircuit, IDType wireId, IDType gateId, const std::string &hotspot);
-
-private:
-	IDType gateId;
-	IDType wireId;
-	string hotspot;
-	bool noCalcShape;
-};
-
-
-
-
-
-
+#include "command/cmdConnectWire.h"
+// 10 left...
 
 
 
