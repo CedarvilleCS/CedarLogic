@@ -48,7 +48,8 @@ struct paramSet {
 #include "command/cmdDeleteGate.h"
 #include "command/cmdDeleteSelection.h"
 #include "command/cmdPasteBlock.h"
-// 5 left...
+#include "command/cmdWireSegDrag.h"
+// 3 left...
 
 
 
@@ -106,18 +107,7 @@ public:
 
 
 
-// cmdWireSegDrag - Set's a wire's tree after dragging a segment
-class cmdWireSegDrag : public klsCommand {
-protected:
-	map < long, wireSegment > oldSegMap;
-	map < long, wireSegment > newSegMap;
-	unsigned long wireID;
-public:
-	cmdWireSegDrag( GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long wireID );
-	
-	bool Do( void );
-	bool Undo( void );
-};
+
 
 
 
