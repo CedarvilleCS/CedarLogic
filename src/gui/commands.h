@@ -40,43 +40,7 @@ struct paramSet {
 #include "command/cmdMoveGate.h"
 #include "command/cmdMoveWire.h"
 #include "command/cmdMoveSelection.h"
-
-
-// cmdCreateGate - creates a gate on a given canvas at position (x,y)
-class cmdCreateGate : public klsCommand {
-protected:
-	float x, y;
-	string gateType;
-	unsigned long gid;
-	vector < klsCommand* > proxconnects;
-	
-public:
-	cmdCreateGate( GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned long gid, string gateType, float x, float y);
-	cmdCreateGate( string def );
-	virtual ~cmdCreateGate( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
-	virtual std::string toString() const override;
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
-	
-	vector < klsCommand* >* getConnections() { return &proxconnects; };
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "command/cmdCreateGate.h"
 
 
 
