@@ -44,30 +44,9 @@ struct paramSet {
 #include "command/cmdConnectWire.h"
 #include "command/cmdDisconnectWire.h"
 #include "command/cmdCreateWire.h"
-// 8 left...
-
-
-
-
-
-
-
-
-
-// cmdDeleteWire - Deletes a wire
-class cmdDeleteWire : public klsCommand {
-public:
-	cmdDeleteWire( GUICircuit* gCircuit, GUICanvas* gCanvas, IDType wireId);
-	virtual ~cmdDeleteWire();
-	
-	bool Do();
-	bool Undo();
-
-private:
-	std::vector<IDType> wireIds;
-	stack < klsCommand* > cmdList;
-
-};
+#include "command/cmdDeleteWire.h"
+#include "command/cmdDeleteGate.h"
+// 6 left...
 
 
 
@@ -82,20 +61,17 @@ private:
 
 
 
-// cmdDeleteGate - Deletes a gate
-class cmdDeleteGate : public klsCommand {
-protected:
-	unsigned long gid;
-	stack < klsCommand* > cmdList;
-	string gateType;
-	
-public:
-	cmdDeleteGate( GUICircuit* gCircuit, GUICanvas* gCanvas, unsigned long gid);
-	virtual ~cmdDeleteGate( void );
-	
-	bool Do( void );
-	bool Undo( void );
-};
+
+
+
+
+
+
+
+
+
+
+
 
 
 
