@@ -36,19 +36,8 @@ struct paramSet {
 	paramSet( map < string, string >* g, map < string, string >* l ) { gParams = g; lParams = l; };
 };
 
-// klsCommand - class that contains essential items for each command
-class klsCommand : public wxCommand {
-protected:
-	GUICircuit* gCircuit;
-	GUICanvas* gCanvas;
-	bool fromString;
-public:
-	// (1) changed NULL in init of name to nullptr and then to "", (2) added inits for gCircuit and gCanvas   KAS
-	klsCommand( bool canUndo, const char *name) : wxCommand(canUndo, wxString(name)), gCircuit(nullptr), gCanvas(nullptr) {};
-	virtual ~klsCommand( void ) { return; };
-	virtual string toString() const { return ""; };
-	virtual void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids ) { this->gCircuit = gCircuit; this->gCanvas = gCanvas; };
-};
+#include "command/klsCommand.h"
+
 
 // cmdMoveGate - moving a gate from point a(x,y) to point b(x,y)
 class cmdMoveGate : public klsCommand {

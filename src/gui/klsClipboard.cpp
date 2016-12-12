@@ -39,8 +39,8 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
     	istringstream iss(pasteText);
     	string temp;
 		
-		hash_map < unsigned long, unsigned long > gateids;
-		hash_map < unsigned long, unsigned long > wireids;
+		TranslationMap gateids;
+		TranslationMap wireids;
     	while (getline( iss, temp, '\n' )) {
     		klsCommand* cg = NULL;
     		if (temp.substr(0,10) == "creategate") cg = new cmdCreateGate(temp);
@@ -100,12 +100,12 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
     	}
 		gCanvas->unselectAllGates();
 		gCanvas->unselectAllWires();
-		hash_map < unsigned long, unsigned long >::iterator gateWalk = gateids.begin();
+		TranslationMap::iterator gateWalk = gateids.begin();
 		while (gateWalk != gateids.end()) {
 			(*(gCircuit->getGates()))[gateWalk->second]->select();
 			gateWalk++;
 		}
-		hash_map < unsigned long, unsigned long >::iterator wireWalk = wireids.begin();
+		TranslationMap::iterator wireWalk = wireids.begin();
 		while (wireWalk != wireids.end()) {
 			guiWire *wire = (*(gCircuit->getWires()))[wireWalk->second];
 			if (wire != nullptr) {
