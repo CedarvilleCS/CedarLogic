@@ -2,6 +2,8 @@
 #include "cmdDeleteSelection.h"
 #include "../GUICircuit.h"
 #include "../OscopeFrame.h"
+#include "cmdDeleteWire.h"
+#include "cmdDeleteGate.h"
 
 cmdDeleteSelection::cmdDeleteSelection(GUICircuit* gCircuit,
 		GUICanvas* gCanvas, std::vector<unsigned long> &gates,

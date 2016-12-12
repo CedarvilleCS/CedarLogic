@@ -11,27 +11,24 @@
 #ifndef GUICIRCUIT_H_
 #define GUICIRCUIT_H_
 
-class GUICanvas;
-class GUICircuit;
-
-class OscopeFrame;
-class guiGate;
-
-#include "MainApp.h"
-#include "guiGate.h"
-#include "GUICanvas.h"
-//#include "OscopeFrame.h"
-class OscopeFrame;
-
-#include "gl_wrapper.h"
-
 #include <map>
 #include <stack>
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <hash_map>
+#include "wx/docview.h"
+#include "gl_wrapper.h"
+#include "klsMessage.h"
+#include "../logic/logic_values.h"
 using namespace std;
+
+class GUICanvas;
+class GUICircuit;
+class OscopeFrame;
+class guiGate;
+class guiWire;
 
 class GUICircuit : public wxDocument
 {

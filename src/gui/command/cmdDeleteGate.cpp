@@ -3,8 +3,14 @@
 #include <map>
 #include "../gl_defs.h"
 #include "../GUICircuit.h"
+#include "../GUICanvas.h"
 #include "../guiWire.h"
+#include "../guiGate.h"
 #include "../MainApp.h"
+#include "cmdDisconnectWire.h"
+#include "cmdDeleteWire.h"
+#include "cmdMoveGate.h"
+#include "cmdSetParams.h"
 
 DECLARE_APP(MainApp);
 

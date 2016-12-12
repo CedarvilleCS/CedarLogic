@@ -2,6 +2,7 @@
 #include "cmdCreateWire.h"
 #include <sstream>
 #include "../GUICanvas.h"
+#include "../guiGate.h"
 
 cmdCreateWire::cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit,
 		const std::vector<IDType> &wireIds, cmdConnectWire* conn1,
