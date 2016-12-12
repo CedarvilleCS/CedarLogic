@@ -29,12 +29,7 @@ using namespace std;
 class GUICircuit;
 class GUICanvas;
 
-// Holds pointers to all of a gate's parameters
-struct paramSet {
-	map < string, string >* gParams;
-	map < string, string >* lParams;
-	paramSet( map < string, string >* g, map < string, string >* l ) { gParams = g; lParams = l; };
-};
+
 
 #include "command/klsCommand.h"
 #include "command/cmdMoveGate.h"
@@ -49,66 +44,8 @@ struct paramSet {
 #include "command/cmdDeleteSelection.h"
 #include "command/cmdPasteBlock.h"
 #include "command/cmdWireSegDrag.h"
-// 3 left...
-
-
-
-
-
-
-
-
-// cmdSetParams - Sets a gate's parameters
-class cmdSetParams : public klsCommand {
-protected:
-	unsigned long gid;
-	map < string, string > oldGUIParamList;
-	map < string, string > newGUIParamList;
-	map < string, string > oldLogicParamList;
-	map < string, string > newLogicParamList;
-	
-public:
-	cmdSetParams( GUICircuit* gCircuit, unsigned long gid, paramSet pSet, bool setMode = false );
-	cmdSetParams( string def );
-	virtual ~cmdSetParams( void ) { return; };
-	
-	bool Do( void );
-	bool Undo( void );
-	virtual std::string toString() const override;
-	void setPointers( GUICircuit* gCircuit, GUICanvas* gCanvas, hash_map < unsigned long, unsigned long > &gateids, hash_map < unsigned long, unsigned long > &wireids );
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "command/cmdSetParams.h"
+// 2 left...
 
 
 
