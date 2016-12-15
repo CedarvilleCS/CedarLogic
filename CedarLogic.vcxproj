@@ -69,6 +69,7 @@
       <ForcedIncludeFiles>$(WXWIN)/include/wx/wxprec.h; $(WXWIN)/include/msvc/wx/setup.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <ExceptionHandling>Async</ExceptionHandling>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -82,6 +83,9 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

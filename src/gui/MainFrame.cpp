@@ -114,7 +114,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	editMenu->Append(wxID_UNDO, _T("Undo\tCtrl+Z"), _T("Undo last operation"));
 	editMenu->Append(wxID_REDO, _T("Redo"), _T("Redo last operation"));
 	editMenu->AppendSeparator();
-	editMenu->Append(Tool_NewTab, _T("New Tab"), _T("New Tab"));
+	editMenu->Append(Tool_NewTab, _T("New Tab\tCtrl+T"), _T("New Tab"));
 	editMenu->AppendSeparator();
 	editMenu->Append(wxID_COPY, _T("Copy\tCtrl+C"), _T("Copy selection to clipboard"));
 	editMenu->Append(wxID_PASTE, _T("Paste\tCtrl+V"), _T("Paste selection from clipboard"));
@@ -938,7 +938,14 @@ void MainFrame::load(string filename) {
 //JV - Make new canvas and add it to canvases and canvasBook
 //TODO - Find a way to put a tab button in correct place
 void MainFrame::OnNewTab(wxCommandEvent& event) {
-	gCircuit->GetCommandProcessor()->Submit((wxCommand*)new cmdAddTab(gCircuit, canvasBook, &canvases));
+	int canSize = canvases.size();
+
+	if (canSize < 42) {
+		gCircuit->GetCommandProcessor()->Submit((wxCommand*)new cmdAddTab(gCircuit, canvasBook, &canvases));
+	}
+	else {
+		wxMessageBox(_T("You have reached the maximum number of tabs."), _T("Close"), wxOK);
+	}
 	 
 /*	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 	ostringstream oss;
