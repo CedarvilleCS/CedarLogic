@@ -48,7 +48,10 @@ enum
     Tool_ZoomOut,
     Tool_Lock,
 	Tool_NewTab,
-	Tool_DeleteTab
+	Tool_DeleteTab,
+
+	Help_ReportABug,
+	Help_RequestAFeature
 };
 
 class MainFrame : public wxFrame {
@@ -88,6 +91,8 @@ public:
 	void OnLock(wxCommandEvent& event);
 	void OnNewTab(wxCommandEvent& event);
 	void OnDeleteTab(wxAuiNotebookEvent& event);
+	void OnReportABug(wxCommandEvent& event);
+	void OnRequestAFeature(wxCommandEvent& event);
 	
 	void saveSettings( void );
 	

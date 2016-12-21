@@ -53,6 +53,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_SCROLL(MainFrame::OnTimeStepModSlider)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
 	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
+
+	EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
+	EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
 	
     //EVT_SIZE(MainFrame::OnSize)
     //EVT_MAXIMIZE(MainFrame::OnMaximize)
@@ -107,6 +110,9 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     
     wxMenu *helpMenu = new wxMenu; // HELP MENU
     helpMenu->Append(wxID_HELP_CONTENTS, _T("&Contents...\tF1"), _T("Show Help system"));
+	helpMenu->AppendSeparator();
+	helpMenu->Append(Help_ReportABug, "Report a bug...");
+	helpMenu->Append(Help_RequestAFeature, "Request a feature...");
 	helpMenu->AppendSeparator();
     helpMenu->Append(wxID_ABOUT, _T("&About..."), _T("Show about dialog"));
 
@@ -989,3 +995,10 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 	}
 }
 
+void MainFrame::OnReportABug(wxCommandEvent& event) {
+	wxLaunchDefaultBrowser("http://cedar.to/XoQJpX", 0);
+}
+
+void MainFrame::OnRequestAFeature(wxCommandEvent& event) {
+	wxLaunchDefaultBrowser("http://cedar.to/6IlP8c", 0);
+}
