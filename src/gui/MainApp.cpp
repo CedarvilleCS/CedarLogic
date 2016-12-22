@@ -11,6 +11,7 @@
 #include "MainApp.h"
 #include "MainFrame.h"
 #include "wx/cmdline.h"
+#include "../version.h"
 
 IMPLEMENT_APP(MainApp)
 
@@ -75,7 +76,7 @@ bool MainApp::OnInit()
 	
 
     // create the main application window
-    MainFrame *frame = new MainFrame(_T("CEDAR Logic Simulator"), cmdFilename.c_str());
+    MainFrame *frame = new MainFrame(APP_TITLE, cmdFilename.c_str());
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)
     frame->Show(true);

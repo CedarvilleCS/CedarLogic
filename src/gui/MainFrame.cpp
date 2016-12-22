@@ -23,6 +23,7 @@
 #include "wx/docview.h"
 #include "commands.h"
 #include "autoSaveThread.h"
+#include "../version.h"
 
 DECLARE_APP(MainApp)
 
@@ -56,6 +57,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
 	EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
 	EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
+	EVT_MENU(Help_DownloadLatestVersion, MainFrame::OnDownloadLatestVersion)
 	
     //EVT_SIZE(MainFrame::OnSize)
     //EVT_MAXIMIZE(MainFrame::OnMaximize)
@@ -113,6 +115,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	helpMenu->AppendSeparator();
 	helpMenu->Append(Help_ReportABug, "Report a bug...");
 	helpMenu->Append(Help_RequestAFeature, "Request a feature...");
+	helpMenu->Append(Help_DownloadLatestVersion, "Download latest version...");
 	helpMenu->AppendSeparator();
     helpMenu->Append(wxID_ABOUT, _T("&About..."), _T("Show about dialog"));
 
@@ -279,7 +282,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 			doOpenFile = false;
 			openedFilename = "Recovered File";
 			load(CRASH_FILENAME);
-			this->SetTitle(_T("CEDAR Logic Simulator - ") + openedFilename);
+			this->SetTitle(APP_TITLE + " - " + openedFilename);
 		}
 		removeTempFile();
 	}
@@ -445,7 +448,7 @@ void MainFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {
 
 void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
     wxString msg;
-    msg.Printf( _T("CEDAR Logic Simulator 1.5a\nCopyright 2007 Cedarville University, Matt Lewellyn, \n\tDavid Knierim, Ben Sprague, Joshua Lansford\n\tand Nathan Harro\n\nFont rendering thanks to GLFont library (created by Brad Fish, bhf5@email.byu.edu)\n\n All rights reserved\nSee license.txt for details."));
+    msg.Printf(VERSION_ABOUT_TEXT.c_str());
 
     wxMessageBox(msg, _T("About"), wxOK | wxICON_INFORMATION, this);
 }
@@ -478,7 +481,7 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	}
 
 	currentCanvas->Update(); // Render();
-	this->SetTitle((const wxChar *)"CEDAR Logic Simulator"); // KAS
+	this->SetTitle(APP_TITLE); // KAS
 	removeTempFile();
 	currentTempNum++;
     openedFilename = _T("");
@@ -538,7 +541,7 @@ void MainFrame::loadCircuitFile( string fileName ){
 	wxString path = (const wxChar *)fileName.c_str();  // KAS
 	removeTempFile();
 	openedFilename = path;
-	this->SetTitle( _T("CEDAR Logic Simulator - ") + path );
+	this->SetTitle(APP_TITLE + " - " + path );
 	while (!(wxGetApp().dGUItoLOGIC.empty())) wxGetApp().dGUItoLOGIC.pop_front();
 	while (!(wxGetApp().dLOGICtoGUI.empty())) wxGetApp().dLOGICtoGUI.pop_front();
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->clearCircuit();
@@ -589,7 +592,7 @@ void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 		removeTempFile();
 		wxString path = dialog.GetPath();
 		openedFilename = path;
-		this->SetTitle( _T("CEDAR Logic Simulator - ") + path );
+		this->SetTitle(APP_TITLE + " - " + path );
 		commandProcessor->MarkAsSaved();
 		save((string)openedFilename);
 	}
@@ -641,7 +644,7 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 	if ( doOpenFile ) {
 		doOpenFile = false;
 		load((string)openedFilename);
-		this->SetTitle( _T("CEDAR Logic Simulator - ") + openedFilename );
+		this->SetTitle(APP_TITLE + " - " + openedFilename );
 	}
 	
 	if ( gCircuit->panic ) {
@@ -996,9 +999,13 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 }
 
 void MainFrame::OnReportABug(wxCommandEvent& event) {
-	wxLaunchDefaultBrowser("http://cedar.to/XoQJpX", 0);
+	wxLaunchDefaultBrowser("https://cedar.to/XoQJpX", 0);
 }
 
 void MainFrame::OnRequestAFeature(wxCommandEvent& event) {
-	wxLaunchDefaultBrowser("http://cedar.to/6IlP8c", 0);
+	wxLaunchDefaultBrowser("https://cedar.to/6IlP8c", 0);
+}
+
+void MainFrame::OnDownloadLatestVersion(wxCommandEvent& event) {
+	wxLaunchDefaultBrowser("https://cedar.to/vjyQw7", 0);
 }

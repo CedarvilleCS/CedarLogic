@@ -51,7 +51,8 @@ enum
 	Tool_DeleteTab,
 
 	Help_ReportABug,
-	Help_RequestAFeature
+	Help_RequestAFeature,
+	Help_DownloadLatestVersion
 };
 
 class MainFrame : public wxFrame {
@@ -93,6 +94,7 @@ public:
 	void OnDeleteTab(wxAuiNotebookEvent& event);
 	void OnReportABug(wxCommandEvent& event);
 	void OnRequestAFeature(wxCommandEvent& event);
+	void OnDownloadLatestVersion(wxCommandEvent& event);
 	
 	void saveSettings( void );
 	

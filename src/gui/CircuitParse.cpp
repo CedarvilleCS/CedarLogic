@@ -21,6 +21,7 @@
 #include "GUICanvas.h"
 #include <map>
 #include <hash_map>
+#include "../version.h"
 
 DECLARE_APP(MainApp)
 
@@ -51,8 +52,27 @@ void CircuitParse::loadFile(string fileName) {
 }
 
 vector<GUICanvas*> CircuitParse::parseFile() {
+
+	string firstTag = mParse->readTag();
+
+	// Cedar Logic 2.0 and up has version information to keep old versions
+	// of Cedar Logic from opening new, incompatable files.
+	if (firstTag == "version") {
+		float versionNumber = atof(mParse->readTagValue("version").c_str());
+		if (versionNumber > VERSION_NUMBER) {
+
+			//show error message!!! And quit.
+			wxMessageBox("This file was made with a newer version of Cedar Logic. "
+				"Go to 'Help\\Download Latest Version...' to open this file.", "Version Error!");
+
+			return gCanvases;
+		}
+		mParse->readCloseTag();
+		firstTag = mParse->readTag();
+	}
+	
 	// need to throw exception
-	if (mParse->readTag() != "circuit") return gCanvases;
+	if (firstTag != "circuit") return gCanvases;
 	
 	// Read the currentPage tag.
 	if( mParse->readTag() == "CurrentPage" ) {
@@ -190,6 +210,17 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 		mParse->readTagValue(pageTag);
 		mParse->readCloseTag();
 	} while (!mParse->isCloseTag(mParse->getCurrentIndex()));
+
+	mParse->readCloseTag();
+
+	// This hack works in conjunction with the one at the beginning of saveCircuit.
+	// There is only ever one tab when the dummy circuit is loaded.
+	if (mParse->readTag() == "throw_away") {
+		mParse->readCloseTag();
+		gCanvases[0]->clearCircuit();
+		return parseFile();
+	}
+
 	gCanvas->getCircuit()->getOscope()->UpdateMenu();
 	return gCanvases;
 }
@@ -363,7 +394,43 @@ void CircuitParse::parseWireToSend( void ) {
 
 void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsigned int currPage) {
 	ostringstream* ossCircuit = new ostringstream();
+
+	// This is a sentinal circuit definition that is ignored by Cedar Logic 2.0 and newer.
+	// Older versions of Cedar Logic will read this instead of the actual Circuit data.
+	// This circuit decribes two labels with error messages.
+	// The second label has a link to the download for the latest version of Cedar Logic.
+	// I acknowledge that this is a hack...
+	// Versions of Cedar Logic 2.0 and newer have a <version> tag.
+	*ossCircuit << R"===(
+<circuit>
+<CurrentPage>0</CurrentPage>
+<page 0>
+<PageViewport>-32.95,39.6893,61.95,-63.2229</PageViewport>
+<gate>
+<ID>2</ID>
+<type>AA_LABEL</type>
+<position>14.5,-13</position>
+<gparam>LABEL_TEXT Go to https://cedar.to/vjyQw7 to download the latest version!</gparam>
+<gparam>TEXT_HEIGHT 2</gparam>
+<gparam>angle 0.0</gparam></gate>
+<gate>
+<ID>3</ID>
+<type>AA_LABEL</type>
+<position>14.5,-9.5</position>
+<gparam>LABEL_TEXT Error: This file was made with a newer version of Cedar Logic!</gparam>
+<gparam>TEXT_HEIGHT 2</gparam>
+<gparam>angle 0.0</gparam></gate></page 0>
+</circuit>
+<throw_away></throw_away>
+
+	)===";
+
 	mParse = new XMLParser(ossCircuit);
+
+	mParse->openTag("version");
+	mParse->writeTag("version", std::to_string(VERSION_NUMBER));
+	mParse->closeTag("version");
+
 	mParse->openTag("circuit");
 	hash_map < unsigned long, guiGate* >* gateList;
 	hash_map < unsigned long, guiWire* >* wireList;
