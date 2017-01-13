@@ -104,6 +104,11 @@ public:
 	
 	void loadCircuitFile( string fileName );
 
+	//Julian: Added to simplify timer use
+	void stopTimers();
+	void startTimers(int at);
+	void pauseTimers();
+	void resumeTimers(int at);
 
 	//Julian: Added functions to help with auto save functionality
 	void autosave();
@@ -133,6 +138,10 @@ private:
 
 	wxPanel* mainPanel;
 	wxToolBar* toolBar;
+
+	//Julian: Re-added timers to fix refresh error
+	wxTimer* simTimer;
+	wxTimer* idleTimer;
 
 	//JV - Changed to AuiNoteBook to allow for close tab button
 	wxAuiNotebook* canvasBook;

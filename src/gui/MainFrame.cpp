@@ -259,6 +259,11 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
        wxLogError(wxT("Can't start thread!"));
     }
 	
+	simTimer = new wxTimer(this, TIMER_ID);
+	idleTimer = new wxTimer(this, IDLETIMER_ID);
+	stopTimers();
+	startTimers(20);
+
 	// Setup the "Maximize Catch" flag:
 	sizeChanged = false;
 	
@@ -303,6 +308,8 @@ MainFrame::~MainFrame() {
 	
 	saveSettings();
 	
+	stopTimers();
+
 	// Shut down the detached thread and wait for it to exit
 	wxGetApp().logicThread->Delete();
 	wxGetApp().saveThread->Delete();
@@ -332,6 +339,11 @@ MainFrame::~MainFrame() {
 	//Removed the delete of systemTime because it was causeing a
 	//crash on close.  In stead, I changed it from a pointer
 	//to a local var so that it would not need to be deleted.
+
+	delete simTimer;
+	simTimer = NULL;
+	delete idleTimer;
+	idleTimer = NULL;
 }
 
 threadLogic *MainFrame::CreateThread()
@@ -392,7 +404,7 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	static bool destroy = false;
 	handlingEvent = true;
 	
-	wxGetApp().appSystemTime.Pause();
+	pauseTimers();
 
 	// Allow the user to save the file, unless we are in the midst of terminating the app!!, KAS 4/26/07	
 	if (commandProcessor->IsDirty() && !destroy) {
@@ -413,9 +425,7 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 		destroy = true;      // postpone destruction until wxWidgets cleans up, KAS 4/26/07
 	}
 	
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
+	resumeTimers(20);
 
 	if (destroy)
 	{
@@ -466,7 +476,9 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 			return;
 		}			
 	}
-	wxGetApp().appSystemTime.Pause();
+
+	pauseTimers();
+
 	wxGetApp().dGUItoLOGIC.clear();
 	wxGetApp().dLOGICtoGUI.clear();
 
@@ -485,9 +497,8 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	removeTempFile();
 	currentTempNum++;
     openedFilename = _T("");
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
+
+	resumeTimers(20);
 
 	handlingEvent = false;
 }
@@ -509,7 +520,8 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 			return;
 		}			
 	}
-	wxGetApp().appSystemTime.Pause();
+	
+	pauseTimers();
 
 	wxString caption = wxT("Open a circuit");
 	wxString wildcard = wxT("Circuit files (*.cdl)|*.cdl");
@@ -524,9 +536,8 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	}
     currentCanvas->Update(); // Render();
 	currentCanvas->getCircuit()->setSimulate(true);
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
+
+	resumeTimers(20);
 
 	handlingEvent = false;
 }
@@ -539,7 +550,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 //by calling this method.
 void MainFrame::loadCircuitFile( string fileName ){
 	wxString path = (const wxChar *)fileName.c_str();  // KAS
-	removeTempFile();
+	
 	openedFilename = path;
 	this->SetTitle(APP_TITLE + " - " + path );
 	while (!(wxGetApp().dGUItoLOGIC.empty())) wxGetApp().dGUItoLOGIC.pop_front();
@@ -570,6 +581,7 @@ void MainFrame::loadCircuitFile( string fileName ){
 	mainSizer->Show(canvasBook);
 	currentCanvas->SetFocus();
 
+	removeTempFile();
 }
 
 void MainFrame::OnSave(wxCommandEvent& event) {
@@ -650,6 +662,7 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 	if ( gCircuit->panic ) {
 		gCircuit->panic = false;
 		toolBar->ToggleTool( Tool_Pause, true );
+		simTimer->Stop();
 		wxGetApp().appSystemTime.Start(0);
 		wxGetApp().appSystemTime.Pause();
 		//Edit by Joshua Lansford 11/24/06
@@ -879,16 +892,44 @@ void MainFrame::ResumeExecution() {
 
 void MainFrame::PauseSim() {	
 	if (toolBar->GetToolState(Tool_Pause)) {
+		simTimer->Stop();
 		wxGetApp().appSystemTime.Start(0);
 		wxGetApp().appSystemTime.Pause();
 	}
 	else {
 		wxGetApp().appSystemTime.Start(0);
+		simTimer->Start(20);
 	}
 }
 
-//Julian: All of the following functions were added to support autosave functionality.
+//Julian: Added to simplify timer use.
+void MainFrame::stopTimers() {
+	simTimer->Stop();
+	idleTimer->Stop();
+}
 
+void MainFrame::startTimers(int at) {
+	if (!(toolBar->GetToolState(Tool_Pause)))
+	{
+		simTimer->Start(at);
+	}
+	idleTimer->Start(at);
+}
+
+void MainFrame::pauseTimers() {
+	wxGetApp().appSystemTime.Pause();
+	stopTimers();
+}
+void MainFrame::resumeTimers(int at) {
+	if (!(toolBar->GetToolState(Tool_Pause)))
+	{
+		wxGetApp().appSystemTime.Start(0);
+		simTimer->Start(at);
+	}
+	idleTimer->Start(at);
+}
+
+//Julian: All of the following functions were added to support autosave functionality.
 
 void MainFrame::autosave() {
 	save(CRASH_FILENAME);
@@ -898,16 +939,15 @@ void MainFrame::save(string filename) {
 	//Pause system so that user can't modify during save
 	lock();
 	gCircuit->setSimulate(false);
-	wxGetApp().appSystemTime.Pause();
+	
+	pauseTimers();
 
 	//Save file
 	CircuitParse cirp(currentCanvas);
 	cirp.saveCircuit(filename, canvases);
 
 	//Resume system
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
+	resumeTimers(20);
 	gCircuit->setSimulate(true);
 	if (!(toolBar->GetToolState(Tool_Lock))) {
 		unlock();
@@ -939,9 +979,7 @@ void MainFrame::unlock() {
 }
 
 void MainFrame::load(string filename) {
-	CircuitParse cirp(filename, canvases); // KAS
-	cirp.parseFile();
-	currentCanvas->Update(); // Render();
+	loadCircuitFile(filename);
 }
 
 //JV - Make new canvas and add it to canvases and canvasBook
