@@ -41,7 +41,7 @@ void klsMiniMap::setViewport() {
 
 	wxSize sz = GetClientSize();
 	float minX = FLT_MAX, minY = FLT_MAX, maxX = -FLT_MAX, maxY = -FLT_MAX;
-	hash_map < unsigned long, guiGate* >::iterator gateWalk = gateList->begin();
+	unordered_map < unsigned long, guiGate* >::iterator gateWalk = gateList->begin();
 	while (gateWalk != gateList->end()) {
 		float x, y;
 		(gateWalk->second)->getGLcoords(x, y);
@@ -191,7 +191,7 @@ void klsMiniMap::renderMap() {
 	// Draw the wires:
 	glMatrixMode (GL_MODELVIEW);
 	glLoadIdentity ();
-	hash_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
+	unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
 	while( thisWire != wireList->end() ) {
 		if (thisWire->second != nullptr) {
 			(thisWire->second)->draw(false);
@@ -200,7 +200,7 @@ void klsMiniMap::renderMap() {
 	}
 
 	// Draw the gates:
-	hash_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
+	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
 	while( thisGate != gateList->end() ) {
 		(thisGate->second)->draw(false);
 		thisGate++;

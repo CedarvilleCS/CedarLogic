@@ -12,7 +12,7 @@
 #include "OscopeFrame.h"
 #include <fstream>
 #include <map>
-#include <hash_map>   // removed .h  KAS
+#include <unordered_map>   // removed .h  KAS
 
 #include "MainApp.h"
 #include "commands.h"

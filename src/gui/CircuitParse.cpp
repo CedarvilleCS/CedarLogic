@@ -20,7 +20,7 @@
 #include "GUICircuit.h"
 #include "GUICanvas.h"
 #include <map>
-#include <hash_map>
+#include <unordered_map>
 #include "../version.h"
 
 DECLARE_APP(MainApp)
@@ -432,8 +432,8 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 	mParse->closeTag("version");
 
 	mParse->openTag("circuit");
-	hash_map < unsigned long, guiGate* >* gateList;
-	hash_map < unsigned long, guiWire* >* wireList;
+	unordered_map < unsigned long, guiGate* >* gateList;
+	unordered_map < unsigned long, guiWire* >* wireList;
 
 	// Save which page was current:
 	//	NOTE: currently this tag is not implemented
@@ -461,13 +461,13 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 
 		gateList = glc[i]->getGateList();
 		wireList = glc[i]->getWireList();
-		hash_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
+		unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
 		while (thisGate != gateList->end()) {
 			(thisGate->second)->saveGate(mParse);
 			thisGate++;
 		}
 		
-		hash_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
+		unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
 		while (thisWire != wireList->end()) {
 			if (thisWire->second != nullptr) {
 				(thisWire->second)->saveWire(mParse);

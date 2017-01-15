@@ -2,7 +2,7 @@
 #pragma once
 
 #include <string>
-#include <hash_map>
+#include <unordered_map>
 #include "wx/cmdproc.h"
 #include "../../logic/logic_values.h"
 
@@ -13,7 +13,7 @@ class GUICanvas;
 // These "unsigned long"s need to be replaced by IDType's.
 // Not sure why, but doing that right now is causing a crash on copy/paste.
 // TODO TYLER: Find out why, make replacement, remove TODO and description.
-typedef std::hash_map<unsigned long, unsigned long> TranslationMap;
+typedef std::unordered_map<unsigned long, unsigned long> TranslationMap;
 
 // klsCommand - base class for commands.
 class klsCommand : public wxCommand {
