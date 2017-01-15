@@ -10,6 +10,8 @@
 !LICENSE.txt
 !HISTORY.txt
 !Doxyfile
+!Makefile
+!.makefile
 
 # But do not exclude these directories...
 !src/
