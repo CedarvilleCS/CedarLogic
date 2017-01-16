@@ -2848,6 +2848,7 @@
     <name>BV_4x1_BUS_END</name>
 		<caption>4x1 Bus End</caption>
     <logic_type>BUS_END</logic_type>
+	<gui_type>BUSEND</gui_type>
     <logic_param>INPUT_BITS 4</logic_param>
 		<input> 
       <name>IN_0</name>
@@ -2905,6 +2906,7 @@
     <name>BW_8X1_BUS_END</name>
 		<caption>8x1 Bus End</caption>
     <logic_type>BUS_END</logic_type>
+	<gui_type>BUSEND</gui_type>
     <logic_param>INPUT_BITS 8</logic_param>
 		<input> 
       <name>IN_0</name>
@@ -2985,6 +2987,7 @@
     <name>BX_16X1_BUS_END</name>
 		<caption>16x1 Bus End</caption>
     <logic_type>BUS_END</logic_type>
+	<gui_type>BUSEND</gui_type>
     <logic_param>INPUT_BITS 16</logic_param>
 		<input> 
       <name>Bus_in_0</name>
