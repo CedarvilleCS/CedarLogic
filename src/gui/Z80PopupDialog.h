@@ -3,7 +3,7 @@
 
 //#include <wx/listctrl.h>
 
-#define Z80_TITLE _T("Z80 Info")
+#define Z80_TITLE "Z80 Info"
 #define Z80_WIDTH 600
 #define Z80_HEIGHT 1000
 #define LIST_WIDTH 180

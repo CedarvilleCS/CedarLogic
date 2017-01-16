@@ -29,7 +29,7 @@ public:
 	klsMiniMap(wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
-        long style = 0, const wxString& name = _T("klsMiniMap"));
+        long style = 0, const wxString& name = "klsMiniMap");
 	virtual ~klsMiniMap() { return; };
 	
 	void setLists( unordered_map< unsigned long, guiGate* >* gateList, unordered_map< unsigned long, guiWire* >* wireList ) {

@@ -32,7 +32,7 @@ public:
     gateImage( string gateName, wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
-        long style = 0, const wxString& name = _T("") );
+        long style = 0, const wxString& name = "" );
 
     virtual ~gateImage();
 

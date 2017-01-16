@@ -78,9 +78,9 @@ void RamPopupDialog::OnBtnClose( wxCommandEvent& event ){
 }
 void RamPopupDialog::OnBtnLoad( wxCommandEvent& event ){
 	
-	wxString caption = wxT("Open a memory file");
-	wxString wildcard = wxT("CEDAR Memory files (*.cdm)|*.cdm|INTEL-HEX (*.hex)|*.hex");
-	wxString defaultFilename = wxT("");
+	wxString caption = "Open a memory file";
+	wxString wildcard = "CEDAR Memory files (*.cdm)|*.cdm|INTEL-HEX (*.hex)|*.hex";
+	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	
 	if (dialog.ShowModal() == wxID_OK) {
@@ -93,9 +93,9 @@ void RamPopupDialog::OnBtnLoad( wxCommandEvent& event ){
 void RamPopupDialog::OnBtnSave( wxCommandEvent& event ){
 
 	
-	wxString caption = wxT("Save a memory file");
-	wxString wildcard = wxT("CEDAR Memory files (*.cdm)|*.cdm");
-	wxString defaultFilename = wxT("");
+	wxString caption = "Save a memory file";
+	wxString wildcard = "CEDAR Memory files (*.cdm)|*.cdm";
+	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	
 	if (dialog.ShowModal() == wxID_OK) {

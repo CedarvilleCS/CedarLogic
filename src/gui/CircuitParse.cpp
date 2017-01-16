@@ -142,13 +142,13 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 							//Thus no warning needs to be given.
 							type = "AM_RAM_16x16";
 						}else if( type == "AA_DFF" ){
-							wxMessageBox(_T("The High Active Reset D flip flop has been deprecated.  Automatically replacing with a Low active version"), _T("Old gate"), wxOK | wxICON_ASTERISK, NULL);
+							wxMessageBox("The High Active Reset D flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "AE_DFF_LOW";
 						}else if( type == "BA_JKFF" ){
-							wxMessageBox(_T("The High Active Reset JK flip flop has been deprecated.  Automatically replacing with a Low active version"), _T("Old gate"), wxOK | wxICON_ASTERISK, NULL);
+							wxMessageBox("The High Active Reset JK flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "BE_JKFF_LOW";
 						}else if( type == "BA_JKFF_NT" ){
-							wxMessageBox(_T("The High Active Reset negitive triggered JK flip flop has been deprecated.  Automatically replacing with a Low active version"), _T("Old gate"), wxOK | wxICON_ASTERISK, NULL);
+							wxMessageBox("The High Active Reset negitive triggered JK flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "BE_JKFF_LOW_NT";
 						}
 						//**********************************

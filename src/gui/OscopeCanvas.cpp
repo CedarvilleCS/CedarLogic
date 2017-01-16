@@ -287,7 +287,7 @@ void OscopeCanvas::UpdateData(void){
 			if (currentGate == NULL) { // Just in case of error
 				stateValues.erase(junctionName);
 				parentFrame->cancelFeed(i);
-				//parentFrame->comboBoxVector[i]->SetValue(wxT("[None]"));
+				//parentFrame->comboBoxVector[i]->SetValue("[None]");
 				continue;
 			}
 			
@@ -411,13 +411,13 @@ void OscopeCanvas::UpdateMenu()
 				//Gets gate ID
 				string junctionName = (theGate->second)->getLogicParam("JUNCTION_ID");
 			
-				(parentFrame->comboBoxVector[x])->Append(wxT(junctionName.c_str()));
+				(parentFrame->comboBoxVector[x])->Append(junctionName.c_str());
 			}
 		
 			theGate++;
 		}
-		(parentFrame->comboBoxVector[x])->Append(wxT("[None]"));
-		(parentFrame->comboBoxVector[x])->Append(wxT("[Remove]"));
+		(parentFrame->comboBoxVector[x])->Append("[None]");
+		(parentFrame->comboBoxVector[x])->Append("[Remove]");
 		
 		// *******************************************
 		//Edit by Joshua Lansford 2/22/07
@@ -442,7 +442,7 @@ void OscopeCanvas::UpdateMenu()
 		
 			(parentFrame->comboBoxVector[x])->SetValue(oldVal);
 		} else {
-			(parentFrame->comboBoxVector[x])->SetValue(wxT("[None]"));
+			(parentFrame->comboBoxVector[x])->SetValue("[None]");
 		}
 	}
 	*/

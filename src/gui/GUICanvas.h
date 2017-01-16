@@ -113,7 +113,7 @@ public:
     GUICanvas( wxWindow *parent, GUICircuit* gCircuit, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
-        long style = 0, const wxString& name = _T("GUICanvas") );
+        long style = 0, const wxString& name = "GUICanvas" );
 
 	virtual ~GUICanvas();
 

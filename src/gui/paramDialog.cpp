@@ -65,7 +65,7 @@ paramDialog::paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, 
 			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
 			paramVals.push_back(new wxTextCtrl(this, wxID_ANY, (const wxChar *)initialString.c_str())); // KAS
 		} else if ( gateDef->dlgParams[i].type == "BOOL" ) {
-			paramVals.push_back( new wxCheckBox( this, wxID_ANY, wxT("") ) );
+			paramVals.push_back( new wxCheckBox( this, wxID_ANY, "" ) );
 			// Retrieve the current param setting
 			if ( gateDef->dlgParams[i].isGui ) initialString = gGate->getGUIParam(gateDef->dlgParams[i].name);
 			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
@@ -75,17 +75,17 @@ paramDialog::paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, 
 			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
 			paramVals.push_back(new wxTextCtrl(this, ID_TEXT, (const wxChar *)initialString.c_str())); // KAS
 		} else if ( gateDef->dlgParams[i].type == "FILE_IN" ) {
-			paramVals.push_back( new wxButton( this, ID_LOAD, wxT("Load File") ) );
+			paramVals.push_back( new wxButton( this, ID_LOAD, "Load File" ) );
 		} else if ( gateDef->dlgParams[i].type == "FILE_OUT" ) {
-			paramVals.push_back( new wxButton( this, ID_SAVE, wxT("Save File") ) );			
+			paramVals.push_back( new wxButton( this, ID_SAVE, "Save File" ) );			
 		}
 		dlgSizer->Add( paramVals[paramVals.size()-1], 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL, 3 );
 	}
 	
 	// Put in the standard dialog buttons
-	ok = new wxButton( this, wxID_OK, wxT("&OK") );
+	ok = new wxButton( this, wxID_OK, "&OK" );
 	dlgSizer->Add( ok, 0, wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxALL, 5 );
-	cancel = new wxButton( this, wxID_CANCEL, wxT("&Cancel") );
+	cancel = new wxButton( this, wxID_CANCEL, "&Cancel" );
 	dlgSizer->Add( cancel, 0, wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL | wxALL, 5 );
 	this->SetDefaultItem(ok);
 
@@ -110,10 +110,10 @@ void paramDialog::OnLoad( wxCommandEvent &evt ) {
 	if (parmID == paramVals.size()+1) return;
 	string paramName = (const char *)paramNames[parmID]->GetLabel().c_str(); // KAS
 	
-	wxString caption = wxT("Open a memory file");
+	wxString caption = "Open a memory file";
 	//Edit by Joshua Lansford 1/24/06  Added the option to select Intel-hex files
-	wxString wildcard = wxT("CEDAR Memory files (*.cdm)|*.cdm|INTEL-HEX (*.hex)|*.hex");
-	wxString defaultFilename = wxT("");
+	wxString wildcard = "CEDAR Memory files (*.cdm)|*.cdm|INTEL-HEX (*.hex)|*.hex";
+	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	
 	LibraryGate* gateDef = &(wxGetApp().libraries[gGate->getLibraryName()][gGate->getLibraryGateName()]);
@@ -138,7 +138,7 @@ void paramDialog::OnSave( wxCommandEvent &evt ) {
 	
 	wxString caption = "Open a memory file";
 	wxString wildcard = "CEDAR Memory files (*.cdm)|*.cdm";
-	wxString defaultFilename = wxT("");
+	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	
 	LibraryGate* gateDef = &(wxGetApp().libraries[gGate->getLibraryName()][gGate->getLibraryGateName()]);
