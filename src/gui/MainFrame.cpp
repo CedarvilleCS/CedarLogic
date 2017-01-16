@@ -287,7 +287,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 			doOpenFile = false;
 			openedFilename = "Recovered File";
 			load(CRASH_FILENAME);
-			this->SetTitle(APP_TITLE + " - " + openedFilename);
+			this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
 		}
 		removeTempFile();
 	}
@@ -458,7 +458,7 @@ void MainFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {
 
 void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
     wxString msg;
-    msg.Printf(VERSION_ABOUT_TEXT.c_str());
+    msg.Printf(VERSION_ABOUT_TEXT().c_str());
 
     wxMessageBox(msg, _T("About"), wxOK | wxICON_INFORMATION, this);
 }
@@ -493,7 +493,7 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	}
 
 	currentCanvas->Update(); // Render();
-	this->SetTitle(APP_TITLE); // KAS
+	this->SetTitle(VERSION_TITLE()); // KAS
 	removeTempFile();
 	currentTempNum++;
     openedFilename = _T("");
@@ -552,7 +552,7 @@ void MainFrame::loadCircuitFile( string fileName ){
 	wxString path = (const wxChar *)fileName.c_str();  // KAS
 	
 	openedFilename = path;
-	this->SetTitle(APP_TITLE + " - " + path );
+	this->SetTitle(VERSION_TITLE() + " - " + path );
 	while (!(wxGetApp().dGUItoLOGIC.empty())) wxGetApp().dGUItoLOGIC.pop_front();
 	while (!(wxGetApp().dLOGICtoGUI.empty())) wxGetApp().dLOGICtoGUI.pop_front();
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->clearCircuit();
@@ -604,7 +604,7 @@ void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 		removeTempFile();
 		wxString path = dialog.GetPath();
 		openedFilename = path;
-		this->SetTitle(APP_TITLE + " - " + path );
+		this->SetTitle(VERSION_TITLE() + " - " + path );
 		commandProcessor->MarkAsSaved();
 		save((string)openedFilename);
 	}
@@ -656,7 +656,7 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 	if ( doOpenFile ) {
 		doOpenFile = false;
 		load((string)openedFilename);
-		this->SetTitle(APP_TITLE + " - " + openedFilename );
+		this->SetTitle(VERSION_TITLE() + " - " + openedFilename );
 	}
 	
 	if ( gCircuit->panic ) {

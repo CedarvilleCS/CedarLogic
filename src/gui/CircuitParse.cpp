@@ -58,8 +58,8 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	// Cedar Logic 2.0 and up has version information to keep old versions
 	// of Cedar Logic from opening new, incompatable files.
 	if (firstTag == "version") {
-		float versionNumber = atof(mParse->readTagValue("version").c_str());
-		if (versionNumber > VERSION_NUMBER) {
+		std::string versionNumber = mParse->readTagValue("version");
+		if (versionNumber > VERSION_NUMBER_STRING()) {
 
 			//show error message!!! And quit.
 			wxMessageBox("This file was made with a newer version of Cedar Logic. "
@@ -428,7 +428,7 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 	mParse = new XMLParser(ossCircuit);
 
 	mParse->openTag("version");
-	mParse->writeTag("version", std::to_string(VERSION_NUMBER));
+	mParse->writeTag("version", VERSION_NUMBER_STRING());
 	mParse->closeTag("version");
 
 	mParse->openTag("circuit");
