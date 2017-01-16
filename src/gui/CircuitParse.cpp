@@ -63,7 +63,8 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 
 			//show error message!!! And quit.
 			wxMessageBox("This file was made with a newer version of Cedar Logic. "
-				"Go to 'Help\\Download Latest Version...' to open this file.", "Version Error!");
+				"Go to 'Help\\Download Latest Version...' to open this file."
+				"Close CedarLogic without saving to avoid overwriting your work!!!", "Version Error!");
 
 			return gCanvases;
 		}
