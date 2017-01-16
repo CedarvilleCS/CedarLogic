@@ -39,12 +39,7 @@ bool MainApp::OnInit()
 	
     wxFileSystem::AddHandler( new wxZipFSHandler );
 	helpController = new wxHelpController;
-#ifndef _PRODUCTION_
-	helpController->Initialize( (wxGetApp().pathToExe + "../KLS_Logic.chm").c_str() );
-#else
-	// Inserted the cast  KAS
-	helpController->Initialize((const wxChar *)appSettings.helpFile.c_str());
-#endif
+	helpController->Initialize(appSettings.helpFile);
 
 
 	//*****************************************
