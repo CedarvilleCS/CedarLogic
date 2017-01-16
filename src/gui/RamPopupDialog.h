@@ -3,7 +3,7 @@
 
 #include <wx/grid.h>
 
-#define RAM_TITLE _T("Ram Info")
+#define RAM_TITLE "Ram Info"
 #define RAM_WIDTH 1500
 #define RAM_HEIGHT 1000
 #define LIST_WIDTH 180

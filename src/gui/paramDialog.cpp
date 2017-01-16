@@ -136,8 +136,8 @@ void paramDialog::OnSave( wxCommandEvent &evt ) {
 	if (parmID == paramVals.size()+1) return;
 	string paramName = (const char *) paramNames[parmID]->GetLabel().c_str(); // KAS
 	
-	wxString caption = wxT("Open a memory file");
-	wxString wildcard = wxT("CEDAR Memory files (*.cdm)|*.cdm");
+	wxString caption = "Open a memory file";
+	wxString wildcard = "CEDAR Memory files (*.cdm)|*.cdm";
 	wxString defaultFilename = wxT("");
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	
@@ -167,7 +167,7 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 				// ERROR
 				oss << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
 				msg.Printf((const wxChar *)oss.str().c_str()); // KAS
-				wxMessageBox(msg, _T("Error"), wxOK | wxICON_ERROR, NULL);
+				wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
 				return;
 			}
 			// Retrieve the integer value
@@ -186,7 +186,7 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 				// ERROR
 				oss << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
 				msg.Printf((const wxChar *)oss.str().c_str()); // KAS
-				wxMessageBox(msg, _T("Error"), wxOK | wxICON_ERROR, NULL);
+				wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
 				return;
 			}
 		} else if ( gateDef->dlgParams[i].type == "BOOL" ) {
