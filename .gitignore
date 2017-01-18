@@ -10,6 +10,9 @@
 !LICENSE.txt
 !HISTORY.txt
 !Doxyfile
+!Installer/
+!Installer/Installer.wixproj
+!Installer/Product.wxs
 
 # But do not exclude these directories...
 !src/
