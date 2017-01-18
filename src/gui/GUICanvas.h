@@ -12,7 +12,7 @@
 #define GUICANVAS_H_
 
 #include <map>
-#include <hash_map>
+#include <unordered_map>
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -113,7 +113,7 @@ public:
     GUICanvas( wxWindow *parent, GUICircuit* gCircuit, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
-        long style = 0, const wxString& name = _T("GUICanvas") );
+        long style = 0, const wxString& name = "GUICanvas" );
 
 	virtual ~GUICanvas();
 
@@ -149,8 +149,8 @@ public:
 	void Update();
 
 	// Return the gate and wire lists for this page
-	hash_map < unsigned long, guiGate* >* getGateList() { return &gateList; };
-	hash_map < unsigned long, guiWire* >* getWireList() { return &wireList; };
+	unordered_map < unsigned long, guiGate* >* getGateList() { return &gateList; };
+	unordered_map < unsigned long, guiWire* >* getWireList() { return &wireList; };
 	
 	// Insert and remove gates and wires from this canvas
 	void insertGate(unsigned long, guiGate*, float, float);
@@ -207,8 +207,8 @@ private:
 	GUICircuit* gCircuit;
 
 	// Maps of the gates and wires on this page
-	hash_map< unsigned long, guiGate* > gateList;
-	hash_map< unsigned long, guiWire* > wireList;
+	unordered_map< unsigned long, guiGate* > gateList;
+	unordered_map< unsigned long, guiWire* > wireList;
 	vector < unsigned long > selectedGates;
 	vector < unsigned long > selectedWires;
 

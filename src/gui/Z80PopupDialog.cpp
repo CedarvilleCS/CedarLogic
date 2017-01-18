@@ -496,8 +496,6 @@ void Z80PopupDialog::KPButton0_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_0, true)));
-	
-	//wxMessageBox(_T("0 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button 1
 void Z80PopupDialog::KPButton1_Action ( wxCommandEvent& event ){
@@ -506,8 +504,6 @@ void Z80PopupDialog::KPButton1_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_1, true)));
-	
-	//wxMessageBox(_T("1 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button 2
 void Z80PopupDialog::KPButton2_Action ( wxCommandEvent& event ){
@@ -516,8 +512,6 @@ void Z80PopupDialog::KPButton2_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_2, true)));
-	
-	//wxMessageBox(_T("2 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button 3
 void Z80PopupDialog::KPButton3_Action ( wxCommandEvent& event ){
@@ -526,8 +520,6 @@ void Z80PopupDialog::KPButton3_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_3, true)));
-	
-	//wxMessageBox(_T("3 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button 4
 void Z80PopupDialog::KPButton4_Action ( wxCommandEvent& event ){
@@ -536,8 +528,6 @@ void Z80PopupDialog::KPButton4_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_4, true)));
-	
-	//wxMessageBox(_T("4 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button 5
 void Z80PopupDialog::KPButton5_Action ( wxCommandEvent& event ){
@@ -546,8 +536,6 @@ void Z80PopupDialog::KPButton5_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_5, true)));
-	
-	//wxMessageBox(_T("5 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button 6
 void Z80PopupDialog::KPButton6_Action ( wxCommandEvent& event ){
@@ -556,8 +544,6 @@ void Z80PopupDialog::KPButton6_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_6, true)));
-	
-	//wxMessageBox(_T("6 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button 7
 void Z80PopupDialog::KPButton7_Action ( wxCommandEvent& event ){
@@ -566,8 +552,6 @@ void Z80PopupDialog::KPButton7_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_7, true)));
-	
-	//wxMessageBox(_T("7 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button 8
 void Z80PopupDialog::KPButton8_Action ( wxCommandEvent& event ){
@@ -576,8 +560,6 @@ void Z80PopupDialog::KPButton8_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_8, true)));
-	
-	//wxMessageBox(_T("8 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button 9
 void Z80PopupDialog::KPButton9_Action ( wxCommandEvent& event ){
@@ -586,8 +568,6 @@ void Z80PopupDialog::KPButton9_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_9, true)));
-	
-	//wxMessageBox(_T("9 pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button A
 void Z80PopupDialog::KPButtonA_Action ( wxCommandEvent& event ){
@@ -596,8 +576,6 @@ void Z80PopupDialog::KPButtonA_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_A, true)));
-	
-	//wxMessageBox(_T("A pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button B
 void Z80PopupDialog::KPButtonB_Action ( wxCommandEvent& event ){
@@ -606,8 +584,6 @@ void Z80PopupDialog::KPButtonB_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_B, true)));
-	
-	//wxMessageBox(_T("B pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button C
 void Z80PopupDialog::KPButtonC_Action ( wxCommandEvent& event ){
@@ -616,8 +592,6 @@ void Z80PopupDialog::KPButtonC_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_C, true)));
-	
-	//wxMessageBox(_T("C pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button D
 void Z80PopupDialog::KPButtonD_Action ( wxCommandEvent& event ){
@@ -626,8 +600,6 @@ void Z80PopupDialog::KPButtonD_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_D, true)));
-	
-	//wxMessageBox(_T("D pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button E
 void Z80PopupDialog::KPButtonE_Action ( wxCommandEvent& event ){
@@ -636,8 +608,6 @@ void Z80PopupDialog::KPButtonE_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_E, true)));
-	
-	//wxMessageBox(_T("E pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button F
 void Z80PopupDialog::KPButtonF_Action ( wxCommandEvent& event ){
@@ -646,8 +616,6 @@ void Z80PopupDialog::KPButtonF_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_F, true)));
-	
-	//wxMessageBox(_T("F pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button RESET
 void Z80PopupDialog::KPButtonReset_Action ( wxCommandEvent& event ){
@@ -656,9 +624,6 @@ void Z80PopupDialog::KPButtonReset_Action ( wxCommandEvent& event ){
  	wxGetApp().mainframe->ResumeExecution();
  	
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_RESET, true)));
-	
-	
-	//wxMessageBox(_T("reset pressed"), _T("Success"), wxOK | wxICON_ERROR, NULL);
 }
 //Button GO
 void Z80PopupDialog::KPButtonGo_Action ( wxCommandEvent& event ){

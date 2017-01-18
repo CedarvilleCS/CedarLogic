@@ -37,7 +37,7 @@ public:
     OscopeCanvas( wxWindow *parent, GUICircuit* gCircuit, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
-        long style = 0, const wxString& name = _T("OscopeCanvas") );
+        long style = 0, const wxString& name = "OscopeCanvas" );
 
     virtual ~OscopeCanvas();
 

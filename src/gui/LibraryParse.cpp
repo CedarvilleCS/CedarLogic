@@ -24,8 +24,8 @@ LibraryParse::LibraryParse(string fileName) {
 		wxString msg;
 		ostringstream ossError;
 		ossError << "The library file " << fileName << " does not exist.";
-		msg.Printf((const wxChar *)ossError.str().c_str());  // remove _T() macro; added cast KAS
-		wxMessageBox(msg, _T("Error - Missing File"), wxOK | wxICON_ERROR, NULL);
+		msg.Printf((const wxChar *)ossError.str().c_str());  // remove  macro; added cast KAS
+		wxMessageBox(msg, "Error - Missing File", wxOK | wxICON_ERROR, NULL);
 
 		return;
 	}

@@ -36,14 +36,14 @@ void GUICircuit::reInitializeLogicCircuit() {
 	waitToSendMessage = false;
 	sendMessageToCore(klsMessage::Message(klsMessage::MT_REINITIALIZE));
 	waitToSendMessage = iswaiting;
-	hash_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
+	unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while( thisWire != wireList.end() ) {
 		if (thisWire->second != nullptr) {
 			delete thisWire->second;
 		}
 		thisWire++;
 	}
-	hash_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
+	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while( thisGate != gateList.end() ) {
 		delete thisGate->second;
 		thisGate++;
@@ -308,14 +308,14 @@ void GUICircuit::setWireState( long wid, long state ) {
 
 void GUICircuit::printState() {
 	wxGetApp().logfile << "print state" << endl << flush;
-	hash_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
+	unordered_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while (thisWire != wireList.end()) {
 		if (thisWire->second != nullptr) {
 			wxGetApp().logfile << "wire " << thisWire->first << endl << flush;
 		}
 		thisWire++;
 	}
-	hash_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();
+	unordered_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while (thisGate != gateList.end()) {
 		wxGetApp().logfile << "gate " << thisGate->first << endl << flush;
 		thisGate++;

@@ -398,7 +398,7 @@ void guiGate::saveGate(XMLParser* xparse) {
 
 void guiGate::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ) {
 	if (wxGetApp().libraries[libName][libGateName].dlgParams.size() == 0) return;
-	paramDialog myDialog(wxT("Parameters"), gc, this, wxcmd);
+	paramDialog myDialog("Parameters", gc, this, wxcmd);
 	myDialog.SetFocus();
 	myDialog.ShowModal();
 }

@@ -3,7 +3,7 @@
 
 //#include <wx/listctrl.h>
 
-#define Z80_TITLE _T("Z80 Info")
+#define Z80_TITLE "Z80 Info"
 #define Z80_WIDTH 600
 #define Z80_HEIGHT 1000
 #define LIST_WIDTH 180
@@ -62,7 +62,7 @@ public:
 	//method to retreive the updated param info from the hash
 	void NotifyOfRegChange ();
 	
-	int Z80PopupDialog::parseHex( string value );
+	int parseHex( string value );
 	
 	//This method is taken from Z_80LogicGate.
 	//It will decode the parameter from the hash

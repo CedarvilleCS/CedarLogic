@@ -3,7 +3,7 @@
 
 #include "MainApp.h"
 
-#define ER_TITLE _T("Edit Registers")
+#define ER_TITLE "Edit Registers"
 #define ER_WIDTH 300
 #define ER_HEIGHT 600
 #define LIST_WIDTH 180

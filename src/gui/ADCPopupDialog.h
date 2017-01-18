@@ -4,7 +4,7 @@
 class GUICircuit;
 class guiGateADC;
 
-#define ADC_TITLE _T("ADC")
+#define ADC_TITLE "ADC"
 #define ADC_X_POS 30
 #define ADC_Y_POS 20
 #define ADC_WIDTH 100

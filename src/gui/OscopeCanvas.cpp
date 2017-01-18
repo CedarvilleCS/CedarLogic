@@ -234,8 +234,8 @@ void OscopeCanvas::UpdateData(void){
 	deque<StateType> temp;
 
 	// Log the values of all of the gates:
-	hash_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
-	hash_map< unsigned long, guiGate* >::iterator theGate;
+	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
+	unordered_map< unsigned long, guiGate* >::iterator theGate;
 	
 	set< string > liveTOs;
 	vector < guiGate* > toGates;
@@ -287,7 +287,7 @@ void OscopeCanvas::UpdateData(void){
 			if (currentGate == NULL) { // Just in case of error
 				stateValues.erase(junctionName);
 				parentFrame->cancelFeed(i);
-				//parentFrame->comboBoxVector[i]->SetValue(wxT("[None]"));
+				//parentFrame->comboBoxVector[i]->SetValue("[None]");
 				continue;
 			}
 			
@@ -351,14 +351,14 @@ void OscopeCanvas::UpdateMenu()
 	//what value they should be currently holding
 	//The edit ends with the end of this function
 	
-	hash_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
+	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
 	
 	vector< string > namesOfPossableFeeds;
 	
 	map< string, bool > alreadyAdded;
 	
 	//iterate over all gates
-	for( hash_map< unsigned long, guiGate* >::iterator 
+	for( unordered_map< unsigned long, guiGate* >::iterator 
 	       gateIterator = gateList->begin(); 
 	       gateIterator != gateList->end(); 
 	       gateIterator++ ){
@@ -383,8 +383,8 @@ void OscopeCanvas::UpdateMenu()
 	/*
 	
 	//Sets variables
-	hash_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
-	hash_map< unsigned long, guiGate* >::iterator theGate = gateList->begin();
+	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
+	unordered_map< unsigned long, guiGate* >::iterator theGate = gateList->begin();
 	
 	//Sets size
 	//unsigned int size = (parentFrame->comboBoxVector).size();
@@ -411,13 +411,13 @@ void OscopeCanvas::UpdateMenu()
 				//Gets gate ID
 				string junctionName = (theGate->second)->getLogicParam("JUNCTION_ID");
 			
-				(parentFrame->comboBoxVector[x])->Append(wxT(junctionName.c_str()));
+				(parentFrame->comboBoxVector[x])->Append(junctionName.c_str());
 			}
 		
 			theGate++;
 		}
-		(parentFrame->comboBoxVector[x])->Append(wxT("[None]"));
-		(parentFrame->comboBoxVector[x])->Append(wxT("[Remove]"));
+		(parentFrame->comboBoxVector[x])->Append("[None]");
+		(parentFrame->comboBoxVector[x])->Append("[Remove]");
 		
 		// *******************************************
 		//Edit by Joshua Lansford 2/22/07
@@ -442,7 +442,7 @@ void OscopeCanvas::UpdateMenu()
 		
 			(parentFrame->comboBoxVector[x])->SetValue(oldVal);
 		} else {
-			(parentFrame->comboBoxVector[x])->SetValue(wxT("[None]"));
+			(parentFrame->comboBoxVector[x])->SetValue("[None]");
 		}
 	}
 	*/
