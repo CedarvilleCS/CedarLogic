@@ -10,8 +10,10 @@ namespace {
 
 string VERSION_NUMBER_STRING() {
 
+	// Date in format: "MMM DD YYYY"
 	static string date = __DATE__;
 
+	// Time in format: "HH:MM:SS"
 	static string hms = __TIME__;
 
 	static map<string, string> monthToDigits = {
@@ -36,6 +38,7 @@ string VERSION_NUMBER_STRING() {
 
 	string day = date.substr(4, 2);
 
+	// Version in format: "MAJOR.MINOR|YYYY-MM-DD HH:MM:SS"
 	return std::to_string(VERSION_MAJOR) + "." +
 		std::to_string(VERSION_MINOR) + " | " +
 		year + "-" + month + "-" + day + " " + hms;
