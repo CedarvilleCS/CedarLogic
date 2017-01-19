@@ -85,8 +85,8 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	currentCanvas = nullptr;
 
 	// Set default locations
-	if (wxGetApp().appSettings.lastDir == "") lastDirectory = wxGetHomeDir() + "/My Documents";
-	else lastDirectory = (const wxChar *)wxGetApp().appSettings.lastDir.c_str();  // added cast KAS
+	if (wxGetApp().appSettings.lastDir == "") lastDirectory = wxGetHomeDir();
+	else lastDirectory = wxGetApp().appSettings.lastDir;  // added cast KAS
 
 	//////////////////////////////////////////////////////////////////////////
     // create a menu bar
