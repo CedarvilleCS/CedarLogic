@@ -940,14 +940,17 @@ void MainFrame::save(string filename) {
 	lock();
 	gCircuit->setSimulate(false);
 	
-	pauseTimers();
+	// Disabling timers from autosave thread caused an assertion fail.
+	//pauseTimers();
 
 	//Save file
 	CircuitParse cirp(currentCanvas);
 	cirp.saveCircuit(filename, canvases);
 
+	// Disabling timers from autosave thread caused an assertion fail.
 	//Resume system
-	resumeTimers(20);
+	//resumeTimers(20);
+
 	gCircuit->setSimulate(true);
 	if (!(toolBar->GetToolState(Tool_Lock))) {
 		unlock();
