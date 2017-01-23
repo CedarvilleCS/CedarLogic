@@ -10,7 +10,7 @@
 
 #include "GUICircuit.h"
 #include "MainApp.h"
-#include "GUICanvas.h"
+#include "widget/GUICanvas.h"
 #include "OscopeFrame.h"
 #include "guiWire.h"
 

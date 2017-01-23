@@ -22,11 +22,11 @@ using namespace std;
 
 class cmdPasteBlock;
 
-#include "MainApp.h"
+#include "../MainApp.h"
 #include "klsGLCanvas.h"
-#include "GUICircuit.h"
-#include "klsCollisionChecker.h"
-#include "wireSegment.h"
+#include "../GUICircuit.h"
+#include "../klsCollisionChecker.h"
+#include "../wireSegment.h"
 
 class klsCommand;
 class guiWire;
@@ -62,7 +62,7 @@ struct ConnectionSource {
 	ConnectionSource() {};
 };
 
-#include "commands.h"
+#include "../commands.h"
 
 #define MAX_UNDO_STATES 256
 

@@ -14,10 +14,10 @@
 class GUICircuit;
 class OscopeCanvas;
 
-#include "MainApp.h"
+#include "../MainApp.h"
 #include "wx/glcanvas.h"
-#include "GUICircuit.h"
-#include "../logic/logic_values.h"
+#include "../GUICircuit.h"
+#include "../../logic/logic_values.h"
 
 #include <map>
 #include <vector>

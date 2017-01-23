@@ -2,7 +2,7 @@
 #include "cmdDeleteWire.h"
 #include "../gl_defs.h"
 #include "../GUICircuit.h"
-#include "../GUICanvas.h"
+#include "../widget/GUICanvas.h"
 #include "../guiWire.h"
 #include "../guiGate.h"
 #include "cmdMoveWire.h"

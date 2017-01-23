@@ -11,7 +11,7 @@
 #ifndef PALETTECANVAS_H
 #define PALETTECANVAS_H
 
-#include "MainApp.h"
+#include "../MainApp.h"
 #include "gateImage.h"
 #include <vector>
 

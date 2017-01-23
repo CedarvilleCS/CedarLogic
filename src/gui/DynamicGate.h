@@ -10,7 +10,7 @@ heirarchy.
 
 #include "LibraryParse.h"
 #include "guiGate.h"
-#include "GUICanvas.h"
+#include "widget/GUICanvas.h"
 
 using namespace std;
 

@@ -16,7 +16,7 @@
 
 #include "MainApp.h"
 #include "commands.h"
-#include "GUICanvas.h"
+#include "widget/GUICanvas.h"
 #include "GUICircuit.h"
 #include "guiGate.h"
 #include "guiWire.h"

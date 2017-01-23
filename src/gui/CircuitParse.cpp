@@ -18,7 +18,7 @@
 #include "guiGate.h"
 #include "guiWire.h"
 #include "GUICircuit.h"
-#include "GUICanvas.h"
+#include "widget/GUICanvas.h"
 #include <map>
 #include <unordered_map>
 #include "../version.h"

@@ -9,10 +9,10 @@
 *****************************************************************************/
 
 #include "klsMiniMap.h"
-#include "guiText.h"
+#include "../guiText.h"
 
-#include "guiGate.h"
-#include "guiWire.h"
+#include "../guiGate.h"
+#include "../guiWire.h"
 
 // Enable access to objects in the main application
 DECLARE_APP(MainApp)

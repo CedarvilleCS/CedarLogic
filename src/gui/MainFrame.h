@@ -21,11 +21,11 @@
 #include "wx/aui/auibook.h"
 #include "wx/slider.h"
 #include "threadLogic.h"
-#include "GUICanvas.h"
+#include "widget/GUICanvas.h"
 #include "GUICircuit.h"
 //#include "OscopeFrame.h"
 class OscopeFrame;
-#include "klsMiniMap.h"
+#include "widget/klsMiniMap.h"
 #include "autoSaveThread.h"
 
 enum

@@ -13,7 +13,7 @@
 
 class klsGLCanvas;
 
-#include "MainApp.h"
+#include "../MainApp.h"
 #include "wx/glcanvas.h"
 #include "klsMiniMap.h"
 // For GLPoint2f:
