@@ -1,30 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="installer" Language="1033" Version="1.0.0.0" Manufacturer="Cedar Logic Developers" UpgradeCode="87c00fb3-8837-445e-b79c-6f2757fd7dcf">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+  
+	<Product Id="*"
+           Name="installer"
+           Language="1033"
+           Version="1.0.0.0"
+           Manufacturer="Cedar Logic Developers"
+           UpgradeCode="87c00fb3-8837-445e-b79c-6f2757fd7dcf">
+    
+    <Package InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
+    
+    <MediaTemplate EmbedCab="yes" />
 
 		<Feature Id="ProductFeature" Title="installer" Level="1">
-			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentGroupRef Id="Executable" />
+      <ComponentGroupRef Id="Resources" />
 		</Feature>
 	</Product>
-
+  
+  
+  
+  <!-- Folders -->
 	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
+		<Directory Id="TARGETDIR">
 			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="installer" />
+        <Directory Id="INSTALL_FOLDER" Name="Cedar Logic 2.0">
+          <Directory Id="RESOURCE_FOLDER" Name="res">
+            <Directory Id="BITMAP_FOLDER" Name="bitmap" />
+          </Directory>
+        </Directory>
 			</Directory>
 		</Directory>
 	</Fragment>
 
+
+
+  <!-- Files -->
 	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<!-- <Component Id="ProductComponent"> -->
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			<!-- </Component> -->
-		</ComponentGroup>
+    <ComponentGroup Id="FILES">
+		  <Component Directory="INSTALL_FOLDER">
+        <File Source="" />
+		  </Component>
+      <Component Directory="RESOURCE_FOLDER">
+        <File Source="" />
+      </Component>
+      <Component Directory="BITMAP_FOLDER">
+        <File Source="" />
+      </Component>
+    </ComponentGroup>
 	</Fragment>
+  
 </Wix>
