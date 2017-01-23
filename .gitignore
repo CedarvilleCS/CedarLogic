@@ -13,6 +13,10 @@
 !Makefile
 !.makefile
 
+!installer/
+!installer/installer.wixproj
+!installer/Product.wxs
+
 # But do not exclude these directories...
 !src/
 !src/**
