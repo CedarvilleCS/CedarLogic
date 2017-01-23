@@ -233,6 +233,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	gCircuit->GetCommandProcessor()->Initialize();
 
 	canvasBook = new wxAuiNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400), wxAUI_NB_CLOSE_ON_ACTIVE_TAB| wxAUI_NB_SCROLL_BUTTONS);
+
 	mainSizer->Add( canvasBook, wxSizerFlags(1).Expand().Border(wxALL, 0) );
 
 	//add 1 tab: Left loop to allow for different default
