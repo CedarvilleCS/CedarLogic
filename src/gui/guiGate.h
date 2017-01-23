@@ -31,9 +31,9 @@ class guiWire;
 #include "klsMessage.h"
 #include "wx/docview.h"
 
-#include "RamPopupDialog.h"
-#include "Z80PopupDialog.h"
-#include "ADCPopupDialog.h"
+#include "dialog/RamPopupDialog.h"
+#include "dialog/Z80PopupDialog.h"
+#include "dialog/ADCPopupDialog.h"
 
 using namespace std;
 

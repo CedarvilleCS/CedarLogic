@@ -10,7 +10,7 @@
 
 #include "GUICanvas.h"
 #include "MainApp.h"
-#include "paramDialog.h"
+#include "dialog/paramDialog.h"
 #include "klsClipboard.h"
 #include "guiWire.h"
 

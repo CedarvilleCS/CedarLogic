@@ -12,7 +12,7 @@
 #define RAM_Y_POS 30
 
 
-#include "MainApp.h"
+#include "../MainApp.h"
 
 class guiGateRAM;
 class GUICircuit;

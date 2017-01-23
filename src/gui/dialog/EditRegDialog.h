@@ -1,7 +1,7 @@
 #ifndef EDITREGDIALOG_H_
 #define EDITREGDIALOG_H_
 
-#include "MainApp.h"
+#include "../MainApp.h"
 
 #define ER_TITLE "Edit Registers"
 #define ER_WIDTH 300

@@ -8,15 +8,15 @@
    paramDialog: Generates and handles parameters dialog for a gate
 *****************************************************************************/
 
-#include "MainApp.h"
+#include "../MainApp.h"
 #include "paramDialog.h"
 #include "wx/filedlg.h"
 #include "wx/spinctrl.h"
 #include "wx/checkbox.h"
 #include "wx/textctrl.h"
 #include "wx/valgen.h"
-#include "CircuitParse.h"
-#include "commands.h"
+#include "../CircuitParse.h"
+#include "../commands.h"
 #include <sstream>
 
 DECLARE_APP(MainApp)

@@ -5,9 +5,9 @@
     #include "wx/wx.h"
 #endif
 
-#include "guiGate.h"
-#include "GUICircuit.h"
-#include "MainFrame.h"
+#include "../guiGate.h"
+#include "../GUICircuit.h"
+#include "../MainFrame.h"
 #include "ADCPopupDialog.h"
 #include <ostream>
 #include <sstream>

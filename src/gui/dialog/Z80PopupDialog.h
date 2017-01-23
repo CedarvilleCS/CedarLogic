@@ -12,7 +12,7 @@
 #define Z80_Y_POS 30
 
 
-#include "MainApp.h"
+#include "../MainApp.h"
 
 class guiGateZ80;
 class GUICircuit;

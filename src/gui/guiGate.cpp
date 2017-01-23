@@ -13,7 +13,7 @@
 #include "wx/wx.h"
 #include "MainApp.h"
 #include "klsCollisionChecker.h"
-#include "paramDialog.h"
+#include "dialog/paramDialog.h"
 #include "guiWire.h"
 
 DECLARE_APP(MainApp)

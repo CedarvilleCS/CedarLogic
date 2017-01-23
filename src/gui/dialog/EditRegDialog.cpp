@@ -11,9 +11,9 @@
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include "EditRegDialog.h"
-#include "guiGate.h"
-#include "GUICircuit.h"
-#include "MainFrame.h"
+#include "../guiGate.h"
+#include "../GUICircuit.h"
+#include "../MainFrame.h"
 #include <stdlib.h>
 
 using namespace std;
