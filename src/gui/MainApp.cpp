@@ -17,7 +17,7 @@ IMPLEMENT_APP(MainApp)
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
-	{ wxCMD_LINE_PARAM, NULL, NULL, wxT("input file"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+	{ wxCMD_LINE_PARAM, NULL, NULL, "input file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
 	{ wxCMD_LINE_NONE }
 };
 
@@ -39,12 +39,7 @@ bool MainApp::OnInit()
 	
     wxFileSystem::AddHandler( new wxZipFSHandler );
 	helpController = new wxHelpController;
-#ifndef _PRODUCTION_
-	helpController->Initialize( (wxGetApp().pathToExe + "../KLS_Logic.chm").c_str() );
-#else
-	// Inserted the cast  KAS
-	helpController->Initialize((const wxChar *)appSettings.helpFile.c_str());
-#endif
+	helpController->Initialize(appSettings.helpFile);
 
 
 	//*****************************************
@@ -76,7 +71,7 @@ bool MainApp::OnInit()
 	
 
     // create the main application window
-    MainFrame *frame = new MainFrame(APP_TITLE, cmdFilename.c_str());
+    MainFrame *frame = new MainFrame(VERSION_TITLE(), cmdFilename.c_str());
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)
     frame->Show(true);

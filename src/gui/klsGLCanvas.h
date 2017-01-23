@@ -63,7 +63,7 @@ class klsGLCanvas: public wxGLCanvas
 
 public:
     klsGLCanvas( wxWindow *parent,
-		const wxString& name = _T("klsGLCanvas"),
+		const wxString& name = "klsGLCanvas",
 		wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,

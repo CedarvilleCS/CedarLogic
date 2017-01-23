@@ -18,14 +18,14 @@ cmdDeleteTab::cmdDeleteTab(GUICircuit* gCircuit, GUICanvas* gCanvas,
 	this->canvasID = ID;
 
 
-	std::hash_map< unsigned long, guiGate* >* gateList = gCanvas->getGateList();
-	std::hash_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
+	std::unordered_map< unsigned long, guiGate* >* gateList = gCanvas->getGateList();
+	std::unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
 	while (thisGate != gateList->end()) {
 		this->gates.push_back(thisGate->first);
 		thisGate++;
 	}
-	std::hash_map< unsigned long, guiWire* >* wireList = gCanvas->getWireList();
-	std::hash_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
+	std::unordered_map< unsigned long, guiWire* >* wireList = gCanvas->getWireList();
+	std::unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
 	while (thisWire != wireList->end()) {
 		this->wires.push_back(thisWire->first);
 		thisWire++;

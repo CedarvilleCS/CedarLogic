@@ -10,6 +10,8 @@
 !LICENSE.txt
 !HISTORY.txt
 !Doxyfile
+!Makefile
+!.makefile
 
 # But do not exclude these directories...
 !src/
@@ -19,3 +21,4 @@
 
 # Okay, but really do exclude these files...
 res/settings.ini
+res/KLS_Logic.chw

@@ -18,7 +18,7 @@ class klsMiniMap;
 #include "wx/bitmap.h"
 #include "wx/dcmemory.h"
 #include "klsGLCanvas.h"
-#include <hash_map>
+#include <unordered_map>
 using namespace std;
 
 class guiWire;
@@ -29,10 +29,10 @@ public:
 	klsMiniMap(wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
-        long style = 0, const wxString& name = _T("klsMiniMap"));
+        long style = 0, const wxString& name = "klsMiniMap");
 	virtual ~klsMiniMap() { return; };
 	
-	void setLists( hash_map< unsigned long, guiGate* >* gateList, hash_map< unsigned long, guiWire* >* wireList ) {
+	void setLists( unordered_map< unsigned long, guiGate* >* gateList, unordered_map< unsigned long, guiWire* >* wireList ) {
 		this->gateList = gateList;
 		this->wireList = wireList;
 	};
@@ -53,8 +53,8 @@ private:
 	// viewport rect
 	GLPoint2f origin, endpoint;
 	
-	hash_map< unsigned long, guiGate* >* gateList;
-	hash_map< unsigned long, guiWire* >* wireList;
+	unordered_map< unsigned long, guiGate* >* gateList;
+	unordered_map< unsigned long, guiWire* >* wireList;
 	
 	wxImage mapImage;
 	bool m_init;

@@ -71,17 +71,17 @@ OscopeFrame::OscopeFrame(wxWindow *parent, const wxString& title, GUICircuit* gC
 
 	buttonSizer = new wxGridSizer( 1 );
 
-	pauseButton = new wxToggleButton(this, ID_PAUSE_BUTTON, wxT("Pause"), wxDefaultPosition, wxDefaultSize);
+	pauseButton = new wxToggleButton(this, ID_PAUSE_BUTTON, "Pause", wxDefaultPosition, wxDefaultSize);
 	pauseButton->SetValue(false);
 	buttonSizer->Add(pauseButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
 
-	exportButton = new wxButton(this, ID_EXPORT, wxT("Export"), wxDefaultPosition, wxDefaultSize);
+	exportButton = new wxButton(this, ID_EXPORT, "Export", wxDefaultPosition, wxDefaultSize);
 	buttonSizer->Add(exportButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
 
-	loadButton = new wxButton(this, ID_LOAD, wxT("Load"), wxDefaultPosition, wxDefaultSize);
+	loadButton = new wxButton(this, ID_LOAD, "Load", wxDefaultPosition, wxDefaultSize);
 	buttonSizer->Add(loadButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
 
-	saveButton = new wxButton(this, ID_SAVE, wxT("Save"), wxDefaultPosition, wxDefaultSize);
+	saveButton = new wxButton(this, ID_SAVE, "Save", wxDefaultPosition, wxDefaultSize);
 	buttonSizer->Add(saveButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
 
 	oSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL, 5) );
@@ -173,9 +173,9 @@ void OscopeFrame::OnComboUpdate( wxCommandEvent& event ){
 	if (comboBoxVector[comboBoxVector.size()-1]->GetValue() != "[None]") {		
 		//starts new array of strings
 		wxArrayString strings;
-		strings.Add(wxT("[None]"));
+		strings.Add("[None]");
 	
-		comboBoxVector.push_back(new wxComboBox(this, ID_COMBOBOX, wxT("[None]"), wxDefaultPosition, wxDefaultSize, strings, 
+		comboBoxVector.push_back(new wxComboBox(this, ID_COMBOBOX, "[None]", wxDefaultPosition, wxDefaultSize, strings, 
 	      wxCB_READONLY | wxCB_DROPDOWN	| wxCB_SORT));
 	      
 		//Adds selection box to vSizer
@@ -252,9 +252,9 @@ void OscopeFrame::OnExport( wxCommandEvent& event ){
  }
 
 void OscopeFrame::OnLoad( wxCommandEvent& event ){ 
-	wxString caption = wxT("Open an O-scope Layout");
-	wxString wildcard = wxT("CEDAR O-scope Layout files (*.cdo)|*.cdo");
-	wxString defaultFilename = wxT("");
+	wxString caption = "Open an O-scope Layout";
+	wxString wildcard = "CEDAR O-scope Layout files (*.cdo)|*.cdo";
+	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	
 	if (dialog.ShowModal() == wxID_OK) {
@@ -284,9 +284,9 @@ void OscopeFrame::OnLoad( wxCommandEvent& event ){
  }
 
 void OscopeFrame::OnSave( wxCommandEvent& event ){ 
-	wxString caption = wxT("Save o-scope layout");
-	wxString wildcard = wxT("CEDAR O-scope Layout files (*.cdo)|*.cdo");
-	wxString defaultFilename = wxT("");
+	wxString caption = "Save o-scope layout";
+	wxString wildcard = "CEDAR O-scope Layout files (*.cdo)|*.cdo";
+	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();

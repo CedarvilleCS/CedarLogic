@@ -85,55 +85,55 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	currentCanvas = nullptr;
 
 	// Set default locations
-	if (wxGetApp().appSettings.lastDir == "") lastDirectory = wxGetHomeDir() + _T("/My Documents");
-	else lastDirectory = (const wxChar *)wxGetApp().appSettings.lastDir.c_str();  // added cast KAS
+	if (wxGetApp().appSettings.lastDir == "") lastDirectory = wxGetHomeDir();
+	else lastDirectory = wxGetApp().appSettings.lastDir;  // added cast KAS
 
 	//////////////////////////////////////////////////////////////////////////
     // create a menu bar
 	//////////////////////////////////////////////////////////////////////////
     wxMenu *fileMenu = new wxMenu; // FILE MENU
-	fileMenu->Append(wxID_NEW, _T("&New\tCtrl+N"), _T("Create new circuit"));
-	fileMenu->Append(wxID_OPEN, _T("&Open\tCtrl+O"), _T("Open circuit"));
-	fileMenu->Append(wxID_SAVE, _T("&Save\tCtrl+S"), _T("Save circuit"));
-	fileMenu->Append(wxID_SAVEAS, _T("Save &As"), _T("Save circuit"));
+	fileMenu->Append(wxID_NEW, "&New\tCtrl+N", "Create new circuit");
+	fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O", "Open circuit");
+	fileMenu->Append(wxID_SAVE, "&Save\tCtrl+S", "Save circuit");
+	fileMenu->Append(wxID_SAVEAS, "Save &As", "Save circuit");
 	fileMenu->AppendSeparator();
-	fileMenu->Append(File_Export, _T("Export to Image"));
-	fileMenu->Append(File_ClipCopy, _T("Copy Canvas to Clipboard"));
+	fileMenu->Append(File_Export, "Export to Image");
+	fileMenu->Append(File_ClipCopy, "Copy Canvas to Clipboard");
 	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_EXIT, _T("E&xit\tAlt+X"), _T("Quit this program"));
+	fileMenu->Append(wxID_EXIT, "E&xit\tAlt+X", "Quit this program");
 
     wxMenu *viewMenu = new wxMenu; // VIEW MENU
-    viewMenu->Append(View_Oscope, _T("&Oscope\tCtrl+G"), _T("Show the Oscope"));
+    viewMenu->Append(View_Oscope, "&Oscope\tCtrl+G", "Show the Oscope");
     wxMenu *settingsMenu = new wxMenu;
-    settingsMenu->AppendCheckItem(View_Gridline, _T("Display Gridlines"), _T("Toggle gridline display"));
-    settingsMenu->AppendCheckItem(View_WireConn, _T("Display Wire Connection Points"), _T("Toggle wire connection points"));
+    settingsMenu->AppendCheckItem(View_Gridline, "Display Gridlines", "Toggle gridline display");
+    settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
     viewMenu->AppendSeparator();
-    viewMenu->AppendSubMenu(settingsMenu, _T("Settings"));
+    viewMenu->AppendSubMenu(settingsMenu, "Settings");
     
     wxMenu *helpMenu = new wxMenu; // HELP MENU
-    helpMenu->Append(wxID_HELP_CONTENTS, _T("&Contents...\tF1"), _T("Show Help system"));
+    helpMenu->Append(wxID_HELP_CONTENTS, "&Contents...\tF1", "Show Help system");
 	helpMenu->AppendSeparator();
 	helpMenu->Append(Help_ReportABug, "Report a bug...");
 	helpMenu->Append(Help_RequestAFeature, "Request a feature...");
 	helpMenu->Append(Help_DownloadLatestVersion, "Download latest version...");
 	helpMenu->AppendSeparator();
-    helpMenu->Append(wxID_ABOUT, _T("&About..."), _T("Show about dialog"));
+    helpMenu->Append(wxID_ABOUT, "&About...", "Show about dialog");
 
 	wxMenu *editMenu = new wxMenu; // EDIT MENU
-	editMenu->Append(wxID_UNDO, _T("Undo\tCtrl+Z"), _T("Undo last operation"));
-	editMenu->Append(wxID_REDO, _T("Redo"), _T("Redo last operation"));
+	editMenu->Append(wxID_UNDO, "Undo\tCtrl+Z", "Undo last operation");
+	editMenu->Append(wxID_REDO, "Redo", "Redo last operation");
 	editMenu->AppendSeparator();
-	editMenu->Append(Tool_NewTab, _T("New Tab\tCtrl+T"), _T("New Tab"));
+	editMenu->Append(Tool_NewTab, "New Tab\tCtrl+T", "New Tab");
 	editMenu->AppendSeparator();
-	editMenu->Append(wxID_COPY, _T("Copy\tCtrl+C"), _T("Copy selection to clipboard"));
-	editMenu->Append(wxID_PASTE, _T("Paste\tCtrl+V"), _T("Paste selection from clipboard"));
+	editMenu->Append(wxID_COPY, "Copy\tCtrl+C", "Copy selection to clipboard");
+	editMenu->Append(wxID_PASTE, "Paste\tCtrl+V", "Paste selection from clipboard");
 	
     // now append the freshly created menu to the menu bar...
     wxMenuBar *menuBar = new wxMenuBar();
-    menuBar->Append(fileMenu, _T("&File"));
-    menuBar->Append(editMenu, _T("&Edit"));
-    menuBar->Append(viewMenu, _T("&View"));
-    menuBar->Append(helpMenu, _T("&Help"));
+    menuBar->Append(fileMenu, "&File");
+    menuBar->Append(editMenu, "&Edit");
+    menuBar->Append(viewMenu, "&View");
+    menuBar->Append(helpMenu, "&Help");
 
     // set checkmarks on settings menu
     menuBar->Check(View_Gridline, wxGetApp().appSettings.gridlineVisible);
@@ -174,21 +174,21 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     int w = bmp[0]->GetWidth(),
         h = bmp[0]->GetHeight();
     toolBar->SetToolBitmapSize(wxSize(w, h));
-	toolBar->AddTool(wxID_NEW, _T("New"), *bmp[0], _T("New"));
-	toolBar->AddTool(wxID_OPEN, _T("Open"), *bmp[1], wxT("Open"));
-	toolBar->AddTool(wxID_SAVE, _T("Save"), *bmp[2], wxT("Save")); 
+	toolBar->AddTool(wxID_NEW, "New", *bmp[0], "New");
+	toolBar->AddTool(wxID_OPEN, "Open", *bmp[1], "Open");
+	toolBar->AddTool(wxID_SAVE, "Save", *bmp[2], "Save"); 
 	toolBar->AddSeparator();
-	toolBar->AddTool(wxID_UNDO, _T("Undo"), *bmp[3], wxT("Undo"));
-	toolBar->AddTool(wxID_REDO, _T("Redo"), *bmp[4], wxT("Redo"));
+	toolBar->AddTool(wxID_UNDO, "Undo", *bmp[3], "Undo");
+	toolBar->AddTool(wxID_REDO, "Redo", *bmp[4], "Redo");
 	toolBar->AddSeparator();
-	toolBar->AddTool(wxID_COPY, _T("Copy"), *bmp[5], wxT("Copy"));
-	toolBar->AddTool(wxID_PASTE, _T("Paste"), *bmp[6], wxT("Paste"));
+	toolBar->AddTool(wxID_COPY, "Copy", *bmp[5], "Copy");
+	toolBar->AddTool(wxID_PASTE, "Paste", *bmp[6], "Paste");
 	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_ZoomIn, _T("Zoom In"), *bmp[11], wxT("Zoom In"));
-	toolBar->AddTool(Tool_ZoomOut, _T("Zoom Out"), *bmp[12], wxT("Zoom Out"));
+	toolBar->AddTool(Tool_ZoomIn, "Zoom In", *bmp[11], "Zoom In");
+	toolBar->AddTool(Tool_ZoomOut, "Zoom Out", *bmp[12], "Zoom Out");
 	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_Pause, _T("Pause/Resume"), *bmp[9], wxT("Pause/Resume"), wxITEM_CHECK);
-	toolBar->AddTool(Tool_Step, _T("Step"), *bmp[10], wxT("Step"));
+	toolBar->AddTool(Tool_Pause, "Pause/Resume", *bmp[9], "Pause/Resume", wxITEM_CHECK);
+	toolBar->AddTool(Tool_Step, "Step", *bmp[10], "Step");
 	timeStepModSlider = new wxSlider(toolBar, wxID_ANY, wxGetApp().timeStepMod, 1, 500, wxDefaultPosition, wxSize(125,-1), wxSL_HORIZONTAL|wxSL_AUTOTICKS);
 	ostringstream oss;
 	oss << wxGetApp().timeStepMod << "ms";
@@ -196,12 +196,12 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddControl( timeStepModSlider );
 	toolBar->AddControl( timeStepModVal );
 	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_Lock, _T("Lock state"), *bmp[13], wxT("Lock state"), wxITEM_CHECK);
+	toolBar->AddTool(Tool_Lock, "Lock state", *bmp[13], "Lock state", wxITEM_CHECK);
 	toolBar->AddSeparator();
-	toolBar->AddTool(wxID_ABOUT, _T("About"), *bmp[8], wxT("About"));
+	toolBar->AddTool(wxID_ABOUT, "About", *bmp[8], "About");
 	//JV - Temporary tab button
 	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_NewTab, _T("New Tab"), *bmp[14], wxT("New Tab"));
+	toolBar->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
 	SetToolBar(toolBar);
 	toolBar->Show(true);
 
@@ -211,7 +211,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	}
 
     CreateStatusBar(2);
-    SetStatusText(_T(""));
+    SetStatusText("");
 
 	mainSizer = new wxBoxSizer( wxHORIZONTAL );
 	wxBoxSizer* leftPaneSizer = new wxBoxSizer( wxVERTICAL );
@@ -257,13 +257,18 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	
     if ( thread->Run() != wxTHREAD_NO_ERROR )
     {
-       wxLogError(wxT("Can't start thread!"));
+       wxLogError("Can't start thread!");
     }
 	
+	simTimer = new wxTimer(this, TIMER_ID);
+	idleTimer = new wxTimer(this, IDLETIMER_ID);
+	stopTimers();
+	startTimers(20);
+
 	// Setup the "Maximize Catch" flag:
 	sizeChanged = false;
 	
-	gCircuit->setOscope(new OscopeFrame(this, _T("O-Scope"), gCircuit));
+	gCircuit->setOscope(new OscopeFrame(this, "O-Scope", gCircuit));
 	
 	toolBar->Realize();
 
@@ -277,20 +282,20 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	this->openedFilename = (const wxChar *)cmdFilename.c_str(); // KAS
 
 	if (ifstream(CRASH_FILENAME)) {
-		wxMessageDialog dialog(this, wxT("Oops! It seems like there may have been a crash.\nWould you like to try to recover your work?"), wxT("Recover File"), wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+		wxMessageDialog dialog(this, "Oops! It seems like there may have been a crash.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 		if (dialog.ShowModal() == wxID_YES)
 		{
 			doOpenFile = false;
 			openedFilename = "Recovered File";
 			load(CRASH_FILENAME);
-			this->SetTitle(APP_TITLE + " - " + openedFilename);
+			this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
 		}
 		removeTempFile();
 	}
 
 	if (autoThread->Run() != wxTHREAD_NO_ERROR)
 	{
-		wxLogError(wxT("Autosave thread not started!"));
+		wxLogError("Autosave thread not started!");
 	}
 	currentTempNum = 0;
 	handlingEvent = false;
@@ -304,6 +309,8 @@ MainFrame::~MainFrame() {
 	
 	saveSettings();
 	
+	stopTimers();
+
 	// Shut down the detached thread and wait for it to exit
 	wxGetApp().logicThread->Delete();
 	wxGetApp().saveThread->Delete();
@@ -333,6 +340,11 @@ MainFrame::~MainFrame() {
 	//Removed the delete of systemTime because it was causeing a
 	//crash on close.  In stead, I changed it from a pointer
 	//to a local var so that it would not need to be deleted.
+
+	delete simTimer;
+	simTimer = NULL;
+	delete idleTimer;
+	idleTimer = NULL;
 }
 
 threadLogic *MainFrame::CreateThread()
@@ -340,7 +352,7 @@ threadLogic *MainFrame::CreateThread()
 	threadLogic *thread = new threadLogic();
     if ( thread->Create() != wxTHREAD_NO_ERROR )
     {
-        wxLogError(wxT("Can't create thread!"));
+        wxLogError("Can't create thread!");
     }
 
     wxCriticalSectionLocker enter(wxGetApp().m_critsect);
@@ -354,7 +366,7 @@ autoSaveThread *MainFrame::CreateSaveThread()
 	autoSaveThread *thread = new autoSaveThread();
 	if (thread->Create() != wxTHREAD_NO_ERROR)
 	{
-		wxLogError(wxT("Can't create autosave thread!"));
+		wxLogError("Can't create autosave thread!");
 	}
 
 	wxCriticalSectionLocker enter(wxGetApp().m_critsect);
@@ -393,11 +405,11 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	static bool destroy = false;
 	handlingEvent = true;
 	
-	wxGetApp().appSystemTime.Pause();
+	pauseTimers();
 
 	// Allow the user to save the file, unless we are in the midst of terminating the app!!, KAS 4/26/07	
 	if (commandProcessor->IsDirty() && !destroy) {
-		wxMessageDialog dialog( this, wxT("Circuit has not been saved.  Would you like to save it?"), wxT("Save Circuit"), wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
+		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
 		switch (dialog.ShowModal()) {
 		case wxID_YES:
 			OnSave(*((wxCommandEvent*)(&event)));
@@ -414,9 +426,7 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 		destroy = true;      // postpone destruction until wxWidgets cleans up, KAS 4/26/07
 	}
 	
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
+	resumeTimers(20);
 
 	if (destroy)
 	{
@@ -449,16 +459,16 @@ void MainFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {
 
 void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
     wxString msg;
-    msg.Printf(VERSION_ABOUT_TEXT.c_str());
+    msg.Printf(VERSION_ABOUT_TEXT().c_str());
 
-    wxMessageBox(msg, _T("About"), wxOK | wxICON_INFORMATION, this);
+    wxMessageBox(msg, "About", wxOK | wxICON_INFORMATION, this);
 }
 
 void MainFrame::OnNew(wxCommandEvent& event) {
 	handlingEvent = true;
 
 	if (commandProcessor->IsDirty()) {
-		wxMessageDialog dialog( this, wxT("Circuit has not been saved.  Would you like to save it?"), wxT("Save Circuit"), wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
+		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
 		switch (dialog.ShowModal()) {
 		case wxID_YES:
 			OnSave(event);
@@ -467,7 +477,9 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 			return;
 		}			
 	}
-	wxGetApp().appSystemTime.Pause();
+
+	pauseTimers();
+
 	wxGetApp().dGUItoLOGIC.clear();
 	wxGetApp().dLOGICtoGUI.clear();
 
@@ -482,13 +494,12 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	}
 
 	currentCanvas->Update(); // Render();
-	this->SetTitle(APP_TITLE); // KAS
+	this->SetTitle(VERSION_TITLE()); // KAS
 	removeTempFile();
 	currentTempNum++;
-    openedFilename = _T("");
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
+    openedFilename = "";
+
+	resumeTimers(20);
 
 	handlingEvent = false;
 }
@@ -499,7 +510,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 
 	currentCanvas->getCircuit()->setSimulate(false);
 	if (commandProcessor->IsDirty()) {
-		wxMessageDialog dialog( this, wxT("Circuit has not been saved.  Would you like to save it?"), wxT("Save Circuit"), wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
+		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
 		switch (dialog.ShowModal()) {
 		case wxID_YES:
 			OnSave(event);
@@ -510,11 +521,12 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 			return;
 		}			
 	}
-	wxGetApp().appSystemTime.Pause();
+	
+	pauseTimers();
 
-	wxString caption = wxT("Open a circuit");
-	wxString wildcard = wxT("Circuit files (*.cdl)|*.cdl");
-	wxString defaultFilename = wxT("");
+	wxString caption = "Open a circuit";
+	wxString wildcard = "Circuit files (*.cdl)|*.cdl";
+	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	dialog.SetDirectory(lastDirectory);
 	
@@ -525,9 +537,8 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	}
     currentCanvas->Update(); // Render();
 	currentCanvas->getCircuit()->setSimulate(true);
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
+
+	resumeTimers(20);
 
 	handlingEvent = false;
 }
@@ -540,9 +551,9 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 //by calling this method.
 void MainFrame::loadCircuitFile( string fileName ){
 	wxString path = (const wxChar *)fileName.c_str();  // KAS
-	removeTempFile();
+	
 	openedFilename = path;
-	this->SetTitle(APP_TITLE + " - " + path );
+	this->SetTitle(VERSION_TITLE() + " - " + path );
 	while (!(wxGetApp().dGUItoLOGIC.empty())) wxGetApp().dGUItoLOGIC.pop_front();
 	while (!(wxGetApp().dLOGICtoGUI.empty())) wxGetApp().dLOGICtoGUI.pop_front();
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->clearCircuit();
@@ -571,10 +582,11 @@ void MainFrame::loadCircuitFile( string fileName ){
 	mainSizer->Show(canvasBook);
 	currentCanvas->SetFocus();
 
+	removeTempFile();
 }
 
 void MainFrame::OnSave(wxCommandEvent& event) {
-	if (openedFilename == _T("")) OnSaveAs(event);
+	if (openedFilename == "") OnSaveAs(event);
 	else {
 		commandProcessor->MarkAsSaved();
 		save((string)openedFilename);
@@ -584,16 +596,16 @@ void MainFrame::OnSave(wxCommandEvent& event) {
 void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 	handlingEvent = true;
 
-	wxString caption = wxT("Save circuit");
-	wxString wildcard = wxT("Circuit files (*.cdl)|*.cdl");
-	wxString defaultFilename = wxT("");
+	wxString caption = "Save circuit";
+	wxString wildcard = "Circuit files (*.cdl)|*.cdl";
+	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	dialog.SetDirectory(lastDirectory);
 	if (dialog.ShowModal() == wxID_OK) {
 		removeTempFile();
 		wxString path = dialog.GetPath();
 		openedFilename = path;
-		this->SetTitle(APP_TITLE + " - " + path );
+		this->SetTitle(VERSION_TITLE() + " - " + path );
 		commandProcessor->MarkAsSaved();
 		save((string)openedFilename);
 	}
@@ -645,12 +657,13 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 	if ( doOpenFile ) {
 		doOpenFile = false;
 		load((string)openedFilename);
-		this->SetTitle(APP_TITLE + " - " + openedFilename );
+		this->SetTitle(VERSION_TITLE() + " - " + openedFilename );
 	}
 	
 	if ( gCircuit->panic ) {
 		gCircuit->panic = false;
 		toolBar->ToggleTool( Tool_Pause, true );
+		simTimer->Stop();
 		wxGetApp().appSystemTime.Start(0);
 		wxGetApp().appSystemTime.Pause();
 		//Edit by Joshua Lansford 11/24/06
@@ -662,7 +675,7 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 		//see the location were pausing is set to true
 		//for further explination in GUICircuit::parseMessage
 		if( !gCircuit->pausing ){
-			wxMessageBox(_T("Overloading simulator: please increase time per step and then resume simulation."), _T("Error - overload"), wxOK | wxICON_ERROR, NULL);
+			wxMessageBox("Overloading simulator: please increase time per step and then resume simulation.", "Error - overload", wxOK | wxICON_ERROR, NULL);
 		}
 		gCircuit->pausing = false;
 	}
@@ -722,7 +735,7 @@ void MainFrame::OnPaste(wxCommandEvent& event) {
 
 void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 	bool showGrid = false;
-	wxMessageDialog gridDialog(this, wxT("Export with Grid?"), wxT("Export"), wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
+	wxMessageDialog gridDialog(this, "Export with Grid?", "Export", wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
 	switch (gridDialog.ShowModal()) {
 	case wxID_YES:
 		showGrid = true;
@@ -733,9 +746,9 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 
 	wxBitmap bitmap = getBitmap(showGrid);
 
-	wxString caption = wxT("Export Circuit");
-	wxString wildcard = wxT("PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|Bitmap (*.bmp)|*.bmp");
-	wxString defaultFilename = wxT("");
+	wxString caption = "Export Circuit";
+	wxString wildcard = "PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|Bitmap (*.bmp)|*.bmp";
+	wxString defaultFilename = "";
 	wxFileDialog saveDialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	saveDialog.SetDirectory(lastDirectory);
 	if (saveDialog.ShowModal() == wxID_OK) {
@@ -754,7 +767,7 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 			fileType = wxBITMAP_TYPE_JPEG;
 		}
 
-		bitmap.SaveFile(_T(path),fileType);
+		bitmap.SaveFile(path,fileType);
 	}
 	else
 	{
@@ -764,7 +777,7 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 
 void MainFrame::OnCopyToClipboard(wxCommandEvent& event) {
 	bool showGrid = false;
-	wxMessageDialog gridDialog(this, wxT("Copy with Grid?"), wxT("Copy to Clipboard"), wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
+	wxMessageDialog gridDialog(this, "Copy with Grid?", "Copy to Clipboard", wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
 	switch (gridDialog.ShowModal()) {
 	case wxID_YES:
 		showGrid = true;
@@ -880,16 +893,44 @@ void MainFrame::ResumeExecution() {
 
 void MainFrame::PauseSim() {	
 	if (toolBar->GetToolState(Tool_Pause)) {
+		simTimer->Stop();
 		wxGetApp().appSystemTime.Start(0);
 		wxGetApp().appSystemTime.Pause();
 	}
 	else {
 		wxGetApp().appSystemTime.Start(0);
+		simTimer->Start(20);
 	}
 }
 
-//Julian: All of the following functions were added to support autosave functionality.
+//Julian: Added to simplify timer use.
+void MainFrame::stopTimers() {
+	simTimer->Stop();
+	idleTimer->Stop();
+}
 
+void MainFrame::startTimers(int at) {
+	if (!(toolBar->GetToolState(Tool_Pause)))
+	{
+		simTimer->Start(at);
+	}
+	idleTimer->Start(at);
+}
+
+void MainFrame::pauseTimers() {
+	wxGetApp().appSystemTime.Pause();
+	stopTimers();
+}
+void MainFrame::resumeTimers(int at) {
+	if (!(toolBar->GetToolState(Tool_Pause)))
+	{
+		wxGetApp().appSystemTime.Start(0);
+		simTimer->Start(at);
+	}
+	idleTimer->Start(at);
+}
+
+//Julian: All of the following functions were added to support autosave functionality.
 
 void MainFrame::autosave() {
 	save(CRASH_FILENAME);
@@ -899,16 +940,18 @@ void MainFrame::save(string filename) {
 	//Pause system so that user can't modify during save
 	lock();
 	gCircuit->setSimulate(false);
-	wxGetApp().appSystemTime.Pause();
+	
+	// Disabling timers from autosave thread caused an assertion fail.
+	//pauseTimers();
 
 	//Save file
 	CircuitParse cirp(currentCanvas);
 	cirp.saveCircuit(filename, canvases);
 
+	// Disabling timers from autosave thread caused an assertion fail.
 	//Resume system
-	if (!(toolBar->GetToolState(Tool_Pause))) {
-		wxGetApp().appSystemTime.Start(0);
-	}
+	//resumeTimers(20);
+
 	gCircuit->setSimulate(true);
 	if (!(toolBar->GetToolState(Tool_Lock))) {
 		unlock();
@@ -940,9 +983,7 @@ void MainFrame::unlock() {
 }
 
 void MainFrame::load(string filename) {
-	CircuitParse cirp(filename, canvases); // KAS
-	cirp.parseFile();
-	currentCanvas->Update(); // Render();
+	loadCircuitFile(filename);
 }
 
 //JV - Make new canvas and add it to canvases and canvasBook
@@ -954,7 +995,7 @@ void MainFrame::OnNewTab(wxCommandEvent& event) {
 		gCircuit->GetCommandProcessor()->Submit((wxCommand*)new cmdAddTab(gCircuit, canvasBook, &canvases));
 	}
 	else {
-		wxMessageBox(_T("You have reached the maximum number of tabs."), _T("Close"), wxOK);
+		wxMessageBox("You have reached the maximum number of tabs.", "Close", wxOK);
 	}
 	 
 /*	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
@@ -972,7 +1013,7 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 	
 	if (canSize > 1) {
 		if (!canvases[canvasID]->getGateList()->empty()) {
-			wxMessageDialog dialog(this, wxT("All work on this tab will be lost. Would you like to close it?"), wxT("Close Tab"), wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+			wxMessageDialog dialog(this, "All work on this tab will be lost. Would you like to close it?", "Close Tab", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 			switch (dialog.ShowModal()) {
 				case wxID_YES:
 					break;
@@ -994,7 +1035,7 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 		event.Veto();
 	}
 	else {
-		wxMessageBox(_T("Tab cannot be closed"), _T("Close"), wxOK);
+		wxMessageBox("Tab cannot be closed", "Close", wxOK);
 		event.Veto();
 	}
 }

@@ -74,6 +74,11 @@ void guiGate::updateBBoxes( bool noUpdateWires ) {
 	glLoadIdentity();
 	glTranslatef(x, y, 0);
 	glRotatef( angle, 0.0, 0.0, 1.0);
+
+	// Modified by Colin 1/16/17 to allow for mirroring of bus ends
+	if ((angle == 180 || angle == 270) && this->getGUIType() == "BUSEND") {
+		glScalef(1, -1, 1);
+	}
 	
 	// Read the forward matrix into the member variable:
 	glGetDoublev( GL_MODELVIEW_MATRIX, mModel );
@@ -393,7 +398,7 @@ void guiGate::saveGate(XMLParser* xparse) {
 
 void guiGate::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ) {
 	if (wxGetApp().libraries[libName][libGateName].dlgParams.size() == 0) return;
-	paramDialog myDialog(wxT("Parameters"), gc, this, wxcmd);
+	paramDialog myDialog("Parameters", gc, this, wxcmd);
 	myDialog.SetFocus();
 	myDialog.ShowModal();
 }

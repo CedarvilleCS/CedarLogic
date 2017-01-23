@@ -109,7 +109,7 @@ void GUICanvas::insertWire(guiWire* wire) {
 
 // If the gate exists on this page, then remove it from the page
 void GUICanvas::removeGate(unsigned long gid) {
-	hash_map < unsigned long, guiGate* >::iterator thisGate = gateList.find(gid);
+	unordered_map < unsigned long, guiGate* >::iterator thisGate = gateList.find(gid);
 	if (thisGate != gateList.end()) {
 		// Clear a hotspot we're holding if we need to
 		if (hotspotGate == gid) hotspotHighlight = "";
@@ -151,7 +151,7 @@ wxStopWatch renderTimer;
 	glColor4f( 0.0, 0.0, 0.0, 1.0 );
 	
 	// Draw the gates:
-	hash_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
+	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while( thisGate != gateList.end() ) {
 		(thisGate->second)->draw(!noColor);
 		thisGate++;
@@ -160,7 +160,7 @@ wxStopWatch renderTimer;
 	glLoadIdentity();
 	
 	// Draw the wires:
-	hash_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
+	unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while( thisWire != wireList.end() ) {
 		if (thisWire->second != nullptr) {
 			(thisWire->second)->draw(!noColor);
@@ -422,7 +422,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	selectedGates.clear();
 	preMove.clear();
 	saveMove = false;
-	hash_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();
+	unordered_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while (thisGate != gateList.end()) {
 		if ((thisGate->second)->isSelected()) {
 			// Push back the gate's id, xy pos, angle, and select flag
@@ -435,7 +435,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	// clean up the selected wires vector
 	selectedWires.clear();
 	preMoveWire.clear();
-	hash_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
+	unordered_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while (thisWire != wireList.end()) {
 		if (thisWire->second != nullptr) {
 			if ((thisWire->second)->isSelected()) {
@@ -706,14 +706,14 @@ void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool Ct
 	
 	// clean up the selected gates vector
 	selectedGates.clear();
-	hash_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();
+	unordered_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while (thisGate != gateList.end()) {
 		if ((thisGate->second)->isSelected()) selectedGates.push_back((thisGate->first));
 		thisGate++;
 	}
 	// clean up the selected wires vector
 	selectedWires.clear();
-	hash_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
+	unordered_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while (thisWire != wireList.end()) {
 		if (thisWire->second != nullptr) {
 			if ((thisWire->second)->isSelected()) selectedWires.push_back((thisWire->first));
@@ -725,7 +725,7 @@ void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool Ct
 void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 	GLPoint2f m = getMouseCoords();
 	SetCursor(wxCursor(wxCURSOR_ARROW));
-	hash_map < unsigned long, guiGate* >::iterator thisGate;
+	unordered_map < unsigned long, guiGate* >::iterator thisGate;
 	cmdMoveSelection* movecommand = NULL;
 	cmdCreateGate* creategatecommand = NULL;
 
@@ -1040,7 +1040,7 @@ void GUICanvas::deleteSelection() {
 }
 
 void GUICanvas::unselectAllGates() {
-	hash_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();
+	unordered_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while (thisGate != gateList.end()) {
 		(thisGate->second)->unselect();
 		thisGate++;
@@ -1048,7 +1048,7 @@ void GUICanvas::unselectAllGates() {
 }
 
 void GUICanvas::unselectAllWires() {
-	hash_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
+	unordered_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while (thisWire != wireList.end()) {
 		if (thisWire->second != nullptr) {
 			(thisWire->second)->unselect();
@@ -1076,7 +1076,7 @@ void GUICanvas::pasteBlockFromClipboard () {
 	// clean up the selected gates vector
 	selectedGates.clear();
 	preMove.clear();
-	hash_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
+	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	unsigned long snapToGateID = 0;
 	GLPoint2f gatecoord;
 	// paste only to snapped point
@@ -1141,7 +1141,7 @@ void GUICanvas::pasteBlockFromClipboard () {
 	// clean up the selected wires vector
 	selectedWires.clear();
 	preMoveWire.clear();
-	hash_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
+	unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while (thisWire != wireList.end()) {
 		if (thisWire->second != nullptr) {
 			if ((thisWire->second)->isSelected()) {
@@ -1169,14 +1169,14 @@ void GUICanvas::setZoomAll( void ) {
 	klsBBox zoomBox;
 
 	// Add all the gates into the zoom all box:
-	hash_map< unsigned long, guiGate* >::iterator gateWalk = gateList.begin();
+	unordered_map< unsigned long, guiGate* >::iterator gateWalk = gateList.begin();
 	while( gateWalk != gateList.end() ) {
 		zoomBox.addBBox( (gateWalk->second)->getBBox() );
 		gateWalk++;
 	}
 
 	// Add all the wires into the zoom all box:
-	hash_map< unsigned long, guiWire* >::iterator wireWalk = wireList.begin();
+	unordered_map< unsigned long, guiWire* >::iterator wireWalk = wireList.begin();
 	while( wireWalk != wireList.end() ) {
 		if (wireWalk->second != nullptr) {
 			zoomBox.addBBox((wireWalk->second)->getBBox());
@@ -1203,14 +1203,14 @@ void GUICanvas::setZoomAll( void ) {
 // print page contents
 void GUICanvas::printLists() {
 	wxGetApp().logfile << "printing page lists" << endl << flush;
-	hash_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
+	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while (thisGate != gateList.end()) {
 		float x, y;
 		(thisGate->second)->getGLcoords(x, y);
 		wxGetApp().logfile << " gate " << thisGate->first << " type " << (thisGate->second)->getLibraryGateName() << " at " << x << "," << y << endl << flush;
 		thisGate++;
 	}
-	hash_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
+	unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while (thisWire != wireList.end()) {
 		if (thisWire->second != nullptr) {
 			wxGetApp().logfile << " wire " << thisWire->first << endl << flush;

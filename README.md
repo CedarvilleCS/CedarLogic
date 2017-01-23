@@ -23,4 +23,6 @@ CedarLogic is Cedarville University's digital logic simulator.
 		nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
 		nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
 
-9. Now you should be able to build CedarLogic debug and release versions.
+8. Install Wix with its Visual Studio Extentions. [link](http://wixtoolset.org/releases/)
+
+9. Now you should be able to open CedarLogic in Visual Studio, build it in debug or release, and create an installer.

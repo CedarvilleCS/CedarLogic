@@ -20,7 +20,7 @@
 #include "GUICircuit.h"
 #include "GUICanvas.h"
 #include <map>
-#include <hash_map>
+#include <unordered_map>
 #include "../version.h"
 
 DECLARE_APP(MainApp)
@@ -58,12 +58,13 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	// Cedar Logic 2.0 and up has version information to keep old versions
 	// of Cedar Logic from opening new, incompatable files.
 	if (firstTag == "version") {
-		float versionNumber = atof(mParse->readTagValue("version").c_str());
-		if (versionNumber > VERSION_NUMBER) {
+		std::string versionNumber = mParse->readTagValue("version");
+		if (versionNumber > VERSION_NUMBER_STRING()) {
 
 			//show error message!!! And quit.
 			wxMessageBox("This file was made with a newer version of Cedar Logic. "
-				"Go to 'Help\\Download Latest Version...' to open this file.", "Version Error!");
+				"Go to 'Help\\Download Latest Version...' to open this file."
+				"Close CedarLogic without saving to avoid overwriting your work!!!", "Version Error!");
 
 			return gCanvases;
 		}
@@ -142,13 +143,13 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 							//Thus no warning needs to be given.
 							type = "AM_RAM_16x16";
 						}else if( type == "AA_DFF" ){
-							wxMessageBox(_T("The High Active Reset D flip flop has been deprecated.  Automatically replacing with a Low active version"), _T("Old gate"), wxOK | wxICON_ASTERISK, NULL);
+							wxMessageBox("The High Active Reset D flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "AE_DFF_LOW";
 						}else if( type == "BA_JKFF" ){
-							wxMessageBox(_T("The High Active Reset JK flip flop has been deprecated.  Automatically replacing with a Low active version"), _T("Old gate"), wxOK | wxICON_ASTERISK, NULL);
+							wxMessageBox("The High Active Reset JK flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "BE_JKFF_LOW";
 						}else if( type == "BA_JKFF_NT" ){
-							wxMessageBox(_T("The High Active Reset negitive triggered JK flip flop has been deprecated.  Automatically replacing with a Low active version"), _T("Old gate"), wxOK | wxICON_ASTERISK, NULL);
+							wxMessageBox("The High Active Reset negitive triggered JK flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "BE_JKFF_LOW_NT";
 						}
 						//**********************************
@@ -428,12 +429,12 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 	mParse = new XMLParser(ossCircuit);
 
 	mParse->openTag("version");
-	mParse->writeTag("version", std::to_string(VERSION_NUMBER));
+	mParse->writeTag("version", VERSION_NUMBER_STRING());
 	mParse->closeTag("version");
 
 	mParse->openTag("circuit");
-	hash_map < unsigned long, guiGate* >* gateList;
-	hash_map < unsigned long, guiWire* >* wireList;
+	unordered_map < unsigned long, guiGate* >* gateList;
+	unordered_map < unsigned long, guiWire* >* wireList;
 
 	// Save which page was current:
 	//	NOTE: currently this tag is not implemented
@@ -461,13 +462,13 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 
 		gateList = glc[i]->getGateList();
 		wireList = glc[i]->getWireList();
-		hash_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
+		unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList->begin();
 		while (thisGate != gateList->end()) {
 			(thisGate->second)->saveGate(mParse);
 			thisGate++;
 		}
 		
-		hash_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
+		unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList->begin();
 		while (thisWire != wireList->end()) {
 			if (thisWire->second != nullptr) {
 				(thisWire->second)->saveWire(mParse);
