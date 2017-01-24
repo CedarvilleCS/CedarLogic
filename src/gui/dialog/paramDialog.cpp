@@ -120,7 +120,7 @@ void paramDialog::OnLoad( wxCommandEvent &evt ) {
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
 		string mempath = (const char *)path.c_str(); // KAS
-		gCircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(gGate->getID(), gateDef->dlgParams[parmID].name, mempath)));
+		gCircuit->sendMessageToCore(new Message_SET_GATE_PARAM(gGate->getID(), gateDef->dlgParams[parmID].name, mempath));
 	}
 }
 
@@ -145,7 +145,7 @@ void paramDialog::OnSave( wxCommandEvent &evt ) {
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
 		string mempath = (const char *)path.c_str(); // KAS
-		gCircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(gGate->getID(), gateDef->dlgParams[parmID].name, mempath)));
+		gCircuit->sendMessageToCore(new Message_SET_GATE_PARAM(gGate->getID(), gateDef->dlgParams[parmID].name, mempath));
 	}
 }
 

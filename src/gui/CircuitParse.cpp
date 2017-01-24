@@ -238,7 +238,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	
 	string logicType = wxGetApp().libParser.getGateLogicType( type );
 	if ( logicType.size() > 0 )
-		gCanvas->getCircuit()->sendMessageToCore(Message(MT_CREATE_GATE, new Message_CREATE_GATE(wxGetApp().libraries[wxGetApp().gateNameToLibrary[type]][type].logicType, id)));
+		gCanvas->getCircuit()->sendMessageToCore(new Message_CREATE_GATE(wxGetApp().libraries[wxGetApp().gateNameToLibrary[type]][type].logicType, id));
 	// Create gate for GUI
 	istringstream issa(position.substr(0,position.find(",")+1));
 	issa >> x;
@@ -250,7 +250,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	for (unsigned int i = 0; i < params.size(); i++) {
 		if (!(params[i].isGUI)) {
 			newGate->setLogicParam( params[i].paramName, params[i].paramValue );
-			gCanvas->getCircuit()->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(id, params[i].paramName, params[i].paramValue)));
+			gCanvas->getCircuit()->sendMessageToCore(new Message_SET_GATE_PARAM(id, params[i].paramName, params[i].paramValue));
 		} else newGate->setGUIParam( params[i].paramName, params[i].paramValue );
 	}
 	if( logicType.size() > 0 ) {
@@ -262,18 +262,18 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 			// Send the isInverted message:
 			if( libGate.hotspots[i].isInverted ) {
 				if ( libGate.hotspots[i].isInput ) {
-					gCanvas->getCircuit()->sendMessageToCore(Message(MT_SET_GATE_INPUT_PARAM, new Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "INVERTED", "TRUE")));
+					gCanvas->getCircuit()->sendMessageToCore(new Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "INVERTED", "TRUE"));
 				} else {
-					gCanvas->getCircuit()->sendMessageToCore(Message(MT_SET_GATE_OUTPUT_PARAM, new Message_SET_GATE_OUTPUT_PARAM(id, libGate.hotspots[i].name, "INVERTED", "TRUE")));
+					gCanvas->getCircuit()->sendMessageToCore(new Message_SET_GATE_OUTPUT_PARAM(id, libGate.hotspots[i].name, "INVERTED", "TRUE"));
 				}
 			}
 
 			// Send the logicEInput message:
 			if( libGate.hotspots[i].logicEInput != "" ) {
 				if ( libGate.hotspots[i].isInput ) {
-					gCanvas->getCircuit()->sendMessageToCore(Message(MT_SET_GATE_INPUT_PARAM, new Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
+					gCanvas->getCircuit()->sendMessageToCore(new Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput));
 				} else {
-					gCanvas->getCircuit()->sendMessageToCore(Message(MT_SET_GATE_OUTPUT_PARAM, new Message_SET_GATE_OUTPUT_PARAM(id, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
+					gCanvas->getCircuit()->sendMessageToCore(new Message_SET_GATE_OUTPUT_PARAM(id, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput));
 				}
 			}
 		} // for( loop through the hotspots )

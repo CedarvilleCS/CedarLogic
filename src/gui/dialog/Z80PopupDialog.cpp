@@ -464,7 +464,7 @@ void Z80PopupDialog::StepEdit_CONTINUOUS( wxCommandEvent& event){
  	
  	blackenLabels();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "RUN_MODE", "CONTINUOUS")));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "RUN_MODE", "CONTINUOUS"));
 }
 
 void Z80PopupDialog::StepEdit_ISTEP( wxCommandEvent& event){    
@@ -475,7 +475,7 @@ void Z80PopupDialog::StepEdit_ISTEP( wxCommandEvent& event){
  	
  	blackenLabels();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "RUN_MODE", "I_STEP")));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "RUN_MODE", "I_STEP"));
 }
 
 void Z80PopupDialog::StepEdit_TSTEP( wxCommandEvent& event ){    
@@ -485,7 +485,7 @@ void Z80PopupDialog::StepEdit_TSTEP( wxCommandEvent& event ){
  	
  	blackenLabels();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "RUN_MODE", "T_STEP")));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "RUN_MODE", "T_STEP"));
 }
 
 //Keypad Button Action Functions
@@ -495,7 +495,7 @@ void Z80PopupDialog::KPButton0_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_0, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_0, true));
 }
 //Button 1
 void Z80PopupDialog::KPButton1_Action ( wxCommandEvent& event ){
@@ -503,7 +503,7 @@ void Z80PopupDialog::KPButton1_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_1, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_1, true));
 }
 //Button 2
 void Z80PopupDialog::KPButton2_Action ( wxCommandEvent& event ){
@@ -511,7 +511,7 @@ void Z80PopupDialog::KPButton2_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_2, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_2, true));
 }
 //Button 3
 void Z80PopupDialog::KPButton3_Action ( wxCommandEvent& event ){
@@ -519,7 +519,7 @@ void Z80PopupDialog::KPButton3_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_3, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_3, true));
 }
 //Button 4
 void Z80PopupDialog::KPButton4_Action ( wxCommandEvent& event ){
@@ -527,7 +527,7 @@ void Z80PopupDialog::KPButton4_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_4, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_4, true));
 }
 //Button 5
 void Z80PopupDialog::KPButton5_Action ( wxCommandEvent& event ){
@@ -535,7 +535,7 @@ void Z80PopupDialog::KPButton5_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_5, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_5, true));
 }
 //Button 6
 void Z80PopupDialog::KPButton6_Action ( wxCommandEvent& event ){
@@ -543,7 +543,7 @@ void Z80PopupDialog::KPButton6_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_6, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_6, true));
 }
 //Button 7
 void Z80PopupDialog::KPButton7_Action ( wxCommandEvent& event ){
@@ -551,7 +551,7 @@ void Z80PopupDialog::KPButton7_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_7, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_7, true));
 }
 //Button 8
 void Z80PopupDialog::KPButton8_Action ( wxCommandEvent& event ){
@@ -559,7 +559,7 @@ void Z80PopupDialog::KPButton8_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_8, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_8, true));
 }
 //Button 9
 void Z80PopupDialog::KPButton9_Action ( wxCommandEvent& event ){
@@ -567,7 +567,7 @@ void Z80PopupDialog::KPButton9_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_9, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_9, true));
 }
 //Button A
 void Z80PopupDialog::KPButtonA_Action ( wxCommandEvent& event ){
@@ -575,7 +575,7 @@ void Z80PopupDialog::KPButtonA_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_A, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_A, true));
 }
 //Button B
 void Z80PopupDialog::KPButtonB_Action ( wxCommandEvent& event ){
@@ -583,7 +583,7 @@ void Z80PopupDialog::KPButtonB_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_B, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_B, true));
 }
 //Button C
 void Z80PopupDialog::KPButtonC_Action ( wxCommandEvent& event ){
@@ -591,7 +591,7 @@ void Z80PopupDialog::KPButtonC_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_C, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_C, true));
 }
 //Button D
 void Z80PopupDialog::KPButtonD_Action ( wxCommandEvent& event ){
@@ -599,7 +599,7 @@ void Z80PopupDialog::KPButtonD_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_D, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_D, true));
 }
 //Button E
 void Z80PopupDialog::KPButtonE_Action ( wxCommandEvent& event ){
@@ -607,7 +607,7 @@ void Z80PopupDialog::KPButtonE_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_E, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_E, true));
 }
 //Button F
 void Z80PopupDialog::KPButtonF_Action ( wxCommandEvent& event ){
@@ -615,7 +615,7 @@ void Z80PopupDialog::KPButtonF_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_F, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_F, true));
 }
 //Button RESET
 void Z80PopupDialog::KPButtonReset_Action ( wxCommandEvent& event ){
@@ -623,7 +623,7 @@ void Z80PopupDialog::KPButtonReset_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_RESET, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_RESET, true));
 }
 //Button GO
 void Z80PopupDialog::KPButtonGo_Action ( wxCommandEvent& event ){
@@ -631,7 +631,7 @@ void Z80PopupDialog::KPButtonGo_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_GO, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_GO, true));
 }
 //Button NEXT
 void Z80PopupDialog::KPButtonNext_Action ( wxCommandEvent& event ){
@@ -639,7 +639,7 @@ void Z80PopupDialog::KPButtonNext_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_NEXT, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_NEXT, true));
 }
 //Button PREV
 void Z80PopupDialog::KPButtonPrev_Action ( wxCommandEvent& event ){
@@ -647,7 +647,7 @@ void Z80PopupDialog::KPButtonPrev_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_PREV, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_PREV, true));
 }
 //Button STEP
 void Z80PopupDialog::KPButtonStep_Action ( wxCommandEvent& event ){
@@ -655,7 +655,7 @@ void Z80PopupDialog::KPButtonStep_Action ( wxCommandEvent& event ){
  	
  	wxGetApp().mainframe->ResumeExecution();
  	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_STEP, true)));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "H_KEY", H_KEY_STEP, true));
 }
 
 
@@ -1004,17 +1004,17 @@ int Z80PopupDialog::parseHex( string value ){
 
 void Z80PopupDialog::REGModeAction (wxCommandEvent& event) {
 	ostringstream oss;
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "ZAD_MODE", "OFF")));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "ZAD_MODE", "OFF"));
 }
 
 void Z80PopupDialog::ZADModeAction (wxCommandEvent& event) {
 	ostringstream oss;
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "ZAD_MODE", "ON")));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "ZAD_MODE", "ON"));
 }
 
 void Z80PopupDialog::SMARTModeAction (wxCommandEvent& event) {
 	ostringstream oss;
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "ZAD_MODE", "SMART")));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "ZAD_MODE", "SMART"));
 }
 
 BEGIN_EVENT_TABLE(Z80PopupDialog, wxDialog)

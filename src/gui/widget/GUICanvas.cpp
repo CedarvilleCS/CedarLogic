@@ -536,8 +536,10 @@ void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool Ct
 		wxCriticalSectionLocker locker(wxGetApp().m_critsect);
 		while (wxGetApp().mexMessages.TryLock() == wxMUTEX_BUSY) wxYield();
 		while (wxGetApp().dLOGICtoGUI.size() > 0) {
-			gCircuit->parseMessage(wxGetApp().dLOGICtoGUI.front());
+			Message *message = wxGetApp().dLOGICtoGUI.front();
 			wxGetApp().dLOGICtoGUI.pop_front();
+			gCircuit->parseMessage(message);
+			delete message;
 		}
 		wxGetApp().mexMessages.Unlock();
 		if (gCircuit->panic) return;
@@ -823,7 +825,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 						if (!saveMove) {
 							Message_SET_GATE_PARAM* clickHandleGate = hitGate->checkClick( m.x, m.y );
 							if (clickHandleGate != NULL) {
-								gCircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, clickHandleGate));
+								gCircuit->sendMessageToCore(clickHandleGate);
 								handled = true;
 							}
 						}
@@ -1232,8 +1234,10 @@ void GUICanvas::Update() {
 		wxCriticalSectionLocker locker(wxGetApp().m_critsect);
 		while (wxGetApp().mexMessages.TryLock() == wxMUTEX_BUSY) wxYield();
 		while (wxGetApp().dLOGICtoGUI.size() > 0) {
-			gCircuit->parseMessage(wxGetApp().dLOGICtoGUI.front());
+			Message *message = wxGetApp().dLOGICtoGUI.front();
 			wxGetApp().dLOGICtoGUI.pop_front();
+			gCircuit->parseMessage(message);
+			delete message;
 		}
 		wxGetApp().mexMessages.Unlock();
 		if (gCircuit->panic) return;
@@ -1241,7 +1245,7 @@ void GUICanvas::Update() {
 		gCircuit->lastTime = wxGetApp().appSystemTime.Time();
 		gCircuit->lastTimeMod = wxGetApp().timeStepMod;
 		gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
-		gCircuit->sendMessageToCore(Message(MT_STEPSIM, new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod)));
+		gCircuit->sendMessageToCore(new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod));
 		gCircuit->setSimulate(false);
 		wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);
 	}

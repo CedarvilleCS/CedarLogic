@@ -242,7 +242,7 @@ void GUICircuit::parseMessage(Message *message) {
 			}
 
 			
-			if( msgSetGateParam->paramName == "PAUSE_SIM" ){
+			if(msg->paramName == "PAUSE_SIM" ){
 				pausing = true;
 				panic = true;
 			}
@@ -250,16 +250,30 @@ void GUICircuit::parseMessage(Message *message) {
 			break;
 		}
 		case MessageType::DONESTEP: { // DONESTEP
+
+			auto msg = (Message_DONESTEP*)message;
+
 			simulate = true;
-			int logicTime = ((Message_DONESTEP*)(message.mStruct))->logicTime;
+
+			int logicTime = msg->logicTime;
+
 			// Panic if core isn't keeping up, keep a 3ms buffer...
 			panic = (logicTime > lastTime+3) || panic;
+
 			// Now we can send the waiting messages
-			for (unsigned int i = 0; i < messageQueue.size(); i++) sendMessageToCore(messageQueue[i]);
+			for (unsigned int i = 0; i < messageQueue.size(); i++) {
+				sendMessageToCore(messageQueue[i]);
+			}
+
 			messageQueue.clear();
+
 			// Only render at the end of a step and only if necessary
-			if (shouldRender) gCanvas->Refresh();
+			if (shouldRender) {
+				gCanvas->Refresh();
+			}
+
 			shouldRender = false;
+
 			break;
 		}
 		case MessageType::COMPLETE_INTERIM_STEP: {// COMPLETE INTERIM STEP - UPDATE OSCOPE

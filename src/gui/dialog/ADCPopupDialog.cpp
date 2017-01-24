@@ -53,8 +53,8 @@ void ADCPopupDialog::OnSliderChanged( wxScrollEvent& event ){
 	
 	//here we send the command to the core.  The label gets updated
 	//when the change gets poped back up to us
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateADC->getID(), "VALUE", slider->GetValue())));
-	gUICircuit->sendMessageToCore(Message(MT_UPDATE_GATES));
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateADC->getID(), "VALUE", slider->GetValue()));
+	gUICircuit->sendMessageToCore(new Message_UPDATE_GATES());
 }
 
 //this is so we can update the pop-up about the current value

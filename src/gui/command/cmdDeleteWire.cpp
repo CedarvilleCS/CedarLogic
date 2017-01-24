@@ -45,8 +45,7 @@ bool cmdDeleteWire::Do() {
 	gCircuit->deleteWire(wireIds[0]);
 
 	for (IDType id : wireIds) {
-		gCircuit->sendMessageToCore(Message(MT_DELETE_WIRE,
-			new Message_DELETE_WIRE(id)));
+		gCircuit->sendMessageToCore(new Message_DELETE_WIRE(id));
 	}
 
 	return true;
@@ -57,8 +56,7 @@ bool cmdDeleteWire::Undo() {
 	guiWire* gWire = gCircuit->createWire(wireIds);
 
 	for (IDType id : wireIds) {
-		gCircuit->sendMessageToCore(Message(MT_CREATE_WIRE,
-			new Message_CREATE_WIRE(id)));
+		gCircuit->sendMessageToCore(new Message_CREATE_WIRE(id));
 	}
 
 	while (!(cmdList.empty())) {

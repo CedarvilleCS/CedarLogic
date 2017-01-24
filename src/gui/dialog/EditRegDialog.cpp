@@ -466,8 +466,8 @@ void EditRegDialog::OnBtnSave( wxCommandEvent& event ){
 		newAltFValue |= C_FLAG;
 	}
 	//send f and f' to core
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "F", newFValue, true)));	
-	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "F'", newAltFValue, true)));	
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "F", newFValue, true));	
+	gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "F'", newAltFValue, true));	
 	
 	//since a combobox does not know if it has been changed,
 	//just send down all of these values each time a save is done
@@ -495,7 +495,7 @@ void EditRegDialog::OnBtnSave( wxCommandEvent& event ){
 		cout << "IMode-> '" << IMode->GetValue().c_str() << "'" << endl;
 	}
 	if (change) {
-		gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "IMF", RegVal)));
+		gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "IMF", RegVal));
 	}
 	
 	//TODO : does not make change in the core
@@ -515,10 +515,10 @@ void EditRegDialog::OnBtnSave( wxCommandEvent& event ){
 		change = false;
 	}
 	if (change) {
-		gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "IFF1", RegVal)));
+		gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "IFF1", RegVal));
 	}
 	
-	gUICircuit->sendMessageToCore(Message(MT_UPDATE_GATES));
+	gUICircuit->sendMessageToCore(new Message_UPDATE_GATES());
 	Close(false);
 }
 
@@ -555,7 +555,7 @@ void EditRegDialog::ChangeRegValue( /*change */wxTextCtrl* currCtrl, string RegN
 		}
 	
 		if (isValid) {
-			gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), RegName, RegVal)));
+			gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), RegName, RegVal));
 			//debug
 			cout << oss.str() << endl;
 		}
