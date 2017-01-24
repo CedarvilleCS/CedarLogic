@@ -1,10 +1,10 @@
 
 #include "cmdDeleteWire.h"
 #include "../gl_defs.h"
-#include "../GUICircuit.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiWire.h"
+#include "../circuit/guiGate.h"
 #include "../widget/GUICanvas.h"
-#include "../guiWire.h"
-#include "../guiGate.h"
 #include "cmdMoveWire.h"
 
 cmdDeleteWire::cmdDeleteWire(GUICircuit* gCircuit, GUICanvas* gCanvas,

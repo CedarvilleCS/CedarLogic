@@ -11,9 +11,9 @@
 #include "guiGate.h"
 #include <iomanip>
 #include "wx/wx.h"
-#include "MainApp.h"
-#include "klsCollisionChecker.h"
-#include "dialog/paramDialog.h"
+#include "../MainApp.h"
+#include "../klsCollisionChecker.h"
+#include "../dialog/paramDialog.h"
 #include "guiWire.h"
 
 DECLARE_APP(MainApp)

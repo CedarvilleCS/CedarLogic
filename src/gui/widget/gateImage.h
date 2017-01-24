@@ -15,10 +15,10 @@ class gateImage;
 
 #include "../MainApp.h"
 #include "wx/glcanvas.h"
-#include "../guiGate.h"
+#include "../circuit/guiGate.h"
 #include "../../logic/logic_values.h"
 #include "wx/generic/dragimgg.h"
-#include "../GUICircuit.h"
+#include "../circuit/GUICircuit.h"
 #define wxDragImage wxGenericDragImage
 #include <string>
 

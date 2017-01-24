@@ -1,8 +1,8 @@
 
 #include "cmdMoveWire.h"
 #include <sstream>
-#include "../GUICircuit.h"
-#include "../guiWire.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiWire.h"
 
 cmdMoveWire::cmdMoveWire(GUICircuit* gCircuit, unsigned long wid,
 		const SegmentMap &oldList, const SegmentMap &newList) :

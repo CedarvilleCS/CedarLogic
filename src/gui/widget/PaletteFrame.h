@@ -11,9 +11,9 @@
 #ifndef PALETTEFRAME_H_
 #define PALETTEFRAME_H_
 
-#include "MainApp.h"
-#include "widget/PaletteCanvas.h"
-#include "widget/gateImage.h"
+#include "../MainApp.h"
+#include "../widget/PaletteCanvas.h"
+#include "../widget/gateImage.h"
 #include <vector>
 
 using namespace std;

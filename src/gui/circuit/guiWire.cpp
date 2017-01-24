@@ -12,8 +12,8 @@
 #include <cmath>
 #include <stack>
 #include "guiGate.h"
-#include "XMLParser.h"
-#include "gl_defs.h"
+#include "../XMLParser.h"
+#include "../gl_defs.h"
 
 class MainApp;
 DECLARE_APP(MainApp)

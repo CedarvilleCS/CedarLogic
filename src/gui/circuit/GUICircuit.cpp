@@ -9,9 +9,9 @@
 *****************************************************************************/
 
 #include "GUICircuit.h"
-#include "MainApp.h"
-#include "widget/GUICanvas.h"
-#include "OscopeFrame.h"
+#include "../MainApp.h"
+#include "../widget/GUICanvas.h"
+#include "../OscopeFrame.h"
 #include "guiWire.h"
 
 DECLARE_APP(MainApp)

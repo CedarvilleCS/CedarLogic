@@ -8,6 +8,8 @@
    OscopeFrame: Window frame for the Oscope
 *****************************************************************************/
 
+#include <fstream>
+#include <iomanip>
 #include "MainApp.h"
 #include "OscopeFrame.h"
 #include "wx/filedlg.h"
@@ -16,11 +18,9 @@
 #include "wx/settings.h"
 #include "CircuitParse.h"
 #include "wx/combobox.h"
-#include "GUICircuit.h"
 #include "wx/clipbrd.h"
 #include "wx/filedlg.h"
-#include <fstream>
-#include <iomanip>
+#include "circuit/GUICircuit.h"
 
 #define ID_EXPORT 5950
 #define ID_COMBOBOX 5951

@@ -11,8 +11,8 @@
 #include "klsMiniMap.h"
 #include "../gl_text.h"
 
-#include "../guiGate.h"
-#include "../guiWire.h"
+#include "../circuit/guiGate.h"
+#include "../circuit/guiWire.h"
 
 // Enable access to objects in the main application
 DECLARE_APP(MainApp)

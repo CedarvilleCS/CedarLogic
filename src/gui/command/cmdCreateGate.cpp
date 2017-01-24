@@ -1,8 +1,8 @@
 
 #include "cmdCreateGate.h"
-#include "../GUICircuit.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiGate.h"
 #include "../widget/GUICanvas.h"
-#include "../guiGate.h"
 #include "../MainApp.h"
 #include "cmdSetParams.h"
 

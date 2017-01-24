@@ -5,14 +5,14 @@
     #include "wx/wx.h"
 #endif
 
-#include "../guiGate.h"
-#include "../GUICircuit.h"
-#include "../MainFrame.h"
-#include "ADCPopupDialog.h"
 #include <ostream>
 #include <sstream>
 #include <iomanip>
 #include <wx/sizer.h>
+#include "../circuit/guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../MainFrame.h"
+#include "ADCPopupDialog.h"
 
 
 #define ID_SLIDER (wxID_HIGHEST + 1)

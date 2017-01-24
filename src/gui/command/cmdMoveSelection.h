@@ -3,7 +3,7 @@
 #include "klsCommand.h"
 #include <vector>
 #include <map>
-#include "../wireSegment.h"
+#include "../circuit/wireSegment.h"
 #include "../widget/GUICanvas.h"
 
 // Just a map of wire segments

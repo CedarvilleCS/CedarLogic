@@ -13,7 +13,7 @@
 #include "GUICanvas.h"
 #include "../gl_text.h"
 #include "../OscopeFrame.h"
-#include "../guiWire.h"
+#include "../circuit/guiWire.h"
 
 // Included to use the min() and max() templates:
 #include <algorithm>

@@ -9,8 +9,8 @@
 #include <cfloat>
 #include <string>
 #include <vector>
-#include "../logic/logic_values.h" // StateType
-#include "klsCollisionChecker.h"
+#include "../../logic/logic_values.h" // StateType
+#include "../klsCollisionChecker.h"
 
 class guiGate;
 

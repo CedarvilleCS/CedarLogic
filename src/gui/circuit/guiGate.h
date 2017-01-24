@@ -12,7 +12,7 @@
 #define GUIGATE_H_
 
 
-#include "gl_wrapper.h"
+#include "../gl_wrapper.h"
 
 class guiWire;
 
@@ -24,16 +24,16 @@ class guiWire;
 #include <string>
 #include <fstream>
 #include "wx/glcanvas.h"
-#include "../logic/logic_values.h"
-#include "XMLParser.h"
-#include "gl_text.h"
-#include "klsCollisionChecker.h"
-#include "Message.h"
 #include "wx/docview.h"
 
-#include "dialog/RamPopupDialog.h"
-#include "dialog/Z80PopupDialog.h"
-#include "dialog/ADCPopupDialog.h"
+#include "../../logic/logic_values.h"
+#include "../XMLParser.h"
+#include "../gl_text.h"
+#include "../klsCollisionChecker.h"
+#include "../Message.h"
+#include "../dialog/RamPopupDialog.h"
+#include "../dialog/Z80PopupDialog.h"
+#include "../dialog/ADCPopupDialog.h"
 
 using namespace std;
 

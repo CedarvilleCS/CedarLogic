@@ -2,7 +2,7 @@
 #pragma once
 #include "klsCommand.h"
 #include <map>
-#include "../wireSegment.h"
+#include "../circuit/wireSegment.h"
 
 // cmdWireSegDrag - Set's a wire's tree after dragging a segment
 class cmdWireSegDrag : public klsCommand {

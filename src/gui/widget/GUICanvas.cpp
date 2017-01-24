@@ -12,7 +12,7 @@
 #include "../MainApp.h"
 #include "../dialog/paramDialog.h"
 #include "../klsClipboard.h"
-#include "../guiWire.h"
+#include "../circuit/guiWire.h"
 
 // Included to use the min() and max() templates:
 #include <algorithm>

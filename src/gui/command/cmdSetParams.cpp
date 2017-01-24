@@ -1,7 +1,7 @@
 
 #include "cmdSetParams.h"
-#include "../GUICircuit.h"
-#include "../guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiGate.h"
 #include "../OscopeFrame.h"
 #include "../MainApp.h"
 

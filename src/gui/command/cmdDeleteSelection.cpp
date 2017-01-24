@@ -1,6 +1,6 @@
 
 #include "cmdDeleteSelection.h"
-#include "../GUICircuit.h"
+#include "../circuit/GUICircuit.h"
 #include "../OscopeFrame.h"
 #include "cmdDeleteWire.h"
 #include "cmdDeleteGate.h"

@@ -24,9 +24,9 @@ class cmdPasteBlock;
 
 #include "../MainApp.h"
 #include "klsGLCanvas.h"
-#include "../GUICircuit.h"
+#include "../circuit/GUICircuit.h"
 #include "../klsCollisionChecker.h"
-#include "../wireSegment.h"
+#include "../circuit/wireSegment.h"
 
 class klsCommand;
 class guiWire;
