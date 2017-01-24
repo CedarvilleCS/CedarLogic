@@ -26,7 +26,7 @@ class guiWire;
 #include "wx/glcanvas.h"
 #include "../logic/logic_values.h"
 #include "XMLParser.h"
-#include "guiText.h"
+#include "gl_text.h"
 #include "klsCollisionChecker.h"
 #include "Message.h"
 #include "wx/docview.h"
@@ -371,7 +371,7 @@ public:
 	void setGUIParam( string paramName, string value );
 
 private:
-	guiText theText;
+	gl_text theText;
 };
 
 
@@ -397,7 +397,7 @@ public:
 	void setLogicParam( string paramName, string value );
 
 private:
-	guiText theText;
+	gl_text theText;
 };
 
 

@@ -5,12 +5,12 @@
    All rights reserved.
    For license information see license.txt included with distribution.   
 
-   guiText: Encapsulation of text for GUI objects
+   gl_text: Encapsulation of text for GUI objects
 *****************************************************************************/
 
 //I think they are using http://www.forexseek.com/glf/ glf type fonts...
 
-#include "guiText.h"
+#include "gl_text.h"
 
 // Include the glf font library:
 #include "MainApp.h"
@@ -23,7 +23,7 @@ DECLARE_APP(MainApp)
 
 static glfont::GLFont fontFace;
 
-guiText::guiText() {
+gl_text::gl_text() {
 	
 	// The text color (Default = black):
 	color[0] = 0.2f;
@@ -43,14 +43,11 @@ guiText::guiText() {
 	textString = "Text";
 }
 
-guiText::~guiText() {
-}
-
 
 // *************** Action methods *********************
 
 // Render using current settings on current canvas:
-void guiText::draw( void ) {
+void gl_text::draw( void ) {
 
 	// Store the old color to restore after we've drawn:
 	GLfloat oldColor[4];
@@ -78,7 +75,7 @@ void guiText::draw( void ) {
 } // draw()
 
 // Return the bounding box of the text object (in local-space coordinates + scale and translation):
-GLbox guiText::getBoundingBox( void ) {
+GLbox gl_text::getBoundingBox( void ) {
 	GLbox tempBox;
 
 	std::pair<int, int> size;
@@ -94,7 +91,7 @@ GLbox guiText::getBoundingBox( void ) {
 	
 // Set the scale factor by setting a text height and aspect ratio (w / h).
 // NOTE: You can't get these values back from this class, or any direct scale info.
-void guiText::setSize( GLdouble textHeight, GLdouble aspect ) {
+void gl_text::setSize( GLdouble textHeight, GLdouble aspect ) {
 	// Height:
 	scale[1] = textHeight * TEXT_SCALE_FACTOR;
 	
@@ -105,6 +102,6 @@ void guiText::setSize( GLdouble textHeight, GLdouble aspect ) {
 // **************** STATIC METHODS ****************************
 
 // loadFont - call this for each context after initialization
-void guiText::loadFont(string fontpath) {
+void gl_text::loadFont(string fontpath) {
 	fontFace.Create(fontpath.c_str(), FONT_TEXTURE_ID);	
 }

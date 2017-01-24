@@ -5,15 +5,12 @@
    All rights reserved.
    For license information see license.txt included with distribution.   
 
-   guiText: Encapsulation of text for GUI objects
+   gl_text: Encapsulation of text for GUI objects
 *****************************************************************************/
 
-#ifndef GUITEXT_H_
-#define GUITEXT_H_
-
+#pragma once
 
 #include "gl_wrapper.h"
-
 #include <string>
 
 using namespace std;
@@ -25,10 +22,9 @@ struct GLbox {
 	GLdouble right;
 };
 
-class guiText {
+class gl_text {
 public:
-	guiText();
-	virtual ~guiText();
+	gl_text();
 	
 	// Load the font into a texture for the currently-selected GL context
 	//	Call this for each context after initialization
@@ -92,9 +88,7 @@ private:
 	// The font loading initialization flag:
 	static bool fontIsLoaded;
 	
-	// The counted reference object to tell when there are no more guiText objects
+	// The counted reference object to tell when there are no more gl_text objects
 	// that exist:
 	static unsigned long numTextObjects;
 };
-
-#endif /*GUITEXT_H_*/

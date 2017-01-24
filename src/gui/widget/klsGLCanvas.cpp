@@ -151,7 +151,7 @@ wxImage klsGLCanvas::renderToImage( unsigned long width, unsigned long height, u
 	glColor3b(0, 0, 0);
 
   // Load the font texture
-  guiText::loadFont(wxGetApp().appSettings.textFontFile);
+  gl_text::loadFont(wxGetApp().appSettings.textFontFile);
     
 		
 	//TODO: Check if alpha is hardware supported, and
@@ -410,7 +410,7 @@ void klsGLCanvas::wxOnPaint(wxPaintEvent& event) {
 		//End of edit
 		
 		// Load the font texture
-		guiText::loadFont(wxGetApp().appSettings.textFontFile);
+		gl_text::loadFont(wxGetApp().appSettings.textFontFile);
 
 		// Connection point list
 		defineGLLists();

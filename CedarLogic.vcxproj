@@ -120,6 +120,6 @@
     <ClCompile Include="src/**/*.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\gui\Message.h" />
+    <ClInclude Include="src/**/*.h" />
   </ItemGroup>
 </Project>

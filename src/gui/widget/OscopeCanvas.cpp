@@ -11,7 +11,7 @@
 #include "OscopeCanvas.h"
 #include "../MainApp.h"
 #include "GUICanvas.h"
-#include "../guiText.h"
+#include "../gl_text.h"
 #include "../OscopeFrame.h"
 #include "../guiWire.h"
 

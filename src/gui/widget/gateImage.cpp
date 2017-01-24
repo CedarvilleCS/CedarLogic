@@ -12,7 +12,7 @@
 #include "wx/image.h"
 #include "wx/wx.h"
 #include "klsGLCanvas.h"
-#include "../guiText.h"
+#include "../gl_text.h"
 #include <fstream>
 
 BEGIN_EVENT_TABLE(gateImage, wxStaticBitmap)
@@ -188,7 +188,7 @@ void gateImage::generateImage() {
 	//End of edit
 
 	// Load the font texture
-	guiText::loadFont(wxGetApp().appSettings.textFontFile);
+	gl_text::loadFont(wxGetApp().appSettings.textFontFile);
 	
 	// Do the rendering here.
 	renderMap();
