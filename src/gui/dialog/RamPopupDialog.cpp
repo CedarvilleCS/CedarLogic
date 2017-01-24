@@ -86,8 +86,8 @@ void RamPopupDialog::OnBtnLoad( wxCommandEvent& event ){
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
 		string mempath = (const char *)path.c_str(); // KAS
-		gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "READ_FILE", mempath)));
-		gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_UPDATE_GATES)); //make sure we get an update of the new file
+		gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "READ_FILE", mempath)));
+		gUICircuit->sendMessageToCore(Message(MT_UPDATE_GATES)); //make sure we get an update of the new file
 	}
 }
 void RamPopupDialog::OnBtnSave( wxCommandEvent& event ){
@@ -101,7 +101,7 @@ void RamPopupDialog::OnBtnSave( wxCommandEvent& event ){
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
 		string mempath = (const char *)path.c_str();  // KAS
-		gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "WRITE_FILE", mempath)));
+		gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "WRITE_FILE", mempath)));
 	}
 }
 
@@ -197,8 +197,8 @@ void virtualGrid::SetValue (int row, int col, const wxString& value) {
     stringstream ss;
     ss << "Address:" << address;
 
-	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateRAM->getID(), ss.str(), newValue)));
-	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_UPDATE_GATES));
+	gUICircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, new Message_SET_GATE_PARAM(m_guiGateRAM->getID(), ss.str(), newValue)));
+	gUICircuit->sendMessageToCore(Message(MT_UPDATE_GATES));
 	
 }
 

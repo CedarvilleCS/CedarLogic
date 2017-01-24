@@ -545,7 +545,7 @@ void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool Ct
 		gCircuit->lastTime = wxGetApp().appSystemTime.Time();
 		gCircuit->lastTimeMod = wxGetApp().timeStepMod;
 		gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_STEPSIM, new klsMessage::Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod)));
+		gCircuit->sendMessageToCore(new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod));
 		gCircuit->setSimulate(false);
 		wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);
 		shouldRender = true;
@@ -821,9 +821,9 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 						hitGate->getGLcoords(x,y);
 						bool handled = false;
 						if (!saveMove) {
-							klsMessage::Message_SET_GATE_PARAM* clickHandleGate = hitGate->checkClick( m.x, m.y );
+							Message_SET_GATE_PARAM* clickHandleGate = hitGate->checkClick( m.x, m.y );
 							if (clickHandleGate != NULL) {
-								gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, clickHandleGate));
+								gCircuit->sendMessageToCore(Message(MT_SET_GATE_PARAM, clickHandleGate));
 								handled = true;
 							}
 						}
@@ -1241,7 +1241,7 @@ void GUICanvas::Update() {
 		gCircuit->lastTime = wxGetApp().appSystemTime.Time();
 		gCircuit->lastTimeMod = wxGetApp().timeStepMod;
 		gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_STEPSIM, new klsMessage::Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod)));
+		gCircuit->sendMessageToCore(Message(MT_STEPSIM, new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod)));
 		gCircuit->setSimulate(false);
 		wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);
 	}

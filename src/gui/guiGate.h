@@ -159,7 +159,7 @@ public:
 	void select( void ) { selected = true; };
 	// Needed for toggles and keypads, maybe others; returns a message to be passed
 	//	from a click.
-	virtual klsMessage::Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y ) { return NULL; };
+	virtual Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y ) { return NULL; };
 	
 	// Draw this gate as selected from now until unselect() is
 	// called, if the coordinate passed to it is within
@@ -283,7 +283,7 @@ public:
 
 	// Toggle the output button on and off:
 	string getState() { return getLogicParam("TOGGLE_STATE"); };
-	klsMessage::Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y );
+	Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y );
 
 protected:
 	int renderInfo_outputNum;
@@ -297,7 +297,7 @@ public:
 	void setLogicParam( string paramName, string value );
 	
 	// Toggle the output button on and off:
-	klsMessage::Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y );
+	Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y );
 protected:
 	GLLine2f renderInfo_valueBox;
 private:
@@ -330,7 +330,7 @@ public:
 		setGUIParam( "PULSE_WIDTH", "1" );
 	};
 	
-	klsMessage::Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y );
+	Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y );
 };
 
 

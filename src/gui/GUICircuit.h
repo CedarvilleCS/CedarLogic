@@ -66,8 +66,8 @@ public:
 	unsigned long getNextAvailableGateID() { nextGateID++; while (gateList.find(nextGateID) != gateList.end()) nextGateID++; return nextGateID; };
 	unsigned long getNextAvailableWireID() { nextWireID++; while (wireList.find(nextWireID) != wireList.end()) nextWireID++; return nextWireID; };
 
-	void sendMessageToCore(klsMessage::Message message);
-	void parseMessage(klsMessage::Message message);
+	void sendMessageToCore(Message *message);
+	void parseMessage(Message *message);
 	
 	void setSimulate(bool state) { simulate = state; };
 	bool getSimulate() { return simulate; };
@@ -116,7 +116,7 @@ private:
     unsigned long  m_LastTime;
     unsigned long  m_LastRedraw;
  
-    vector < klsMessage::Message > messageQueue;
+    vector < Message *> messageQueue;
 };
 
 #endif /*GUICIRCUIT_H*/

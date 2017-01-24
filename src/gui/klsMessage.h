@@ -4,135 +4,137 @@
 #include <string>
 #include <sstream>
 
-// ALL inter-thread message structures defined here
-namespace klsMessage {
-	using std::string;
-	using std::ostringstream;
-	
-	enum MessageType {
-		// core -> GUI
-		MT_SET_WIRE_STATE = 0, // SET WIRE id STATE TO state
-		MT_DONESTEP, // DONESTEP
-		MT_COMPLETE_INTERIM_STEP, // COMPLETE INTERIM STEP - UPDATE OSCOPE
+enum struct MessageType {
+	// core -> GUI
+	SET_WIRE_STATE,
+	DONESTEP,
+	COMPLETE_INTERIM_STEP,
 		
-		// GUI -> core
-		MT_REINITIALIZE, // REINITIALIZE LOGIC CIRCUIT
-		MT_CREATE_GATE, // CREATE GATE TYPE type ID id
-		MT_CREATE_WIRE, // CREATE WIRE ID id
-		MT_DELETE_GATE, // DELETE GATE id
-		MT_DELETE_WIRE, // DELETE WIRE id
-		MT_SET_GATE_INPUT, // SET GATE ID id INPUT ID id TO DISCONNECT/wid
-		MT_SET_GATE_INPUT_PARAM, // SET GATE ID id INPUT ID id PARAM name value
-		MT_SET_GATE_OUTPUT, // SET GATE ID id OUTPUT ID id TO DISCONNECT/wid
-		MT_SET_GATE_OUTPUT_PARAM, // SET GATE ID id OUTPUT ID id PARAM name value
-		MT_SET_GATE_PARAM, // SET GATE ID id PARAMETER paramname paramval
-		MT_STEPSIM, // STEPSIM numsteps
-		MT_UPDATE_GATES // UPDATE GATES
-	};
+	// GUI -> core
+	REINITIALIZE,
+	CREATE_GATE,
+	CREATE_WIRE,
+	DELETE_GATE,
+	DELETE_WIRE,
+	SET_GATE_INPUT,
+	SET_GATE_INPUT_PARAM,
+	SET_GATE_OUTPUT,
+	SET_GATE_OUTPUT_PARAM,
+	SET_GATE_PARAM,
+	STEPSIM,
+	UPDATE_GATES
+};
 
-	class Message {
-	public:
-		MessageType mType;
-		void* mStruct;
-		Message( MessageType t, void* s = NULL ) : mType(t), mStruct(s) {};
-	};
+class Message {
+public:
+	MessageType type;
+	Message(MessageType t) : type(t) { };
+};
 	
-	class Message_SET_WIRE_STATE {
-	public:
-		int wireId;
-		int state;
-		Message_SET_WIRE_STATE( int wid, int s ) : wireId(wid), state(s) {};
-	};
+class Message_SET_WIRE_STATE : public Message {
+public:
+	int wireId;
+	int state;
+	Message_SET_WIRE_STATE( int wid, int s ) : Message(MessageType::SET_WIRE_STATE), wireId(wid), state(s) { };
+};
 
-	class Message_DONESTEP {
-	public:
-		int logicTime;
-		Message_DONESTEP( int lt ) : logicTime(lt) {};
-	};
+class Message_DONESTEP : public Message {
+public:
+	int logicTime;
+	Message_DONESTEP( int lt ) : Message(MessageType::DONESTEP), logicTime(lt) {};
+};
 
-	// no parameters for COMPLETE_INTERIM_STEP
+class Message_COMPLETE_INTERIM_STEP : public Message {
+public:
+	Message_COMPLETE_INTERIM_STEP() : Message(MessageType::COMPLETE_INTERIM_STEP) { }
+};
+
+class Message_REINITIALIZE : public Message {
+public:
+	Message_REINITIALIZE() : Message(MessageType::REINITIALIZE) { }
+};
 	
-	// no parameters for REINITIALIZE
-	
-	class Message_CREATE_GATE {
-	public:
-		string gateType;
-		int gateId;
-		Message_CREATE_GATE( string gt, int gid ) : gateType(gt), gateId(gid) {};
-	};
+class Message_CREATE_GATE : public Message {
+public:
+	std::string gateType;
+	int gateId;
+	Message_CREATE_GATE(std::string gt, int gid ) : Message(MessageType::CREATE_GATE), gateType(gt), gateId(gid) {};
+};
 
-	class Message_CREATE_WIRE {
-	public:
-		int wireId;
-		Message_CREATE_WIRE( int wid ) : wireId(wid) {};
-	};
+class Message_CREATE_WIRE : public Message {
+public:
+	int wireId;
+	Message_CREATE_WIRE( int wid ) : Message(MessageType::CREATE_WIRE), wireId(wid) {};
+};
 
-	class Message_DELETE_GATE {
-	public:
-		int gateId;
-		Message_DELETE_GATE( int gid ) : gateId(gid) {};
-	};
+class Message_DELETE_GATE : public Message {
+public:
+	int gateId;
+	Message_DELETE_GATE( int gid ) : Message(MessageType::DELETE_GATE), gateId(gid) {};
+};
 
-	class Message_DELETE_WIRE {
-	public:
-		int wireId;
-		Message_DELETE_WIRE( int wid ) : wireId(wid) {};
-	};
+class Message_DELETE_WIRE : public Message {
+public:
+	int wireId;
+	Message_DELETE_WIRE( int wid ) : Message(MessageType::DELETE_WIRE), wireId(wid) {};
+};
 
-	class Message_SET_GATE_INPUT {
-	public:
-		int gateId;
-		string inputId;
-		int wireId;
-		bool disconnect;
-		Message_SET_GATE_INPUT( int gid, string iid, int wid, bool d = false ) : gateId(gid), inputId(iid), wireId(wid), disconnect(d) {};
-	};
+class Message_SET_GATE_INPUT : public Message {
+public:
+	int gateId;
+	std::string inputId;
+	int wireId;
+	bool disconnect;
+	Message_SET_GATE_INPUT( int gid, std::string iid, int wid, bool d = false ) : Message(MessageType::SET_GATE_INPUT), gateId(gid), inputId(iid), wireId(wid), disconnect(d) {};
+};
 
-	class Message_SET_GATE_INPUT_PARAM {
-	public:
-		int gateId;
-		string inputId;
-		string paramName;
-		string paramValue;
-		Message_SET_GATE_INPUT_PARAM( int gid, string iid, string pN, string pV ) : gateId(gid), inputId(iid), paramName(pN), paramValue(pV) {};
-	};
+class Message_SET_GATE_INPUT_PARAM : public Message {
+public:
+	int gateId;
+	std::string inputId;
+	std::string paramName;
+	std::string paramValue;
+	Message_SET_GATE_INPUT_PARAM( int gid, std::string iid, std::string pN, std::string pV ) : Message(MessageType::SET_GATE_INPUT_PARAM), gateId(gid), inputId(iid), paramName(pN), paramValue(pV) {};
+};
 
-	class Message_SET_GATE_OUTPUT {
-	public:
-		int gateId;
-		string outputId;
-		int wireId;
-		bool disconnect;
-		Message_SET_GATE_OUTPUT( int gid, string oid, int wid, bool d = false ) : gateId(gid), outputId(oid), wireId(wid), disconnect(d) {};
-	};
+class Message_SET_GATE_OUTPUT : public Message {
+public:
+	int gateId;
+	std::string outputId;
+	int wireId;
+	bool disconnect;
+	Message_SET_GATE_OUTPUT( int gid, std::string oid, int wid, bool d = false ) : Message(MessageType::SET_GATE_OUTPUT), gateId(gid), outputId(oid), wireId(wid), disconnect(d) {};
+};
 
-	class Message_SET_GATE_OUTPUT_PARAM {
-	public:
-		int gateId;
-		string outputId;
-		string paramName;
-		string paramValue;
-		Message_SET_GATE_OUTPUT_PARAM( int gid, string oid, string pN, string pV ) : gateId(gid), outputId(oid), paramName(pN), paramValue(pV) {};
-	};
+class Message_SET_GATE_OUTPUT_PARAM : public Message {
+public:
+	int gateId;
+	std::string outputId;
+	std::string paramName;
+	std::string paramValue;
+	Message_SET_GATE_OUTPUT_PARAM( int gid, std::string oid, std::string pN, std::string pV ) : Message(MessageType::SET_GATE_OUTPUT_PARAM), gateId(gid), outputId(oid), paramName(pN), paramValue(pV) {};
+};
 
-	class Message_SET_GATE_PARAM {
-	public:
-		int gateId;
-		string paramName;
-		string paramValue;
-		Message_SET_GATE_PARAM( int gid, string pN, string pV ) : gateId(gid), paramName(pN), paramValue(pV) {};
-		Message_SET_GATE_PARAM( int gid, string pN, long pV, bool useHex = false ) : gateId(gid), paramName(pN) {
-			ostringstream oss; oss << (useHex ? std::hex : std::dec) << pV; paramValue = oss.str();
-		};
+class Message_SET_GATE_PARAM : public Message {
+public:
+	int gateId;
+	std::string paramName;
+	std::string paramValue;
+	Message_SET_GATE_PARAM( int gid, std::string pN, std::string pV ) : Message(MessageType::SET_GATE_PARAM), gateId(gid), paramName(pN), paramValue(pV) {};
+	Message_SET_GATE_PARAM( int gid, std::string pN, long pV, bool useHex = false ) : Message(MessageType::SET_GATE_PARAM), gateId(gid), paramName(pN) {
+		std::ostringstream oss; oss << (useHex ? std::hex : std::dec) << pV; paramValue = oss.str();
 	};
+};
 
-	class Message_STEPSIM {
-	public:
-		int numSteps;
-		Message_STEPSIM( int n ) : numSteps(n) {};
-	};
-	
-	// no parameters for UPDATE_GATES
-}
+class Message_STEPSIM : public Message {
+public:
+	int numSteps;
+	Message_STEPSIM( int n ) : Message(MessageType::STEPSIM), numSteps(n) {};
+};
+
+class Message_UPDATE_GATES : public Message {
+public:
+	Message_UPDATE_GATES() : Message(MessageType::UPDATE_GATES) { }
+};
 
 #endif /*KLSMESSAGE_H_*/

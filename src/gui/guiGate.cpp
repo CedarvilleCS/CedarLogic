@@ -451,7 +451,7 @@ void guiGateTOGGLE::setLogicParam( string paramName, string value ) {
 }
 
 // Toggle the output button on and off:
-klsMessage::Message_SET_GATE_PARAM* guiGateTOGGLE::checkClick( GLfloat x, GLfloat y ) {
+Message_SET_GATE_PARAM* guiGateTOGGLE::checkClick( GLfloat x, GLfloat y ) {
 	klsBBox toggleButton;
 
 	// Get the size of the CLICK square from the parameters:
@@ -473,7 +473,7 @@ klsMessage::Message_SET_GATE_PARAM* guiGateTOGGLE::checkClick( GLfloat x, GLfloa
 		setLogicParam("OUTPUT_NUM", (getLogicParam("OUTPUT_NUM") == "0") ? "1" : "0" );
 /*		ostringstream oss;
 		oss << "SET GATE ID " << getID() << " PARAMETER OUTPUT_NUM " << getLogicParam("OUTPUT_NUM"); */
-		return new klsMessage::Message_SET_GATE_PARAM(getID(), "OUTPUT_NUM", getLogicParam("OUTPUT_NUM"));
+		return new Message_SET_GATE_PARAM(getID(), "OUTPUT_NUM", getLogicParam("OUTPUT_NUM"));
 	} else return NULL;
 }
 
@@ -547,7 +547,7 @@ void guiGateKEYPAD::setLogicParam( string paramName, string value ) {
 }
 
 // Check the click boxes for the keypad and set appropriately:
-klsMessage::Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick( GLfloat x, GLfloat y ) {
+Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick( GLfloat x, GLfloat y ) {
 	map < string, string >::iterator gparamWalk = gparams.begin();
 	while (gparamWalk != gparams.end()) {
 		// Is this a keypad box param?
@@ -583,7 +583,7 @@ klsMessage::Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick( GLfloat x, GLfloa
 			setLogicParam("OUTPUT_NUM", ossValue.str() );
 /*			ostringstream oss;
 			oss << "SET GATE ID " << getID() << " PARAMETER OUTPUT_NUM " << getLogicParam("OUTPUT_NUM"); */
-			return new klsMessage::Message_SET_GATE_PARAM(getID(), "OUTPUT_NUM", getLogicParam("OUTPUT_NUM"));
+			return new Message_SET_GATE_PARAM(getID(), "OUTPUT_NUM", getLogicParam("OUTPUT_NUM"));
 		}
 		gparamWalk++;
 	}
@@ -715,7 +715,7 @@ void guiGateREGISTER::setGUIParam( string paramName, string value ) {
 
 // Send a pulse message to the logic core whenever the gate is
 // clicked on:
-klsMessage::Message_SET_GATE_PARAM* guiGatePULSE::checkClick( GLfloat x, GLfloat y ) {
+Message_SET_GATE_PARAM* guiGatePULSE::checkClick( GLfloat x, GLfloat y ) {
 	klsBBox toggleButton;
 
 	// Get the size of the CLICK square from the parameters:
@@ -736,7 +736,7 @@ klsMessage::Message_SET_GATE_PARAM* guiGatePULSE::checkClick( GLfloat x, GLfloat
 	if (toggleButton.contains( GLPoint2f( x, y ) )) {
 /*		ostringstream oss;
 		oss << "SET GATE ID " << getID() << " PARAMETER PULSE " << getGUIParam("PULSE_WIDTH"); */
-		return new klsMessage::Message_SET_GATE_PARAM(getID(), "PULSE", getGUIParam("PULSE_WIDTH"));
+		return new Message_SET_GATE_PARAM(getID(), "PULSE", getGUIParam("PULSE_WIDTH"));
 	} else return NULL;
 }
 

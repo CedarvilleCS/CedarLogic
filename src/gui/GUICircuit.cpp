@@ -34,7 +34,7 @@ void GUICircuit::reInitializeLogicCircuit() {
 	// do not wait to send messages to the core for reinit
 	bool iswaiting = waitToSendMessage;
 	waitToSendMessage = false;
-	sendMessageToCore(klsMessage::Message(klsMessage::MT_REINITIALIZE));
+	sendMessageToCore(new Message_REINITIALIZE());
 	waitToSendMessage = iswaiting;
 	unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while( thisWire != wireList.end() ) {
@@ -217,51 +217,41 @@ void GUICircuit::Render() {
 	return;
 }
 
-void GUICircuit::parseMessage(klsMessage::Message message) {
+void GUICircuit::parseMessage(Message *message) {
 	string temp, type;
 	static bool shouldRender = false;
-	switch (message.mType) {
-		case klsMessage::MT_SET_WIRE_STATE: {
-			// SET WIRE id STATE TO state
+	switch (message->type) {
+		case MessageType::SET_WIRE_STATE: {
+
 			shouldRender = true;
-			klsMessage::Message_SET_WIRE_STATE* msgSetWireState = (klsMessage::Message_SET_WIRE_STATE*)(message.mStruct);
-			setWireState(msgSetWireState->wireId, msgSetWireState->state);
-			delete msgSetWireState;
+
+			auto msg = (Message_SET_WIRE_STATE*)message;
+
+			setWireState(msg->wireId, msg->state);
+
 			break;
 		}
-		case klsMessage::MT_SET_GATE_PARAM: {
-			// SET GATE id PARAMETER name val
+		case MessageType::SET_GATE_PARAM: {
+
 			shouldRender = true;
-			klsMessage::Message_SET_GATE_PARAM* msgSetGateParam = (klsMessage::Message_SET_GATE_PARAM*)(message.mStruct);
-			if (gateList.find(msgSetGateParam->gateId) != gateList.end()) gateList[msgSetGateParam->gateId]->setLogicParam(msgSetGateParam->paramName, msgSetGateParam->paramValue);
-			//************************************************************
-			//Edit by Joshua Lansford 11/24/06
-			//the perpose of this edit is to allow logic gates to be able
-			//to pause the simulation.  This is so that the 
-			//Z_80LogicGate can 'single step' through T states and
-			//instruction states by pauseing the simulation when it
-			//compleates eather.
-			//
-			//The way that this is acomplished is that when ever any gate
-			//signals that a property has changed, and the name of that
-			//property is "PAUSE_SIM", then the core should bail out
-			//and not finnish the requested number of steps.
-			//The GUI will also see this property fly by and will toggle
-			//the pause button.
-			//
-			//This spacific edit is so that the GUI thread will
-			//hit the pause button
+
+			auto msg = (Message_SET_GATE_PARAM*)message;
+
+			if (gateList.find(msg->gateId) != gateList.end()) {
+				gateList[msg->gateId]->setLogicParam(msg->paramName, msg->paramValue);
+			}
+
+			
 			if( msgSetGateParam->paramName == "PAUSE_SIM" ){
 				pausing = true;
 				panic = true;
 			}
 			//End of edit*************************************************
-			delete msgSetGateParam;
 			break;
 		}
-		case klsMessage::MT_DONESTEP: { // DONESTEP
+		case MessageType::DONESTEP: { // DONESTEP
 			simulate = true;
-			int logicTime = ((klsMessage::Message_DONESTEP*)(message.mStruct))->logicTime;
+			int logicTime = ((Message_DONESTEP*)(message.mStruct))->logicTime;
 			// Panic if core isn't keeping up, keep a 3ms buffer...
 			panic = (logicTime > lastTime+3) || panic;
 			// Now we can send the waiting messages
@@ -270,10 +260,9 @@ void GUICircuit::parseMessage(klsMessage::Message message) {
 			// Only render at the end of a step and only if necessary
 			if (shouldRender) gCanvas->Refresh();
 			shouldRender = false;
-			delete ((klsMessage::Message_DONESTEP*)(message.mStruct));
 			break;
 		}
-		case klsMessage::MT_COMPLETE_INTERIM_STEP: {// COMPLETE INTERIM STEP - UPDATE OSCOPE
+		case MessageType::COMPLETE_INTERIM_STEP: {// COMPLETE INTERIM STEP - UPDATE OSCOPE
 			myOscope->UpdateData();
 			break;
 		}
@@ -282,7 +271,7 @@ void GUICircuit::parseMessage(klsMessage::Message message) {
 	}
 }
 
-void GUICircuit::sendMessageToCore(klsMessage::Message message) {
+void GUICircuit::sendMessageToCore(Message *message) {
 	wxMutexLocker lock(wxGetApp().mexMessages);
 
 	if (waitToSendMessage) {

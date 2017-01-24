@@ -637,7 +637,7 @@ void MainFrame::OnTimer(wxTimerEvent& event) {
 	gCircuit->lastTime = wxGetApp().appSystemTime.Time();
 	gCircuit->lastTimeMod = wxGetApp().timeStepMod;
 	gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
-	gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_STEPSIM, new klsMessage::Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod)));
+	gCircuit->sendMessageToCore(Message(MT_STEPSIM, new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod)));
 	currentCanvas->getCircuit()->setSimulate(false);
 	wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);
 }
@@ -818,7 +818,7 @@ void MainFrame::OnStep(wxCommandEvent& event) {
 	if (!(currentCanvas->getCircuit()->getSimulate())) {
 		return;
 	}
-	gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_STEPSIM, new klsMessage::Message_STEPSIM(1)));
+	gCircuit->sendMessageToCore(Message(MT_STEPSIM, new Message_STEPSIM(1)));
 	currentCanvas->getCircuit()->setSimulate(false);
 }
 

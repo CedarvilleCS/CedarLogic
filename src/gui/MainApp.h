@@ -65,8 +65,8 @@ public:
 	wxSemaphore readyToSend;
 
 	wxMutex mexMessages;
-	deque< klsMessage::Message > dGUItoLOGIC;
-	deque< klsMessage::Message > dLOGICtoGUI;
+	deque< Message *> dGUItoLOGIC;
+	deque< Message *> dLOGICtoGUI;
 	// Use a stopwatch for timing between step calls
 	wxStopWatch appSystemTime;
 	unsigned long timeStepMod;

@@ -49,8 +49,8 @@ bool cmdCreateWire::Do() {
 	gCanvas->insertWire(wire);
 
 	for (IDType wireId : wireIds) {
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_WIRE,
-			new klsMessage::Message_CREATE_WIRE(wireId)));
+		gCircuit->sendMessageToCore(Message(MT_CREATE_WIRE,
+			new Message_CREATE_WIRE(wireId)));
 	}
 
 	conn1->Do();
@@ -65,8 +65,8 @@ bool cmdCreateWire::Undo() {
 	conn2->Undo();
 
 	for (IDType wireId : wireIds) {
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE,
-			new klsMessage::Message_DELETE_WIRE(wireId)));
+		gCircuit->sendMessageToCore(Message(MT_DELETE_WIRE,
+			new Message_DELETE_WIRE(wireId)));
 	}
 
 	gCanvas->removeWire(wireIds[0]);

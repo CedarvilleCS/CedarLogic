@@ -16,7 +16,6 @@
 #include "wx/thread.h"
 #include "klsMessage.h"
 #include "../logic/logic_values.h"
-#include <fstream>
 #include <map>
 
 using namespace std;
@@ -37,14 +36,13 @@ public:
     // stopped with Delete() (but not when it is Kill()ed!)
     virtual void OnExit();
     
-    bool parseMessage(klsMessage::Message input);
+    bool parseMessage(Message *input);
 
-    void sendMessage(klsMessage::Message message);
+    void sendMessage(Message *message);
     
 private:
 	Circuit* cir;
 	map < IDType, IDType >* logicIDs;
-	ofstream logfile;
 };
 
 #endif /*THREADLOGIC_H_*/
