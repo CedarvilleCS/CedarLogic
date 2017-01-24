@@ -20,7 +20,7 @@
 #include <unordered_map>
 #include "wx/docview.h"
 #include "gl_wrapper.h"
-#include "klsMessage.h"
+#include "Message.h"
 #include "../logic/logic_values.h"
 using namespace std;
 

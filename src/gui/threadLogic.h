@@ -14,7 +14,7 @@
 #include "wx/wxprec.h"
 #include "wx/wx.h"
 #include "wx/thread.h"
-#include "klsMessage.h"
+#include "Message.h"
 #include "../logic/logic_values.h"
 #include <map>
 

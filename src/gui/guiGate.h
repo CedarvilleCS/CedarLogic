@@ -28,7 +28,7 @@ class guiWire;
 #include "XMLParser.h"
 #include "guiText.h"
 #include "klsCollisionChecker.h"
-#include "klsMessage.h"
+#include "Message.h"
 #include "wx/docview.h"
 
 #include "dialog/RamPopupDialog.h"

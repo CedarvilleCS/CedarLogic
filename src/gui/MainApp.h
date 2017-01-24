@@ -23,7 +23,7 @@
 #include "../logic/logic_values.h"
 #include "LibraryParse.h"
 #include "gl_defs.h"
-#include "klsMessage.h"
+#include "Message.h"
 #include <deque>
 #include <string>
 #include <fstream>

@@ -1,5 +1,5 @@
-#ifndef KLSMESSAGE_H_
-#define KLSMESSAGE_H_
+
+#pragma once
 
 #include <string>
 #include <sstream>
@@ -136,5 +136,3 @@ class Message_UPDATE_GATES : public Message {
 public:
 	Message_UPDATE_GATES() : Message(MessageType::UPDATE_GATES) { }
 };
-
-#endif /*KLSMESSAGE_H_*/
