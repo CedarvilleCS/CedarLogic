@@ -3,8 +3,9 @@
 #include "../gl_defs.h"
 #include "../circuit/GUICircuit.h"
 #include "../circuit/guiWire.h"
-#include "../circuit/guiGate.h"
+#include "../circuit/guiGates.h"
 #include "../widget/GUICanvas.h"
+#include "../thread/Message.h"
 #include "cmdMoveWire.h"
 #include "cmdDisconnectWire.h"
 

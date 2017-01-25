@@ -3,7 +3,8 @@
 #include <sstream>
 #include "../widget/GUICanvas.h"
 #include "../circuit/GUICircuit.h"
-#include "../circuit/guiGate.h"
+#include "../circuit/guiGates.h"
+#include "../thread/Message.h"
 #include "cmdConnectWire.h"
 
 cmdCreateWire::cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit,

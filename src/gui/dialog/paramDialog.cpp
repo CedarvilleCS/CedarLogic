@@ -18,6 +18,7 @@
 #include "../CircuitParse.h"
 #include "../commands.h"
 #include <sstream>
+#include "../thread/Message.h"
 
 DECLARE_APP(MainApp)
 

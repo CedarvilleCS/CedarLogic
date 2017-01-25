@@ -1,7 +1,7 @@
 
 #include "cmdMoveGate.h"
 #include "../circuit/GUICircuit.h"
-#include "../circuit/guiGate.h"
+#include "../circuit/guiGates.h"
 
 cmdMoveGate::cmdMoveGate(GUICircuit* gCircuit, unsigned long gid,
 		float startX, float startY, float endX, float endY, bool uW) :

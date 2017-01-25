@@ -16,6 +16,7 @@
 #include "../circuit/guiWire.h"
 #include "../circuit/GUICircuit.h"
 #include "../commands.h"
+#include "../thread/Message.h"
 #include "klsMiniMap.h"
 
 // Included to use the min() and max() templates:

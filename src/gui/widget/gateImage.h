@@ -15,7 +15,7 @@ class gateImage;
 
 #include "../MainApp.h"
 #include "wx/glcanvas.h"
-#include "../circuit/guiGate.h"
+#include "../circuit/guiGates.h"
 #include "../../logic/logic_values.h"
 #include "wx/generic/dragimgg.h"
 #include "../circuit/GUICircuit.h"

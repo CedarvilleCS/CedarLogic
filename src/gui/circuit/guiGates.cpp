@@ -8,7 +8,7 @@
    guiGate: GUI representation of gate objects
 *****************************************************************************/
 
-#include "guiGate.h"
+#include "guiGates.h"
 #include <iomanip>
 #include "wx/wx.h"
 #include "../MainApp.h"
@@ -16,9 +16,39 @@
 #include "../dialog/paramDialog.h"
 #include "guiWire.h"
 
+#include <float.h>
+#include <vector>
+#include <set>
+#include <map>
+#include <sstream>
+#include <string>
+#include <fstream>
+#include "wx/glcanvas.h"
+#include "wx/docview.h"
+
+#include "../../logic/logic_values.h"
+#include "../XMLParser.h"
+#include "../gl_text.h"
+#include "../thread/Message.h"
+#include "../dialog/RamPopupDialog.h"
+#include "../dialog/Z80PopupDialog.h"
+#include "../dialog/ADCPopupDialog.h"
+#include "../gl_wrapper.h"
+#include "../gl_defs.h"
+
+using namespace std;
+
 DECLARE_APP(MainApp)
 
+#define GATE_HOTSPOT_THICKNESS 0.05
+#define SELECTED_LABEL_INTENSITY 0.50
 
+// TO-FROM constants.
+#define TO_FROM_TEXT_HEIGHT 1.5
+#define TO_BUFFER 0.4
+#define FROM_BUFFER 0.0
+#define FROM_FIX_SHIFT 0.0
+#define FLIPPED_OFFSET 0.5
 
 gateHotspot::gateHotspot() : klsCollisionObject(COLL_GATE_HOTSPOT) {
 	modelLocation = worldLocation = GLPoint2f(0, 0);

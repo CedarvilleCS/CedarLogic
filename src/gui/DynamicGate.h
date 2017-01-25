@@ -9,7 +9,7 @@ heirarchy.
 #define DYNAMICGATE_H_
 
 #include "LibraryParse.h"
-#include "circuit/guiGate.h"
+#include "circuit/guiGates.h"
 #include "widget/GUICanvas.h"
 
 using namespace std;

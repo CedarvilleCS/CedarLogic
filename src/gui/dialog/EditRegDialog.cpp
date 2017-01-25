@@ -12,7 +12,7 @@
 #include <wx/statline.h>
 #include "EditRegDialog.h"
 #include "../MainApp.h"
-#include "../circuit/guiGate.h"
+#include "../circuit/guiGates.h"
 #include "../circuit/GUICircuit.h"
 #include "../MainFrame.h"
 #include <stdlib.h>

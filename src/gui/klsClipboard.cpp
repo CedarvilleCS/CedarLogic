@@ -18,7 +18,7 @@
 #include "commands.h"
 #include "widget/GUICanvas.h"
 #include "circuit/GUICircuit.h"
-#include "circuit/guiGate.h"
+#include "circuit/guiGates.h"
 #include "circuit/guiWire.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"

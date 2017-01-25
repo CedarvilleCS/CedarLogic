@@ -3,7 +3,8 @@
 #include <sstream>
 #include "../circuit/GUICircuit.h"
 #include "../circuit/guiWire.h"
-#include "../circuit/guiGate.h"
+#include "../circuit/guiGates.h"
+#include "../thread/Message.h"
 
 cmdConnectWire::cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid,
 		const std::string &hotspot, bool noCalcShape) :

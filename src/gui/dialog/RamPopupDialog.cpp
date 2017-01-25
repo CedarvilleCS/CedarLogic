@@ -10,8 +10,9 @@
 #include <iomanip>
 #include <wx/sizer.h>
 #include "RamPopupDialog.h"
-#include "../circuit/guiGate.h"
+#include "../circuit/guiGates.h"
 #include "../circuit/GUICircuit.h"
+#include "../thread/Message.h"
 
 #define ID_CHECKBOX (wxID_HIGHEST + 1)
 #define ID_MEMCONTENTS (wxID_HIGHEST + 2)

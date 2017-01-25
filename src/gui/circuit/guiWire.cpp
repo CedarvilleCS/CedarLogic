@@ -11,11 +11,11 @@
 #include "guiWire.h"
 #include <cmath>
 #include <stack>
-#include "guiGate.h"
+#include "guiGates.h"
 #include "../XMLParser.h"
 #include "../gl_defs.h"
 
-class MainApp;
+#include "../MainApp.h"
 DECLARE_APP(MainApp)
 
 // Returns distance from p1 to p2
