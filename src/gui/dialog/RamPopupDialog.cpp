@@ -13,10 +13,8 @@
 #include "../circuit/guiGate.h"
 #include "../circuit/GUICircuit.h"
 
-//#define LIST_ID (wxID_HIGHEST + 1)
 #define ID_CHECKBOX (wxID_HIGHEST + 1)
 #define ID_MEMCONTENTS (wxID_HIGHEST + 2)
-//#define ID_EDIT (wxID_HIGHEST + 4)
 
 
 using namespace std;

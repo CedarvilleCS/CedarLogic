@@ -12,6 +12,7 @@
 #include "../MainApp.h"
 #include "../widget/GUICanvas.h"
 #include "../OscopeFrame.h"
+#include "../thread/Message.h"
 #include "guiWire.h"
 
 DECLARE_APP(MainApp)

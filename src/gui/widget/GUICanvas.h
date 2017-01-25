@@ -14,22 +14,17 @@
 #include <map>
 #include <unordered_map>
 #include <vector>
-#include <fstream>
-#include <sstream>
 #include <string>
-#include <deque>
 using namespace std;
 
-class cmdPasteBlock;
-
-#include "../MainApp.h"
 #include "klsGLCanvas.h"
-#include "../circuit/GUICircuit.h"
-#include "../klsCollisionChecker.h"
 #include "../circuit/wireSegment.h"
+#include "../klsCollisionChecker.h"
 
 class klsCommand;
 class guiWire;
+class cmdPasteBlock;
+class GUICircuit;
 
 // Struct GateState
 //		stores the position and id of a gate so we know where we moved from

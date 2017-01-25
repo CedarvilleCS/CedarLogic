@@ -20,7 +20,6 @@
 #include <unordered_map>
 #include "wx/docview.h"
 #include "../gl_wrapper.h"
-#include "../thread/Message.h"
 #include "../../logic/logic_values.h"
 using namespace std;
 
@@ -29,6 +28,7 @@ class GUICircuit;
 class OscopeFrame;
 class guiGate;
 class guiWire;
+class Message;
 
 class GUICircuit : public wxDocument
 {

@@ -1,14 +1,10 @@
-// For compilers that supports precompilation , includes "wx/wx.h"
-#include "wx/wxprec.h"
- 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
+
+
 
 #include <ostream>
 #include <sstream>
 #include <iomanip>
-#include <wx/sizer.h>
+#include "wx/sizer.h"
 #include "../circuit/guiGate.h"
 #include "../circuit/GUICircuit.h"
 #include "../MainFrame.h"

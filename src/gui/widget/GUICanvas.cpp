@@ -9,10 +9,12 @@
 *****************************************************************************/
 
 #include "GUICanvas.h"
+#include <sstream>
 #include "../MainApp.h"
 #include "../dialog/paramDialog.h"
 #include "../klsClipboard.h"
 #include "../circuit/guiWire.h"
+#include "../circuit/GUICircuit.h"
 
 // Included to use the min() and max() templates:
 #include <algorithm>
