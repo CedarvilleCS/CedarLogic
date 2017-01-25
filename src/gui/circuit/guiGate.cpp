@@ -18,6 +18,51 @@
 
 DECLARE_APP(MainApp)
 
+
+
+gateHotspot::gateHotspot() : klsCollisionObject(COLL_GATE_HOTSPOT) {
+	modelLocation = worldLocation = GLPoint2f(0, 0);
+	busLines = 1;
+	calcBBox();
+};
+
+gateHotspot::gateHotspot(string hsName) : klsCollisionObject(COLL_GATE_HOTSPOT), name(hsName) {
+	gateHotspot();
+	busLines = 1;
+};
+
+// Create the bbox for this hotspot:
+void gateHotspot::calcBBox(void) {
+	klsBBox newBBox;
+	newBBox.addPoint(worldLocation);
+
+	newBBox.extendTop((GLfloat)GATE_HOTSPOT_THICKNESS / 2.0);
+	newBBox.extendBottom((GLfloat)GATE_HOTSPOT_THICKNESS / 2.0);
+	newBBox.extendLeft((GLfloat)GATE_HOTSPOT_THICKNESS / 2.0);
+	newBBox.extendRight((GLfloat)GATE_HOTSPOT_THICKNESS / 2.0);
+
+	this->setBBox(newBBox);
+};
+
+GLPoint2f gateHotspot::getLocation(void) {
+	return worldLocation;
+};
+
+void gateHotspot::setBusLines(int _busLines) {
+	busLines = _busLines;
+}
+
+int gateHotspot::getBusLines() {
+	return busLines;
+}
+
+
+
+
+
+
+
+
 guiGate::guiGate() : klsCollisionObject(COLL_GATE) {
 	myX = 1.0;
 	myY = 1.0;
@@ -36,14 +81,26 @@ guiGate::~guiGate(){
 	}
 }
 
-// Run through my connections and update the merges
-void guiGate::updateConnectionMerges() {
-	map < string, guiWire* >::iterator connWalk = connections.begin();
-	while (connWalk != connections.end()) {
-		(connWalk->second)->endSegDrag();
-		connWalk++;
-	}
-}
+void guiGate::setID(long nid) {
+	gateID = nid;
+};
+
+unsigned long guiGate::getID() {
+	return gateID;
+};
+
+void guiGate::setLibraryName(string nLibName, string nLibGateName) {
+	libName = nLibName;
+	libGateName = nLibGateName;
+};
+
+string guiGate::getLibraryName() {
+	return libName;
+};
+
+string guiGate::getLibraryGateName() {
+	return libGateName;
+};
 
 string guiGate::getLogicType() {
 	return wxGetApp().libParser.getGateLogicType( libGateName );
@@ -53,129 +110,45 @@ string guiGate::getGUIType() {
 	return wxGetApp().libParser.getGateGUIType( libGateName );
 };
 
-
-// Update the position matrices, and
-// update the world-space bounding box and hotspots.
-// This is called once whenever the gate's position
-// or angle changes.
-void guiGate::updateBBoxes( bool noUpdateWires ) {
-	// Get the translation vars:
-	float x, y;
-	this->getGLcoords( x, y );
-
-	// Get the angle vars:
-	istringstream iss(gparams["angle"]);
-	GLfloat angle;
-	iss >> angle;
-
-	glMatrixMode(GL_MODELVIEW);
-
-	// Set up the forward matrix:
-	glLoadIdentity();
-	glTranslatef(x, y, 0);
-	glRotatef( angle, 0.0, 0.0, 1.0);
-
-	// Modified by Colin 1/16/17 to allow for mirroring of bus ends
-	if ((angle == 180 || angle == 270) && this->getGUIType() == "BUSEND") {
-		glScalef(1, -1, 1);
-	}
-	
-	// Read the forward matrix into the member variable:
-	glGetDoublev( GL_MODELVIEW_MATRIX, mModel );
-	glLoadIdentity();
-
-	// Update all of the hotspots' world coordinates:
-	map< string, gateHotspot* >::iterator hs = hotspots.begin();
-	while( hs != hotspots.end() ) {
-		(hs->second)->worldLocation = modelToWorld( (hs->second)->modelLocation );
-		(hs->second)->calcBBox();
-		hs++;
-	}
-
-	// Convert bbox to world-space:
-	klsBBox worldBBox;
-	worldBBox.addPoint( modelToWorld( modelBBox.getTopLeft()     ) );
-	worldBBox.addPoint( modelToWorld( modelBBox.getTopRight()    ) );
-	worldBBox.addPoint( modelToWorld( modelBBox.getBottomLeft()  ) );
-	worldBBox.addPoint( modelToWorld( modelBBox.getBottomRight() ) );
-	this->setBBox(worldBBox);
-
-	// Update the connected wires' shapes to accomidate the new gate position:
-	map < string, guiWire* >::iterator connWalk = connections.begin();
-	while (!noUpdateWires && connWalk != connections.end()) {
-		(connWalk->second)->updateConnectionPos( this->getID(), connWalk->first );
-		connWalk++;
-	}
-}
-
-void guiGate::finalizeWirePlacements() {
-	updateConnectionMerges();
-}
-
-// Convert model->world coordinates:
-GLPoint2f guiGate::modelToWorld( GLPoint2f c ) {
-
-	// Perform a matrix-vector multiply to get the point coordinates in world-space:
-	GLfloat x = c.x * mModel[0] + c.y * mModel[4] + 1.0*mModel[12];
-	GLfloat y = c.x * mModel[1] + c.y * mModel[5] + 1.0*mModel[13];
-
-	return GLPoint2f( x, y );
-}
-
-
-void guiGate::addConnection(string c, guiWire* obj) {
-	connections[c] = obj;
-}
-
-void guiGate::removeConnection(string c, int &obj) {
-	if (connections.find(c) == connections.end()) return;
-	obj = connections[c]->getID();
-	connections.erase(c);
-}
-
-bool guiGate::isConnected(string c) {
-	return (connections.find(c) != connections.end());
-}
-
 void guiGate::draw(bool color) {
 
 	GLint oldStipple = 0; // The old line stipple pattern, if needed.
 	GLint oldRepeat = 0;  // The old line stipple repeat pattern, if needed.
 	GLboolean lineStipple = false; // The old line stipple enable flag, if needed.
 
-	// Position the gate at its x and y coordinates:
+								   // Position the gate at its x and y coordinates:
 	glLoadMatrixd(mModel);
 
 
-	if( selected && color ) {
+	if (selected && color) {
 		// Store the old line stipple pattern:
-		lineStipple = glIsEnabled( GL_LINE_STIPPLE );
-		glGetIntegerv( GL_LINE_STIPPLE_PATTERN, &oldStipple );
-		glGetIntegerv( GL_LINE_STIPPLE_REPEAT, &oldRepeat );
-	
+		lineStipple = glIsEnabled(GL_LINE_STIPPLE);
+		glGetIntegerv(GL_LINE_STIPPLE_PATTERN, &oldStipple);
+		glGetIntegerv(GL_LINE_STIPPLE_REPEAT, &oldRepeat);
+
 		// Draw the gate with dotted lines:
-		glEnable( GL_LINE_STIPPLE );
-		glLineStipple( 1, 0x9999 );
+		glEnable(GL_LINE_STIPPLE);
+		glLineStipple(1, 0x9999);
 	}
 
 	// Draw the gate:
 	glBegin(GL_LINES);
-	for( unsigned int i = 0; i < vertices.size(); i++ ) {
-		glVertex2f( vertices[i].x, vertices[i].y );
+	for (unsigned int i = 0; i < vertices.size(); i++) {
+		glVertex2f(vertices[i].x, vertices[i].y);
 	}
 	glEnd();
 
 	// Reset the stipple parameters:
-	if( selected && color ) {	
+	if (selected && color) {
 		// Reset the line pattern:
-		if( !lineStipple ) {
-			glDisable( GL_LINE_STIPPLE );
+		if (!lineStipple) {
+			glDisable(GL_LINE_STIPPLE);
 		}
-		glLineStipple( oldRepeat, oldStipple );
+		glLineStipple(oldRepeat, oldStipple);
 	}
 }
 
-void guiGate::setGLcoords( float x, float y, bool noUpdateWires ) {
+void guiGate::setGLcoords(float x, float y, bool noUpdateWires) {
 	this->myX = x;
 	this->myY = y;
 
@@ -183,97 +156,148 @@ void guiGate::setGLcoords( float x, float y, bool noUpdateWires ) {
 	updateBBoxes(noUpdateWires);
 }
 
-
-void guiGate::getGLcoords( float &x, float &y ) {
+void guiGate::getGLcoords(float &x, float &y) {
 	x = this->myX;
 	y = this->myY;
 }
 
-
-// Shift the gate by x and y, relative to its current location:
-void guiGate::translateGLcoords( float x, float y ) {
-	setGLcoords( this->myX + x, this->myY + y );
+void guiGate::translateGLcoords(float x, float y) {
+	setGLcoords(this->myX + x, this->myY + y);
 }
 
+void guiGate::doParamsDialog(void* gc, wxCommandProcessor* wxcmd) {
+	if (wxGetApp().libraries[libName][libGateName].dlgParams.size() == 0) return;
+	paramDialog myDialog("Parameters", gc, this, wxcmd);
+	myDialog.SetFocus();
+	myDialog.ShowModal();
+}
+
+void guiGate::finalizeWirePlacements() {
+	updateConnectionMerges();
+}
+
+void guiGate::setGUIParam(string paramName, string value) {
+
+	gparams[paramName] = value;
+	if (paramName == "angle") {
+		// Update the matrices and bounding box:
+		updateConnectionMerges();
+		updateBBoxes();
+	}
+}
+
+string guiGate::getGUIParam(string paramName) {
+	return gparams[paramName];
+}
+
+map < string, string >* guiGate::getAllGUIParams() {
+	return &gparams;
+}
+
+void guiGate::setLogicParam(string paramName, string value) {
+	lparams[paramName] = value;
+}
+
+string guiGate::getLogicParam(string paramName) {
+	return lparams[paramName];
+}
+
+map < string, string >* guiGate::getAllLogicParams() {
+	return &lparams;
+}
+
+void guiGate::declareInput(string name) {
+	isInput[name] = true;
+}
+
+void guiGate::declareOutput(string name) {
+	isInput[name] = false;
+}
 
 // Draw this gate as unselected:
-void guiGate::unselect( void ) {
+void guiGate::unselect(void) {
 	selected = false;
 }
-	
+
+void guiGate::select() {
+	selected = true;
+}
+
+Message_SET_GATE_PARAM* guiGate::checkClick(GLfloat x, GLfloat y) {
+	return nullptr;
+}
+
 // Draw this gate as selected from now until unselect() is
 // called, if the coordinate passed to it is within
 // this gate's bounding box in GL coordinates.
 // Return true if this gate is selected.
-bool guiGate::clickSelect( GLfloat x, GLfloat y ) {
-	if( this->getBBox().contains( GLPoint2f( x, y ) ) ) {
+bool guiGate::clickSelect(GLfloat x, GLfloat y) {
+	if (this->getBBox().contains(GLPoint2f(x, y))) {
 		selected = true;
 		return true;
-	} else {
+	}
+	else {
 		return false;
 	}
 }
 
 // Insert a line in the line list.
-void guiGate::insertLine( float x1, float y1, float x2, float y2 ) {
-	vertices.push_back( GLPoint2f( x1, y1 ) );
-	vertices.push_back( GLPoint2f( x2, y2 ) );
+void guiGate::insertLine(float x1, float y1, float x2, float y2) {
+	vertices.push_back(GLPoint2f(x1, y1));
+	vertices.push_back(GLPoint2f(x2, y2));
 }
 
-
 // Recalculate the bounding box, based on the lines that are included already:
-void guiGate::calcBBox( void ) {
+void guiGate::calcBBox(void) {
 	modelBBox.reset();
-	
-	for( unsigned int i = 0; i < vertices.size(); i++ ) {
-		modelBBox.addPoint( vertices[i] );
+
+	for (unsigned int i = 0; i < vertices.size(); i++) {
+		modelBBox.addPoint(vertices[i]);
 	}
 
 	// Recalculate the world-space bbox:
 	updateBBoxes();
 }
 
-
 // Insert a hotspot in the hotspot list.
-void guiGate::insertHotspot( float x1, float y1, string connection, int busLines) {
+void guiGate::insertHotspot(float x1, float y1, string connection, int busLines) {
 	if (hotspots.find(connection) != hotspots.end()) return; // error: hotspot already exists
-	
-	gateHotspot* newHS = new gateHotspot( connection );
-	newHS->modelLocation = GLPoint2f( x1, y1 );
+
+	gateHotspot* newHS = new gateHotspot(connection);
+	newHS->modelLocation = GLPoint2f(x1, y1);
 	newHS->setBusLines(busLines);
 
 	// Add the hs to the gate's struct:
 	hotspots[connection] = newHS;
-	
+
 	// Add the hs to the gate's sub-object list:
-	this->insertSubObject( newHS );
-	
+	this->insertSubObject(newHS);
+
 	// Update the hotspot's world-space bbox:
 	updateBBoxes();
 }
 
-
 // Check if any of the hotspots of this gate are within the delta
 // of the world coordinates sX and sY. delta is in gl coords.
-string guiGate::checkHotspots( GLfloat x, GLfloat y, GLfloat delta ) {
+string guiGate::checkHotspots(GLfloat x, GLfloat y, GLfloat delta) {
 	// Set up the mouse as a collision object:
-	klsCollisionObject mouse( COLL_MOUSEBOX );
+	klsCollisionObject mouse(COLL_MOUSEBOX);
 	klsBBox mBox;
-	mBox.addPoint( GLPoint2f( x, y ) );
-	mBox.extendTop( delta );
-	mBox.extendBottom( delta );
-	mBox.extendLeft( delta );
-	mBox.extendRight( delta );
-	mouse.setBBox( mBox );
+	mBox.addPoint(GLPoint2f(x, y));
+	mBox.extendTop(delta);
+	mBox.extendBottom(delta);
+	mBox.extendLeft(delta);
+	mBox.extendRight(delta);
+	mouse.setBBox(mBox);
 
 	// Check if any hotspots hit the mouse:
-	CollisionGroup results = this->checkSubsToObj( &mouse );
+	CollisionGroup results = this->checkSubsToObj(&mouse);
 	CollisionGroup::iterator rs = results.begin();
-	while( rs != results.end() ) {
+	while (rs != results.end()) {
 		// If there were any hotspots that hit, then return
 		// the first one to the caller:
-		if( (*rs)->getType() == COLL_GATE_HOTSPOT ) {
-			return ((gateHotspot*) *rs)->name;
+		if ((*rs)->getType() == COLL_GATE_HOTSPOT) {
+			return ((gateHotspot*)*rs)->name;
 		}
 
 		rs++;
@@ -282,10 +306,9 @@ string guiGate::checkHotspots( GLfloat x, GLfloat y, GLfloat delta ) {
 	return "";
 }
 
-
 void guiGate::getHotspotCoords(string hsName, float &x, float &y) {
 
-	if( hotspots.find(hsName) == hotspots.end() ) {
+	if (hotspots.find(hsName) == hotspots.end()) {
 		//TODO: Couldn't find hotspot, so give a useful warning.
 		return;
 	}
@@ -295,7 +318,6 @@ void guiGate::getHotspotCoords(string hsName, float &x, float &y) {
 	y = hs.y;
 	return;
 }
-
 
 std::string guiGate::getHotspotPal(const std::string &hotspot) {
 
@@ -313,10 +335,54 @@ std::string guiGate::getHotspotPal(const std::string &hotspot) {
 	return "";
 }
 
-bool guiGate::isVerticalHotspot( string hsName ) {
+bool guiGate::isVerticalHotspot(string hsName) {
 	float x, y;
-	getHotspotCoords( hsName, x, y );
-	return ( min( getBBox().getTop()-y, y-getBBox().getBottom() ) < min( getBBox().getRight()-x, x-getBBox().getLeft() ) );
+	getHotspotCoords(hsName, x, y);
+	return (min(getBBox().getTop() - y, y - getBBox().getBottom()) < min(getBBox().getRight() - x, x - getBBox().getLeft()));
+}
+
+// Run through my connections and update the merges
+void guiGate::updateConnectionMerges() {
+	map < string, guiWire* >::iterator connWalk = connections.begin();
+	while (connWalk != connections.end()) {
+		(connWalk->second)->endSegDrag();
+		connWalk++;
+	}
+}
+
+klsBBox guiGate::getModelBBox() {
+	return modelBBox;
+};
+
+// Get a hotspot from its name.
+gateHotspot * guiGate::getHotspot(const std::string &hotspotName) {
+	return hotspots[hotspotName];
+}
+
+void guiGate::addConnection(string c, guiWire* obj) {
+	connections[c] = obj;
+}
+
+guiWire* guiGate::getConnection(string hotspot) {
+	return connections[hotspot];
+}
+
+void guiGate::removeConnection(string c, int &obj) {
+	if (connections.find(c) == connections.end()) return;
+	obj = connections[c]->getID();
+	connections.erase(c);
+}
+
+bool guiGate::isConnected(string c) {
+	return (connections.find(c) != connections.end());
+}
+
+bool guiGate::isSelected() {
+	return selected;
+}
+
+bool guiGate::isConnectionInput(string idx) {
+	return isInput[idx];
 }
 
 void guiGate::saveGate(XMLParser* xparse) {
@@ -396,12 +462,91 @@ void guiGate::saveGate(XMLParser* xparse) {
 	xparse->closeTag("gate");	
 }
 
-void guiGate::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ) {
-	if (wxGetApp().libraries[libName][libGateName].dlgParams.size() == 0) return;
-	paramDialog myDialog("Parameters", gc, this, wxcmd);
-	myDialog.SetFocus();
-	myDialog.ShowModal();
+void guiGate::saveGateTypeSpecifics(XMLParser* xparse) { }
+
+// Return the map of hotspot names to their coordinates:
+map<string, GLPoint2f> guiGate::getHotspotList() {
+
+	map< string, GLPoint2f > remappedHS;
+	map< string, gateHotspot* >::iterator hs = hotspots.begin();
+	while (hs != hotspots.end()) {
+		remappedHS[hs->first] = (hs->second)->getLocation();
+		hs++;
+	}
+	return remappedHS;
 }
+
+// Convert model->world coordinates:
+GLPoint2f guiGate::modelToWorld(GLPoint2f c) {
+
+	// Perform a matrix-vector multiply to get the point coordinates in world-space:
+	GLfloat x = c.x * mModel[0] + c.y * mModel[4] + 1.0*mModel[12];
+	GLfloat y = c.x * mModel[1] + c.y * mModel[5] + 1.0*mModel[13];
+
+	return GLPoint2f(x, y);
+}
+
+// Update the position matrices, and
+// update the world-space bounding box and hotspots.
+// This is called once whenever the gate's position
+// or angle changes.
+void guiGate::updateBBoxes(bool noUpdateWires) {
+	// Get the translation vars:
+	float x, y;
+	this->getGLcoords(x, y);
+
+	// Get the angle vars:
+	istringstream iss(gparams["angle"]);
+	GLfloat angle;
+	iss >> angle;
+
+	glMatrixMode(GL_MODELVIEW);
+
+	// Set up the forward matrix:
+	glLoadIdentity();
+	glTranslatef(x, y, 0);
+	glRotatef(angle, 0.0, 0.0, 1.0);
+
+	// Modified by Colin 1/16/17 to allow for mirroring of bus ends
+	if ((angle == 180 || angle == 270) && this->getGUIType() == "BUSEND") {
+		glScalef(1, -1, 1);
+	}
+
+	// Read the forward matrix into the member variable:
+	glGetDoublev(GL_MODELVIEW_MATRIX, mModel);
+	glLoadIdentity();
+
+	// Update all of the hotspots' world coordinates:
+	map< string, gateHotspot* >::iterator hs = hotspots.begin();
+	while (hs != hotspots.end()) {
+		(hs->second)->worldLocation = modelToWorld((hs->second)->modelLocation);
+		(hs->second)->calcBBox();
+		hs++;
+	}
+
+	// Convert bbox to world-space:
+	klsBBox worldBBox;
+	worldBBox.addPoint(modelToWorld(modelBBox.getTopLeft()));
+	worldBBox.addPoint(modelToWorld(modelBBox.getTopRight()));
+	worldBBox.addPoint(modelToWorld(modelBBox.getBottomLeft()));
+	worldBBox.addPoint(modelToWorld(modelBBox.getBottomRight()));
+	this->setBBox(worldBBox);
+
+	// Update the connected wires' shapes to accomidate the new gate position:
+	map < string, guiWire* >::iterator connWalk = connections.begin();
+	while (!noUpdateWires && connWalk != connections.end()) {
+		(connWalk->second)->updateConnectionPos(this->getID(), connWalk->first);
+		connWalk++;
+	}
+}
+
+
+
+
+
+
+
+
 
 // *********************** guiGateTOGGLE *************************
 
@@ -450,6 +595,10 @@ void guiGateTOGGLE::setLogicParam( string paramName, string value ) {
 	guiGate::setLogicParam(paramName, value);
 }
 
+string guiGateTOGGLE::getState() {
+	return getLogicParam("TOGGLE_STATE");
+}
+
 // Toggle the output button on and off:
 Message_SET_GATE_PARAM* guiGateTOGGLE::checkClick( GLfloat x, GLfloat y ) {
 	klsBBox toggleButton;
@@ -478,6 +627,13 @@ Message_SET_GATE_PARAM* guiGateTOGGLE::checkClick( GLfloat x, GLfloat y ) {
 }
 
 // ******************** END guiGateTOGGLE **********************
+
+
+
+
+
+
+
 
 // *********************** guiGateKEYPAD *************************
 
@@ -592,6 +748,14 @@ Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick( GLfloat x, GLfloat y ) {
 }
 
 // ******************** END guiGateKEYPAD **********************
+
+
+
+
+
+
+
+
 
 // *********************** guiGateREGISTER *************************
 
@@ -710,8 +874,29 @@ void guiGateREGISTER::setGUIParam( string paramName, string value ) {
 
 // ******************** END guiGateREGISTER **********************
 
+
+
+
+
+
+
+
+
+
+
+
+
 // *********************** guiGatePULSE *************************
 
+guiGatePULSE::guiGatePULSE() : guiGate() {
+
+	// Set the default CLICK box:
+	// Format is: "minx miny maxx maxy"
+	setGUIParam("CLICK_BOX", "-0.76,-0.76,0.76,0.76");
+
+	// Default to single pulse width:
+	setGUIParam("PULSE_WIDTH", "1");
+};
 
 // Send a pulse message to the logic core whenever the gate is
 // clicked on:
@@ -740,7 +925,14 @@ Message_SET_GATE_PARAM* guiGatePULSE::checkClick( GLfloat x, GLfloat y ) {
 	} else return NULL;
 }
 
-// ******************** END guiGatePULSE **********************
+
+
+
+
+
+
+
+
 
 
 guiGateLED::guiGateLED() {
@@ -800,7 +992,12 @@ void guiGateLED::setGUIParam( string paramName, string value ) {
 	guiGate::setGUIParam(paramName, value);
 }
 
-// ********************************** guiLabel ***********************************
+
+
+
+
+
+
 
 
 guiLabel::guiLabel() {
@@ -825,6 +1022,15 @@ void guiLabel::draw( bool color ) {
 	// Draw the text:
 	theText.draw();
 }
+
+GLdouble guiLabel::getTextHeight() {
+
+	istringstream iss(gparams["TEXT_HEIGHT"]);
+	GLdouble textHeight = 1.0;
+	iss >> textHeight;
+
+	return textHeight;
+};
 
 // A custom setParam function is required because
 // the object must resize it's bounding box 
@@ -876,7 +1082,12 @@ void guiLabel::calcBBox( void ) {
 
 
 
-// ************************ TO/FROM gate *************************
+
+
+
+
+
+
 
 guiTO_FROM::guiTO_FROM() {
 	// Note that I don't set the JUNCTION_ID parameter yet, because
@@ -951,7 +1162,7 @@ void guiTO_FROM::setLogicParam( string paramName, string value ) {
 	}
 }
 
-void guiTO_FROM::calcBBox( void ) {
+void guiTO_FROM::calcBBox() {
 	
 	// Set the gate's bounding box based on the lines:
 	guiGate::calcBBox();
@@ -977,7 +1188,11 @@ void guiTO_FROM::calcBBox( void ) {
 	updateBBoxes();
 }
 
-// ************************ RAM gate ****************************
+
+
+
+
+
 
 //*************************************************
 //Edit by Joshua Lansford 12/25/2006
@@ -1088,6 +1303,14 @@ long guiGateRAM::getLastRead(){
 //End of edit
 //*************************************************
 
+
+
+
+
+
+
+
+
 // ************************ z80 gate ****************************
 
 //*************************************************
@@ -1127,6 +1350,14 @@ void guiGateZ80::setLogicParam( string paramName, string value ){
 }
 //End of edit
 //*************************************************
+
+
+
+
+
+
+
+
 
 // ************************ ADC gate ****************************
 
