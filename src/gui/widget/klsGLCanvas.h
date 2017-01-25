@@ -11,22 +11,18 @@
 #ifndef KLS_GL_CANVAS_H_
 #define KLS_GL_CANVAS_H_
 
-class klsGLCanvas;
-
-#include "../MainApp.h"
-#include "wx/glcanvas.h"
-#include "klsMiniMap.h"
-// For GLPoint2f:
-
-// Included for floor() method:
 #include <cmath>
-
 #include <map>
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <deque>
+#include "wx/glcanvas.h"
+#include "../gl_defs.h"
+
+class klsMiniMap;
+
 using namespace std;
 
 #define MIN_ZOOM 1.0/120.0

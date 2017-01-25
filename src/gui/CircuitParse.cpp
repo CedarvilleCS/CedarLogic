@@ -22,6 +22,7 @@
 #include <map>
 #include <unordered_map>
 #include "../version.h"
+#include "command/cmdConnectWire.h"
 
 DECLARE_APP(MainApp)
 

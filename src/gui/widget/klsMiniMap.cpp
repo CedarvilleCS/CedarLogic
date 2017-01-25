@@ -10,9 +10,9 @@
 
 #include "klsMiniMap.h"
 #include "../gl_text.h"
-
 #include "../circuit/guiGate.h"
 #include "../circuit/guiWire.h"
+#include "klsGLCanvas.h"
 
 // Enable access to objects in the main application
 DECLARE_APP(MainApp)

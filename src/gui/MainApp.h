@@ -14,9 +14,6 @@
 #include <deque>
 #include <string>
 #include <fstream>
-#include <sstream>
-#include <cmath>
-#include "wx/wxprec.h"
 #include "wx/wx.h"
 #include "wx/thread.h"
 #include "wx/image.h"
@@ -24,13 +21,14 @@
 #include "wx/help.h"
 #include "wx/fs_zip.h"
 #include "../logic/logic_values.h"
-#include "thread/threadLogic.h"
-#include "thread/autoSaveThread.h"
-#include "thread/Message.h"
 #include "LibraryParse.h"
 #include "gl_defs.h"
 
 class MainFrame;
+class threadLogic;
+class autoSaveThread;
+class Message;
+
 
 using namespace std;
 

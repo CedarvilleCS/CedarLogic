@@ -13,6 +13,14 @@
 #include "wx/cmdline.h"
 #include "../version.h"
 
+#include "thread/threadLogic.h"
+#include "thread/autoSaveThread.h"
+#include "thread/Message.h"
+
+
+#include <sstream>
+#include <cmath>
+
 IMPLEMENT_APP(MainApp)
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =

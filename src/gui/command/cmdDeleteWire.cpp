@@ -6,6 +6,7 @@
 #include "../circuit/guiGate.h"
 #include "../widget/GUICanvas.h"
 #include "cmdMoveWire.h"
+#include "cmdDisconnectWire.h"
 
 cmdDeleteWire::cmdDeleteWire(GUICircuit* gCircuit, GUICanvas* gCanvas,
 		IDType wireId) :
