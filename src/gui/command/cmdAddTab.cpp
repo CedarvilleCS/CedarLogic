@@ -1,7 +1,7 @@
 
 #include "cmdAddTab.h"
 #include "wx/aui/auibook.h"
-#include "../GUICanvas.h"
+#include "../widget/GUICanvas.h"
 
 cmdAddTab::cmdAddTab(GUICircuit* gCircuit, wxAuiNotebook* book,
 		std::vector<GUICanvas *> *canvases) :

@@ -1,8 +1,8 @@
 
 #include "cmdCreateGate.h"
-#include "../GUICircuit.h"
-#include "../GUICanvas.h"
-#include "../guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiGate.h"
+#include "../widget/GUICanvas.h"
 #include "../MainApp.h"
 #include "cmdSetParams.h"
 
@@ -34,7 +34,7 @@ bool cmdCreateGate::Do() {
 	string logicType = wxGetApp().libParser.getGateLogicType(gateType);
 	if (logicType.size() > 0) {
 		ostringstream oss;
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_GATE, new klsMessage::Message_CREATE_GATE(logicType, gid)));
+		gCircuit->sendMessageToCore(new Message_CREATE_GATE(logicType, gid));
 	} // if( logic type is non-null )
 
 	cmdSetParams setgateparams(gCircuit, gid, paramSet((*(gCircuit->getGates()))[gid]->getAllGUIParams(), (*(gCircuit->getGates()))[gid]->getAllLogicParams()), fromString);
@@ -51,20 +51,22 @@ bool cmdCreateGate::Do() {
 			// Send the isInverted message:
 			if (libGate.hotspots[i].isInverted) {
 				if (libGate.hotspots[i].isInput) {
-					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "INVERTED", "TRUE")));
+					gCircuit->sendMessageToCore(new Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "INVERTED", "TRUE"));
 				}
 				else {
-					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT_PARAM, new klsMessage::Message_SET_GATE_OUTPUT_PARAM(gid, libGate.hotspots[i].name, "INVERTED", "TRUE")));
+					gCircuit->sendMessageToCore(new Message_SET_GATE_OUTPUT_PARAM(gid, libGate.hotspots[i].name, "INVERTED", "TRUE"));
 				}
 			}
 
 			// Send the logicEInput message:
 			if (libGate.hotspots[i].logicEInput != "") {
 				if (libGate.hotspots[i].isInput) {
-					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
+					gCircuit->sendMessageToCore(
+						new Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput));
 				}
 				else {
-					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT_PARAM, new klsMessage::Message_SET_GATE_OUTPUT_PARAM(gid, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
+					gCircuit->sendMessageToCore(
+						new Message_SET_GATE_OUTPUT_PARAM(gid, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput));
 				}
 			}
 		} // for( loop through the hotspots )
@@ -85,7 +87,7 @@ bool cmdCreateGate::Undo() {
 	gCircuit->deleteGate(gid);
 	string logicType = wxGetApp().libParser.getGateLogicType(gateType);
 	if (logicType.size() > 0) {
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_GATE, new klsMessage::Message_DELETE_GATE(gid)));
+		gCircuit->sendMessageToCore(new Message_DELETE_GATE(gid));
 	}
 	return true;
 }

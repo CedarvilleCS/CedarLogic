@@ -1,10 +1,10 @@
 
 #include "cmdDeleteWire.h"
 #include "../gl_defs.h"
-#include "../GUICircuit.h"
-#include "../GUICanvas.h"
-#include "../guiWire.h"
-#include "../guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiWire.h"
+#include "../circuit/guiGate.h"
+#include "../widget/GUICanvas.h"
 #include "cmdMoveWire.h"
 
 cmdDeleteWire::cmdDeleteWire(GUICircuit* gCircuit, GUICanvas* gCanvas,
@@ -45,8 +45,7 @@ bool cmdDeleteWire::Do() {
 	gCircuit->deleteWire(wireIds[0]);
 
 	for (IDType id : wireIds) {
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE,
-			new klsMessage::Message_DELETE_WIRE(id)));
+		gCircuit->sendMessageToCore(new Message_DELETE_WIRE(id));
 	}
 
 	return true;
@@ -57,8 +56,7 @@ bool cmdDeleteWire::Undo() {
 	guiWire* gWire = gCircuit->createWire(wireIds);
 
 	for (IDType id : wireIds) {
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_WIRE,
-			new klsMessage::Message_CREATE_WIRE(id)));
+		gCircuit->sendMessageToCore(new Message_CREATE_WIRE(id));
 	}
 
 	while (!(cmdList.empty())) {

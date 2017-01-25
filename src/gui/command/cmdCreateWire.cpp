@@ -1,8 +1,8 @@
 
 #include "cmdCreateWire.h"
 #include <sstream>
-#include "../GUICanvas.h"
-#include "../guiGate.h"
+#include "../widget/GUICanvas.h"
+#include "../circuit/guiGate.h"
 
 cmdCreateWire::cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit,
 		const std::vector<IDType> &wireIds, cmdConnectWire* conn1,
@@ -49,8 +49,8 @@ bool cmdCreateWire::Do() {
 	gCanvas->insertWire(wire);
 
 	for (IDType wireId : wireIds) {
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_WIRE,
-			new klsMessage::Message_CREATE_WIRE(wireId)));
+		gCircuit->sendMessageToCore(
+			new Message_CREATE_WIRE(wireId));
 	}
 
 	conn1->Do();
@@ -65,8 +65,8 @@ bool cmdCreateWire::Undo() {
 	conn2->Undo();
 
 	for (IDType wireId : wireIds) {
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_WIRE,
-			new klsMessage::Message_DELETE_WIRE(wireId)));
+		gCircuit->sendMessageToCore(
+			new Message_DELETE_WIRE(wireId));
 	}
 
 	gCanvas->removeWire(wireIds[0]);

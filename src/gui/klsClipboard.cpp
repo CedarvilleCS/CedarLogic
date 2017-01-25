@@ -16,10 +16,10 @@
 
 #include "MainApp.h"
 #include "commands.h"
-#include "GUICanvas.h"
-#include "GUICircuit.h"
-#include "guiGate.h"
-#include "guiWire.h"
+#include "widget/GUICanvas.h"
+#include "circuit/GUICircuit.h"
+#include "circuit/guiGate.h"
+#include "circuit/guiWire.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"
 

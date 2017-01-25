@@ -15,12 +15,12 @@ class GUICircuit;
 class OscopeFrame;
 
 #include "MainApp.h"
-#include "PaletteCanvas.h"
+#include "widget/PaletteCanvas.h"
 #include "wx/wxprec.h"
 #include "wx/thread.h"
 #include "wx/tglbtn.h"
-#include "threadLogic.h"
-#include "OscopeCanvas.h"
+#include "thread/threadLogic.h"
+#include "widget/OscopeCanvas.h"
 #include "wx/combobox.h"
 //Josh Edit 3/15/07
 #include "wx/event.h"

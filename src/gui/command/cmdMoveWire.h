@@ -2,7 +2,7 @@
 #pragma once
 #include "klsCommand.h"
 #include <map>
-#include "../wireSegment.h"
+#include "../circuit/wireSegment.h"
 #include "../gl_wrapper.h"
 
 // Just a map of wire segments

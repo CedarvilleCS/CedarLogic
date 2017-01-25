@@ -1,9 +1,9 @@
 
 #include "cmdConnectWire.h"
 #include <sstream>
-#include "../GUICircuit.h"
-#include "../guiWire.h"
-#include "../guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiWire.h"
+#include "../circuit/guiGate.h"
 
 cmdConnectWire::cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid,
 		const std::string &hotspot, bool noCalcShape) :
@@ -126,12 +126,12 @@ void cmdConnectWire::sendMessagesToConnect(GUICircuit *gCircuit, IDType wireId,
 	// Connect each of wire's bus-lines to its corresponding gate hotspot.
 	for (int i = 0; i < internalHotspots.size(); i++) {
 		if (isInput) {
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT,
-				new klsMessage::Message_SET_GATE_INPUT(gateId, internalHotspots[i], wireIds[i])));
+			gCircuit->sendMessageToCore(
+				new Message_SET_GATE_INPUT(gateId, internalHotspots[i], wireIds[i]));
 		}
 		else {
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT,
-				new klsMessage::Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], wireIds[i])));
+			gCircuit->sendMessageToCore(
+				new Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], wireIds[i]));
 		}
 	}
 }
@@ -168,12 +168,12 @@ void cmdConnectWire::sendMessagesToDisconnect(GUICircuit *gCircuit,
 	// Disconnect each of wire's bus-lines from its corresponding gate hotspot.
 	for (int i = 0; i < internalHotspots.size(); i++) {
 		if (isInput) {
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT,
-				new klsMessage::Message_SET_GATE_INPUT(gateId, internalHotspots[i], 0, true)));
+			gCircuit->sendMessageToCore(
+				new Message_SET_GATE_INPUT(gateId, internalHotspots[i], 0, true));
 		}
 		else {
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT,
-				new klsMessage::Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], 0, true)));
+			gCircuit->sendMessageToCore(
+				new Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], 0, true));
 		}
 	}
 }

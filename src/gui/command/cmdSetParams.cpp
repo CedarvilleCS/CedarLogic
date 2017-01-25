@@ -1,7 +1,7 @@
 
 #include "cmdSetParams.h"
-#include "../GUICircuit.h"
-#include "../guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiGate.h"
 #include "../OscopeFrame.h"
 #include "../MainApp.h"
 
@@ -87,7 +87,7 @@ bool cmdSetParams::Do() {
 		for (unsigned int i = 0; i < dontSendMessages.size() && !found; i++) {
 			if (dontSendMessages[i] == paramWalk->first) found = true;
 		}
-		if (!found) gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gid, paramWalk->first, paramWalk->second)));
+		if (!found) gCircuit->sendMessageToCore(new Message_SET_GATE_PARAM(gid, paramWalk->first, paramWalk->second));
 		paramWalk++;
 	}
 	paramWalk = newGUIParamList.begin();
@@ -115,7 +115,7 @@ bool cmdSetParams::Undo() {
 		for (unsigned int i = 0; i < dontSendMessages.size() && !found; i++) {
 			if (dontSendMessages[i] == paramWalk->first) found = true;
 		}
-		if (!found) gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gid, paramWalk->first, paramWalk->second)));
+		if (!found) gCircuit->sendMessageToCore(new Message_SET_GATE_PARAM(gid, paramWalk->first, paramWalk->second));
 		paramWalk++;
 	}
 	paramWalk = oldGUIParamList.begin();

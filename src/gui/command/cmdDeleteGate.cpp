@@ -2,10 +2,10 @@
 #include "cmdDeleteGate.h"
 #include <map>
 #include "../gl_defs.h"
-#include "../GUICircuit.h"
-#include "../GUICanvas.h"
-#include "../guiWire.h"
-#include "../guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiWire.h"
+#include "../circuit/guiGate.h"
+#include "../widget/GUICanvas.h"
 #include "../MainApp.h"
 #include "cmdDisconnectWire.h"
 #include "cmdDeleteWire.h"
@@ -113,7 +113,7 @@ bool cmdDeleteGate::Do() {
 	gCircuit->deleteGate(gateId, true);
 	std::string logicType = wxGetApp().libParser.getGateLogicType(gateType);
 	if (logicType.size() > 0) {
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_DELETE_GATE, new klsMessage::Message_DELETE_GATE(gateId)));
+		gCircuit->sendMessageToCore(new Message_DELETE_GATE(gateId));
 	}
 	return true;
 }
@@ -123,7 +123,7 @@ bool cmdDeleteGate::Undo() {
 
 	std::string logicType = wxGetApp().libParser.getGateLogicType(gateType);
 	if (logicType.size() > 0) {
-		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_GATE, new klsMessage::Message_CREATE_GATE(logicType, gateId)));
+		gCircuit->sendMessageToCore(new Message_CREATE_GATE(logicType, gateId));
 	}
 	gCanvas->insertGate(gateId, (*(gCircuit->getGates()))[gateId], 0, 0);
 
