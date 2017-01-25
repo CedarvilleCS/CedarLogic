@@ -54,6 +54,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_SCROLL(MainFrame::OnTimeStepModSlider)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
 	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
+	EVT_TOOL(Tool_BlackBox, MainFrame::OnBlackBox)
 
 	EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
 	EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
