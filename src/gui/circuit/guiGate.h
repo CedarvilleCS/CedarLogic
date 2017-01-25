@@ -30,7 +30,7 @@ class guiWire;
 #include "../XMLParser.h"
 #include "../gl_text.h"
 #include "../klsCollisionChecker.h"
-#include "../Message.h"
+#include "../thread/Message.h"
 #include "../dialog/RamPopupDialog.h"
 #include "../dialog/Z80PopupDialog.h"
 #include "../dialog/ADCPopupDialog.h"

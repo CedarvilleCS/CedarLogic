@@ -1,12 +1,7 @@
-/*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
 
-   commands: Implements a klsCommand object for each user interface command
-*****************************************************************************/
+// Previously, all the commands were in a single header.
+// This header is a drop-in replacement for that one.
+// To improve compile times, this header should be avoided.
 
 #pragma once
 

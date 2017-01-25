@@ -23,8 +23,8 @@
 #include "widget/GUICanvas.h"
 #include "widget/klsMiniMap.h"
 #include "circuit/GUICircuit.h"
-#include "autoSaveThread.h"
-#include "threadLogic.h"
+#include "thread/autoSaveThread.h"
+#include "thread/threadLogic.h"
 
 
 class OscopeFrame;

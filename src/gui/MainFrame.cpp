@@ -22,7 +22,7 @@
 #include "OscopeFrame.h"
 #include "wx/docview.h"
 #include "commands.h"
-#include "autoSaveThread.h"
+#include "thread/autoSaveThread.h"
 #include "../version.h"
 
 DECLARE_APP(MainApp)

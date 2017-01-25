@@ -9,16 +9,17 @@
 *****************************************************************************/
 
 #include "threadLogic.h"
-#include "MainApp.h"
 #include <sstream>
+#include <string>
 #include "wx/timer.h"
 
-#include "../logic/logic_defaults.h"
-#include "../logic/logic_wire.h"
-#include "../logic/logic_gate.h"
-#include "../logic/logic_circuit.h"
-#include "../logic/logic_event.h"
-#include <string>
+
+#include "../MainApp.h"
+#include "../../logic/logic_defaults.h"
+#include "../../logic/logic_wire.h"
+#include "../../logic/logic_gate.h"
+#include "../../logic/logic_circuit.h"
+#include "../../logic/logic_event.h"
 
 
 DECLARE_APP(MainApp)

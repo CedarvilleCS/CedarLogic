@@ -4,8 +4,8 @@
 
 #include "autoSaveThread.h"
 #include <string>
-#include "MainFrame.h"
-#include "MainApp.h"
+#include "../MainFrame.h"
+#include "../MainApp.h"
 
 DECLARE_APP(MainApp)
 

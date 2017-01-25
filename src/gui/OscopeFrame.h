@@ -19,7 +19,7 @@ class OscopeFrame;
 #include "wx/wxprec.h"
 #include "wx/thread.h"
 #include "wx/tglbtn.h"
-#include "threadLogic.h"
+#include "thread/threadLogic.h"
 #include "widget/OscopeCanvas.h"
 #include "wx/combobox.h"
 //Josh Edit 3/15/07
