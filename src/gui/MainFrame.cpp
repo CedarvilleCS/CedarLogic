@@ -162,10 +162,10 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 
 	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
 	// to read the bitmaps from file directly, without the use of a resource file.  KAS
-	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab"};
-	wxBitmap *bmp[15];
+	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "blackbox"};
+	wxBitmap *bmp[16];
 
-	for (int  i = 0; i < 15; i++) {
+	for (int  i = 0; i < 16; i++) {
 		bitmaps[i] = "res/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
@@ -202,6 +202,8 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	//JV - Temporary tab button
 	toolBar->AddSeparator();
 	toolBar->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
+	toolBar->AddSeparator();
+	toolBar->AddTool(Tool_BlackBox, "Black Box", *bmp[15], "Black Box");
 	SetToolBar(toolBar);
 	toolBar->Show(true);
 
@@ -1039,6 +1041,9 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 		wxMessageBox("Tab cannot be closed", "Close", wxOK);
 		event.Veto();
 	}
+}
+
+void MainFrame::OnBlackBox(wxCommandEvent& event) {
 }
 
 void MainFrame::OnReportABug(wxCommandEvent& event) {

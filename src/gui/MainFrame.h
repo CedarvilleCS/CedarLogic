@@ -50,6 +50,7 @@ enum
     Tool_Lock,
 	Tool_NewTab,
 	Tool_DeleteTab,
+	Tool_BlackBox,
 
 	Help_ReportABug,
 	Help_RequestAFeature,
@@ -93,6 +94,7 @@ public:
 	void OnLock(wxCommandEvent& event);
 	void OnNewTab(wxCommandEvent& event);
 	void OnDeleteTab(wxAuiNotebookEvent& event);
+	void OnBlackBox(wxCommandEvent& event);
 	void OnReportABug(wxCommandEvent& event);
 	void OnRequestAFeature(wxCommandEvent& event);
 	void OnDownloadLatestVersion(wxCommandEvent& event);
