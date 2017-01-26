@@ -14,10 +14,10 @@ public:
 	// Function to show the gate's parameters dialog, takes the command
 	//	processor object to assign the setparameters command to.  gc is
 	//	a GUICircuit pointer
-	virtual void doParamsDialog(void* gc, wxCommandProcessor* wxcmd);
+	virtual void doParamsDialog(GUICircuit* gc, wxCommandProcessor* wxcmd) override;
 
 	//this is so we can update the pop-up about the current value
-	virtual void setLogicParam(std::string paramName, std::string value);
+	virtual void setLogicParam(const std::string &paramName, const std::string &value) override;
 
 private:
 	//The pop-up dialog

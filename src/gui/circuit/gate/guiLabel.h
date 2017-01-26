@@ -7,7 +7,7 @@ class guiLabel : public guiGate {
 public:
 	guiLabel();
 
-	void draw(bool color = true);
+	virtual void draw(bool color = true) override;
 
 	// A convenience function that translates
 	// TEXT_HEIGHT parameter into a GLdouble:
@@ -16,10 +16,10 @@ public:
 	// A custom setParam function is required because
 	// the object must resize it's bounding box 
 	// each time the LABEL_TEXT or TEXT_HEIGHT parameter is set.
-	void setGUIParam(std::string paramName, std::string value);
+	virtual void setGUIParam(const std::string & paramName, const std::string & value) override;
 
 	// Recalculate the label's bounding box:
-	void calcBBox();
+	virtual void calcBBox() override;
 
 private:
 	gl_text theText;

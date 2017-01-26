@@ -6,12 +6,12 @@ class guiGateKEYPAD : public guiGate {
 public:
 	guiGateKEYPAD();
 
-	void draw(bool color = true);
+	virtual void draw(bool color = true) override;
 
-	void setLogicParam(std::string paramName, std::string value);
+	virtual void setLogicParam(const std::string &paramName, const std::string &value) override;
 
 	// Toggle the output button on and off:
-	Message_SET_GATE_PARAM* checkClick(GLfloat x, GLfloat y);
+	virtual Message_SET_GATE_PARAM* checkClick(GLfloat x, GLfloat y) override;
 
 protected:
 	GLLine2f renderInfo_valueBox;

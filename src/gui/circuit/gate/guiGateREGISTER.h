@@ -6,11 +6,11 @@ class guiGateREGISTER : public guiGate {
 public:
 	guiGateREGISTER();
 
-	void draw(bool color = true);
+	virtual void draw(bool color = true) override;
 
-	void setGUIParam(std::string paramName, std::string value);
+	virtual void setGUIParam(const std::string &paramName, const std::string &value) override;
 
-	void setLogicParam(std::string paramName, std::string value);
+	virtual void setLogicParam(const std::string &paramName, const std::string &value) override;
 
 protected:
 	GLLine2f renderInfo_valueBox;

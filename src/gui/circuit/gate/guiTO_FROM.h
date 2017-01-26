@@ -7,15 +7,15 @@ class guiTO_FROM : public guiGate {
 public:
 	guiTO_FROM();
 
-	void draw(bool color = true);
-
-	// Recalculate the gate's bounding box:
-	void calcBBox();
+	virtual void draw(bool color = true) override;
 
 	// A custom setParam function is required because
 	// the object must resize it's bounding box 
 	// each time the JUNCTION_ID parameter is set.
-	void setLogicParam(std::string paramName, std::string value);
+	virtual void setLogicParam(const std::string &paramName, const std::string & value) override;
+
+	// Recalculate the gate's bounding box:
+	virtual void calcBBox() override;
 
 private:
 	gl_text theText;

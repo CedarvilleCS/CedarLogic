@@ -8,23 +8,23 @@ class guiGateRAM : public guiGate {
 public:
 	guiGateRAM();
 
-	// Function to show the gate's parameters dialog, takes the command
-	//	processor object to assign the setparameters command to.  gc is
-	//	a GUICircuit pointer
-	virtual void doParamsDialog(void* gc, wxCommandProcessor* wxcmd);
-
 	//Destructor for cleaning up private vars
 	virtual ~guiGateRAM();
 
-	//Saves the ram contents to the circuit file
-	//when the circuit saves
-	virtual void saveGateTypeSpecifics(XMLParser* xparse);
+	// Function to show the gate's parameters dialog, takes the command
+	//	processor object to assign the setparameters command to.  gc is
+	//	a GUICircuit pointer
+	virtual void doParamsDialog(GUICircuit* gc, wxCommandProcessor* wxcmd) override;
 
 	//Because the ram gui will be passed lots of data
 	//from the ram logic, we don't want it all going
 	//into the default hash of changed paramiters.
 	//Thus we catch it here
-	virtual void setLogicParam(std::string paramName, std::string value);
+	virtual void setLogicParam(const std::string &paramName, const std::string &value) override;
+
+	//Saves the ram contents to the circuit file
+	//when the circuit saves
+	virtual void saveGateTypeSpecifics(XMLParser* xparse) override;
 
 	//This method is used by the RamPopupDialog to
 	//learn what values are at different addresses
