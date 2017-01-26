@@ -1375,7 +1375,7 @@ klsCommand * GUICanvas::createGateConnectionCommand(IDType gate1Id, const string
 			->getHotspot(hotspot1)->getBusLines());
 
 		// Get the correct number of new, unique wire ids.
-		for (int i = 0; i < wireIds.size(); i++) {
+		for (int i = 0; i < (int)wireIds.size(); i++) {
 			wireIds[i] = gCircuit->getNextAvailableWireID();
 		}
 

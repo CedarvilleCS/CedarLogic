@@ -105,7 +105,7 @@ void MainApp::loadSettings() {
 
 	// Find path to exe so that files can be loaded relative to it
 	// even when the program is run from somewhere else.
-	pathToExe = (char)argv[0];
+	pathToExe = wxString(argv[0]);
 	while (!pathToExe.empty()) {
 		if (pathToExe.back() != '/' && pathToExe.back() != '\\') {
 			pathToExe.pop_back();
