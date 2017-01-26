@@ -15,6 +15,7 @@
 #include "../klsClipboard.h"
 #include "../circuit/guiWire.h"
 #include "../circuit/GUICircuit.h"
+#include "../circuit/gate/gateHotspot.h"
 #include "../commands.h"
 #include "../thread/Message.h"
 #include "klsMiniMap.h"

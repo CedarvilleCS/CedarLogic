@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <wx/sizer.h>
 #include "RamPopupDialog.h"
-#include "../circuit/guiGates.h"
+#include "../circuit/gate/guiGateRAM.h"
 #include "../circuit/GUICircuit.h"
 #include "../thread/Message.h"
 

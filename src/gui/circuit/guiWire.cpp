@@ -11,7 +11,7 @@
 #include "guiWire.h"
 #include <cmath>
 #include <stack>
-#include "guiGates.h"
+#include "gate/guiGate.h"
 #include "../XMLParser.h"
 #include "../gl_defs.h"
 

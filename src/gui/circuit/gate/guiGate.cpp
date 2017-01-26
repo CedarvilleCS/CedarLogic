@@ -4,6 +4,7 @@
 #include "../../MainApp.h"
 #include "../../dialog/paramDialog.h"
 #include "../guiWire.h"
+#include "gateHotspot.h"
 DECLARE_APP(MainApp)
 
 guiGate::guiGate() : klsCollisionObject(COLL_GATE) {

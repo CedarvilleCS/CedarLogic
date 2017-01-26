@@ -10,7 +10,7 @@
 
 #include "klsMiniMap.h"
 #include "../gl_text.h"
-#include "../circuit/guiGates.h"
+#include "../circuit/gate/guiGate.h"
 #include "../circuit/guiWire.h"
 #include "klsGLCanvas.h"
 

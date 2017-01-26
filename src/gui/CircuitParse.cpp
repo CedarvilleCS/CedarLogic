@@ -15,7 +15,7 @@
 #include <sstream>
 
 #include "XMLParser.h"
-#include "circuit/guiGates.h"
+#include "circuit/gate/guiGate.h"
 #include "circuit/guiWire.h"
 #include "circuit/GUICircuit.h"
 #include "widget/GUICanvas.h"

@@ -3,7 +3,8 @@
 #include <sstream>
 #include "../widget/GUICanvas.h"
 #include "../circuit/GUICircuit.h"
-#include "../circuit/guiGates.h"
+#include "../circuit/gate/guiGate.h"
+#include "../circuit/gate/gateHotspot.h"
 #include "../thread/Message.h"
 #include "cmdConnectWire.h"
 

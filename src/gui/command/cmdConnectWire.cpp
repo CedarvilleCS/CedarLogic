@@ -3,7 +3,8 @@
 #include <sstream>
 #include "../circuit/GUICircuit.h"
 #include "../circuit/guiWire.h"
-#include "../circuit/guiGates.h"
+#include "../circuit/gate/guiGate.h"
+#include "../circuit/gate/gateHotspot.h"
 #include "../thread/Message.h"
 
 cmdConnectWire::cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid,
