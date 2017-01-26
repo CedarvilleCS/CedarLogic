@@ -12,7 +12,7 @@ public:
 
 	virtual void setLogicParam(const std::string &paramName, const std::string &value) override;
 
-protected:
+private:
 	GLLine2f renderInfo_valueBox;
 
 	GLdouble renderInfo_diffx;
