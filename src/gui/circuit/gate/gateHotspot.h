@@ -15,14 +15,14 @@ class gateHotspot : public klsCollisionObject {
 public:
 	gateHotspot();
 
-	gateHotspot(std::string hsName);
+	gateHotspot(const std::string &name);
 
 	// Create the bbox for this hotspot:
 	void calcBBox();
 
 	GLPoint2f getLocation();
 
-	void setBusLines(int _busLines);
+	void setBusLines(int busLines);
 
 	int getBusLines();
 

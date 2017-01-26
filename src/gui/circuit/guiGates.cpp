@@ -40,7 +40,7 @@ using namespace std;
 
 DECLARE_APP(MainApp)
 
-#define GATE_HOTSPOT_THICKNESS 0.05
+
 #define SELECTED_LABEL_INTENSITY 0.50
 
 // TO-FROM constants.
@@ -50,41 +50,7 @@ DECLARE_APP(MainApp)
 #define FROM_FIX_SHIFT 0.0
 #define FLIPPED_OFFSET 0.5
 
-gateHotspot::gateHotspot() : klsCollisionObject(COLL_GATE_HOTSPOT) {
-	modelLocation = worldLocation = GLPoint2f(0, 0);
-	busLines = 1;
-	calcBBox();
-};
 
-gateHotspot::gateHotspot(string hsName) : klsCollisionObject(COLL_GATE_HOTSPOT), name(hsName) {
-	gateHotspot();
-	busLines = 1;
-};
-
-// Create the bbox for this hotspot:
-void gateHotspot::calcBBox(void) {
-	klsBBox newBBox;
-	newBBox.addPoint(worldLocation);
-
-	newBBox.extendTop((GLfloat)GATE_HOTSPOT_THICKNESS / 2.0);
-	newBBox.extendBottom((GLfloat)GATE_HOTSPOT_THICKNESS / 2.0);
-	newBBox.extendLeft((GLfloat)GATE_HOTSPOT_THICKNESS / 2.0);
-	newBBox.extendRight((GLfloat)GATE_HOTSPOT_THICKNESS / 2.0);
-
-	this->setBBox(newBBox);
-};
-
-GLPoint2f gateHotspot::getLocation(void) {
-	return worldLocation;
-};
-
-void gateHotspot::setBusLines(int _busLines) {
-	busLines = _busLines;
-}
-
-int gateHotspot::getBusLines() {
-	return busLines;
-}
 
 
 
