@@ -13,7 +13,7 @@ public:
 	// Toggle the output button on and off:
 	virtual Message_SET_GATE_PARAM* checkClick(GLfloat x, GLfloat y) override;
 
-protected:
+private:
 	GLLine2f renderInfo_valueBox;
 
 	std::string keypadValue;

@@ -18,7 +18,7 @@ public:
 
 	virtual Message_SET_GATE_PARAM* checkClick(GLfloat x, GLfloat y) override;
 
-protected:
+private:
 	int renderInfo_outputNum;
 
 	GLLine2f renderInfo_clickBox;
