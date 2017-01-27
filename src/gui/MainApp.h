@@ -45,7 +45,7 @@ struct ApplicationSettings {
 	int refreshRate;
     float wireConnRadius;
     bool wireConnVisible;
-    bool gridlineVisible;
+	bool gridlineVisible;
 };
 
 class MainApp : public wxApp {
