@@ -1,8 +1,8 @@
 
 #include "cmdMoveSelection.h"
-#include "../GUICircuit.h"
-#include "../guiWire.h"
-#include "../guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiWire.h"
+#include "../circuit/gate/guiGate.h"
 
 cmdMoveSelection::cmdMoveSelection(GUICircuit* gCircuit,
 		vector<GateState> &preMove, vector<WireState> &preMoveWire,

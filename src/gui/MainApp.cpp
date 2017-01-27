@@ -13,6 +13,14 @@
 #include "wx/cmdline.h"
 #include "../version.h"
 
+#include "thread/threadLogic.h"
+#include "thread/autoSaveThread.h"
+#include "thread/Message.h"
+
+
+#include <sstream>
+#include <cmath>
+
 IMPLEMENT_APP(MainApp)
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
@@ -97,7 +105,7 @@ void MainApp::loadSettings() {
 
 	// Find path to exe so that files can be loaded relative to it
 	// even when the program is run from somewhere else.
-	pathToExe = (char)argv[0];
+	pathToExe = wxString(argv[0]);
 	while (!pathToExe.empty()) {
 		if (pathToExe.back() != '/' && pathToExe.back() != '\\') {
 			pathToExe.pop_back();
@@ -107,6 +115,8 @@ void MainApp::loadSettings() {
 		}
 	}
 	
+
+
 	string settingsIni = pathToExe + "res/settings.ini";
 	ifstream iniFile( settingsIni.c_str(), ios::in );
 	

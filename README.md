@@ -20,8 +20,8 @@ CedarLogic is Cedarville University's digital logic simulator.
 7. Open an `x86 native tools` command prompt and run these commands.
 	
 		cd %WXWIN%\build\msw
-		nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
-		nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
+		nmake /f makefile.vc               USE_OPENGL=1 SHARED=1
+		nmake /f makefile.vc BUILD=release USE_OPENGL=1 SHARED=1
 
 8. Install Wix with its Visual Studio Extentions. [link](http://wixtoolset.org/releases/)
 

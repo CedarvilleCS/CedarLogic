@@ -1,8 +1,8 @@
 
 #include "cmdDisconnectWire.h"
 #include <sstream>
-#include "../GUICircuit.h"
-#include "../guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/gate/guiGate.h"
 #include "cmdConnectWire.h"
 
 cmdDisconnectWire::cmdDisconnectWire(GUICircuit* gCircuit, IDType wireId,

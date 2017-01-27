@@ -11,26 +11,24 @@
 #ifndef MAINAPP_H_
 #define MAINAPP_H_
 
-#include "wx/wxprec.h"
+#include <deque>
+#include <string>
+#include <fstream>
 #include "wx/wx.h"
 #include "wx/thread.h"
 #include "wx/image.h"
 #include "wx/docview.h"
 #include "wx/help.h"
 #include "wx/fs_zip.h"
-#include "threadLogic.h"
-#include "autoSaveThread.h"
 #include "../logic/logic_values.h"
-#include "LibraryParse.h"
+#include "parse/LibraryParse.h"
 #include "gl_defs.h"
-#include "klsMessage.h"
-#include <deque>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <cmath>
 
 class MainFrame;
+class threadLogic;
+class autoSaveThread;
+class Message;
+
 
 using namespace std;
 
@@ -47,7 +45,7 @@ struct ApplicationSettings {
 	int refreshRate;
     float wireConnRadius;
     bool wireConnVisible;
-    bool gridlineVisible;
+	bool gridlineVisible;
 };
 
 class MainApp : public wxApp {
@@ -65,8 +63,8 @@ public:
 	wxSemaphore readyToSend;
 
 	wxMutex mexMessages;
-	deque< klsMessage::Message > dGUItoLOGIC;
-	deque< klsMessage::Message > dLOGICtoGUI;
+	deque< Message *> dGUItoLOGIC;
+	deque< Message *> dLOGICtoGUI;
 	// Use a stopwatch for timing between step calls
 	wxStopWatch appSystemTime;
 	unsigned long timeStepMod;

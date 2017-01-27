@@ -18,11 +18,11 @@
 #include "wx/toolbar.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"
-#include "CircuitParse.h"
+#include "parse/CircuitParse.h"
 #include "OscopeFrame.h"
 #include "wx/docview.h"
 #include "commands.h"
-#include "autoSaveThread.h"
+#include "thread/autoSaveThread.h"
 #include "../version.h"
 
 DECLARE_APP(MainApp)
@@ -637,7 +637,7 @@ void MainFrame::OnTimer(wxTimerEvent& event) {
 	gCircuit->lastTime = wxGetApp().appSystemTime.Time();
 	gCircuit->lastTimeMod = wxGetApp().timeStepMod;
 	gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
-	gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_STEPSIM, new klsMessage::Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod)));
+	gCircuit->sendMessageToCore(new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod));
 	currentCanvas->getCircuit()->setSimulate(false);
 	wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);
 }
@@ -646,8 +646,10 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 	wxCriticalSectionLocker locker(wxGetApp().m_critsect);
 	while (wxGetApp().mexMessages.TryLock() == wxMUTEX_BUSY) wxYield();
 	while (wxGetApp().dLOGICtoGUI.size() > 0) {
-		gCircuit->parseMessage(wxGetApp().dLOGICtoGUI.front());
+		Message *message = wxGetApp().dLOGICtoGUI.front();
 		wxGetApp().dLOGICtoGUI.pop_front();
+		gCircuit->parseMessage(message);
+		delete message;
 	}
 	wxGetApp().mexMessages.Unlock();
 
@@ -818,7 +820,7 @@ void MainFrame::OnStep(wxCommandEvent& event) {
 	if (!(currentCanvas->getCircuit()->getSimulate())) {
 		return;
 	}
-	gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_STEPSIM, new klsMessage::Message_STEPSIM(1)));
+	gCircuit->sendMessageToCore(new Message_STEPSIM(1));
 	currentCanvas->getCircuit()->setSimulate(false);
 }
 

@@ -1,9 +1,11 @@
 
 #include "cmdConnectWire.h"
 #include <sstream>
-#include "../GUICircuit.h"
-#include "../guiWire.h"
-#include "../guiGate.h"
+#include "../circuit/GUICircuit.h"
+#include "../circuit/guiWire.h"
+#include "../circuit/gate/guiGate.h"
+#include "../circuit/gate/gateHotspot.h"
+#include "../thread/Message.h"
 
 cmdConnectWire::cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid,
 		const std::string &hotspot, bool noCalcShape) :
@@ -116,7 +118,7 @@ void cmdConnectWire::sendMessagesToConnect(GUICircuit *gCircuit, IDType wireId,
 		internalHotspots.push_back(hotspot);
 	}
 	else {
-		for (int i = 0; i < wireIds.size(); i++) {
+		for (int i = 0; i < (int)wireIds.size(); i++) {
 			internalHotspots.push_back(hotspot + "_" + std::to_string(i));
 		}
 	}
@@ -124,14 +126,14 @@ void cmdConnectWire::sendMessagesToConnect(GUICircuit *gCircuit, IDType wireId,
 	bool isInput = gate->isConnectionInput(hotspot);
 
 	// Connect each of wire's bus-lines to its corresponding gate hotspot.
-	for (int i = 0; i < internalHotspots.size(); i++) {
+	for (int i = 0; i < (int)internalHotspots.size(); i++) {
 		if (isInput) {
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT,
-				new klsMessage::Message_SET_GATE_INPUT(gateId, internalHotspots[i], wireIds[i])));
+			gCircuit->sendMessageToCore(
+				new Message_SET_GATE_INPUT(gateId, internalHotspots[i], wireIds[i]));
 		}
 		else {
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT,
-				new klsMessage::Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], wireIds[i])));
+			gCircuit->sendMessageToCore(
+				new Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], wireIds[i]));
 		}
 	}
 }
@@ -158,7 +160,7 @@ void cmdConnectWire::sendMessagesToDisconnect(GUICircuit *gCircuit,
 		internalHotspots.push_back(hotspot);
 	}
 	else {
-		for (int i = 0; i < wireIds.size(); i++) {
+		for (int i = 0; i < (int)wireIds.size(); i++) {
 			internalHotspots.push_back(hotspot + "_" + to_string(i));
 		}
 	}
@@ -166,14 +168,14 @@ void cmdConnectWire::sendMessagesToDisconnect(GUICircuit *gCircuit,
 	bool isInput = gate->isConnectionInput(hotspot);
 
 	// Disconnect each of wire's bus-lines from its corresponding gate hotspot.
-	for (int i = 0; i < internalHotspots.size(); i++) {
+	for (int i = 0; i < (int)internalHotspots.size(); i++) {
 		if (isInput) {
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT,
-				new klsMessage::Message_SET_GATE_INPUT(gateId, internalHotspots[i], 0, true)));
+			gCircuit->sendMessageToCore(
+				new Message_SET_GATE_INPUT(gateId, internalHotspots[i], 0, true));
 		}
 		else {
-			gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT,
-				new klsMessage::Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], 0, true)));
+			gCircuit->sendMessageToCore(
+				new Message_SET_GATE_OUTPUT(gateId, internalHotspots[i], 0, true));
 		}
 	}
 }
