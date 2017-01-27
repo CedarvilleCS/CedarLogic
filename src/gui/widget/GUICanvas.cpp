@@ -12,7 +12,7 @@
 #include <sstream>
 #include "../MainApp.h"
 #include "../dialog/paramDialog.h"
-#include "../klsClipboard.h"
+#include "../parse/klsClipboard.h"
 #include "../circuit/guiWire.h"
 #include "../circuit/GUICircuit.h"
 #include "../circuit/gate/gateHotspot.h"

@@ -12,7 +12,7 @@
 #include <cmath>
 #include <stack>
 #include "gate/guiGate.h"
-#include "../XMLParser.h"
+#include "../parse/XMLParser.h"
 #include "../gl_defs.h"
 
 #include "../MainApp.h"

@@ -15,7 +15,7 @@
 #include "wx/checkbox.h"
 #include "wx/textctrl.h"
 #include "wx/valgen.h"
-#include "../CircuitParse.h"
+#include "../parse/CircuitParse.h"
 #include "../commands.h"
 #include <sstream>
 #include "../thread/Message.h"

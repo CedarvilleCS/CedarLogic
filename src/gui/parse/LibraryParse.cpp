@@ -10,7 +10,7 @@
 
 #include "LibraryParse.h"
 #include "wx/msgdlg.h"
-#include "MainApp.h"
+#include "../MainApp.h"
 
 // Included for sin and cos in <circle> tags:
 #include <cmath>

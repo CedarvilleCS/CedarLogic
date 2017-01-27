@@ -1,7 +1,7 @@
 
 #include "guiGateRAM.h"
 #include <sstream>
-#include "../../XMLParser.h"
+#include "../../parse/XMLParser.h"
 #include "../../dialog/RamPopupDialog.h"
 
 using namespace std;

@@ -21,7 +21,7 @@
 #include "wx/help.h"
 #include "wx/fs_zip.h"
 #include "../logic/logic_values.h"
-#include "LibraryParse.h"
+#include "parse/LibraryParse.h"
 #include "gl_defs.h"
 
 class MainFrame;
