@@ -11,11 +11,11 @@
 #include "guiWire.h"
 #include <cmath>
 #include <stack>
-#include "guiGate.h"
-#include "../XMLParser.h"
+#include "gate/guiGate.h"
+#include "../parse/XMLParser.h"
 #include "../gl_defs.h"
 
-class MainApp;
+#include "../MainApp.h"
 DECLARE_APP(MainApp)
 
 // Returns distance from p1 to p2
@@ -439,7 +439,7 @@ void guiWire::setState(vector<StateType> state) {
 };
 
 void guiWire::setSubState(IDType buslineId, StateType state) {
-	for (int i = 0; i < this->state.size(); i++) {
+	for (int i = 0; i < (int)this->state.size(); i++) {
 		if (ids[i] == buslineId) {
 			this->state[i] = state;
 		}

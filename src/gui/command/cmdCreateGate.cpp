@@ -1,10 +1,11 @@
 
 #include "cmdCreateGate.h"
 #include "../circuit/GUICircuit.h"
-#include "../circuit/guiGate.h"
+#include "../circuit/gate/guiGate.h"
 #include "../widget/GUICanvas.h"
 #include "../MainApp.h"
 #include "cmdSetParams.h"
+#include "../thread/Message.h"
 
 DECLARE_APP(MainApp)
 

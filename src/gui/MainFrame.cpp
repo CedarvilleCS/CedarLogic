@@ -18,7 +18,7 @@
 #include "wx/toolbar.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"
-#include "CircuitParse.h"
+#include "parse/CircuitParse.h"
 #include "OscopeFrame.h"
 #include "wx/docview.h"
 #include "commands.h"

@@ -9,19 +9,20 @@
 *****************************************************************************/
 
 #include "CircuitParse.h"
-#include "OscopeFrame.h"
-#include "MainApp.h"
+#include "../OscopeFrame.h"
+#include "../MainApp.h"
 #include <fstream>
 #include <sstream>
 
 #include "XMLParser.h"
-#include "circuit/guiGate.h"
-#include "circuit/guiWire.h"
-#include "circuit/GUICircuit.h"
-#include "widget/GUICanvas.h"
+#include "../circuit/gate/guiGate.h"
+#include "../circuit/guiWire.h"
+#include "../circuit/GUICircuit.h"
+#include "../widget/GUICanvas.h"
 #include <map>
 #include <unordered_map>
-#include "../version.h"
+#include "../../version.h"
+#include "../command/cmdConnectWire.h"
 
 DECLARE_APP(MainApp)
 
