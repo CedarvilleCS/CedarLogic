@@ -115,6 +115,8 @@ void MainApp::loadSettings() {
 		}
 	}
 	
+
+
 	string settingsIni = pathToExe + "res/settings.ini";
 	ifstream iniFile( settingsIni.c_str(), ios::in );
 	
