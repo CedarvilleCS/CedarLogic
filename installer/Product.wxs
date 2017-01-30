@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   
-	<Product Name="CedarLogic"
+  <Product Name="CedarLogic"
            Manufacturer="CedarLogic Team"
            Version="2.0.0.0"
            Id="76aef29b-05bb-474b-8ed4-cdc27f7798d8"
@@ -9,6 +9,7 @@
            Language="1033"
            Codepage="1252">
     
+    <!--Still not sure what a package is, but here its description-->
     <Package Id="*"
              Description=""
              Comments=""
@@ -19,7 +20,26 @@
              Compressed="yes"/>
 
     <!--Embed compressed installer files into the *.msi-->
-    <Media Id="1" Cabinet="files.cab" EmbedCab="yes" />
+    <Media Id="1"
+           Cabinet="files.cab"
+           EmbedCab="yes" />
+
+    <!--Specify installer source directories-->
+    <Directory Id="TARGETDIR" FileSource="Release">
+      <Directory Name="res">
+        <Directory Name="bitmap" />
+      </Directory>
+    </Directory>
+    
+    <!--Specify installer destination directories-->
+    <Directory Id='ProgramFilesFolder'>
+      <Directory Id='INSTALLDIR' Name='CedarLogic'>
+        <Directory Name="res">
+          <Directory Name="bitmap" />
+        </Directory>
+      </Directory>
+    </Directory>
+    
     
     <!--Specify files to deploy-->
     <Directory Id="TARGETDIR" FileSource="Release">
@@ -51,6 +71,6 @@
       </Directory>
     </Directory>
 
-	</Product>
+  </Product>
   
 </Wix>
