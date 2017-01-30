@@ -16,7 +16,7 @@
 #include "wx/timer.h"
 #include "wx/thread.h"
 #include "wx/settings.h"
-#include "CircuitParse.h"
+#include "parse/CircuitParse.h"
 #include "wx/combobox.h"
 #include "wx/clipbrd.h"
 #include "wx/filedlg.h"

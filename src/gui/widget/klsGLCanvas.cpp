@@ -12,6 +12,8 @@
 #include "../MainApp.h"
 #include "../dialog/paramDialog.h"
 #include "../GLFont/glfont2.h"
+#include "../gl_text.h"
+#include "klsMiniMap.h"
 
 // Included to use the min() and max() templates:
 #include <algorithm>
