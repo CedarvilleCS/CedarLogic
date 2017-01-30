@@ -1,57 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   
-	<Product Id="*"
-           Name="installer"
+	<Product Name="CedarLogic"
+           Manufacturer="CedarLogic Team"
+           Version="2.0.0.0"
+           Id="76aef29b-05bb-474b-8ed4-cdc27f7798d8"
+           UpgradeCode="35f714db-fbc3-4a5b-b447-9dadd5723c47"
            Language="1033"
-           Version="1.0.0.0"
-           Manufacturer="Cedar Logic Developers"
-           UpgradeCode="87c00fb3-8837-445e-b79c-6f2757fd7dcf">
+           Codepage="1252">
     
-    <Package InstallerVersion="200"
-             Compressed="yes"
-             InstallScope="perMachine" />
+    <Package Id="*"
+             Description=""
+             Comments=""
+             Manufacturer="CedarLogic Team"
+             InstallerVersion="200"
+             Languages="1033"
+             SummaryCodepage="1252"
+             Compressed="yes"/>
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <!--Embed compressed installer files into the *.msi-->
+    <Media Id="1" Cabinet="files.cab" EmbedCab="yes" />
     
-    <MediaTemplate EmbedCab="yes" />
-
-		<Feature Id="ProductFeature" Title="installer" Level="1">
-			<ComponentGroupRef Id="Executable" />
-      <ComponentGroupRef Id="Resources" />
-		</Feature>
-	</Product>
-  
-  
-  
-  <!-- Folders -->
-	<Fragment>
-		<Directory Id="TARGETDIR">
-			<Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALL_FOLDER" Name="Cedar Logic 2.0">
-          <Directory Id="RESOURCE_FOLDER" Name="res">
-            <Directory Id="BITMAP_FOLDER" Name="bitmap" />
-          </Directory>
+    <!--Specify files to deploy-->
+    <Directory Id="TARGETDIR" FileSource="Release">
+      <File Name="CedarLogic.exe" />
+      <Directory Name="res">
+        <File Name="arial.glf" />
+        <File Name="cl_gatedefs.xml" />
+        <File Name="KLS_Logic.chm" />
+        <Directory Name="bitmap">
+          <File Name="blackbox.bmp" />
+          <File Name="copy.bmp" />
+          <File Name="cut.bmp" />
+          <File Name="help.bmp" />
+          <File Name="locked.bmp" />
+          <File Name="new.bmp" />
+          <File Name="newtab.bmp" />
+          <File Name="open.bmp" />
+          <File Name="paste.bmp" />
+          <File Name="pause.bmp" />
+          <File Name="play.bmp" />
+          <File Name="print.bmp" />
+          <File Name="redo.bmp" />
+          <File Name="save.bmp" />
+          <File Name="step.bmp" />
+          <File Name="undo.bmp" />
+          <File Name="zoomin.bmp" />
+          <File Name="zoomout.bmp" />
         </Directory>
-			</Directory>
-		</Directory>
-	</Fragment>
+      </Directory>
+    </Directory>
 
-
-
-  <!-- Files -->
-	<Fragment>
-    <ComponentGroup Id="FILES">
-		  <Component Directory="INSTALL_FOLDER">
-        <File Source="" />
-		  </Component>
-      <Component Directory="RESOURCE_FOLDER">
-        <File Source="" />
-      </Component>
-      <Component Directory="BITMAP_FOLDER">
-        <File Source="" />
-      </Component>
-    </ComponentGroup>
-	</Fragment>
+	</Product>
   
 </Wix>
