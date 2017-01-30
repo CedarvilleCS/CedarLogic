@@ -24,52 +24,29 @@
            Cabinet="files.cab"
            EmbedCab="yes" />
 
-    <!--Specify installer source directories-->
-    <Directory Id="TARGETDIR" FileSource="Release">
-      <Directory Name="res">
-        <Directory Name="bitmap" />
+    <!--List installer destination folders-->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLDIR" Name="CedarLogic" />
       </Directory>
-    </Directory>
-    
-    <!--Specify installer destination directories-->
-    <Directory Id='ProgramFilesFolder'>
-      <Directory Id='INSTALLDIR' Name='CedarLogic'>
-        <Directory Name="res">
-          <Directory Name="bitmap" />
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="MENUDIR" Name="CedarLogic">
+          
         </Directory>
       </Directory>
-    </Directory>
-    
-    
-    <!--Specify files to deploy-->
-    <Directory Id="TARGETDIR" FileSource="Release">
-      <File Name="CedarLogic.exe" />
-      <Directory Name="res">
-        <File Name="arial.glf" />
-        <File Name="cl_gatedefs.xml" />
-        <File Name="KLS_Logic.chm" />
-        <Directory Name="bitmap">
-          <File Name="blackbox.bmp" />
-          <File Name="copy.bmp" />
-          <File Name="cut.bmp" />
-          <File Name="help.bmp" />
-          <File Name="locked.bmp" />
-          <File Name="new.bmp" />
-          <File Name="newtab.bmp" />
-          <File Name="open.bmp" />
-          <File Name="paste.bmp" />
-          <File Name="pause.bmp" />
-          <File Name="play.bmp" />
-          <File Name="print.bmp" />
-          <File Name="redo.bmp" />
-          <File Name="save.bmp" />
-          <File Name="step.bmp" />
-          <File Name="undo.bmp" />
-          <File Name="zoomin.bmp" />
-          <File Name="zoomout.bmp" />
-        </Directory>
+
+      <Directory Id="DesktopFolder">
+        
       </Directory>
+      
     </Directory>
+    
+    <!--List minimal install files-->
+    <Component Id="ProgramAndResources" Guid="c231dd24-bbbd-4ea4-bcc6-204cdc02d744">
+      <File Name="CedarLogic.exe" Source="Release/CedarLogic.exe" />
+    </Component>
 
   </Product>
   
