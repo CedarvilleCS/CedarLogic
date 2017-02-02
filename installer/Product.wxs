@@ -47,39 +47,38 @@
     <!--List components-->
     <DirectoryRef Id="INSTALLDIR">
       <Component Id="Executable" Guid="c231dd24-bbbd-4ea4-bcc6-204cdc02d744">
-        <File Name="CedarLogic.exe" Source="../Release/CedarLogic.exe" />
+        <File Name="CedarLogic.exe" Source="../$(var.Configuration)/CedarLogic.exe" />
       </Component>
     </DirectoryRef>
 
     <DirectoryRef Id="ResourceFolder">
       <Component Id="Resources" Guid="532fc841-bb67-453b-b60c-99f59b4fc9c7">
-        <File Name="arial.glf" Source="../Release/res/arial.glf" />
-        <File Name="cl_gatedefs.xml" Source="../Release/res/cl_gatedefs.xml" />
-        <File Name="KLS_Logic.chm" Source="../Release/res/KLS_Logic.chm" />
-        <File Name="settings.ini" Source="../Release/res/settings.ini" />
+        <File Name="arial.glf" Source="../$(var.Configuration)/res/arial.glf" />
+        <File Name="cl_gatedefs.xml" Source="../$(var.Configuration)/res/cl_gatedefs.xml" />
+        <File Name="KLS_Logic.chm" Source="../$(var.Configuration)/res/KLS_Logic.chm" />
       </Component>
     </DirectoryRef>
     
     <DirectoryRef Id="BitmapsFolder">
       <Component Id="Bitmaps" Guid="61e26541-a54a-42de-a0ff-1add7f2f3828">
-        <File Name="blackbox.bmp" Source="../Release/res/bitmaps/blackbox.bmp" />
-        <File Name="copy.bmp" Source="../Release/res/bitmaps/copy.bmp" />
-        <File Name="cut.bmp" Source="../Release/res/bitmaps/cut.bmp" />
-        <File Name="help.bmp" Source="../Release/res/bitmaps/help.bmp" />
-        <File Name="locked.bmp" Source="../Release/res/bitmaps/locked.bmp" />
-        <File Name="new.bmp" Source="../Release/res/bitmaps/new.bmp" />
-        <File Name="newtab.bmp" Source="../Release/res/bitmaps/newtab.bmp" />
-        <File Name="open.bmp" Source="../Release/res/bitmaps/open.bmp" />
-        <File Name="paste.bmp" Source="../Release/res/bitmaps/paste.bmp" />
-        <File Name="pause.bmp" Source="../Release/res/bitmaps/pause.bmp" />
-        <File Name="play.bmp" Source="../Release/res/bitmaps/play.bmp" />
-        <File Name="print.bmp" Source="../Release/res/bitmaps/print.bmp" />
-        <File Name="redo.bmp" Source="../Release/res/bitmaps/redo.bmp" />
-        <File Name="save.bmp" Source="../Release/res/bitmaps/save.bmp" />
-        <File Name="step.bmp" Source="../Release/res/bitmaps/step.bmp" />
-        <File Name="undo.bmp" Source="../Release/res/bitmaps/undo.bmp" />
-        <File Name="zoomin.bmp" Source="../Release/res/bitmaps/zoomin.bmp" />
-        <File Name="zoomout.bmp" Source="../Release/res/bitmaps/zoomout.bmp" />
+        <File Name="blackbox.bmp" Source="../$(var.Configuration)/res/bitmaps/blackbox.bmp" />
+        <File Name="copy.bmp" Source="../$(var.Configuration)/res/bitmaps/copy.bmp" />
+        <File Name="cut.bmp" Source="../$(var.Configuration)/res/bitmaps/cut.bmp" />
+        <File Name="help.bmp" Source="../$(var.Configuration)/res/bitmaps/help.bmp" />
+        <File Name="locked.bmp" Source="../$(var.Configuration)/res/bitmaps/locked.bmp" />
+        <File Name="new.bmp" Source="../$(var.Configuration)/res/bitmaps/new.bmp" />
+        <File Name="newtab.bmp" Source="../$(var.Configuration)/res/bitmaps/newtab.bmp" />
+        <File Name="open.bmp" Source="../$(var.Configuration)/res/bitmaps/open.bmp" />
+        <File Name="paste.bmp" Source="../$(var.Configuration)/res/bitmaps/paste.bmp" />
+        <File Name="pause.bmp" Source="../$(var.Configuration)/res/bitmaps/pause.bmp" />
+        <File Name="play.bmp" Source="../$(var.Configuration)/res/bitmaps/play.bmp" />
+        <File Name="print.bmp" Source="../$(var.Configuration)/res/bitmaps/print.bmp" />
+        <File Name="redo.bmp" Source="../$(var.Configuration)/res/bitmaps/redo.bmp" />
+        <File Name="save.bmp" Source="../$(var.Configuration)/res/bitmaps/save.bmp" />
+        <File Name="step.bmp" Source="../$(var.Configuration)/res/bitmaps/step.bmp" />
+        <File Name="undo.bmp" Source="../$(var.Configuration)/res/bitmaps/undo.bmp" />
+        <File Name="zoomin.bmp" Source="../$(var.Configuration)/res/bitmaps/zoomin.bmp" />
+        <File Name="zoomout.bmp" Source="../$(var.Configuration)/res/bitmaps/zoomout.bmp" />
       </Component>
     </DirectoryRef>
 
