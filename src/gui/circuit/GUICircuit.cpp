@@ -280,6 +280,8 @@ void GUICircuit::parseMessage(Message *message) {
 		}
 		case MessageType::COMPLETE_INTERIM_STEP: {// COMPLETE INTERIM STEP - UPDATE OSCOPE
 			myOscope->UpdateData();
+			/* CB: Updated should render to fix chaotic display issues due to oscope*/
+			shouldRender = true;
 			break;
 		}
 		default:
