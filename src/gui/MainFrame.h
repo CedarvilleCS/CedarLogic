@@ -62,7 +62,6 @@ enum
 class MainFrame : public wxFrame {
 public:
     // ctor(s)
-	MainFrame(const wxString& title, string cmdFilename = "");
 	MainFrame(const wxString& title, string cmdFilename = "", bool blackbox = false, wxSize size = wxSize(1800, 900));
 	virtual ~MainFrame();
 	
@@ -105,15 +104,11 @@ public:
 	void OnRequestAFeature(wxCommandEvent& event);
 	void OnDownloadLatestVersion(wxCommandEvent& event);
 	
-	wxMenu buildFileMenu();
-	wxMenu buildEditMenu();
-	wxMenu buildViewMenu();
-	wxMenu buildHelpMenu();
-	void appendFileBase(wxMenu* menu);
-	void appendEditBase(wxMenu* menu);
-
-	wxToolBar buildToolBar();
-	void appendBaseTools(wxToolBar& tools);
+	wxMenu* buildFileMenu();
+	wxMenu* buildEditMenu();
+	wxMenu* buildViewMenu();
+	wxMenu* buildHelpMenu();
+	wxToolBar* buildToolBar();
 
 	void saveSettings( void );
 	

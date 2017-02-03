@@ -80,11 +80,6 @@ END_EVENT_TABLE()
 // Global print data object:
 wxPrintData *g_printData = (wxPrintData*) NULL;
 
-MainFrame::MainFrame(const wxString& title, string cmdFilename)
-{
-	MainFrame(title, cmdFilename, false);
-}
-
 MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, wxSize size)
        : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, size)
 {
@@ -100,34 +95,14 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, w
 	//////////////////////////////////////////////////////////////////////////
     // create a menu bar
 	//////////////////////////////////////////////////////////////////////////
-    wxMenu *fileMenu = new wxMenu; // FILE MENU
+    wxMenu *fileMenu = buildFileMenu(); // FILE MENU
 	
+	wxMenu *editMenu = buildEditMenu(); // EDIT MENU
 
-    wxMenu *viewMenu = new wxMenu; // VIEW MENU
-    viewMenu->Append(View_Oscope, "&Oscope\tCtrl+G", "Show the Oscope");
-    wxMenu *settingsMenu = new wxMenu;
-    settingsMenu->AppendCheckItem(View_Gridline, "Display Gridlines", "Toggle gridline display");
-    settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
-    viewMenu->AppendSeparator();
-    viewMenu->AppendSubMenu(settingsMenu, "Settings");
+    wxMenu *viewMenu = buildViewMenu(); // VIEW MENU
+
+    wxMenu *helpMenu = buildHelpMenu(); // HELP MENU
     
-    wxMenu *helpMenu = new wxMenu; // HELP MENU
-    helpMenu->Append(wxID_HELP_CONTENTS, "&Contents...\tF1", "Show Help system");
-	helpMenu->AppendSeparator();
-	helpMenu->Append(Help_ReportABug, "Report a bug...");
-	helpMenu->Append(Help_RequestAFeature, "Request a feature...");
-	helpMenu->Append(Help_DownloadLatestVersion, "Download latest version...");
-	helpMenu->AppendSeparator();
-    helpMenu->Append(wxID_ABOUT, "&About...", "Show about dialog");
-
-	wxMenu *editMenu = new wxMenu; // EDIT MENU
-	editMenu->Append(wxID_UNDO, "Undo\tCtrl+Z", "Undo last operation");
-	editMenu->Append(wxID_REDO, "Redo", "Redo last operation");
-	editMenu->AppendSeparator();
-	editMenu->Append(Tool_NewTab, "New Tab\tCtrl+T", "New Tab");
-	editMenu->AppendSeparator();
-	editMenu->Append(wxID_COPY, "Copy\tCtrl+C", "Copy selection to clipboard");
-	editMenu->Append(wxID_PASTE, "Paste\tCtrl+V", "Paste selection from clipboard");
 	
     // now append the freshly created menu to the menu bar...
     wxMenuBar *menuBar = new wxMenuBar();
@@ -159,57 +134,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, w
 	//////////////////////////////////////////////////////////////////////////
     // create a toolbar
 	//////////////////////////////////////////////////////////////////////////
-	toolBar = new wxToolBar(this, TOOLBAR_ID, wxPoint(0,0), wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER| wxTB_FLAT);
-
-	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
-	// to read the bitmaps from file directly, without the use of a resource file.  KAS
-	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "blackbox", "confirm", "cancel", "applyall"};
-	wxBitmap *bmp[19];
-
-	for (int  i = 0; i < 18; i++) {
-		bitmaps[i] = "res/bitmaps/" + bitmaps[i] + ".bmp";
-		wxFileInputStream in(bitmaps[i]);
-		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
-	}
-
-    int w = bmp[0]->GetWidth(),
-        h = bmp[0]->GetHeight();
-    toolBar->SetToolBitmapSize(wxSize(w, h));
-	toolBar->AddTool(wxID_NEW, "New", *bmp[0], "New");
-	toolBar->AddTool(wxID_OPEN, "Open", *bmp[1], "Open");
-	toolBar->AddTool(wxID_SAVE, "Save", *bmp[2], "Save"); 
-	toolBar->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
-	toolBar->AddSeparator();
-	toolBar->AddTool(wxID_UNDO, "Undo", *bmp[3], "Undo");
-	toolBar->AddTool(wxID_REDO, "Redo", *bmp[4], "Redo");
-	toolBar->AddSeparator();
-	toolBar->AddTool(wxID_COPY, "Copy", *bmp[5], "Copy");
-	toolBar->AddTool(wxID_PASTE, "Paste", *bmp[6], "Paste");
-	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_ZoomIn, "Zoom In", *bmp[11], "Zoom In");
-	toolBar->AddTool(Tool_ZoomOut, "Zoom Out", *bmp[12], "Zoom Out");
-	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_Pause, "Pause/Resume", *bmp[9], "Pause/Resume", wxITEM_CHECK);
-	toolBar->AddTool(Tool_Step, "Step", *bmp[10], "Step");
-	timeStepModSlider = new wxSlider(toolBar, wxID_ANY, wxGetApp().timeStepMod, 1, 500, wxDefaultPosition, wxSize(125,-1), wxSL_HORIZONTAL|wxSL_AUTOTICKS);
-	ostringstream oss;
-	oss << wxGetApp().timeStepMod << "ms";
-	timeStepModVal = new wxStaticText(toolBar, wxID_ANY, (const wxChar *)oss.str().c_str(), wxDefaultPosition, wxSize(45, -1), wxSUNKEN_BORDER | wxALIGN_RIGHT | wxST_NO_AUTORESIZE);  // added cast KAS
-	toolBar->AddControl( timeStepModSlider );
-	toolBar->AddControl( timeStepModVal );
-	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_Lock, "Lock state", *bmp[13], "Lock state", wxITEM_CHECK);
-	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_BlackBox, "Black Box", *bmp[15], "Black Box");
-	toolBar->AddSeparator();
-	toolBar->AddTool(wxID_ABOUT, "About", *bmp[8], "About");
-	SetToolBar(toolBar);
-	toolBar->Show(true);
-
-	//finished with the bitmaps, so we can release the pointers  KAS
-	for (int i = 0; i < 19; i++) {
-		delete bmp[i];
-	}
+	toolBar = buildToolBar();
 
     CreateStatusBar(2);
     SetStatusText("");
@@ -305,63 +230,154 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, w
 	//DynamicGate* dg = new DynamicGate(currentCanvas, gCircuit, gCircuit->getNextAvailableGateID(), 3, 0, 0, "AND");
 }
 
-void buildFileMenu() {
+wxMenu* MainFrame::buildFileMenu() {
 	wxMenu *fileMenu = new wxMenu;
 
-	fileMenu->Append(wxID_NEW, "&New\tCtrl+N", "Create new circuit");
-	fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O", "Open circuit");
-	fileMenu->Append(wxID_SAVE, "&Save\tCtrl+S", "Save circuit");
-	fileMenu->Append(wxID_SAVEAS, "Save &As", "Save circuit");
+	if (!isBlackBox) {
+		fileMenu->Append(wxID_NEW, "&New\tCtrl+N", "Create new circuit");
+		fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O", "Open circuit");
+		fileMenu->Append(wxID_SAVE, "&Save\tCtrl+S", "Save circuit");
+		fileMenu->Append(wxID_SAVEAS, "Save &As", "Save circuit");
+		
+	} else {
+		fileMenu->Append(File_Apply, "&Apply", "Apply to this instance");
+		fileMenu->Append(File_ApplyAll, "&Apply All", "Apply to this black box type");
+		fileMenu->Append(File_Cancel, "&Cancel", "Cancel changes");
+	}
+
 	fileMenu->AppendSeparator();
-	
+	fileMenu->Append(File_Export, "Export to Image");
+	fileMenu->Append(File_ClipCopy, "Copy Canvas to Clipboard");
 	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_EXIT, "E&xit\tAlt+X", "Quit this program");
-}
-void buildEditMenu() {
 
-}
-void buildViewMenu() {
+	if (!isBlackBox) {
+		fileMenu->Append(wxID_EXIT, "E&xit\tAlt+X", "Quit this program");
+	} else {
+		fileMenu->Append(wxID_CLOSE_FRAME, "&Close", "Close black box editor");
+	}
 
+	return fileMenu;
 }
-void buildHelpMenu() {
+wxMenu* MainFrame::buildEditMenu() {
+	wxMenu *editMenu = new wxMenu;
+	editMenu->Append(wxID_UNDO, "Undo\tCtrl+Z", "Undo last operation");
+	editMenu->Append(wxID_REDO, "Redo", "Redo last operation");
+	editMenu->AppendSeparator();
 
+	if (!isBlackBox) {
+		editMenu->Append(Tool_NewTab, "New Tab\tCtrl+T", "New Tab");
+		editMenu->AppendSeparator();
+	}
+
+	editMenu->Append(wxID_COPY, "Copy\tCtrl+C", "Copy selection to clipboard");
+	editMenu->Append(wxID_PASTE, "Paste\tCtrl+V", "Paste selection from clipboard");
+
+	return editMenu;
 }
-void appendFileBase(wxMenu* menu) {
-	menu->Append(File_Export, "Export to Image");
-	menu->Append(File_ClipCopy, "Copy Canvas to Clipboard");
+wxMenu* MainFrame::buildViewMenu() {
+	wxMenu* viewMenu = new wxMenu;
+	viewMenu->Append(View_Oscope, "&Oscope\tCtrl+G", "Show the Oscope");
+	wxMenu *settingsMenu = new wxMenu;
+	settingsMenu->AppendCheckItem(View_Gridline, "Display Gridlines", "Toggle gridline display");
+	settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
+	viewMenu->AppendSeparator();
+	viewMenu->AppendSubMenu(settingsMenu, "Settings");
+	return viewMenu;
 }
-void appendEditBase(wxMenu* menu) {
-
+wxMenu* MainFrame::buildHelpMenu() {
+	wxMenu* helpMenu = new wxMenu;
+	helpMenu->Append(wxID_HELP_CONTENTS, "&Contents...\tF1", "Show Help system");
+	helpMenu->AppendSeparator();
+	helpMenu->Append(Help_ReportABug, "Report a bug...");
+	helpMenu->Append(Help_RequestAFeature, "Request a feature...");
+	helpMenu->Append(Help_DownloadLatestVersion, "Download latest version...");
+	helpMenu->AppendSeparator();
+	helpMenu->Append(wxID_ABOUT, "&About...", "Show about dialog");
+	return helpMenu;
 }
+wxToolBar* MainFrame::buildToolBar() {
+	wxToolBar* tools = new wxToolBar(this, TOOLBAR_ID, wxPoint(0, 0), wxDefaultSize, wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT);
 
-void buildToolBar() {
+	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
+	// to read the bitmaps from file directly, without the use of a resource file.  KAS
+	string    bitmaps[] = { "new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "blackbox", "apply", "applyall", "cancel"};
+	wxBitmap *bmp[19];
 
-}
-void appendBaseTools(wxToolBar& tools) {
+	for (int i = 0; i < 19; i++) {
+		bitmaps[i] = "res/bitmaps/" + bitmaps[i] + ".bmp";
+		wxFileInputStream in(bitmaps[i]);
+		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
+	}
 
+	int w = bmp[0]->GetWidth(),
+		h = bmp[0]->GetHeight();
+	tools->SetToolBitmapSize(wxSize(w, h));
+
+	if (!isBlackBox) {
+		tools->AddTool(wxID_NEW, "New", *bmp[0], "New");
+		tools->AddTool(wxID_OPEN, "Open", *bmp[1], "Open");
+		tools->AddTool(wxID_SAVE, "Save", *bmp[2], "Save");
+		tools->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
+	} else {
+		tools->AddTool(File_Apply, "Apply", *bmp[16], "Apply");
+		tools->AddTool(File_ApplyAll, "Apply All", *bmp[17], "Apply All");
+		tools->AddTool(File_Cancel, "Cancel", *bmp[18], "Cancel");
+	}
+	tools->AddSeparator();
+	tools->AddTool(wxID_UNDO, "Undo", *bmp[3], "Undo");
+	tools->AddTool(wxID_REDO, "Redo", *bmp[4], "Redo");
+	tools->AddSeparator();
+	tools->AddTool(wxID_COPY, "Copy", *bmp[5], "Copy");
+	tools->AddTool(wxID_PASTE, "Paste", *bmp[6], "Paste");
+	tools->AddSeparator();
+	tools->AddTool(Tool_ZoomIn, "Zoom In", *bmp[11], "Zoom In");
+	tools->AddTool(Tool_ZoomOut, "Zoom Out", *bmp[12], "Zoom Out");
+	tools->AddSeparator();
+	tools->AddTool(Tool_Pause, "Pause/Resume", *bmp[9], "Pause/Resume", wxITEM_CHECK);
+	tools->AddTool(Tool_Step, "Step", *bmp[10], "Step");
+	timeStepModSlider = new wxSlider(tools, wxID_ANY, wxGetApp().timeStepMod, 1, 500, wxDefaultPosition, wxSize(125, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS);
+	ostringstream oss;
+	oss << wxGetApp().timeStepMod << "ms";
+	timeStepModVal = new wxStaticText(tools, wxID_ANY, (const wxChar *)oss.str().c_str(), wxDefaultPosition, wxSize(45, -1), wxSUNKEN_BORDER | wxALIGN_RIGHT | wxST_NO_AUTORESIZE);  // added cast KAS
+	tools->AddControl(timeStepModSlider);
+	tools->AddControl(timeStepModVal);
+	tools->AddSeparator();
+	tools->AddTool(Tool_Lock, "Lock state", *bmp[13], "Lock state", wxITEM_CHECK);
+	tools->AddSeparator();
+	if (!isBlackBox) {
+		tools->AddTool(Tool_BlackBox, "Black Box", *bmp[15], "Black Box");
+		tools->AddSeparator();
+	}
+	tools->AddTool(wxID_ABOUT, "About", *bmp[8], "About");
+	SetToolBar(tools);
+	tools->Show(true);
+
+	//finished with the bitmaps, so we can release the pointers  KAS
+	for (int i = 0; i < 19; i++) {
+		delete bmp[i];
+	}
+
+	return tools;
 }
 
 MainFrame::~MainFrame() {
-	
-	saveSettings();
-	
+
 	stopTimers();
 
-	// Shut down the detached thread and wait for it to exit
-	wxGetApp().logicThread->Delete();
-	wxGetApp().saveThread->Delete();
+	if (!isBlackBox) {
+		// Shut down the detached thread and wait for it to exit
+		wxGetApp().logicThread->Delete();
+		wxGetApp().saveThread->Delete();
 
-	
-	wxGetApp().m_semAllDone.Wait();
-	
-	
-	
-	// Delete the various objects
-	delete wxGetApp().helpController;
-	wxGetApp().helpController = NULL;
-	
-	
-	
+		wxGetApp().m_semAllDone.Wait();
+
+		// Delete the various objects
+		delete wxGetApp().helpController;
+		wxGetApp().helpController = NULL;
+
+		saveSettings();
+	}
+
 	//Edit by Joshua Lansford 10/18/2007.
 	//Commented out the delete on the toolbar.
 	//wxWidets auto deletes toolBars.  See the destructor for
@@ -1079,6 +1095,18 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 }
 
 void MainFrame::OnBlackBox(wxCommandEvent& event) {
+}
+
+void MainFrame::OnApply(wxCommandEvent& event) {
+
+}
+
+void MainFrame::OnApplyAll(wxCommandEvent& event) {
+
+}
+
+void MainFrame::OnCancel(wxCommandEvent& event) {
+
 }
 
 void MainFrame::OnReportABug(wxCommandEvent& event) {
