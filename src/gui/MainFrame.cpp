@@ -37,6 +37,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(wxID_SAVEAS, MainFrame::OnSaveAs)
 	EVT_MENU(File_Export, MainFrame::OnExportBitmap)
 	EVT_MENU(File_ClipCopy, MainFrame::OnCopyToClipboard)
+	EVT_MENU(File_Apply, MainFrame::OnApply)
+	EVT_MENU(File_ApplyAll, MainFrame::OnApplyAll)
+	EVT_MENU(File_Cancel, MainFrame::OnCancel)
 	
 	EVT_MENU(wxID_UNDO, MainFrame::OnUndo)
 	EVT_MENU(wxID_REDO, MainFrame::OnRedo)
@@ -77,13 +80,18 @@ END_EVENT_TABLE()
 // Global print data object:
 wxPrintData *g_printData = (wxPrintData*) NULL;
 
-
 MainFrame::MainFrame(const wxString& title, string cmdFilename)
-       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(1800,900))
+{
+	MainFrame(title, cmdFilename, false);
+}
+
+MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, wxSize size)
+       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, size)
 {
     // set the frame icon
     //SetIcon(wxICON(sample));
 	currentCanvas = nullptr;
+	isBlackBox = blackbox;
 
 	// Set default locations
 	if (wxGetApp().appSettings.lastDir == "") lastDirectory = wxGetHomeDir();
@@ -93,15 +101,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     // create a menu bar
 	//////////////////////////////////////////////////////////////////////////
     wxMenu *fileMenu = new wxMenu; // FILE MENU
-	fileMenu->Append(wxID_NEW, "&New\tCtrl+N", "Create new circuit");
-	fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O", "Open circuit");
-	fileMenu->Append(wxID_SAVE, "&Save\tCtrl+S", "Save circuit");
-	fileMenu->Append(wxID_SAVEAS, "Save &As", "Save circuit");
-	fileMenu->AppendSeparator();
-	fileMenu->Append(File_Export, "Export to Image");
-	fileMenu->Append(File_ClipCopy, "Copy Canvas to Clipboard");
-	fileMenu->AppendSeparator();
-	fileMenu->Append(wxID_EXIT, "E&xit\tAlt+X", "Quit this program");
+	
 
     wxMenu *viewMenu = new wxMenu; // VIEW MENU
     viewMenu->Append(View_Oscope, "&Oscope\tCtrl+G", "Show the Oscope");
@@ -166,7 +166,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "blackbox", "confirm", "cancel", "applyall"};
 	wxBitmap *bmp[19];
 
-	for (int  i = 0; i < 19; i++) {
+	for (int  i = 0; i < 18; i++) {
 		bitmaps[i] = "res/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
@@ -303,6 +303,42 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 
 	// Colin: for testing dynamic gates
 	//DynamicGate* dg = new DynamicGate(currentCanvas, gCircuit, gCircuit->getNextAvailableGateID(), 3, 0, 0, "AND");
+}
+
+void buildFileMenu() {
+	wxMenu *fileMenu = new wxMenu;
+
+	fileMenu->Append(wxID_NEW, "&New\tCtrl+N", "Create new circuit");
+	fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O", "Open circuit");
+	fileMenu->Append(wxID_SAVE, "&Save\tCtrl+S", "Save circuit");
+	fileMenu->Append(wxID_SAVEAS, "Save &As", "Save circuit");
+	fileMenu->AppendSeparator();
+	
+	fileMenu->AppendSeparator();
+	fileMenu->Append(wxID_EXIT, "E&xit\tAlt+X", "Quit this program");
+}
+void buildEditMenu() {
+
+}
+void buildViewMenu() {
+
+}
+void buildHelpMenu() {
+
+}
+void appendFileBase(wxMenu* menu) {
+	menu->Append(File_Export, "Export to Image");
+	menu->Append(File_ClipCopy, "Copy Canvas to Clipboard");
+}
+void appendEditBase(wxMenu* menu) {
+
+}
+
+void buildToolBar() {
+
+}
+void appendBaseTools(wxToolBar& tools) {
+
 }
 
 MainFrame::~MainFrame() {

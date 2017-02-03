@@ -26,13 +26,15 @@
 #include "thread/autoSaveThread.h"
 #include "thread/threadLogic.h"
 
-
 class OscopeFrame;
 
 enum
 {
 	File_Export = 5901, // out of range of wxWidgets constants
 	File_ClipCopy,
+	File_Apply,
+	File_ApplyAll,
+	File_Cancel,
 	
 	View_Oscope,
 	View_Gridline,
@@ -60,7 +62,8 @@ enum
 class MainFrame : public wxFrame {
 public:
     // ctor(s)
-    MainFrame(const wxString& title, string cmdFilename = "");
+	MainFrame(const wxString& title, string cmdFilename = "");
+	MainFrame(const wxString& title, string cmdFilename = "", bool blackbox = false, wxSize size = wxSize(1800, 900));
 	virtual ~MainFrame();
 	
     // event handlers (these functions should _not_ be virtual)
@@ -72,6 +75,9 @@ public:
     void OnOpen(wxCommandEvent& event);
     void OnSave(wxCommandEvent& event);
     void OnSaveAs(wxCommandEvent& event);
+	void OnApply(wxCommandEvent& event);
+	void OnApplyAll(wxCommandEvent& event);
+	void OnCancel(wxCommandEvent& event);
 	void OnExportBitmap(wxCommandEvent& event);
 	void OnCopyToClipboard(wxCommandEvent& event);
 	void OnTimer(wxTimerEvent& event);
@@ -99,6 +105,16 @@ public:
 	void OnRequestAFeature(wxCommandEvent& event);
 	void OnDownloadLatestVersion(wxCommandEvent& event);
 	
+	wxMenu buildFileMenu();
+	wxMenu buildEditMenu();
+	wxMenu buildViewMenu();
+	wxMenu buildHelpMenu();
+	void appendFileBase(wxMenu* menu);
+	void appendEditBase(wxMenu* menu);
+
+	wxToolBar buildToolBar();
+	void appendBaseTools(wxToolBar& tools);
+
 	void saveSettings( void );
 	
 	void ResumeExecution ( void );
@@ -127,10 +143,12 @@ public:
 	wxBitmap getBitmap(bool withGrid);
 	
 private:
+
+	bool isBlackBox;
+
     // helper function - creates a new thread (but doesn't run it)
 	threadLogic *CreateThread();
 	autoSaveThread *CreateSaveThread(); //Julian
-	
 
 	vector< GUICanvas* > canvases;
 	GUICircuit* gCircuit;
