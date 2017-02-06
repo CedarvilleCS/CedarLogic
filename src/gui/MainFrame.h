@@ -167,7 +167,6 @@ private:
 	bool doOpenFile;
 	wxString lastDirectory;
 	wxString openedFilename;
-	unsigned int currentTempNum;
 
 	bool handlingEvent; //Julian: Prevents autosaving from occuring during an open/new/saveas/etc...
 	const string CRASH_FILENAME = "crashfile.temp"; //Julian: Filename to check.

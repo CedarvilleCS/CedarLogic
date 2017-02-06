@@ -77,9 +77,6 @@ END_EVENT_TABLE()
 
 #define ID_TEXTCTRL 5001
 
-// Global print data object:
-wxPrintData *g_printData = (wxPrintData*) NULL;
-
 MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, wxSize size)
        : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, size)
 {
@@ -121,6 +118,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, w
 	//////////////////////////////////////////////////////////////////////////
     // parse a gate library
 	//////////////////////////////////////////////////////////////////////////
+
 #ifndef _PRODUCTION_
 	string libPath = wxGetApp().pathToExe + "res/cl_gatedefs.xml";
 	//WARNING( "just so you know argv[0] == " );
@@ -128,8 +126,11 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, w
 #else
 	string libPath = wxGetApp().appSettings.gateLibFile;
 #endif
-	LibraryParse newLib(libPath);
-	wxGetApp().libParser = newLib;
+
+	if (!isBlackBox) {
+		LibraryParse newLib(libPath);
+		wxGetApp().libParser = newLib;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////
     // create a toolbar
@@ -158,27 +159,42 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, w
 	gCircuit->GetCommandProcessor()->SetEditMenu(editMenu);
 	gCircuit->GetCommandProcessor()->Initialize();
 
-	canvasBook = new wxAuiNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400), wxAUI_NB_CLOSE_ON_ACTIVE_TAB| wxAUI_NB_SCROLL_BUTTONS);
-	mainSizer->Add( canvasBook, wxSizerFlags(1).Expand().Border(wxALL, 0) );
+	GUICanvas* canvas;
 
-	//add 1 tab: Left loop to allow for different default
-	for (int i = 0; i < 1; i++) {
-		canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
-		ostringstream oss;
-		oss << "Page " << (i+1);
-		canvasBook->AddPage(canvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));  // KAS
+	if (!isBlackBox) {
+		canvasBook = new wxAuiNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400, 400), wxAUI_NB_CLOSE_ON_ACTIVE_TAB | wxAUI_NB_SCROLL_BUTTONS);
+		mainSizer->Add(canvasBook, wxSizerFlags(1).Expand().Border(wxALL, 0));
+
+		//add 1 tab: Left loop to allow for different default
+		for (int i = 0; i < 1; i++) {
+			canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
+			ostringstream oss;
+			oss << "Page " << (i + 1);
+			canvasBook->AddPage(canvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));  // KAS
+		}
+		currentCanvas = canvases[0];
+	}
+	else {
+		canvas = new GUICanvas(this, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
+		mainSizer->Add(canvas, wxSizerFlags(1).Expand().Border(wxALL, 0));
+		currentCanvas = canvas;
 	}
 
-	currentCanvas = canvases[0];
 	gCircuit->setCurrentCanvas(currentCanvas);
 	currentCanvas->setMinimap(miniMap);
-	mainSizer->Show(canvasBook);
+
+	if (!isBlackBox) {
+		mainSizer->Show(canvasBook);
+	}
+	else {
+		mainSizer->Show(canvas);
+	}
+	
 	currentCanvas->SetFocus();
 
 	SetSizer( mainSizer);
 		
 	threadLogic *thread = CreateThread();
-	autoSaveThread *autoThread = CreateSaveThread();
 	
     if ( thread->Run() != wxTHREAD_NO_ERROR )
     {
@@ -196,33 +212,31 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, w
 	gCircuit->setOscope(new OscopeFrame(this, "O-Scope", gCircuit));
 	
 	toolBar->Realize();
-
-	// Create the print data object:
-	g_printData = new wxPrintData;
-	g_printData->SetOrientation(wxLANDSCAPE);
 	
-	this->SetSize( wxGetApp().appSettings.mainFrameLeft, wxGetApp().appSettings.mainFrameTop, wxGetApp().appSettings.mainFrameWidth, wxGetApp().appSettings.mainFrameHeight );
-	
-	doOpenFile = (cmdFilename.size() > 0);
-	this->openedFilename = (const wxChar *)cmdFilename.c_str(); // KAS
+	if (!isBlackBox) {
+		this->SetSize(wxGetApp().appSettings.mainFrameLeft, wxGetApp().appSettings.mainFrameTop, wxGetApp().appSettings.mainFrameWidth, wxGetApp().appSettings.mainFrameHeight);
 
-	if (ifstream(CRASH_FILENAME)) {
-		wxMessageDialog dialog(this, "Oops! It seems like there may have been a crash.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
-		if (dialog.ShowModal() == wxID_YES)
-		{
-			doOpenFile = false;
-			openedFilename = "Recovered File";
-			load(CRASH_FILENAME);
-			this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
+		doOpenFile = (cmdFilename.size() > 0);
+		this->openedFilename = (const wxChar *)cmdFilename.c_str(); // KAS
+
+		if (ifstream(CRASH_FILENAME)) {
+			wxMessageDialog dialog(this, "Oops! It seems like there may have been a crash.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+			if (dialog.ShowModal() == wxID_YES)
+			{
+				doOpenFile = false;
+				openedFilename = "Recovered File";
+				load(CRASH_FILENAME);
+				this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
+			}
+			removeTempFile();
 		}
-		removeTempFile();
-	}
 
-	if (autoThread->Run() != wxTHREAD_NO_ERROR)
-	{
-		wxLogError("Autosave thread not started!");
+		autoSaveThread *autoThread = CreateSaveThread();
+		if (autoThread->Run() != wxTHREAD_NO_ERROR)
+		{
+			wxLogError("Autosave thread not started!");
+		}	
 	}
-	currentTempNum = 0;
 	handlingEvent = false;
 	wxInitAllImageHandlers(); //Julian: Added to allow saving all types of image files
 
@@ -460,7 +474,7 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	pauseTimers();
 
 	// Allow the user to save the file, unless we are in the midst of terminating the app!!, KAS 4/26/07	
-	if (commandProcessor->IsDirty() && !destroy) {
+	if (commandProcessor->IsDirty() && !destroy && !isBlackBox) {
 		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
 		switch (dialog.ShowModal()) {
 		case wxID_YES:
@@ -480,7 +494,7 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	
 	resumeTimers(20);
 
-	if (destroy)
+	if (destroy && !isBlackBox)
 	{
 		removeTempFile();
 	}
@@ -548,7 +562,6 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	currentCanvas->Update(); // Render();
 	this->SetTitle(VERSION_TITLE()); // KAS
 	removeTempFile();
-	currentTempNum++;
     openedFilename = "";
 
 	resumeTimers(20);
@@ -708,7 +721,7 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 
 	if (mainSizer == NULL) return;
 	
-	if ( doOpenFile ) {
+	if ( !isBlackBox && doOpenFile ) {
 		doOpenFile = false;
 		load((string)openedFilename);
 		this->SetTitle(VERSION_TITLE() + " - " + openedFilename );
@@ -975,6 +988,7 @@ void MainFrame::pauseTimers() {
 	wxGetApp().appSystemTime.Pause();
 	stopTimers();
 }
+
 void MainFrame::resumeTimers(int at) {
 	if (!(toolBar->GetToolState(Tool_Pause)))
 	{
