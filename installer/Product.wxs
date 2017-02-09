@@ -35,7 +35,7 @@
       </Directory>
       
       <Directory Id="ProgramMenuFolder">
-        <!-- <Directory Id="MENUDIR" Name="CedarLogic" /> -->
+        <Directory Id="MENUDIR" Name="CedarLogic" />
       </Directory>
       
       <Directory Id="DesktopFolder" />
@@ -53,35 +53,54 @@
 
     <DirectoryRef Id="ResourceFolder">
       <Component Id="Resources" Guid="532fc841-bb67-453b-b60c-99f59b4fc9c7">
-        <File Name="arial.glf" Source="../$(var.Configuration)/res/arial.glf" />
-        <File Name="cl_gatedefs.xml" Source="../$(var.Configuration)/res/cl_gatedefs.xml" />
-        <File Name="KLS_Logic.chm" Source="../$(var.Configuration)/res/KLS_Logic.chm" />
+        <File Name="arial.glf" Source="../res/arial.glf" />
+        <File Name="cl_gatedefs.xml" Source="../res/cl_gatedefs.xml" />
+        <File Name="KLS_Logic.chm" Source="../res/KLS_Logic.chm" />
       </Component>
     </DirectoryRef>
     
     <DirectoryRef Id="BitmapsFolder">
       <Component Id="Bitmaps" Guid="61e26541-a54a-42de-a0ff-1add7f2f3828">
-        <File Name="blackbox.bmp" Source="../$(var.Configuration)/res/bitmaps/blackbox.bmp" />
-        <File Name="copy.bmp" Source="../$(var.Configuration)/res/bitmaps/copy.bmp" />
-        <File Name="cut.bmp" Source="../$(var.Configuration)/res/bitmaps/cut.bmp" />
-        <File Name="help.bmp" Source="../$(var.Configuration)/res/bitmaps/help.bmp" />
-        <File Name="locked.bmp" Source="../$(var.Configuration)/res/bitmaps/locked.bmp" />
-        <File Name="new.bmp" Source="../$(var.Configuration)/res/bitmaps/new.bmp" />
-        <File Name="newtab.bmp" Source="../$(var.Configuration)/res/bitmaps/newtab.bmp" />
-        <File Name="open.bmp" Source="../$(var.Configuration)/res/bitmaps/open.bmp" />
-        <File Name="paste.bmp" Source="../$(var.Configuration)/res/bitmaps/paste.bmp" />
-        <File Name="pause.bmp" Source="../$(var.Configuration)/res/bitmaps/pause.bmp" />
-        <File Name="play.bmp" Source="../$(var.Configuration)/res/bitmaps/play.bmp" />
-        <File Name="print.bmp" Source="../$(var.Configuration)/res/bitmaps/print.bmp" />
-        <File Name="redo.bmp" Source="../$(var.Configuration)/res/bitmaps/redo.bmp" />
-        <File Name="save.bmp" Source="../$(var.Configuration)/res/bitmaps/save.bmp" />
-        <File Name="step.bmp" Source="../$(var.Configuration)/res/bitmaps/step.bmp" />
-        <File Name="undo.bmp" Source="../$(var.Configuration)/res/bitmaps/undo.bmp" />
-        <File Name="zoomin.bmp" Source="../$(var.Configuration)/res/bitmaps/zoomin.bmp" />
-        <File Name="zoomout.bmp" Source="../$(var.Configuration)/res/bitmaps/zoomout.bmp" />
+        <File Name="blackbox.bmp" Source="../res/bitmaps/blackbox.bmp" />
+        <File Name="copy.bmp" Source="../res/bitmaps/copy.bmp" />
+        <File Name="cut.bmp" Source="../res/bitmaps/cut.bmp" />
+        <File Name="help.bmp" Source="../res/bitmaps/help.bmp" />
+        <File Name="locked.bmp" Source="../res/bitmaps/locked.bmp" />
+        <File Name="new.bmp" Source="../res/bitmaps/new.bmp" />
+        <File Name="newtab.bmp" Source="../res/bitmaps/newtab.bmp" />
+        <File Name="open.bmp" Source="../res/bitmaps/open.bmp" />
+        <File Name="paste.bmp" Source="../res/bitmaps/paste.bmp" />
+        <File Name="pause.bmp" Source="../res/bitmaps/pause.bmp" />
+        <File Name="play.bmp" Source="../res/bitmaps/play.bmp" />
+        <File Name="print.bmp" Source="../res/bitmaps/print.bmp" />
+        <File Name="redo.bmp" Source="../res/bitmaps/redo.bmp" />
+        <File Name="save.bmp" Source="../res/bitmaps/save.bmp" />
+        <File Name="step.bmp" Source="../res/bitmaps/step.bmp" />
+        <File Name="undo.bmp" Source="../res/bitmaps/undo.bmp" />
+        <File Name="zoomin.bmp" Source="../res/bitmaps/zoomin.bmp" />
+        <File Name="zoomout.bmp" Source="../res/bitmaps/zoomout.bmp" />
       </Component>
     </DirectoryRef>
 
+    <DirectoryRef Id="MENUDIR">
+      <Component Id="StartFolder" Guid="ef60c6b6-9352-4da3-9460-7ae82a52681c">
+        
+        <!-- Shortcut to CedarLogic.exe. -->
+        <Shortcut Id="CedarLogicShortcut" Name="CedarLogic" Target="[INSTALLDIR]CedarLogic.exe" />
+        
+        <!-- This folder needs to be explicitly removed on uninstall because it is not INSTALLDIR. -->
+        <RemoveFolder Id="RemoveStartFolder" On="uninstall" />
+        
+        <!-- Start folders need a registry key so they know how to be uninstalled. -->
+        <RegistryValue Root="HKCU"
+                       Key="Software/CedarLogic/"
+                       Name="installed"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+        
+      </Component>
+    </DirectoryRef>
     
     
     <!--List features-->
@@ -89,6 +108,7 @@
       <ComponentRef Id="Executable" />
       <ComponentRef Id="Resources" />
       <ComponentRef Id="Bitmaps" />
+      <ComponentRef Id="StartFolder" />
     </Feature>
 
   </Product>

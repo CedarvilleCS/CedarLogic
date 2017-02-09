@@ -53,10 +53,10 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(WXWIN)/include;$(WXADDITIONS)/include;$(WXWIN)/contrib/include;$(WXWIN)/include/msvc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_PRODUCTION_;WIN32;STRICT;__WXMSW__;__WX__;__WXDEBUG__;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;WXUSINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_PRODUCTION_;WIN32;STRICT;__WXMSW__;__WX__;__WXDEBUG__;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>$(WXWIN)/include/wx/wxprec.h</PrecompiledHeaderFile>
@@ -76,7 +76,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;rpcrt4.lib;winmm.lib;wsock32.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(WXWIN)/lib/vc_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(WXWIN)/lib/vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -88,8 +88,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(WXWIN)/include;$(WXWIN)/contrib/include;$(WXWIN)/include/msvc/%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;STRICT;__WXMSW__;__WX__;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;WXUSINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;STRICT;__WXMSW__;__WX__;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>$(WXWIN)/include/wx/wxprec.h</PrecompiledHeaderFile>
@@ -108,10 +108,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;rpcrt4.lib;winmm.lib;wsock32.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(WXWIN)/lib/vc_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(WXWIN)/lib/vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
@@ -129,33 +129,11 @@
     <ClInclude Include="src/**/*.h" />
   </ItemGroup>
   <!-- Copy resources to output directory. -->
-  <ItemGroup>
-    <Content Include="res/**/*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <!-- Copy resources to output directory. -->
-  <ItemGroup>
-    <None Include="res/**/*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <!-- Copy debug *.dll's to output directory. -->
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Content Include="$(WXWIN)/lib/vc_dll/wxbase28d*vc_custom.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(WXWIN)/lib/vc_dll/wxmsw28d*vc_custom.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <!-- Copy release *.dll's to output directory. -->
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Content Include="$(WXWIN)/lib/vc_dll/wxbase28*vc_custom.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(WXWIN)/lib/vc_dll/wxmsw28*vc_custom.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+  <!--
+    <ItemGroup>
+      <Content Include="res/**/*">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+  -->
 </Project>
