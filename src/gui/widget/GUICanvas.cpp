@@ -313,8 +313,6 @@ void GUICanvas::OnMouseMove(GLdouble glX, GLdouble glY, bool ShiftDown, bool Ctr
 		if (gCircuit->panic) return;
 		// Do function of number of milliseconds that passed since last step
 		gCircuit->lastTime = wxGetApp().appSystemTime.Time();
-		gCircuit->lastTimeMod = wxGetApp().timeStepMod;
-		gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
 		gCircuit->sendMessageToCore(new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod));
 		gCircuit->setSimulate(false);
 		wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);
@@ -1312,8 +1310,6 @@ void GUICanvas::Update() {
 		if (gCircuit->panic) return;
 		// Do function of number of milliseconds that passed since last step
 		gCircuit->lastTime = wxGetApp().appSystemTime.Time();
-		gCircuit->lastTimeMod = wxGetApp().timeStepMod;
-		gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
 		gCircuit->sendMessageToCore(new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod));
 		gCircuit->setSimulate(false);
 		wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);

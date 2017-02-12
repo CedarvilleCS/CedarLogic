@@ -10,15 +10,10 @@
 
 #pragma once
 
-#include <map>
-#include <stack>
 #include <vector>
-#include <fstream>
-#include <sstream>
 #include <string>
 #include <unordered_map>
 #include "wx/docview.h"
-#include "../gl_wrapper.h"
 #include "../../logic/logic_values.h"
 using namespace std;
 
@@ -32,11 +27,9 @@ class Message;
 using guiGateMap = std::unordered_map<IDType, guiGate *>;
 using guiWireMap = std::unordered_map<IDType, guiWire *>;
 
-
 class GUICircuit : public wxDocument {
 public:
     GUICircuit();
-
 
 	void reInitializeLogicCircuit();
 
@@ -89,8 +82,6 @@ public:
 	
 	bool panic;
 	bool pausing;
-	int lastTimeMod;
-	int lastNumSteps;
 	int lastTime;
 	
 private:
@@ -105,13 +96,8 @@ private:
 	OscopeFrame* myOscope;
 	GUICanvas* gCanvas;
 
-	bool movingGate;
-	bool drawingWire;
 	bool simulate;			// Simulation state
 	bool waitToSendMessage; // If false, then message is sent immediately
 	
-	
     vector < Message *> messageQueue;
-
-	
 };
