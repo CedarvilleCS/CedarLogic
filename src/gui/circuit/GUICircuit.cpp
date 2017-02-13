@@ -43,13 +43,16 @@ void GUICircuit::reInitializeLogicCircuit() {
 		}
 		thisWire++;
 	}
+
 	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while( thisGate != gateList.end() ) {
 		delete thisGate->second;
 		thisGate++;
 	} 
+	
 	gateList.clear();
 	wireList.clear();
+	buslineToWire.clear();
 	nextGateID = nextWireID = 0;
 	waitToSendMessage = false;
 	simulate = true;

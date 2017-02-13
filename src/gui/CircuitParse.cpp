@@ -84,8 +84,8 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	do { // while next tag is not close circuit
 		string temp = mParse->readTag();
 		char pageNum = temp[temp.size()-1] - '0';
-		if ((int)pageNum > (int)(gCanvases.size()-1)) {
-			gCanvas = new GUICanvas(gCanvases[0]->GetParent(), gCanvases[0]->getCircuit(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
+		if ((int)pageNum != 0) {
+			gCanvas = new GUICanvas(gCanvases[0]->GetParent(), gCanvases[0]->getCircuit(), wxID_ANY, wxDefaultPosition, gCanvases[0]->GetSize(), wxWANTS_CHARS);
 			gCanvases.push_back(gCanvas);
 		}
 		else {
@@ -219,6 +219,8 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	if (mParse->readTag() == "throw_away") {
 		mParse->readCloseTag();
 		gCanvases[0]->clearCircuit();
+		gCanvas->clearCircuit();
+		gCanvas->getCircuit()->reInitializeLogicCircuit();
 		return parseFile();
 	}
 
