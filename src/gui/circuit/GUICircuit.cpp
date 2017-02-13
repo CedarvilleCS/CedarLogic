@@ -17,7 +17,6 @@
 #include "guiWire.h"
 
 DECLARE_APP(MainApp)
-IMPLEMENT_DYNAMIC_CLASS(GUICircuit, wxDocument)
 
 GUICircuit::GUICircuit() {
 	nextGateID = nextWireID = 0;
@@ -26,11 +25,14 @@ GUICircuit::GUICircuit() {
 	panic = false;
 	pausing = false;
 	logicThread = nullptr;
-	return;
+	commandProcessor = nullptr;
 }
 
 GUICircuit::~GUICircuit() {
-
+	
+	if (commandProcessor != nullptr) {
+		delete commandProcessor;
+	}
 }
 
 void GUICircuit::setLogicThread(threadLogic *logic) {
@@ -42,23 +44,27 @@ threadLogic* GUICircuit::getLogicThread() {
 }
 
 void GUICircuit::reInitializeLogicCircuit() {
+
 	// do not wait to send messages to the core for reinit
 	bool iswaiting = waitToSendMessage;
 	waitToSendMessage = false;
 	sendMessageToCore(new Message_REINITIALIZE());
 	waitToSendMessage = iswaiting;
-	unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
+
+	guiWireMap::iterator thisWire = wireList.begin();
 	while( thisWire != wireList.end() ) {
 		if (thisWire->second != nullptr) {
 			delete thisWire->second;
 		}
 		thisWire++;
 	}
-	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
+
+	guiGateMap::iterator thisGate = gateList.begin();
 	while( thisGate != gateList.end() ) {
 		delete thisGate->second;
 		thisGate++;
 	} 
+
 	gateList.clear();
 	wireList.clear();
 	nextGateID = nextWireID = 0;
@@ -66,65 +72,53 @@ void GUICircuit::reInitializeLogicCircuit() {
 	simulate = true;
 }
 
-guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
+guiGate * GUICircuit::createGate(const std::string &gateName, IDType id, bool noOscope) {
+
 	string libName = wxGetApp().gateNameToLibrary[gateName];
 	
-	if (id == -1) id = getNextAvailableGateID();
-	guiGate* newGate = NULL;
-	LibraryGate gateDef = wxGetApp().libraries[libName][gateName];
-	//wxGetApp().libraries[libName].getGate(gateName, gateDef);
+	if (id == ID_NONE) {
+		id = getNextAvailableGateID();
+	}
 	
+	LibraryGate gateDef = wxGetApp().libraries[libName][gateName];
 
 	string ggt = gateDef.guiType;
 	
-	if (ggt == "REGISTER")
-		newGate = (guiGate*)(new guiGateREGISTER());
-	else if (ggt == "TO" || ggt == "FROM")
-		newGate = (guiGate*)(new guiTO_FROM());
-	else if (ggt == "LABEL")
-		newGate = (guiGate*)(new guiLabel());
-	else if (ggt == "LED")
-		newGate = (guiGate*)(new guiGateLED());
-	else if (ggt == "TOGGLE")
-		newGate = (guiGate*)(new guiGateTOGGLE());
-	else if (ggt == "KEYPAD")
-		newGate = (guiGate*)(new guiGateKEYPAD());
-	else if (ggt == "PULSE")
-		newGate = (guiGate*)(new guiGatePULSE());
-		
-//*************************************************
-//Edit by Joshua Lansford 12/25/2006
-//I am creating a guiGate for the RAM so that
-//the ram can have its own special pop-up window
-	else if (ggt == "RAM"){
-		newGate = (guiGate*)(new guiGateRAM());
+	guiGate* newGate = NULL;
+
+	if (ggt == "REGISTER") {
+		newGate = new guiGateREGISTER();
 	}
-
-//End of edit
-//*************************************************
-
-//*************************************************
-//Edit by Nathan Harro 01/13/2007
-//This will recognize the Z80 type
-//and call the correct guiGate method
-	else if (ggt == "Z80"){
-		newGate = (guiGate*)(new guiGateZ80());
+	else if (ggt == "TO" || ggt == "FROM") {
+		newGate = new guiTO_FROM();
 	}
-
-//End of edit
-//*************************************************
-
-//*******************************************
-//Edit by Joshua Lansford 05/10/2007
-//This is for the ADC as you might have guessed
-	else if (ggt == "ADC"){
-		newGate = (guiGate*)(new guiGateADC());
+	else if (ggt == "LABEL") {
+		newGate = new guiLabel();
 	}
-//End of edit
-//******************************************
-
-	else
+	else if (ggt == "LED") {
+		newGate = new guiGateLED();
+	}
+	else if (ggt == "TOGGLE") {
+		newGate = new guiGateTOGGLE();
+	}
+	else if (ggt == "KEYPAD") {
+		newGate = new guiGateKEYPAD();
+	}
+	else if (ggt == "PULSE") {
+		newGate = new guiGatePULSE();
+	}
+	else if (ggt == "RAM") {
+		newGate = new guiGateRAM();
+	}
+	else if (ggt == "Z80") {
+		newGate = new guiGateZ80();
+	}
+	else if (ggt == "ADC") {
+		newGate = new guiGateADC();
+	}
+	else {
 		newGate = new guiGate();
+	}
 
 	newGate->setLibraryName( libName, gateName );
 
@@ -160,28 +154,6 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	return newGate;
 }
 
-void GUICircuit::deleteGate(unsigned long gid, bool waitToUpdate) {
-	
-	//Declaration Of Variables
-	bool updateMenu = false;
-	
-	if (gateList.find(gid) == gateList.end()) return;
-
-	//Update Oscope
-	if(!waitToUpdate && gateList[gid]->getGUIType() == "TO") {
-		updateMenu = true;
-	}
-	
-	delete gateList[gid];
-	gateList.erase(gid);
-
-	//Call Update Oscope
-	if(updateMenu)
-	{
-		myOscope->UpdateMenu();
-	}		
-}
-
 guiWire* GUICircuit::createWire(const std::vector<IDType> &wireIds) {
 	if (wireList.find(wireIds[0]) == wireList.end()) { // wire does not exist yet
 
@@ -201,7 +173,28 @@ guiWire* GUICircuit::createWire(const std::vector<IDType> &wireIds) {
 	return wireList[wireIds[0]];
 }
 
-void GUICircuit::deleteWire(unsigned long wireId) {
+void GUICircuit::deleteGate(IDType gid, bool waitToUpdate) {
+
+	//Declaration Of Variables
+	bool updateMenu = false;
+
+	if (gateList.find(gid) == gateList.end()) return;
+
+	//Update Oscope
+	if (!waitToUpdate && gateList[gid]->getGUIType() == "TO") {
+		updateMenu = true;
+	}
+
+	delete gateList[gid];
+	gateList.erase(gid);
+
+	//Call Update Oscope
+	if (updateMenu) {
+		myOscope->UpdateMenu();
+	}
+}
+
+void GUICircuit::deleteWire(IDType wireId) {
 
 	if (wireList.find(wireId) == wireList.end()) return;
 
@@ -216,19 +209,63 @@ void GUICircuit::deleteWire(unsigned long wireId) {
 	delete wire;
 }
 
-guiWire* GUICircuit::setWireConnection(const vector<IDType> &wireIds, long gid, string connection, bool openMode) {
-	if (gateList.find(gid) == gateList.end()) return NULL; // error: gate not found
-	createWire(wireIds); // do we need to init the wire first? if not then no effect.
-	wireList[wireIds[0]]->addConnection(gateList[gid], connection, openMode);
-	gateList[gid]->addConnection(connection, wireList[wireIds[0]]);
-	return wireList[wireIds[0]];
+void GUICircuit::connectWire(IDType wireId, IDType gateId, const std::string &hotspotName, bool hasShape) {
+	
+	guiWire *wire = wireList.at(wireId);
+	guiGate *gate = gateList.at(gateId);
+
+	wire->addConnection(gate, hotspotName, hasShape);
+	gate->addConnection(hotspotName, wire);
 }
 
-void GUICircuit::Render() {
-	return;
+void GUICircuit::setWireState(IDType wid, StateType state) {
+	buslineToWire.at(wid)->setSubState(wid, state);
+}
+
+guiGateMap * GUICircuit::getGates() {
+	return &gateList;
+}
+
+guiWireMap * GUICircuit::getWires() {
+	return &wireList;
+}
+
+IDType GUICircuit::getNextAvailableGateID() {
+	nextGateID++;
+
+	while (gateList.find(nextGateID) != gateList.end())
+		nextGateID++;
+	
+	return nextGateID;
+}
+
+IDType GUICircuit::getNextAvailableWireID() {
+	nextWireID++;
+	
+	while (wireList.find(nextWireID) != wireList.end())
+		nextWireID++;
+	
+	return nextWireID;
+}
+
+void GUICircuit::sendMessageToCore(Message *message) {
+
+	if (waitToSendMessage) {
+
+		if (simulate) {
+			logicThread->pushMessageToLogic(message);
+		}
+		else {
+			messageQueue.push_back(message);
+		}
+	}
+	else {
+		logicThread->pushMessageToLogic(message);
+	}
 }
 
 void GUICircuit::parseMessage(Message *message) {
+
 	string temp, type;
 	static bool shouldRender = false;
 	switch (message->type) {
@@ -257,7 +294,6 @@ void GUICircuit::parseMessage(Message *message) {
 				pausing = true;
 				panic = true;
 			}
-			//End of edit*************************************************
 			break;
 		}
 		case MessageType::DONESTEP: { // DONESTEP
@@ -281,10 +317,8 @@ void GUICircuit::parseMessage(Message *message) {
 			// Only render at the end of a step and only if necessary
 			if (shouldRender) {
 				gCanvas->Refresh();
+				shouldRender = false;
 			}
-
-			shouldRender = false;
-
 			break;
 		}
 		case MessageType::COMPLETE_INTERIM_STEP: {// COMPLETE INTERIM STEP - UPDATE OSCOPE
@@ -300,42 +334,30 @@ void GUICircuit::parseMessage(Message *message) {
 	delete message;
 }
 
-void GUICircuit::sendMessageToCore(Message *message) {
-
-	if (waitToSendMessage) {
-		
-		if (simulate) {
-			logicThread->pushMessageToLogic(message);
-		} else{
-			messageQueue.push_back(message);
-		}
-	} else{
-		logicThread->pushMessageToLogic(message);
-	}	
+void GUICircuit::setSimulate(bool state) {
+	simulate = state;
 }
 
-void GUICircuit::setWireState( long wid, long state ) {
-	// If the wire doesn't exist, then don't set it's state!
-	if( wireList.find(wid) == wireList.end() ) return;
-	
-	buslineToWire[wid]->setSubState(wid, state);
-	gCanvas->Refresh();
-	return;
+bool GUICircuit::getSimulate() {
+	return simulate;
 }
 
-void GUICircuit::printState() {
-	wxGetApp().logfile << "print state" << endl << flush;
-	unordered_map < unsigned long, guiWire* >::iterator thisWire = wireList.begin();
-	while (thisWire != wireList.end()) {
-		if (thisWire->second != nullptr) {
-			wxGetApp().logfile << "wire " << thisWire->first << endl << flush;
-		}
-		thisWire++;
-	}
-	unordered_map < unsigned long, guiGate* >::iterator thisGate = gateList.begin();
-	while (thisGate != gateList.end()) {
-		wxGetApp().logfile << "gate " << thisGate->first << endl << flush;
-		thisGate++;
-	}
-	
+OscopeFrame* GUICircuit::getOscope() {
+	return myOscope;
+}
+
+void GUICircuit::setOscope(OscopeFrame* of) {
+	myOscope = of;
+}
+
+void GUICircuit::setCurrentCanvas(GUICanvas* gc) {
+	gCanvas = gc;
+}
+
+void GUICircuit::setCommandProcessor(wxCommandProcessor *p) {
+	commandProcessor = p;
+}
+
+wxCommandProcessor * GUICircuit::getCommandProcessor() const {
+	return commandProcessor;
 }

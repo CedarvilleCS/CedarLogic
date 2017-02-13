@@ -1,5 +1,6 @@
 
 #include "cmdMoveGate.h"
+#include <sstream>
 #include "../circuit/GUICircuit.h"
 #include "../circuit/gate/guiGate.h"
 

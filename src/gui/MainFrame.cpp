@@ -156,9 +156,9 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, w
 	// set up the panel and make canvases
 	gCircuit = new GUICircuit();
 	commandProcessor = new wxCommandProcessor();
-	gCircuit->SetCommandProcessor(commandProcessor);
-	gCircuit->GetCommandProcessor()->SetEditMenu(editMenu);
-	gCircuit->GetCommandProcessor()->Initialize();
+	gCircuit->setCommandProcessor(commandProcessor);
+	commandProcessor->SetEditMenu(editMenu);
+	commandProcessor->Initialize();
 
 	GUICanvas* canvas;
 
@@ -703,8 +703,6 @@ void MainFrame::OnTimer(wxTimerEvent& event) {
 	if (gCircuit->panic) return;
 	// Do function of number of milliseconds that passed since last step
 	gCircuit->lastTime = wxGetApp().appSystemTime.Time();
-	gCircuit->lastTimeMod = wxGetApp().timeStepMod;
-	gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
 	gCircuit->sendMessageToCore(new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod));
 	currentCanvas->getCircuit()->setSimulate(false);
 	wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);
@@ -1069,7 +1067,7 @@ void MainFrame::OnNewTab(wxCommandEvent& event) {
 	int canSize = canvases.size();
 
 	if (canSize < 42) {
-		gCircuit->GetCommandProcessor()->Submit((wxCommand*)new cmdAddTab(gCircuit, canvasBook, &canvases));
+		commandProcessor->Submit((wxCommand*)new cmdAddTab(gCircuit, canvasBook, &canvases));
 	}
 	else {
 		wxMessageBox("You have reached the maximum number of tabs.", "Close", wxOK);
@@ -1099,7 +1097,7 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 					return;
 			}
 		}
-		gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdDeleteTab(gCircuit, currentCanvas, canvasBook, &canvases, canvasID)));
+		commandProcessor->Submit((wxCommand*)(new cmdDeleteTab(gCircuit, currentCanvas, canvasBook, &canvases, canvasID)));
 /*		canvases.erase(canvases.begin() + canvasID);
 
 		if (canvasID < (canSize - 1)) {

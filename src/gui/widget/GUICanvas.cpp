@@ -247,8 +247,8 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 		if (gateList[hotspotGate]->isConnected(hotspotHighlight)) {
 			// disconnect this wire
 			if (gateList[hotspotGate]->getConnection(hotspotHighlight)->numConnections() > 2)
-				gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdDisconnectWire(gCircuit, gateList[hotspotGate]->getConnection(hotspotHighlight)->getID(), hotspotGate, hotspotHighlight)));
-			else gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdDeleteWire(gCircuit, this, gateList[hotspotGate]->getConnection(hotspotHighlight)->getID())));
+				gCircuit->getCommandProcessor()->Submit((wxCommand*)(new cmdDisconnectWire(gCircuit, gateList[hotspotGate]->getConnection(hotspotHighlight)->getID(), hotspotGate, hotspotHighlight)));
+			else gCircuit->getCommandProcessor()->Submit((wxCommand*)(new cmdDeleteWire(gCircuit, this, gateList[hotspotGate]->getConnection(hotspotHighlight)->getID())));
 		}
 		currentDragState = DRAG_NONE;
 	}
@@ -285,7 +285,7 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 				ostringstream ossAngle;
 				ossAngle << angle;
 				newParams["angle"] = ossAngle.str();
-				gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
+				gCircuit->getCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
 			}
 			hit++;
 		}
@@ -306,8 +306,6 @@ void GUICanvas::OnMouseMove(GLdouble glX, GLdouble glY, bool ShiftDown, bool Ctr
 		if (gCircuit->panic) return;
 		// Do function of number of milliseconds that passed since last step
 		gCircuit->lastTime = wxGetApp().appSystemTime.Time();
-		gCircuit->lastTimeMod = wxGetApp().timeStepMod;
-		gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
 		gCircuit->sendMessageToCore(new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod));
 		gCircuit->setSimulate(false);
 		wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);
@@ -510,7 +508,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 			gateList[preMove[0].id]->getGLcoords(gX, gY);
 			movecommand = new cmdMoveSelection(gCircuit, preMove, preMoveWire, preMove[0].x, preMove[0].y, gX, gY);
 			for (unsigned int i = 0; i < preMove.size(); i++) gateList[preMove[i].id]->updateConnectionMerges();
-			if (!isWithinPaste) gCircuit->GetCommandProcessor()->Submit((wxCommand*)movecommand);
+			if (!isWithinPaste) gCircuit->getCommandProcessor()->Submit((wxCommand*)movecommand);
 			if (!isWithinPaste) movecommand->Undo();
 		}
 		if (preMove.size() > 1) preMove.clear();
@@ -542,7 +540,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 	if (currentDragState == DRAG_WIRESEG) {
 		wireList[wireHoverID]->endSegDrag();
 		wireList[wireHoverID]->select();
-		gCircuit->GetCommandProcessor()->Submit(new cmdWireSegDrag(gCircuit, this, wireHoverID));
+		gCircuit->getCommandProcessor()->Submit(new cmdWireSegDrag(gCircuit, this, wireHoverID));
 	}
 
 	// If dragging a new gate then 
@@ -552,7 +550,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 		newDragGate->getGLcoords(nx, ny);
 		gCircuit->getGates()->erase(newDragGate->getID());
 		creategatecommand = new cmdCreateGate(this, gCircuit, newGID, newDragGate->getLibraryGateName(), nx, ny);
-		gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatecommand);
+		gCircuit->getCommandProcessor()->Submit((wxCommand*)creategatecommand);
 		collisionChecker.removeObject(newDragGate);
 		// Only now do a collision detection on all first-level objects since the new gate is in.
 		// The map collisionChecker.overlaps now contains
@@ -592,7 +590,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 					}
 				}
 				if (event.LeftDClick() && !handled) {
-					hitGate->doParamsDialog(gCircuit, gCircuit->GetCommandProcessor());
+					hitGate->doParamsDialog(gCircuit, gCircuit->getCommandProcessor());
 					currentDragState = DRAG_NONE;
 					// setparams command will handle oscope update
 					handled = true;
@@ -629,7 +627,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 				}
 
 				if (command != nullptr) {
-					gCircuit->GetCommandProcessor()->Submit(command);
+					gCircuit->getCommandProcessor()->Submit(command);
 				}
 			}
 		}
@@ -669,7 +667,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 								if (currentDragState == DRAG_SELECTION) {
 									if (movecommand == NULL) {
 										movecommand = new cmdMoveSelection(gCircuit, preMove, preMoveWire, 0, 0, 0, 0);
-										if (!isWithinPaste) gCircuit->GetCommandProcessor()->Submit((wxCommand*)movecommand);
+										if (!isWithinPaste) gCircuit->getCommandProcessor()->Submit((wxCommand*)movecommand);
 									}
 									movecommand->getConnections()->push_back(createwire);
 								}
@@ -690,7 +688,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 	// Drop a paste block with the proper move coords
 	if (isWithinPaste) {
 		pasteCommand->addCommand(movecommand);
-		gCircuit->GetCommandProcessor()->Submit(pasteCommand);
+		gCircuit->getCommandProcessor()->Submit(pasteCommand);
 		isWithinPaste = false;
 		autoScrollEnable(); // Re-enable auto scrolling
 	}
@@ -1061,7 +1059,7 @@ void GUICanvas::removeWire(unsigned long wireId) {
 
 void GUICanvas::deleteSelection() {
 	// whatever is in the selected vectors goes
-	if (selectedWires.size() > 0 || selectedGates.size() > 0) gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdDeleteSelection( gCircuit, this, selectedGates, selectedWires )) );
+	if (selectedWires.size() > 0 || selectedGates.size() > 0) gCircuit->getCommandProcessor()->Submit( (wxCommand*)(new cmdDeleteSelection( gCircuit, this, selectedGates, selectedWires )) );
 	selectedWires.clear();
 	selectedGates.clear();
 	preMove.clear();
@@ -1300,8 +1298,6 @@ void GUICanvas::Update() {
 		if (gCircuit->panic) return;
 		// Do function of number of milliseconds that passed since last step
 		gCircuit->lastTime = wxGetApp().appSystemTime.Time();
-		gCircuit->lastTimeMod = wxGetApp().timeStepMod;
-		gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
 		gCircuit->sendMessageToCore(new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod));
 		gCircuit->setSimulate(false);
 		wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);

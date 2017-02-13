@@ -108,7 +108,7 @@ void cmdConnectWire::sendMessagesToConnect(GUICircuit *gCircuit, IDType wireId,
 	std::vector<IDType> wireIds = wire->getIDs();
 
 	// Add the connection in the gui.
-	gCircuit->setWireConnection(wireIds, gateId, hotspot, noCalcShape);
+	gCircuit->connectWire(wireIds[0], gateId, hotspot, noCalcShape);
 
 	// When connecting a gui hotspot to its underlying inputs/outputs,
 	// single wires require no changes to their hotspot name, but
