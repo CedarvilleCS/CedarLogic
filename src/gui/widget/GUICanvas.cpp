@@ -63,8 +63,6 @@ GUICanvas::~GUICanvas() {
 	delete dragselectbox;
 }
 
-
-
 void GUICanvas::OnMouseDown(wxMouseEvent &event) {
 
 	if (event.LeftDown() || event.LeftDClick()) {
@@ -301,15 +299,10 @@ void GUICanvas::OnMouseMove(GLdouble glX, GLdouble glY, bool ShiftDown, bool Ctr
 	if (wxGetApp().appSystemTime.Time() > wxGetApp().appSettings.refreshRate) {
 		wxGetApp().appSystemTime.Pause();
 		if (gCircuit->panic) return;
-		wxCriticalSectionLocker locker(wxGetApp().m_critsect);
-		while (wxGetApp().mexMessages.TryLock() == wxMUTEX_BUSY) wxYield();
-		while (wxGetApp().dLOGICtoGUI.size() > 0) {
-			Message *message = wxGetApp().dLOGICtoGUI.front();
-			wxGetApp().dLOGICtoGUI.pop_front();
-			gCircuit->parseMessage(message);
-			delete message;
+
+		while (gCircuit->getLogicThread()->hasGuiMessage()) {
+			gCircuit->parseMessage(gCircuit->getLogicThread()->popGuiMessage());
 		}
-		wxGetApp().mexMessages.Unlock();
 		if (gCircuit->panic) return;
 		// Do function of number of milliseconds that passed since last step
 		gCircuit->lastTime = wxGetApp().appSystemTime.Time();
@@ -1300,15 +1293,10 @@ void GUICanvas::Update() {
 	if (wxGetApp().appSystemTime.Time() > wxGetApp().appSettings.refreshRate) {
 		wxGetApp().appSystemTime.Pause();
 		if (gCircuit->panic) return;
-		wxCriticalSectionLocker locker(wxGetApp().m_critsect);
-		while (wxGetApp().mexMessages.TryLock() == wxMUTEX_BUSY) wxYield();
-		while (wxGetApp().dLOGICtoGUI.size() > 0) {
-			Message *message = wxGetApp().dLOGICtoGUI.front();
-			wxGetApp().dLOGICtoGUI.pop_front();
-			gCircuit->parseMessage(message);
-			delete message;
+
+		while (gCircuit->getLogicThread()->hasGuiMessage()) {
+			gCircuit->parseMessage(gCircuit->getLogicThread()->popGuiMessage());
 		}
-		wxGetApp().mexMessages.Unlock();
 		if (gCircuit->panic) return;
 		// Do function of number of milliseconds that passed since last step
 		gCircuit->lastTime = wxGetApp().appSystemTime.Time();

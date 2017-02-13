@@ -29,6 +29,7 @@ class OscopeFrame;
 class guiGate;
 class guiWire;
 class Message;
+class threadLogic;
 
 class GUICircuit : public wxDocument
 {
@@ -38,6 +39,10 @@ public:
     GUICircuit();
 
     virtual ~GUICircuit();
+
+	//threadLogic functions
+	void setLogicThread(threadLogic *logic);
+	threadLogic* getLogicThread();
 
 	// Reinit circuit
 	void reInitializeLogicCircuit();
@@ -86,6 +91,8 @@ public:
 	int lastTime;
 	
 private:
+	threadLogic *logicThread;
+
 	unordered_map< unsigned long, guiGate* > gateList;
 	unordered_map< unsigned long, guiWire* > wireList;
 

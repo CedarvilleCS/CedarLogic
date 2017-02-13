@@ -20,6 +20,7 @@ using namespace std;
 #include "klsGLCanvas.h"
 #include "../circuit/wireSegment.h"
 #include "../klsCollisionChecker.h"
+#include "../../gui/thread/threadLogic.h"
 
 class klsCommand;
 class guiWire;
@@ -109,7 +110,6 @@ public:
         long style = 0, const wxString& name = "GUICanvas" );
 
 	virtual ~GUICanvas();
-
 
 	// Event handlers
 	void OnMouseDown(wxMouseEvent& event);

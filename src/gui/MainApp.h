@@ -11,7 +11,6 @@
 #ifndef MAINAPP_H_
 #define MAINAPP_H_
 
-#include <deque>
 #include <string>
 #include <fstream>
 #include "wx/wx.h"
@@ -53,7 +52,6 @@ public:
 	MainApp();
 	virtual bool OnInit();
 
-public:
     // crit section protects access to all of the arrays below
     wxCriticalSection m_critsect;
 
@@ -62,9 +60,8 @@ public:
 	wxSemaphore simulate;
 	wxSemaphore readyToSend;
 
-	wxMutex mexMessages;
-	deque< Message *> dGUItoLOGIC;
-	deque< Message *> dLOGICtoGUI;
+	
+
 	// Use a stopwatch for timing between step calls
 	wxStopWatch appSystemTime;
 	unsigned long timeStepMod;
@@ -88,8 +85,7 @@ public:
 	string newGateToDrag;
 	
 	ApplicationSettings appSettings;
-	
-	threadLogic* logicThread;
+
 	autoSaveThread* saveThread;
 	
 	ofstream logfile;

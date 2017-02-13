@@ -80,6 +80,7 @@ END_EVENT_TABLE()
 MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, wxSize size)
        : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, size)
 {
+	threadLogic *thread = CreateThread();
     // set the frame icon
     //SetIcon(wxICON(sample));
 	currentCanvas = nullptr;
@@ -194,7 +195,8 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, w
 
 	SetSizer( mainSizer);
 		
-	threadLogic *thread = CreateThread();
+	
+	gCircuit->setLogicThread(thread);
 	
     if ( thread->Run() != wxTHREAD_NO_ERROR )
     {
@@ -378,9 +380,12 @@ MainFrame::~MainFrame() {
 
 	stopTimers();
 
+	logicThread->Delete();
+	logicThread = NULL;
+
 	if (!isBlackBox) {
 		// Shut down the detached thread and wait for it to exit
-		wxGetApp().logicThread->Delete();
+		
 		wxGetApp().saveThread->Delete();
 
 		wxGetApp().m_semAllDone.Wait();
@@ -421,8 +426,7 @@ threadLogic *MainFrame::CreateThread()
         wxLogError("Can't create thread!");
     }
 
-    wxCriticalSectionLocker enter(wxGetApp().m_critsect);
-	wxGetApp().logicThread = thread;
+	logicThread = thread;
 	
     return thread;
 }
@@ -546,8 +550,7 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 
 	pauseTimers();
 
-	wxGetApp().dGUItoLOGIC.clear();
-	wxGetApp().dLOGICtoGUI.clear();
+	logicThread->clearAllMessages();
 
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->clearCircuit();
 	gCircuit->reInitializeLogicCircuit();
@@ -619,8 +622,7 @@ void MainFrame::loadCircuitFile( string fileName ){
 	
 	openedFilename = path;
 	this->SetTitle(VERSION_TITLE() + " - " + path );
-	while (!(wxGetApp().dGUItoLOGIC.empty())) wxGetApp().dGUItoLOGIC.pop_front();
-	while (!(wxGetApp().dLOGICtoGUI.empty())) wxGetApp().dLOGICtoGUI.pop_front();
+	logicThread->clearAllMessages();
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->clearCircuit();
 	gCircuit->reInitializeLogicCircuit();
 	commandProcessor->ClearCommands();
@@ -709,15 +711,12 @@ void MainFrame::OnTimer(wxTimerEvent& event) {
 }
 
 void MainFrame::OnIdle(wxTimerEvent& event) {
-	wxCriticalSectionLocker locker(wxGetApp().m_critsect);
-	while (wxGetApp().mexMessages.TryLock() == wxMUTEX_BUSY) wxYield();
-	while (wxGetApp().dLOGICtoGUI.size() > 0) {
-		Message *message = wxGetApp().dLOGICtoGUI.front();
-		wxGetApp().dLOGICtoGUI.pop_front();
+	//wxCriticalSectionLocker locker(wxGetApp().m_critsect);
+	//while (wxGetApp().mexMessages.TryLock() == wxMUTEX_BUSY) wxYield();
+	while (logicThread->hasGuiMessage()) {
+		Message *message = logicThread->popGuiMessage();
 		gCircuit->parseMessage(message);
-		delete message;
 	}
-	wxGetApp().mexMessages.Unlock();
 
 	if (mainSizer == NULL) return;
 	
@@ -1039,14 +1038,24 @@ bool MainFrame::isHandlingEvent() {
 }
 
 void MainFrame::lock() {
-	for (unsigned int i = 0; i < canvases.size(); i++) {
-		canvases[i]->lockCanvas();
+	if (!isBlackBox) {
+		for (unsigned int i = 0; i < canvases.size(); i++) {
+			canvases[i]->lockCanvas();
+		}
+	}
+	else {
+		currentCanvas->lockCanvas();
 	}
 }
 
 void MainFrame::unlock() {
-	for (unsigned int i = 0; i < canvases.size(); i++) {
-		canvases[i]->unlockCanvas();
+	if (!isBlackBox) {
+		for (unsigned int i = 0; i < canvases.size(); i++) {
+			canvases[i]->unlockCanvas();
+		}
+	}
+	else {
+		currentCanvas->unlockCanvas();
 	}
 }
 
@@ -1109,6 +1118,10 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 }
 
 void MainFrame::OnBlackBox(wxCommandEvent& event) {
+	MainFrame* bbframe = new MainFrame("Black Box Editor", "", true);
+	bbframe->Show(true);
+	wxGetApp().SetTopWindow(bbframe);
+	bbframe = NULL;
 }
 
 void MainFrame::OnApply(wxCommandEvent& event) {
