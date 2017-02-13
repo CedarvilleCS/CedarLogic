@@ -229,7 +229,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	// set up the panel and make canvases
 	gCircuit = new GUICircuit();
 	commandProcessor = new wxCommandProcessor();
-	gCircuit->SetCommandProcessor(commandProcessor);
+	gCircuit->setCommandProcessor(commandProcessor);
 	commandProcessor->SetEditMenu(editMenu);
 	commandProcessor->Initialize();
 

@@ -24,6 +24,14 @@ GUICircuit::GUICircuit() {
 	waitToSendMessage = true;
 	panic = false;
 	pausing = false;
+	commandProcessor = nullptr;
+}
+
+GUICircuit::~GUICircuit() {
+	
+	if (commandProcessor != nullptr) {
+		delete commandProcessor;
+	}
 }
 
 void GUICircuit::reInitializeLogicCircuit() {
@@ -335,4 +343,12 @@ void GUICircuit::setOscope(OscopeFrame* of) {
 
 void GUICircuit::setCurrentCanvas(GUICanvas* gc) {
 	gCanvas = gc;
+}
+
+void GUICircuit::setCommandProcessor(wxCommandProcessor *p) {
+	commandProcessor = p;
+}
+
+wxCommandProcessor * GUICircuit::getCommandProcessor() const {
+	return commandProcessor;
 }

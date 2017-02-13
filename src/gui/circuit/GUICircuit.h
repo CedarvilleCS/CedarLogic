@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include "wx/docview.h"
+#include "wx/cmdproc.h"
 #include "../../logic/logic_values.h"
 using namespace std;
 
@@ -27,9 +27,11 @@ class Message;
 using guiGateMap = std::unordered_map<IDType, guiGate *>;
 using guiWireMap = std::unordered_map<IDType, guiWire *>;
 
-class GUICircuit : public wxDocument {
+class GUICircuit {
 public:
     GUICircuit();
+
+	virtual ~GUICircuit();
 
 	void reInitializeLogicCircuit();
 
@@ -79,6 +81,10 @@ public:
 	void setOscope(OscopeFrame* of);
 	
 	void setCurrentCanvas(GUICanvas* gc);
+
+	void setCommandProcessor(wxCommandProcessor *p);
+
+	wxCommandProcessor * getCommandProcessor() const;
 	
 	bool panic;
 	bool pausing;
@@ -100,4 +106,6 @@ private:
 	bool waitToSendMessage; // If false, then message is sent immediately
 	
     vector < Message *> messageQueue;
+
+	wxCommandProcessor *commandProcessor;
 };
