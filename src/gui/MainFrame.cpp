@@ -77,14 +77,14 @@ END_EVENT_TABLE()
 
 #define ID_TEXTCTRL 5001
 
-MainFrame::MainFrame(const wxString& title, string cmdFilename, bool blackbox, wxSize size)
-       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, size)
+MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *parent, wxSize size)
+       : wxFrame(parent, wxID_ANY, title, wxDefaultPosition, size)
 {
 	threadLogic *thread = CreateThread();
     // set the frame icon
     //SetIcon(wxICON(sample));
 	currentCanvas = nullptr;
-	isBlackBox = blackbox;
+	isBlackBox = (parent != nullptr);
 
 	// Set default locations
 	if (wxGetApp().appSettings.lastDir == "") lastDirectory = wxGetHomeDir();
@@ -403,7 +403,6 @@ MainFrame::~MainFrame() {
 	//wxFrame.
 	//delete toolBar;
 	
-	
 	delete gCircuit;
 	gCircuit = NULL;
 	
@@ -498,13 +497,16 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	
 	resumeTimers(20);
 
-	if (destroy && !isBlackBox)
-	{
+	if (destroy && !isBlackBox) {
 		removeTempFile();
 	}
-	else
-	{
+	else {
 		handlingEvent = false;
+	}
+
+	if (isBlackBox) {
+		this->GetParent()->Enable();
+		wxGetApp().SetTopWindow(this->GetParent());
 	}
 
 	//Edit by Joshua Lansford 10/18/07
@@ -1116,10 +1118,10 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 }
 
 void MainFrame::OnBlackBox(wxCommandEvent& event) {
-	MainFrame* bbframe = new MainFrame("Black Box Editor", "", true);
-	bbframe->Show(true);
-	wxGetApp().SetTopWindow(bbframe);
-	bbframe = NULL;
+	child = new MainFrame("Black Box Editor", "", this);
+	child->Show(true);
+	wxGetApp().SetTopWindow(child);
+	this->Disable();
 }
 
 void MainFrame::OnApply(wxCommandEvent& event) {

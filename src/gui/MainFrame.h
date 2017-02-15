@@ -62,7 +62,7 @@ enum
 class MainFrame : public wxFrame {
 public:
     // ctor(s)
-	MainFrame(const wxString& title, string cmdFilename = "", bool blackbox = false, wxSize size = wxSize(1800, 900));
+	MainFrame(const wxString& title, string cmdFilename = "", MainFrame* parent = nullptr, wxSize size = wxSize(900, 600));
 	virtual ~MainFrame();
 	
     // event handlers (these functions should _not_ be virtual)
@@ -140,6 +140,7 @@ public:
 private:
 
 	bool isBlackBox;
+	MainFrame* child;
 
     // helper function - creates a new thread (but doesn't run it)
 	threadLogic *CreateThread();
