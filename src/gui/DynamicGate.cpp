@@ -43,10 +43,10 @@ void DynamicGate::calculateShape() {
 	float startY = (float)(-height / 2);
 
 	// Create main shape
-	libGate.shape.push_back(lgLine(startX, startY, startX, -startY));
-	libGate.shape.push_back(lgLine(startX, startY, -startX, startY));
-	libGate.shape.push_back(lgLine(-startX, startY, -startX, -startY));
-	libGate.shape.push_back(lgLine(-startX, -startY, startX, -startY));
+	libGate.shape.push_back(LibraryGateLine(startX, startY, startX, -startY));
+	libGate.shape.push_back(LibraryGateLine(startX, startY, -startX, startY));
+	libGate.shape.push_back(LibraryGateLine(-startX, startY, -startX, -startY));
+	libGate.shape.push_back(LibraryGateLine(-startX, -startY, startX, -startY));
 
 	// Update math vals
 	startX = (float)(-width / 2);
@@ -54,8 +54,18 @@ void DynamicGate::calculateShape() {
 
 	// Add inputs
 	for (int i = 0; i < inputs; i++) {
-		libGate.shape.push_back(lgLine(startX - 1, startY + i, startX, startY + i));
-		libGate.hotspots.push_back(lgHotspot("IN_" + std::to_string(i), true, startX - 1, startY + i, false, ""));
+		libGate.shape.push_back(LibraryGateLine(startX - 1, startY + i, startX, startY + i));
+
+		LibraryGateHotspot hotspot;
+		hotspot.name = "IN_" + std::to_string(i);
+		hotspot.isInput = true;
+		hotspot.x = startX - 1;
+		hotspot.y = startY + 1;
+		hotspot.isInverted = false;
+		hotspot.logicEInput = "";
+		hotspot.busLines = 1;
+
+		libGate.hotspots.push_back(hotspot);
 	}
 
 	// Add outputs
@@ -63,8 +73,18 @@ void DynamicGate::calculateShape() {
 	startY = (float)(-outputs / 2);
 
 	for (int i = 0; i < outputs; i++) {
-		libGate.shape.push_back(lgLine(startX + 1, startY + i, startX, startY + i));
-		libGate.hotspots.push_back(lgHotspot("OUT", false, startX + 1, startY + i, false, ""));
+		libGate.shape.push_back(LibraryGateLine(startX + 1, startY + i, startX, startY + i));
+
+		LibraryGateHotspot hotspot;
+		hotspot.name = "OUT_" + std::to_string(i);
+		hotspot.isInput = false;
+		hotspot.x = startX + 1;
+		hotspot.y = startY + 1;
+		hotspot.isInverted = false;
+		hotspot.logicEInput = "";
+		hotspot.busLines = 1;
+
+		libGate.hotspots.push_back(hotspot);
 	}
 }
 

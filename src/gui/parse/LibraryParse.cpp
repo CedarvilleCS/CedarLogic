@@ -17,6 +17,9 @@
 
 DECLARE_APP(MainApp)
 
+LibraryGateLine::LibraryGateLine(float x1, float y1, float x2, float y2) :
+	x1(x1), y1(y1), x2(x2), y2(y2) { }
+
 LibraryParse::LibraryParse(string fileName) {
 	fstream x(fileName.c_str(), ios::in);
 	if (!x) {
@@ -106,7 +109,16 @@ void LibraryParse::parseFile() {
 
 					} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end input/output
 
-					newGate.hotspots.push_back( lgHotspot( hsName, (hsType == "input"), x1, y1, (isInverted == "true"), logicEInput, busLines));
+					LibraryGateHotspot hotspot;
+					hotspot.name = hsName;
+					hotspot.isInput = (hsType == "input");
+					hotspot.x = x1;
+					hotspot.y = y1;
+					hotspot.isInverted = (isInverted == "true");
+					hotspot.logicEInput = logicEInput;
+					hotspot.busLines = busLines;
+
+					newGate.hotspots.push_back(hotspot);
 
 					mParse->readCloseTag(); //input or output
 
@@ -174,7 +186,16 @@ void LibraryParse::parseFile() {
 									mParse->readCloseTag();
 								}
 							} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end param
-							newGate.dlgParams.push_back( lgDlgParam( textLabel, name, type, (logicOrGui == "GUI"), Rmin, Rmax ) );
+
+							LibraryGateDialogParamter param;
+							param.textLabel = textLabel;
+							param.name = name;
+							param.type = type;
+							param.isGui = (logicOrGui == "GUI");
+							param.Rmin = Rmin;
+							param.Rmax = Rmax;
+
+							newGate.dlgParams.push_back(param);
 							mParse->readCloseTag();
 						}
 					} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end param_dlg_data
@@ -227,7 +248,7 @@ bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double o
 		// Apply the offset:
 		x1 += offX; x2 += offX;
 		y1 += offY; y2 += offY;
-		newGate->shape.push_back( lgLine( x1, y1, x2, y2) );
+		newGate->shape.push_back( LibraryGateLine( x1, y1, x2, y2) );
 		return true;
 	} else if( type == "circle" ) {
 		temp = mParse->readTagValue("circle");
@@ -252,7 +273,7 @@ bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double o
 			float degInRad = i*DEG2RAD;
 			theX = sin(degInRad)*radius + x1;
 			theY = cos(degInRad)*radius + y1;
-			newGate->shape.push_back( lgLine(lastX, lastY, theX, theY) );
+			newGate->shape.push_back( LibraryGateLine(lastX, lastY, theX, theY) );
 			lastX = theX;
 			lastY = theY;
 		}
