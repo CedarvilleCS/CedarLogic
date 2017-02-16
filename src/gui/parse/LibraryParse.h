@@ -21,82 +21,139 @@
 #include "../../logic/logic_values.h"
 #include "float.h"
 
-using namespace std;
-
-struct lgHotspot {
-	lgHotspot( string nName = "", bool nIsInput = true, float nX = 0, float nY = 0, bool nIsInverted = false, string nEInput = "", int busLines = 1) : name(nName), isInput(nIsInput), x(nX), y(nY), isInverted(nIsInverted), logicEInput(nEInput), busLines(busLines) {};
-	string name;
-	bool isInput;
-	float x, y;
-	bool isInverted;
-	string logicEInput;
-	int busLines;
-};
-
-struct lgLine {
-	lgLine( float nX1 = 0, float nY1 = 0, float nX2 = 0, float nY2 = 0 ) : x1(nX1), x2(nX2), y1(nY1), y2(nY2) {}
-	float x1, x2, y1, y2;
-};
-
-struct lgDlgParam {
-	string textLabel; // The label shown to the user when the widget is drawn. The "Visible Name" of the param.
-
-	string name; // The "invisible name" of the param (either GUI or Logic).
-	bool isGui; // True if the param is a gui type. False if it is a logic param.
+// Plain-Old-Data for gate hotspot information.
+// Some of the data is for the simulator, some is for the gui, some is for both.
+struct LibraryGateHotspot {
 	
-	string type; // The "type" of this parameter. Type can be: STRING, INT, BOOL, FLOAT, FILE_IN, FILE_OUT.
-	float Rmin, Rmax; // Number types can specify a min and max range for the variable.
+	// Used to associate hotspots in gui and simulator.
+	std::string name;
 
-	lgDlgParam( string ntextLabel = "", string nname = "", string ntype = "STRING", bool nisGui = true, float nRmin = -FLT_MAX, float nRmax = FLT_MAX ) : textLabel(ntextLabel), name(nname), isGui(nisGui), type(ntype), Rmin(nRmin), Rmax(nRmax) {};
+	// Whether the hotspot is a simulator gate input.
+	bool isInput;
+	
+	// Whether the simulator hotspot inverts signals passing through it.
+	bool isInverted;
+
+	// Not totally sure. Seems unnecessary. TODO
+	std::string logicEInput;
+
+	// Number of buslines for the hotspot.
+	int busLines;
+
+	// Hotspot x-coord relative to gui gate origin.
+	float x;
+
+	// Hotspot y-coord relative to gui gate origin.
+	float y;
 };
 
+// Plain-Old-Data for gates in the gui.
+// Holds data for one line in a gate's visual representation.
+struct LibraryGateLine {
+
+	LibraryGateLine(float x1, float y1, float x2, float y2);
+
+	float x1;
+
+	float y1;
+
+	float x2;
+
+	float y2;
+};
+
+// Plain-Old-Data for parameter-dialog options.
+// Paramaters are used to set gate attributes in the gui and simulator.
+// DialogParameters give users an easy way to edit these parameters.
+struct LibraryGateDialogParamter {
+	
+	// The label shown to the user when the widget is drawn. The "Visible Name" of the param.
+	std::string textLabel;
+
+	// The "invisible name" of the param (either GUI or Logic).
+	std::string name;
+
+	// True if the param is a gui type. False if it is a logic param.
+	bool isGui;
+
+	// The "type" of this parameter. Type can be: STRING, INT, BOOL, FLOAT, FILE_IN, FILE_OUT.
+	std::string type;
+
+	// Number types can specify a min and max range for the variable.
+	float Rmin;
+	
+	// Number types can specify a min and max range for the variable.
+	float Rmax;
+};
+
+// Plain-Old-Data for a type of gate.
+// Some of the data is for the simulator. Some is for the gui.
 struct LibraryGate {
-	string gateName; // Note: All gates must have a gateName, to identify them in the library.
-	string caption; // Note: Gate's caption will be shown as a tooltip in the library
-	string guiType; // Note: If a gate has the default guiType, then guiType = "".
-	string logicType; // Note: If a gate has no logic type, then logicType="".
-	vector < lgHotspot > hotspots;
-	vector < lgLine > shape;
-	vector < lgDlgParam > dlgParams; // The parameters to be listed in the "settings dialog".
-	map < string, string > guiParams;
-	map < string, string > logicParams;
+
+	// All gates must have a gateName, to identify them in the library.
+	std::string gateName;
+
+	// Gate's caption will be shown as a tooltip in the library
+	std::string caption;
+
+	// guiType is used in GuiCircuit::createGate(..).
+	// If a gate has the default guiType, then guiType = "".
+	std::string guiType;
+
+	// If a gate has no logic type, then logicType = "".
+	std::string logicType;
+
+	// All gate hotspots.
+	std::vector<LibraryGateHotspot> hotspots;
+
+	// All gate line segments.
+	std::vector<LibraryGateLine> shape;
+
+	// The parameters to be listed in the "settings dialog".
+	std::vector<LibraryGateDialogParamter> dlgParams;
+
+	// gui attributes to be set for this type of gate.
+	std::map<std::string, std::string> guiParams;
+
+	// simulator attributes to set for this type of gate.
+	std::map<std::string, std::string> logicParams;
 };
 
 class LibraryParse {
 public:
-	LibraryParse(string);
+	LibraryParse(std::string);
 	LibraryParse();
 	virtual ~LibraryParse();
 	
 	void parseFile();
 
 	// Added by Colin Broberg 11/16/16 -- need to make this a public function so that I can use it for dynamic gates
-	void addGate(string libName, LibraryGate newGate);
+	void addGate(std::string libName, LibraryGate newGate);
 
 	// Parse the shape object from the mParse file, adding an offset if needed:
-	bool parseShapeObject( string type, LibraryGate* newGate, double offX = 0.0, double offY = 0.0 );
+	bool parseShapeObject(std::string type, LibraryGate* newGate, double offX = 0.0, double offY = 0.0 );
 	
 	// Returns a gate from the library in lgGate.  If the gate does not
 	//	exist in the library, returns false, otherwise true.
-	bool getGate(string gateName, LibraryGate &lgGate);
+	bool getGate(std::string gateName, LibraryGate &lgGate);
 	
 	// Return the logic type of a particular gate:
-	string getGateLogicType( string gateName );
+	std::string getGateLogicType(std::string gateName );
 	
 	// Return the gui type of a particular gate type:
-	string getGateGUIType( string gateName );
+	std::string getGateGUIType(std::string gateName );
 	
-	string getName() { return libName; };
+	std::string getName() { return libName; };
 	
-	map < string, map < string, LibraryGate > >* getGateDefs() { return &gates; };
+	std::map < std::string, std::map < std::string, LibraryGate > >* getGateDefs() { return &gates; };
 
 private:
 	XMLParser* mParse;
-	string fileName;
-	string libName;
+	std::string fileName;
+	std::string libName;
 	
 	// Maps library name to a map of gates, which maps to the librarygate struct
-	map < string, map < string, LibraryGate > > gates;
+	std::map < std::string, std::map < std::string, LibraryGate > > gates;
 };
 
 #endif /*LIBRARYPARSE_H_*/
