@@ -58,6 +58,7 @@ void GUICircuit::reInitializeLogicCircuit() {
 
 	gateList.clear();
 	wireList.clear();
+	buslineToWire.clear();
 	nextGateID = nextWireID = 0;
 	waitToSendMessage = false;
 	simulate = true;

@@ -129,11 +129,9 @@
     <ClInclude Include="src/**/*.h" />
   </ItemGroup>
   <!-- Copy resources to output directory. -->
-  <!--
     <ItemGroup>
       <Content Include="res/**/*">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
-  -->
 </Project>

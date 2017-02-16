@@ -234,6 +234,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	commandProcessor->Initialize();
 
 	canvasBook = new wxAuiNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400), wxAUI_NB_CLOSE_ON_ACTIVE_TAB| wxAUI_NB_SCROLL_BUTTONS);
+
 	mainSizer->Add( canvasBook, wxSizerFlags(1).Expand().Border(wxALL, 0) );
 
 	//add 1 tab: Left loop to allow for different default
@@ -492,7 +493,7 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 		canvasBook->DeletePage(j);
 		canvases.erase(canvases.end() - 1);
 	}
-
+	currentCanvas = canvases[0];
 	currentCanvas->Update(); // Render();
 	this->SetTitle(VERSION_TITLE()); // KAS
 	removeTempFile();
@@ -535,6 +536,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 		lastDirectory = dialog.GetDirectory();
 		loadCircuitFile((const char *)dialog.GetPath().c_str());  // KAS
 	}
+	
     currentCanvas->Update(); // Render();
 	currentCanvas->getCircuit()->setSimulate(true);
 
@@ -556,19 +558,31 @@ void MainFrame::loadCircuitFile( string fileName ){
 	this->SetTitle(VERSION_TITLE() + " - " + path );
 	while (!(wxGetApp().dGUItoLOGIC.empty())) wxGetApp().dGUItoLOGIC.pop_front();
 	while (!(wxGetApp().dLOGICtoGUI.empty())) wxGetApp().dLOGICtoGUI.pop_front();
+
 	for (unsigned int i = 0; i < canvases.size(); i++) canvases[i]->clearCircuit();
+
 	gCircuit->reInitializeLogicCircuit();
 	commandProcessor->ClearCommands();
 	commandProcessor->SetMenuStrings();
-	//JV - Delete all but the first tab
-	for (unsigned int j = canvases.size() - 1; j > 0; j--) {
-		canvasBook->DeletePage(j);
-		canvases.erase(canvases.end()-1);
+
+	for (unsigned int j = canvases.size(); j > 0; j--) {
+		canvases.pop_back();
+		canvasBook->DeletePage(j-1);
 	}
-	
-    CircuitParse cirp((const char *)path.c_str(), canvases); // KAS
+
+	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
+	ostringstream oss;
+	oss << "Page " << (1);
+	canvasBook->AddPage(canvases[0], (const wxChar *)oss.str().c_str(), (true));
+
+	currentCanvas = canvases[0];
+	gCircuit->setCurrentCanvas(currentCanvas);
+	currentCanvas->setMinimap(miniMap);
+	currentCanvas->SetFocus();
+
+	CircuitParse cirp((const char *)path.c_str(), canvases); // KAS
 	canvases = cirp.parseFile();
-	
+
 	//JV - Put pages back into canvas book
 	for (unsigned int i = 1; i < canvases.size(); i++) 
 	{
@@ -576,11 +590,12 @@ void MainFrame::loadCircuitFile( string fileName ){
 		oss << "Page " << (i + 1);
 		canvasBook->AddPage(canvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));
 	}
-	currentCanvas = canvases[0];
+
+/*	currentCanvas = canvases[0];
 	gCircuit->setCurrentCanvas(currentCanvas);
 	currentCanvas->setMinimap(miniMap);
 	mainSizer->Show(canvasBook);
-	currentCanvas->SetFocus();
+	currentCanvas->SetFocus();*/
 
 	removeTempFile();
 }
