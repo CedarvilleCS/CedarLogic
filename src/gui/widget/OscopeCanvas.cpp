@@ -234,8 +234,8 @@ void OscopeCanvas::UpdateData(void){
 	deque<StateType> temp;
 
 	// Log the values of all of the gates:
-	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
-	unordered_map< unsigned long, guiGate* >::iterator theGate;
+	guiGateMap * gateList = gCircuit->getGates();
+	guiGateMap::iterator theGate;
 	
 	set< string > liveTOs;
 	vector < guiGate* > toGates;
@@ -351,14 +351,14 @@ void OscopeCanvas::UpdateMenu()
 	//what value they should be currently holding
 	//The edit ends with the end of this function
 	
-	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
+	guiGateMap * gateList = gCircuit->getGates();
 	
 	vector< string > namesOfPossableFeeds;
 	
 	map< string, bool > alreadyAdded;
 	
 	//iterate over all gates
-	for( unordered_map< unsigned long, guiGate* >::iterator 
+	for( guiGateMap::iterator 
 	       gateIterator = gateList->begin(); 
 	       gateIterator != gateList->end(); 
 	       gateIterator++ ){

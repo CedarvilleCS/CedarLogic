@@ -14,22 +14,17 @@
 #include <map>
 #include <unordered_map>
 #include <vector>
-#include <fstream>
-#include <sstream>
 #include <string>
-#include <deque>
 using namespace std;
 
-class cmdPasteBlock;
-
-#include "../MainApp.h"
 #include "klsGLCanvas.h"
-#include "../circuit/GUICircuit.h"
-#include "../klsCollisionChecker.h"
 #include "../circuit/wireSegment.h"
+#include "../klsCollisionChecker.h"
 
 class klsCommand;
 class guiWire;
+class cmdPasteBlock;
+class GUICircuit;
 
 // Struct GateState
 //		stores the position and id of a gate so we know where we moved from
@@ -61,8 +56,6 @@ struct ConnectionSource {
 	ConnectionSource( bool ig, unsigned long id, string conn ) : isGate(ig), objectID(id), connection(conn) {};
 	ConnectionSource() {};
 };
-
-#include "../commands.h"
 
 #define MAX_UNDO_STATES 256
 
@@ -117,77 +110,60 @@ public:
 
 	virtual ~GUICanvas();
 
+
 	// Event handlers
-	void OnMouseDown( wxMouseEvent& event ) {
-		if( event.LeftDown() || event.LeftDClick() ) {
-			mouseLeftDown( event );
-		} else if( event.RightDown() || event.RightDClick() ) {
-			mouseRightDown( event );
-		}
-	};
+	void OnMouseDown(wxMouseEvent& event);
     void mouseLeftDown(wxMouseEvent& event);
     void mouseRightDown(wxMouseEvent& event);
-
     void OnMouseUp(wxMouseEvent& event);
     void OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool CtrlDown );
     void OnMouseEnter(wxMouseEvent& event);
-
     void OnKeyDown(wxKeyEvent& event);
-	
-	void OnSize( void ) { Update(); };
+	void OnSize();
+	void OnRender(bool noColor = false);
+
+	// Return the gate and wire lists for this page
+	unordered_map < unsigned long, guiGate* >* getGateList();
+	unordered_map < unsigned long, guiWire* >* getWireList();
+
 	
 	// Clears the page
 	void clearCircuit();
-	
-	// Deletes the currently selected gates and wires
-	void deleteSelection();
-	
-	// Render this page
-    void OnRender( bool noColor = false );
 
-	// Update the collision checker and refresh
-	void Update();
-
-	// Return the gate and wire lists for this page
-	unordered_map < unsigned long, guiGate* >* getGateList() { return &gateList; };
-	unordered_map < unsigned long, guiWire* >* getWireList() { return &wireList; };
-	
 	// Insert and remove gates and wires from this canvas
 	void insertGate(unsigned long, guiGate*, float, float);
 	void removeGate(unsigned long);
 	void insertWire(guiWire*);
 	void removeWire(unsigned long);
 	
+	// Deletes the currently selected gates and wires
+	void deleteSelection();
+
 	// Remove the selection flag from all gates or wires on the canvas
 	void unselectAllGates();
 	void unselectAllWires();
 	
-	// Pointer to the main application graphic circuit
-	GUICircuit* getCircuit() { return gCircuit; };
-	
 	// Handle copy and paste for this canvas
-	void copyBlockToClipboard( void );
-	void pasteBlockFromClipboard( void );
+	void copyBlockToClipboard();
+	void pasteBlockFromClipboard();
+
+	// Pointer to the main application graphic circuit
+	GUICircuit* getCircuit();
 
 	// Tell the canvas which minimap it should use; sets the minimaps pointers and lists
-	void setMinimap(klsMiniMap* minimap) {
-		this->minimap = minimap;
-		//Josh Edit 4/9/07
-		if( minimap != NULL ){
-			minimap->setCanvas( this );
-			minimap->setLists( &gateList, &wireList );
-			updateMiniMap();
-		}
-	};
+	void setMinimap(klsMiniMap* minimap);
 	
 	// Zoom the canvas to fit all items within it:
-	void setZoomAll( void );
+	void setZoomAll();
 
 	// Zoom the canvas in or out:
 	void zoomIn();
 	void zoomOut();
 
 	void printLists();
+
+	// Update the collision checker and refresh
+	void Update();
 
 	// Create a command to connect a wire to a gate.
 	klsCommand * createGateWireConnectionCommand(IDType gateId, const string &hotspot, IDType wireId);

@@ -11,23 +11,28 @@
 #ifndef OSCOPEFRAME_H_
 #define OSCOPEFRAME_H_
 
-class GUICircuit;
-class OscopeFrame;
 
-#include "MainApp.h"
-#include "widget/PaletteCanvas.h"
+
+
+#include <vector>
+#include "wx/event.h"
 #include "wx/wxprec.h"
 #include "wx/thread.h"
 #include "wx/tglbtn.h"
-#include "thread/threadLogic.h"
-#include "widget/OscopeCanvas.h"
 #include "wx/combobox.h"
-//Josh Edit 3/15/07
-#include "wx/event.h"
-#include <vector>
+#include "widget/PaletteCanvas.h"
+#include "widget/OscopeCanvas.h"
+#include "thread/threadLogic.h"
+#include "MainApp.h"
+
+class GUICircuit;
+class OscopeFrame;
 
 
-//Josh Edit 3/15/07
+
+
+
+
 #define NONE_STR "[None]"
 #define RMOVE_STR "[Remove]"
 

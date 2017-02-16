@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CedarLogic", "CedarLogic.vcxproj", "{2A335184-7DE6-42E6-9D39-4E15466A3C46}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "installer", "installer\installer.wixproj", "{10702A87-BFD3-4E66-AD05-94597C85B9D8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2A335184-7DE6-42E6-9D39-4E15466A3C46} = {2A335184-7DE6-42E6-9D39-4E15466A3C46}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

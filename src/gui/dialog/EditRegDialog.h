@@ -1,8 +1,6 @@
 #ifndef EDITREGDIALOG_H_
 #define EDITREGDIALOG_H_
 
-#include "../MainApp.h"
-
 #define ER_TITLE "Edit Registers"
 #define ER_WIDTH 300
 #define ER_HEIGHT 600
@@ -18,6 +16,7 @@
 #define N_FLAG	0x02
 #define C_FLAG	0x01
 
+#include <string>
 class Z80PopupDialog;
 class guiGateZ80;
 class GUICircuit;
@@ -27,14 +26,14 @@ class GUICircuit;
 class EditRegDialog : public wxDialog{
 public:
  	/** Constructor. Creates a new EditRegDialog */
-	EditRegDialog( Z80PopupDialog* newZ80Popup, guiGateZ80* newM_z80GuiGate, GUICircuit* newGUICircuit, string params[] );
+	EditRegDialog( Z80PopupDialog* newZ80Popup, guiGateZ80* newM_z80GuiGate, GUICircuit* newGUICircuit, std::string params[] );
 
 
 	void OnBtnCancel( wxCommandEvent& event );
 	void OnBtnClear( wxCommandEvent& event );
 	void OnBtnSave( wxCommandEvent& event );
 	
-	void ChangeRegValue( wxTextCtrl* currCtrl, string RegName, string RegVal, unsigned int RegSize );
+	void ChangeRegValue( wxTextCtrl* currCtrl, std::string RegName, std::string RegVal, unsigned int RegSize );
 
 protected:
 	DECLARE_EVENT_TABLE()

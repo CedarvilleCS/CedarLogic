@@ -8,8 +8,7 @@
    XMLParser: Scans and tokenizes an XML file
 *****************************************************************************/
 
-#ifndef XMLPARSER_H_
-#define XMLPARSER_H_
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -89,5 +88,3 @@ private:
 	stack < string > openTags;
 	vector < string > lines;
 };
-
-#endif /*XMLPARSER_H_*/

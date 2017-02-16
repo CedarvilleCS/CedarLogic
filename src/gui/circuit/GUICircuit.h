@@ -8,19 +8,12 @@
    GUICircuit: Contains GUI circuit manipulation functions
 *****************************************************************************/
 
-#ifndef GUICIRCUIT_H_
-#define GUICIRCUIT_H_
+#pragma once
 
-#include <map>
-#include <stack>
 #include <vector>
-#include <fstream>
-#include <sstream>
 #include <string>
 #include <unordered_map>
-#include "wx/docview.h"
-#include "../gl_wrapper.h"
-#include "../thread/Message.h"
+#include "wx/cmdproc.h"
 #include "../../logic/logic_values.h"
 using namespace std;
 
@@ -29,94 +22,90 @@ class GUICircuit;
 class OscopeFrame;
 class guiGate;
 class guiWire;
+class Message;
 
-class GUICircuit : public wxDocument
-{
-    DECLARE_DYNAMIC_CLASS(GUICircuit)
-	
+using guiGateMap = std::unordered_map<IDType, guiGate *>;
+using guiWireMap = std::unordered_map<IDType, guiWire *>;
+
+class GUICircuit {
 public:
     GUICircuit();
 
-    virtual ~GUICircuit();
+	virtual ~GUICircuit();
 
-	// Reinit circuit
 	void reInitializeLogicCircuit();
-	// Renders the complete circuit on the current buffer
-    void Render();
-	// Creates a new gate with type, position, and id; returns used id
-	guiGate* createGate(string gt, long id = -1, bool noOscope = false);
 
-	// Creates a new wire/bus. 'wireIds' are each of the bus-line's ids.
-	// Returns pointer to existing wire if called for ids that already exist.
+	// Create a gate and add it to the circuit.
+	// An existing gateId can be used.
+	// Existing gateId's are not checked for conflicts.
+	// If no gateId is specified, a valid one will be generated.
+	guiGate * createGate(const std::string &gateType, IDType gateId = ID_NONE, bool noOscope = false);
+
+	// Create/retrieve a wire.
+	// Every wire is a bus. Many just have 1 busline.
+	// A wireId is specified for each busline in the wire.
 	guiWire* createWire(const std::vector<IDType> &wireIds);
 
-	// Sets a named input/output of a gate to be connected; returns pointer to wire
-	guiWire* setWireConnection(const std::vector<IDType> &wireIds, long gid, string connection, bool openMode = false);
+	// Destroy a gate, remove it from the GUICircuit.
+	void deleteGate(IDType gid, bool waitToUpdate = false);
 
-	// Sets a wire's state
-	void setWireState(long wid, long state);
-	// Delete components and sync the core
-	void deleteWire(unsigned long wid);
-	void deleteGate(unsigned long gid, bool waitToUpdate = false);
+	// Destroy a wire, remove it from the GUICircuit.
+	void deleteWire(IDType wid);
+
+	// Connect all bus-lines of a wire to a gate's hotspot.
+	// 'hasShape' indicates that the wire does not need to be routed to the gate.
+	void connectWire(IDType wireId, IDType gateId, const std::string &hotspotName, bool hasShape);
 	
-	// Maps of gates and wires to their IDs
-	unordered_map< unsigned long, guiGate* >* getGates() { return &gateList; };
-	unordered_map< unsigned long, guiWire* >* getWires() { return &wireList; };
+	// Set a single busline's state.
+	// wireId is not well named. It refers to a busline in a wire.
+	void setWireState(IDType wireId, StateType state);
 	
-	unsigned long getNextAvailableGateID() { nextGateID++; while (gateList.find(nextGateID) != gateList.end()) nextGateID++; return nextGateID; };
-	unsigned long getNextAvailableWireID() { nextWireID++; while (wireList.find(nextWireID) != wireList.end()) nextWireID++; return nextWireID; };
+	guiGateMap * getGates();
+
+	guiWireMap * getWires();
+	
+	IDType getNextAvailableGateID();
+
+	IDType getNextAvailableWireID();
 
 	void sendMessageToCore(Message *message);
+
 	void parseMessage(Message *message);
 	
-	void setSimulate(bool state) { simulate = state; };
-	bool getSimulate() { return simulate; };
+	void setSimulate(bool state);
+
+	bool getSimulate();
 	
-	void printState();
+	OscopeFrame* getOscope();
+
+	void setOscope(OscopeFrame* of);
 	
-	OscopeFrame* getOscope() { return myOscope; };
-	void setOscope(OscopeFrame* of) { myOscope = of; };
-	
-	void setCurrentCanvas(GUICanvas* gc) { gCanvas = gc; };
+	void setCurrentCanvas(GUICanvas* gc);
+
+	void setCommandProcessor(wxCommandProcessor *p);
+
+	wxCommandProcessor * getCommandProcessor() const;
 	
 	bool panic;
 	bool pausing;
-	int lastTimeMod;
-	int lastNumSteps;
 	int lastTime;
 	
 private:
-	unordered_map< unsigned long, guiGate* > gateList;
-	unordered_map< unsigned long, guiWire* > wireList;
+	guiGateMap gateList;
+	guiWireMap wireList;
 
-	unordered_map<IDType, guiWire *> buslineToWire;
+	guiWireMap buslineToWire;
 
-	unsigned long nextGateID;
-	unsigned long nextWireID;
+	IDType nextGateID;
+	IDType nextWireID;
 	
 	OscopeFrame* myOscope;
 	GUICanvas* gCanvas;
 
-	bool   m_init;
-    GLuint m_gllist;
-	double lastDragX;
-	double lastDragY;
-    static unsigned long  m_secbase;
-    static int            m_TimeInitialized;
-    static unsigned long  m_xsynct;
-    static unsigned long  m_gsynct;
-
-	bool movingGate;
-	bool drawingWire;
 	bool simulate;			// Simulation state
 	bool waitToSendMessage; // If false, then message is sent immediately
-		
-    long           m_Key;
-    unsigned long  m_StartTime;
-    unsigned long  m_LastTime;
-    unsigned long  m_LastRedraw;
- 
+	
     vector < Message *> messageQueue;
-};
 
-#endif /*GUICIRCUIT_H*/
+	wxCommandProcessor *commandProcessor;
+};

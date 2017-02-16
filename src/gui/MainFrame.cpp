@@ -18,7 +18,7 @@
 #include "wx/toolbar.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"
-#include "CircuitParse.h"
+#include "parse/CircuitParse.h"
 #include "OscopeFrame.h"
 #include "wx/docview.h"
 #include "commands.h"
@@ -54,6 +54,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_SCROLL(MainFrame::OnTimeStepModSlider)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
 	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
+	EVT_TOOL(Tool_BlackBox, MainFrame::OnBlackBox)
 
 	EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
 	EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
@@ -162,10 +163,10 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 
 	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
 	// to read the bitmaps from file directly, without the use of a resource file.  KAS
-	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab"};
-	wxBitmap *bmp[15];
+	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "blackbox", "confirm", "cancel", "applyall"};
+	wxBitmap *bmp[19];
 
-	for (int  i = 0; i < 15; i++) {
+	for (int  i = 0; i < 19; i++) {
 		bitmaps[i] = "res/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
@@ -177,6 +178,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddTool(wxID_NEW, "New", *bmp[0], "New");
 	toolBar->AddTool(wxID_OPEN, "Open", *bmp[1], "Open");
 	toolBar->AddTool(wxID_SAVE, "Save", *bmp[2], "Save"); 
+	toolBar->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
 	toolBar->AddSeparator();
 	toolBar->AddTool(wxID_UNDO, "Undo", *bmp[3], "Undo");
 	toolBar->AddTool(wxID_REDO, "Redo", *bmp[4], "Redo");
@@ -198,15 +200,14 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddSeparator();
 	toolBar->AddTool(Tool_Lock, "Lock state", *bmp[13], "Lock state", wxITEM_CHECK);
 	toolBar->AddSeparator();
-	toolBar->AddTool(wxID_ABOUT, "About", *bmp[8], "About");
-	//JV - Temporary tab button
+	toolBar->AddTool(Tool_BlackBox, "Black Box", *bmp[15], "Black Box");
 	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
+	toolBar->AddTool(wxID_ABOUT, "About", *bmp[8], "About");
 	SetToolBar(toolBar);
 	toolBar->Show(true);
 
 	//finished with the bitmaps, so we can release the pointers  KAS
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 19; i++) {
 		delete bmp[i];
 	}
 
@@ -228,9 +229,9 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	// set up the panel and make canvases
 	gCircuit = new GUICircuit();
 	commandProcessor = new wxCommandProcessor();
-	gCircuit->SetCommandProcessor(commandProcessor);
-	gCircuit->GetCommandProcessor()->SetEditMenu(editMenu);
-	gCircuit->GetCommandProcessor()->Initialize();
+	gCircuit->setCommandProcessor(commandProcessor);
+	commandProcessor->SetEditMenu(editMenu);
+	commandProcessor->Initialize();
 
 	canvasBook = new wxAuiNotebook(this, NOTEBOOK_ID, wxDefaultPosition, wxSize(400,400), wxAUI_NB_CLOSE_ON_ACTIVE_TAB| wxAUI_NB_SCROLL_BUTTONS);
 
@@ -650,8 +651,6 @@ void MainFrame::OnTimer(wxTimerEvent& event) {
 	if (gCircuit->panic) return;
 	// Do function of number of milliseconds that passed since last step
 	gCircuit->lastTime = wxGetApp().appSystemTime.Time();
-	gCircuit->lastTimeMod = wxGetApp().timeStepMod;
-	gCircuit->lastNumSteps = wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod;
 	gCircuit->sendMessageToCore(new Message_STEPSIM(wxGetApp().appSystemTime.Time() / wxGetApp().timeStepMod));
 	currentCanvas->getCircuit()->setSimulate(false);
 	wxGetApp().appSystemTime.Start(wxGetApp().appSystemTime.Time() % wxGetApp().timeStepMod);
@@ -1008,7 +1007,7 @@ void MainFrame::OnNewTab(wxCommandEvent& event) {
 	int canSize = canvases.size();
 
 	if (canSize < 42) {
-		gCircuit->GetCommandProcessor()->Submit((wxCommand*)new cmdAddTab(gCircuit, canvasBook, &canvases));
+		commandProcessor->Submit((wxCommand*)new cmdAddTab(gCircuit, canvasBook, &canvases));
 	}
 	else {
 		wxMessageBox("You have reached the maximum number of tabs.", "Close", wxOK);
@@ -1038,7 +1037,7 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 					return;
 			}
 		}
-		gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdDeleteTab(gCircuit, currentCanvas, canvasBook, &canvases, canvasID)));
+		commandProcessor->Submit((wxCommand*)(new cmdDeleteTab(gCircuit, currentCanvas, canvasBook, &canvases, canvasID)));
 /*		canvases.erase(canvases.begin() + canvasID);
 
 		if (canvasID < (canSize - 1)) {
@@ -1054,6 +1053,9 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 		wxMessageBox("Tab cannot be closed", "Close", wxOK);
 		event.Veto();
 	}
+}
+
+void MainFrame::OnBlackBox(wxCommandEvent& event) {
 }
 
 void MainFrame::OnReportABug(wxCommandEvent& event) {
