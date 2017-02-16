@@ -5,7 +5,7 @@
    All rights reserved.
    For license information see license.txt included with distribution.   
 
-   LibraryParse: Uses XMLParser to parse library files
+   GateLibrary: Uses XMLParser to parse library files
 *****************************************************************************/
 
 #ifndef LIBRARYPARSE_H_
@@ -119,11 +119,13 @@ struct LibraryGate {
 	std::map<std::string, std::string> logicParams;
 };
 
-class LibraryParse {
+class GateLibrary {
 public:
-	LibraryParse(std::string);
-	LibraryParse();
-	virtual ~LibraryParse();
+	GateLibrary(std::string);
+
+	GateLibrary();
+
+	virtual ~GateLibrary();
 	
 	void parseFile();
 

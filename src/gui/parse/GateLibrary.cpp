@@ -5,10 +5,10 @@
    All rights reserved.
    For license information see license.txt included with distribution.   
 
-   LibraryParse: Uses XMLParser to parse library files
+   GateLibrary: Uses XMLParser to parse library files
 *****************************************************************************/
 
-#include "LibraryParse.h"
+#include "GateLibrary.h"
 #include "wx/msgdlg.h"
 #include "../MainApp.h"
 
@@ -20,7 +20,7 @@ DECLARE_APP(MainApp)
 LibraryGateLine::LibraryGateLine(float x1, float y1, float x2, float y2) :
 	x1(x1), y1(y1), x2(x2), y2(y2) { }
 
-LibraryParse::LibraryParse(string fileName) {
+GateLibrary::GateLibrary(string fileName) {
 	fstream x(fileName.c_str(), ios::in);
 	if (!x) {
 		// Error loading file, don't bother trying to parse.
@@ -38,20 +38,20 @@ LibraryParse::LibraryParse(string fileName) {
 	delete mParse;
 }
 
-LibraryParse::LibraryParse() {
+GateLibrary::GateLibrary() {
 	return;
 }
 
-LibraryParse::~LibraryParse() {
+GateLibrary::~GateLibrary() {
 	//delete mParse;
 }
 
 // Added by Colin Broberg 11/16/16 -- need to make this a public function so that I can use it for dynamic gates
-void LibraryParse::addGate(string libName, LibraryGate newGate) {
+void GateLibrary::addGate(string libName, LibraryGate newGate) {
 	gates[libName][newGate.gateName] = newGate;
 }
 
-void LibraryParse::parseFile() {
+void GateLibrary::parseFile() {
 	do { // Outer loop to parse all libraries
 		// need to throw exception
 		if (mParse->readTag() != "library") return;
@@ -234,7 +234,7 @@ void LibraryParse::parseFile() {
 }
 
 // Parse the shape object from the mParse file, adding an offset if needed:
-bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double offX, double offY ) {
+bool GateLibrary::parseShapeObject( string type, LibraryGate* newGate, double offX, double offY ) {
 	float x1, y1, x2, y2;
 	char dump;
 	string temp;
@@ -283,7 +283,7 @@ bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double o
 	return false; // Invalid type.
 }
 
-bool LibraryParse::getGate(string gateName, LibraryGate &lgGate) {
+bool GateLibrary::getGate(string gateName, LibraryGate &lgGate) {
 	map < string, string >::iterator findGate = wxGetApp().gateNameToLibrary.find(gateName);
 	if (findGate == wxGetApp().gateNameToLibrary.end()) return false;
 	map < string, LibraryGate >::iterator findVal = gates[findGate->second].find(gateName);
@@ -292,7 +292,7 @@ bool LibraryParse::getGate(string gateName, LibraryGate &lgGate) {
 }
 
 // Return the logic type of a particular gate:
-string LibraryParse::getGateLogicType( string gateName ) {
+string GateLibrary::getGateLogicType( string gateName ) {
 	map < string, string >::iterator findGate = wxGetApp().gateNameToLibrary.find(gateName);
 	if (findGate == wxGetApp().gateNameToLibrary.end()) return "";
 	if ( gates[findGate->second].find(gateName) == gates[findGate->second].end() ) return "";
@@ -300,7 +300,7 @@ string LibraryParse::getGateLogicType( string gateName ) {
 }
 
 // Return the gui type of a particular gate type:
-string LibraryParse::getGateGUIType( string gateName ) {
+string GateLibrary::getGateGUIType( string gateName ) {
 	map < string, string >::iterator findGate = wxGetApp().gateNameToLibrary.find(gateName);
 	if (findGate == wxGetApp().gateNameToLibrary.end()) return "";
 	if ( gates[findGate->second].find(gateName) == gates[findGate->second].end() ) return "";

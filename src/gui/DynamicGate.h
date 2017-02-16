@@ -8,7 +8,7 @@ heirarchy.
 #ifndef DYNAMICGATE_H_
 #define DYNAMICGATE_H_
 
-#include "parse/LibraryParse.h"
+#include "parse/GateLibrary.h"
 #include "circuit/gate/guiGate.h"
 #include "widget/GUICanvas.h"
 

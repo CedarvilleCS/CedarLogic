@@ -153,7 +153,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 #else
 	string libPath = wxGetApp().appSettings.gateLibFile;
 #endif
-	LibraryParse newLib(libPath);
+	GateLibrary newLib(libPath);
 	wxGetApp().libParser = newLib;
 	
 	//////////////////////////////////////////////////////////////////////////
