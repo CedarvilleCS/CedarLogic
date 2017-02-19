@@ -14,7 +14,7 @@
 #include <string>
 #include <unordered_map>
 #include "wx/cmdproc.h"
-#include "../../logic/logic_values.h"
+#include "../logic/logic_values.h"
 using namespace std;
 
 class GUICanvas;

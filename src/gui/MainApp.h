@@ -22,7 +22,7 @@
 #include "wx/fs_zip.h"
 #include "../logic/logic_values.h"
 #include "parse/GateLibrary.h"
-#include "gl_defs.h"
+#include "graphics/gl_defs.h"
 
 class MainFrame;
 class threadLogic;

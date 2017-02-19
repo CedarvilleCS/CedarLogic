@@ -1,6 +1,6 @@
 
 #include "guiGateZ80.h"
-#include "../../dialog/Z80PopupDialog.h"
+#include "../dialog/Z80PopupDialog.h"
 
 using namespace std;
 

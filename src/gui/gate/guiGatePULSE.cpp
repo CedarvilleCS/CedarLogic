@@ -1,7 +1,7 @@
 
 #include "guiGatePULSE.h"
 #include <sstream>
-#include "../../thread/Message.h"
+#include "../message/Message.h"
 
 using namespace std;
 

@@ -9,15 +9,15 @@
 *****************************************************************************/
 
 #include "CircuitParse.h"
-#include "../OscopeFrame.h"
+#include "../frame/OscopeFrame.h"
 #include "../MainApp.h"
 #include <fstream>
 #include <sstream>
 
 #include "XMLParser.h"
-#include "../circuit/gate/guiGate.h"
-#include "../circuit/guiWire.h"
-#include "../circuit/GUICircuit.h"
+#include "../gate/guiGate.h"
+#include "../wire/guiWire.h"
+#include "../GUICircuit.h"
 #include "../widget/GUICanvas.h"
 #include <map>
 #include <unordered_map>

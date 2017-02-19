@@ -11,9 +11,9 @@
 #include "guiWire.h"
 #include <cmath>
 #include <stack>
-#include "gate/guiGate.h"
+#include "../gate/guiGate.h"
 #include "../parse/XMLParser.h"
-#include "../gl_defs.h"
+#include "../graphics/gl_defs.h"
 
 #include "../MainApp.h"
 DECLARE_APP(MainApp)

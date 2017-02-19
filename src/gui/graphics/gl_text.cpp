@@ -13,8 +13,8 @@
 #include "gl_text.h"
 
 // Include the glf font library:
-#include "MainApp.h"
-#include "GLFont/glfont2.h"
+#include "../MainApp.h"
+#include "../GLFont/glfont2.h"
 
 #define TEXT_SCALE_FACTOR 0.050
 #define FONT_TEXTURE_ID 255

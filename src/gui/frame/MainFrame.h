@@ -11,7 +11,7 @@
 #ifndef MAINFRAME_H_
 #define MAINFRAME_H_
 
-#include "MainApp.h"
+#include "../MainApp.h"
 #include "wx/wxprec.h"
 #include "wx/thread.h"
 #include "wx/toolbar.h"
@@ -19,12 +19,12 @@
 #include "wx/notebook.h"
 #include "wx/aui/auibook.h"
 #include "wx/slider.h"
-#include "widget/PaletteFrame.h"
-#include "widget/GUICanvas.h"
-#include "widget/klsMiniMap.h"
-#include "circuit/GUICircuit.h"
-#include "thread/autoSaveThread.h"
-#include "thread/threadLogic.h"
+#include "../widget/PaletteFrame.h"
+#include "../widget/GUICanvas.h"
+#include "../widget/klsMiniMap.h"
+#include "../GUICircuit.h"
+#include "../thread/autoSaveThread.h"
+#include "../thread/threadLogic.h"
 
 
 class OscopeFrame;

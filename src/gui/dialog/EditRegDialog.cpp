@@ -12,9 +12,9 @@
 #include <wx/statline.h>
 #include "EditRegDialog.h"
 #include "../MainApp.h"
-#include "../circuit/gate/guiGateZ80.h"
-#include "../circuit/GUICircuit.h"
-#include "../MainFrame.h"
+#include "../gate/guiGateZ80.h"
+#include "../GUICircuit.h"
+#include "../frame/MainFrame.h"
 #include <stdlib.h>
 
 using namespace std;

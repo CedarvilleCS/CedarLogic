@@ -16,7 +16,7 @@
 #include "wx/image.h"
 #include "wx/bitmap.h"
 #include "wx/dcmemory.h"
-#include "../gl_defs.h"
+#include "../graphics/gl_defs.h"
 using namespace std;
 
 class guiWire;

@@ -1,9 +1,9 @@
 
 #include "guiGate.h"
 
-#include "../../MainApp.h"
-#include "../../dialog/paramDialog.h"
-#include "../guiWire.h"
+#include "../MainApp.h"
+#include "../dialog/paramDialog.h"
+#include "../wire/guiWire.h"
 #include "gateHotspot.h"
 DECLARE_APP(MainApp)
 

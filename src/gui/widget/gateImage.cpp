@@ -12,7 +12,7 @@
 #include "wx/image.h"
 #include "wx/wx.h"
 #include "klsGLCanvas.h"
-#include "../gl_text.h"
+#include "../graphics/gl_text.h"
 #include <fstream>
 
 BEGIN_EVENT_TABLE(gateImage, wxStaticBitmap)

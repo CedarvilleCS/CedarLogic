@@ -16,7 +16,7 @@ class OscopeCanvas;
 
 #include "../MainApp.h"
 #include "wx/glcanvas.h"
-#include "../circuit/GUICircuit.h"
+#include "../GUICircuit.h"
 #include "../../logic/logic_values.h"
 
 #include <map>

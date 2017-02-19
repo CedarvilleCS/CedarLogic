@@ -9,13 +9,13 @@
 *****************************************************************************/
 
 #include "MainApp.h"
-#include "MainFrame.h"
+#include "frame/MainFrame.h"
 #include "wx/cmdline.h"
 #include "../version.h"
 
 #include "thread/threadLogic.h"
 #include "thread/autoSaveThread.h"
-#include "thread/Message.h"
+#include "message/Message.h"
 
 
 #include <sstream>

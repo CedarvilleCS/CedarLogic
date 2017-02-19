@@ -1,8 +1,8 @@
 
 #include "guiGateLED.h"
 #include <sstream>
-#include "../../../logic/logic_values.h"
-#include "../guiWire.h"
+#include "../../logic/logic_values.h"
+#include "../wire/guiWire.h"
 
 using namespace std;
 

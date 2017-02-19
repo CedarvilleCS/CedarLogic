@@ -1,7 +1,7 @@
 
 #pragma once
 #include "guiGate.h"
-#include "../../gl_text.h"
+#include "../graphics/gl_text.h"
 
 class guiLabel : public guiGate {
 public:

@@ -1,7 +1,7 @@
 
 #include "cmdWireSegDrag.h"
-#include "../circuit/GUICircuit.h"
-#include "../circuit/guiWire.h"
+#include "../GUICircuit.h"
+#include "../wire/guiWire.h"
 
 cmdWireSegDrag::cmdWireSegDrag(GUICircuit* gCircuit, GUICanvas* gCanvas,
 		IDType wireID) :

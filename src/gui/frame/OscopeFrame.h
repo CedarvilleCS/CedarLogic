@@ -20,10 +20,10 @@
 #include "wx/thread.h"
 #include "wx/tglbtn.h"
 #include "wx/combobox.h"
-#include "widget/PaletteCanvas.h"
-#include "widget/OscopeCanvas.h"
-#include "thread/threadLogic.h"
-#include "MainApp.h"
+#include "../widget/PaletteCanvas.h"
+#include "../widget/OscopeCanvas.h"
+#include "../thread/threadLogic.h"
+#include "../MainApp.h"
 
 class GUICircuit;
 class OscopeFrame;

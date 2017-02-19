@@ -9,9 +9,9 @@
 *****************************************************************************/
 
 #include "klsMiniMap.h"
-#include "../gl_text.h"
-#include "../circuit/gate/guiGate.h"
-#include "../circuit/guiWire.h"
+#include "../graphics/gl_text.h"
+#include "../gate/guiGate.h"
+#include "../wire/guiWire.h"
 #include "klsGLCanvas.h"
 
 // Enable access to objects in the main application

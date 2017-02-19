@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 #include "../../logic/logic_values.h" // StateType
-#include "../klsCollisionChecker.h"
+#include "../collision/klsCollisionChecker.h"
 
 class guiGate;
 

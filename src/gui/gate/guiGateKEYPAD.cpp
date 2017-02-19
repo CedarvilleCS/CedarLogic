@@ -2,7 +2,7 @@
 #include "guiGateKEYPAD.h"
 #include <sstream>
 #include <iomanip>
-#include "../../thread/Message.h"
+#include "../message/Message.h"
 
 
 using namespace std;

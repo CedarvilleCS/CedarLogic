@@ -1,7 +1,7 @@
 #include <cmath>
 #include "gl_defs.h"
 
-#include "MainApp.h"
+#include "../MainApp.h"
 DECLARE_APP(MainApp)
 
 GLPoint2f GLPoint2f::operator+(const GLPoint2f &other) const {

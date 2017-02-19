@@ -5,9 +5,9 @@
 #include <sstream>
 #include <iomanip>
 #include "wx/sizer.h"
-#include "../circuit/gate/guiGate.h"
-#include "../circuit/GUICircuit.h"
-#include "../MainFrame.h"
+#include "../gate/guiGate.h"
+#include "../GUICircuit.h"
+#include "../frame/MainFrame.h"
 #include "ADCPopupDialog.h"
 
 

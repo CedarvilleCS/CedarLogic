@@ -13,11 +13,11 @@
 #include "../MainApp.h"
 #include "../dialog/paramDialog.h"
 #include "../parse/klsClipboard.h"
-#include "../circuit/guiWire.h"
-#include "../circuit/GUICircuit.h"
-#include "../circuit/gate/gateHotspot.h"
+#include "../wire/guiWire.h"
+#include "../GUICircuit.h"
+#include "../gate/gateHotspot.h"
 #include "../commands.h"
-#include "../thread/Message.h"
+#include "../message/Message.h"
 #include "klsMiniMap.h"
 
 // Included to use the min() and max() templates:

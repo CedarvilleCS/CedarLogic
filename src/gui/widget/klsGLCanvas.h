@@ -19,7 +19,7 @@
 #include <string>
 #include <deque>
 #include "wx/glcanvas.h"
-#include "../gl_defs.h"
+#include "../graphics/gl_defs.h"
 
 class klsMiniMap;
 

@@ -9,7 +9,7 @@
 *****************************************************************************/
 
 #include "klsClipboard.h"
-#include "../OscopeFrame.h"
+#include "../frame/OscopeFrame.h"
 #include <fstream>
 #include <map>
 #include <unordered_map>   // removed .h  KAS
@@ -17,9 +17,9 @@
 #include "../MainApp.h"
 #include "../commands.h"
 #include "../widget/GUICanvas.h"
-#include "../circuit/GUICircuit.h"
-#include "../circuit/gate/guiGate.h"
-#include "../circuit/guiWire.h"
+#include "../GUICircuit.h"
+#include "../gate/guiGate.h"
+#include "../wire/guiWire.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"
 

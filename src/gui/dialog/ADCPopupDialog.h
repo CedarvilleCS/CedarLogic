@@ -1,7 +1,7 @@
 #ifndef ADCPOPUPDIALOG_H_
 #define ADCPOPUPDIALOG_H_
 
-#include "../circuit/gate/guiGateADC.h"
+#include "../gate/guiGateADC.h"
 class GUICircuit;
 class guiGateADC;
 

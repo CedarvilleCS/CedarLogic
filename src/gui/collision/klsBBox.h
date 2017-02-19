@@ -12,7 +12,7 @@
 #define KLSBBOX_H_
 
 // For GLfloat and GLPoint2f:
-#include "gl_defs.h"
+#include "../graphics/gl_defs.h"
 
 // For FLT_MAX and fabs():
 #include <float.h>

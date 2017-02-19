@@ -11,9 +11,9 @@
 #include "OscopeCanvas.h"
 #include "../MainApp.h"
 #include "GUICanvas.h"
-#include "../gl_text.h"
-#include "../OscopeFrame.h"
-#include "../circuit/guiWire.h"
+#include "../graphics/gl_text.h"
+#include "../frame/OscopeFrame.h"
+#include "../wire/guiWire.h"
 
 // Included to use the min() and max() templates:
 #include <algorithm>

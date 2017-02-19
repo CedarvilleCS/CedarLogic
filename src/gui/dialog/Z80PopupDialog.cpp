@@ -12,9 +12,9 @@
 #include <wx/statline.h>
 #include "Z80PopupDialog.h"
 #include "EditRegDialog.h"
-#include "../circuit/gate/guiGateZ80.h"
-#include "../circuit/GUICircuit.h"
-#include "../MainFrame.h"
+#include "../gate/guiGateZ80.h"
+#include "../GUICircuit.h"
+#include "../frame/MainFrame.h"
 #include "../../Z80/Z_80LogicGate.h"
 #include <stdlib.h>
 

@@ -1,10 +1,10 @@
 
 #pragma once
-#include "../../klsCollisionChecker.h"
+#include "../collision/klsCollisionChecker.h"
 #include <string>
 #include <map>
 #include <vector>
-#include "../../gl_defs.h"
+#include "../graphics/gl_defs.h"
 
 class wxCommandProcessor;
 class gateHotspot;

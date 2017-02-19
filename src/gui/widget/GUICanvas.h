@@ -18,8 +18,8 @@
 using namespace std;
 
 #include "klsGLCanvas.h"
-#include "../circuit/wireSegment.h"
-#include "../klsCollisionChecker.h"
+#include "../wire/wireSegment.h"
+#include "../collision/klsCollisionChecker.h"
 
 class klsCommand;
 class guiWire;

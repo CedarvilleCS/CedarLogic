@@ -1,6 +1,6 @@
 
 #include "guiGateADC.h"
-#include "../../dialog/ADCPopupDialog.h"
+#include "../dialog/ADCPopupDialog.h"
 
 using namespace std;
 

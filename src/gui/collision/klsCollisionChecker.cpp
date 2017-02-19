@@ -10,7 +10,7 @@
 
 #include "klsCollisionChecker.h"
 
-#include "MainApp.h"
+#include "../MainApp.h"
 DECLARE_APP(MainApp)
 
 // ************************* klsCollisionObject *****************************

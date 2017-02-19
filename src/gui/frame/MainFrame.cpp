@@ -8,7 +8,6 @@
    MainFrame: Main frame object
 *****************************************************************************/
 
-#include "MainApp.h"
 #include "MainFrame.h"
 #include "wx/filedlg.h"
 #include "wx/timer.h"
@@ -18,12 +17,14 @@
 #include "wx/toolbar.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"
-#include "parse/CircuitParse.h"
-#include "OscopeFrame.h"
 #include "wx/docview.h"
-#include "commands.h"
-#include "thread/autoSaveThread.h"
-#include "../version.h"
+
+#include "../MainApp.h"
+#include "../parse/CircuitParse.h"
+#include "OscopeFrame.h"
+#include "../commands.h"
+#include "../thread/autoSaveThread.h"
+#include "../../version.h"
 
 DECLARE_APP(MainApp)
 
