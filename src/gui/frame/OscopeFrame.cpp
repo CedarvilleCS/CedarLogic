@@ -258,7 +258,7 @@ void OscopeFrame::OnLoad( wxCommandEvent& event ){
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	
 	if (dialog.ShowModal() == wxID_OK) {
-		wxString path = dialog.GetPath();
+		string path = dialog.GetPath();
 		ifstream inFile(path.c_str());
 		string lineFile;
 		getline(inFile, lineFile, '\n');

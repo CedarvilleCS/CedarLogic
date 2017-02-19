@@ -34,7 +34,7 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
     wxTextDataObject text;
     vector < klsCommand* > cmdList;
     if ( wxTheClipboard->GetData(text) ) {
-    	string pasteText = (char*)(text.GetText().c_str());
+		string pasteText = text.GetText();
     	if (pasteText.find('\n',0) == string::npos) return NULL;
     	istringstream iss(pasteText);
     	string temp;

@@ -27,6 +27,7 @@ class gateImage;
 
 using namespace std;
 
+
 class gateImage : public wxWindow {
 public:
     gateImage( string gateName, wxWindow *parent, wxWindowID id = wxID_ANY,

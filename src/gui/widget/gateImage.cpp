@@ -15,7 +15,7 @@
 #include "../graphics/gl_text.h"
 #include <fstream>
 
-BEGIN_EVENT_TABLE(gateImage, wxStaticBitmap)
+BEGIN_EVENT_TABLE(gateImage, wxWindow)
     EVT_PAINT(gateImage::OnPaint)
     EVT_ENTER_WINDOW( gateImage::OnEnterWindow )
     EVT_LEAVE_WINDOW( gateImage::OnLeaveWindow )
