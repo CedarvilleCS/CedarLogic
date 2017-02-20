@@ -586,7 +586,7 @@ void klsGLCanvas::wxOnMouseEvent(wxMouseEvent& event) {
 			wxSize sz = GetClientSize();
 			wxImage screenShot = renderToImage(sz.GetWidth(), sz.GetHeight());
 			wxBitmap myBMP( screenShot );
-			myBMP.SaveFile((const wxChar *)"screen_shot.bmp", wxBITMAP_TYPE_BMP);  // added cast KAS
+			myBMP.SaveFile("screen_shot.bmp", wxBITMAP_TYPE_BMP);
 		}
 		
 	} else if( event.MiddleUp() ) {

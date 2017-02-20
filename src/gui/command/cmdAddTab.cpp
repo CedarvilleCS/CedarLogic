@@ -16,7 +16,7 @@ bool cmdAddTab::Do() {
 	canvases->push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 	std::ostringstream oss;
 	oss << "Page " << canvases->size();
-	canvasBook->AddPage(canvases->at(canvases->size() - 1), (const wxChar *)oss.str().c_str(), (false));
+	canvasBook->AddPage(canvases->at(canvases->size() - 1), oss.str(), (false));
 	return true;
 }
 

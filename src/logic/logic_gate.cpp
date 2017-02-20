@@ -2034,7 +2034,7 @@ string Gate_RAM::getParameter( string paramName ) {
 
 // Write a file containing the memory data:
 void Gate_RAM::outputMemoryFile( string fName ) {
-	ofstream oFile( fName.c_str() );
+	ofstream oFile( fName );
 	if(!oFile) {
 		WARNING("Gate_RAM::outputMemoryFile() - Couldn't open the memory file for writing.");
 		return;
@@ -2066,7 +2066,7 @@ void Gate_RAM::outputMemoryFile( string fName ) {
 
 // Read a file and load the memory data:
 void Gate_RAM::inputMemoryFile( string fName ) {
-	ifstream iFile( fName.c_str() );
+	ifstream iFile( fName );
 	if(!iFile) {
 		WARNING("Gate_RAM::inputMemoryFile() - Couldn't open the memory file for reading.");
 		return;
@@ -2113,7 +2113,7 @@ void Gate_RAM::inputMemoryFile( string fName ) {
 //also load Intel Hex files.  This is a format
 //which is exported by the zad assembler.
 void Gate_RAM::inputMemoryFileFromIntelHex( string fName ){
-	ifstream fin( fName.c_str(), ios::in );
+	ifstream fin( fName, ios::in );
 	
 	bool endOfFile = false;
 	char temp = '0';

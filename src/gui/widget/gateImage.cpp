@@ -41,7 +41,7 @@ gateImage::gateImage( string gateName, wxWindow *parent, wxWindowID id,
 	update();
 
 	delete m_gate;
-	this->SetToolTip((const wxChar *)wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption.c_str()); // added cast KAS
+	this->SetToolTip(wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption);
 }
 
 gateImage::~gateImage() {

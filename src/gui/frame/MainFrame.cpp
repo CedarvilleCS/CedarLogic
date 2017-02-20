@@ -195,7 +195,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	timeStepModSlider = new wxSlider(toolBar, wxID_ANY, wxGetApp().timeStepMod, 1, 500, wxDefaultPosition, wxSize(125,-1), wxSL_HORIZONTAL|wxSL_AUTOTICKS);
 	ostringstream oss;
 	oss << wxGetApp().timeStepMod << "ms";
-	timeStepModVal = new wxStaticText(toolBar, wxID_ANY, (const wxChar *)oss.str().c_str(), wxDefaultPosition, wxSize(45, -1), wxSUNKEN_BORDER | wxALIGN_RIGHT | wxST_NO_AUTORESIZE);  // added cast KAS
+	timeStepModVal = new wxStaticText(toolBar, wxID_ANY, oss.str(), wxDefaultPosition, wxSize(45, -1), wxSUNKEN_BORDER | wxALIGN_RIGHT | wxST_NO_AUTORESIZE);  // added cast KAS
 	toolBar->AddControl( timeStepModSlider );
 	toolBar->AddControl( timeStepModVal );
 	toolBar->AddSeparator();
@@ -243,7 +243,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 		canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 		ostringstream oss;
 		oss << "Page " << (i+1);
-		canvasBook->AddPage(canvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));  // KAS
+		canvasBook->AddPage(canvases[i], oss.str(), (i == 0 ? true : false));  // KAS
 	}
 
 	currentCanvas = canvases[0];
@@ -281,7 +281,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	this->SetSize( wxGetApp().appSettings.mainFrameLeft, wxGetApp().appSettings.mainFrameTop, wxGetApp().appSettings.mainFrameWidth, wxGetApp().appSettings.mainFrameHeight );
 	
 	doOpenFile = (cmdFilename.size() > 0);
-	this->openedFilename = (const wxChar *)cmdFilename.c_str(); // KAS
+	this->openedFilename = cmdFilename;
 
 	if (ifstream(CRASH_FILENAME)) {
 		wxMessageDialog dialog(this, "Oops! It seems like there may have been a crash.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
@@ -461,7 +461,7 @@ void MainFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {
 
 void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
     wxString msg;
-    msg.Printf(VERSION_ABOUT_TEXT().c_str());
+    msg.Printf(wxString(VERSION_ABOUT_TEXT()));
 
     wxMessageBox(msg, "About", wxOK | wxICON_INFORMATION, this);
 }
@@ -535,7 +535,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		lastDirectory = dialog.GetDirectory();
-		loadCircuitFile((const char *)dialog.GetPath().c_str());  // KAS
+		loadCircuitFile(dialog.GetPath().ToStdString());
 	}
 	
     currentCanvas->Update(); // Render();
@@ -553,7 +553,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 //it starts, that cedarls can load that file
 //by calling this method.
 void MainFrame::loadCircuitFile( string fileName ){
-	wxString path = (const wxChar *)fileName.c_str();  // KAS
+	wxString path = fileName;
 	
 	openedFilename = path;
 	this->SetTitle(VERSION_TITLE() + " - " + path );
@@ -574,14 +574,14 @@ void MainFrame::loadCircuitFile( string fileName ){
 	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 	ostringstream oss;
 	oss << "Page " << (1);
-	canvasBook->AddPage(canvases[0], (const wxChar *)oss.str().c_str(), (true));
+	canvasBook->AddPage(canvases[0], oss.str(), (true));
 
 	currentCanvas = canvases[0];
 	gCircuit->setCurrentCanvas(currentCanvas);
 	currentCanvas->setMinimap(miniMap);
 	currentCanvas->SetFocus();
 
-	CircuitParse cirp((const char *)path.c_str(), canvases); // KAS
+	CircuitParse cirp(path.ToStdString(), canvases);
 	canvases = cirp.parseFile();
 
 	//JV - Put pages back into canvas book
@@ -589,7 +589,7 @@ void MainFrame::loadCircuitFile( string fileName ){
 	{
 		ostringstream oss;
 		oss << "Page " << (i + 1);
-		canvasBook->AddPage(canvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));
+		canvasBook->AddPage(canvases[i], oss.str(), (i == 0 ? true : false));
 	}
 
 /*	currentCanvas = canvases[0];
@@ -865,7 +865,7 @@ void MainFrame::OnTimeStepModSlider(wxScrollEvent& event) {
 	ostringstream oss;
 	oss << wxGetApp().timeStepMod << "ms";
 	wxGetApp().timeStepMod = timeStepModSlider->GetValue();
-	timeStepModVal->SetLabel((const wxChar *)oss.str().c_str()); // KAS
+	timeStepModVal->SetLabel(oss.str()); // KAS
 }
 
 
@@ -880,7 +880,7 @@ void MainFrame::saveSettings() {
 	
 	string settingsIni = wxGetApp().pathToExe + "res/settings.ini";
 	
-	ofstream iniFile(settingsIni.c_str(), ios::out);
+	ofstream iniFile(settingsIni, ios::out);
 	iniFile << "GateLib=" << wxGetApp().appSettings.gateLibFile.substr(numCharAbsolute) << endl;
 	iniFile << "HelpFile=" << wxGetApp().appSettings.helpFile.substr(numCharAbsolute) << endl;
 	iniFile << "TextFont=" << wxGetApp().appSettings.textFontFile.substr(numCharAbsolute) << endl;
@@ -890,7 +890,7 @@ void MainFrame::saveSettings() {
 	iniFile << "FrameTop=" << this->GetPosition().y << endl;
 	iniFile << "TimeStep=" << wxGetApp().timeStepMod << endl;
 	iniFile << "RefreshRate=" << wxGetApp().appSettings.refreshRate << endl;
-	iniFile << "LastDirectory=" << lastDirectory.c_str() << endl;
+	iniFile << "LastDirectory=" << lastDirectory << endl;
 	iniFile << "WireConnRadius=" << wxGetApp().appSettings.wireConnRadius << endl;
 	iniFile << "WireConnVisible=" << wxGetApp().appSettings.wireConnVisible << endl;
 	iniFile << "GridlineVisible=" << wxGetApp().appSettings.gridlineVisible << endl;
@@ -1017,7 +1017,7 @@ void MainFrame::OnNewTab(wxCommandEvent& event) {
 /*	canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 	ostringstream oss;
 	oss << "Page " << canvases.size();
-	canvasBook->AddPage(canvases[canvases.size()-1], (const wxChar *)oss.str().c_str(), (false));*/
+	canvasBook->AddPage(canvases[canvases.size()-1], oss.str(), (false));*/
 
 }
 

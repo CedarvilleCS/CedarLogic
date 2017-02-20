@@ -21,13 +21,13 @@ LibraryGateLine::LibraryGateLine(float x1, float y1, float x2, float y2) :
 	x1(x1), y1(y1), x2(x2), y2(y2) { }
 
 GateLibrary::GateLibrary(string fileName) {
-	fstream x(fileName.c_str(), ios::in);
+	fstream x(fileName, ios::in);
 	if (!x) {
 		// Error loading file, don't bother trying to parse.
 		wxString msg;
 		ostringstream ossError;
 		ossError << "The library file " << fileName << " does not exist.";
-		msg.Printf((const wxChar *)ossError.str().c_str());  // remove  macro; added cast KAS
+		msg.Printf(wxString(ossError.str()));
 		wxMessageBox(msg, "Error - Missing File", wxOK | wxICON_ERROR, NULL);
 
 		return;

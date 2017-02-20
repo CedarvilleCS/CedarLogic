@@ -126,104 +126,104 @@ Z80PopupDialog::Z80PopupDialog( guiGateZ80* newM_guiGateZ80,
 	
 //Buttons
 	closeBtn = new wxButton( this, wxID_CLOSE );
-	wxStaticText* StepTitle = new wxStaticText(this, -1, (const wxChar *)"Step By:");  // cast here and following KAS
+	wxStaticText* StepTitle = new wxStaticText(this, -1, "Step By:");  // cast here and following KAS
 	contBtn = new wxBitmapButton( this, ID_CONTSTEP, bmpCont );
-	wxStaticText* contBtnLabel = new wxStaticText(this, -1, (const wxChar *)"Continuous");
+	wxStaticText* contBtnLabel = new wxStaticText(this, -1, "Continuous");
 	iStepBtn = new wxBitmapButton( this, ID_ISTEP, bmpIStep);
-	wxStaticText* iStepBtnLabel = new wxStaticText(this, -1, (const wxChar *)"Instruction");
+	wxStaticText* iStepBtnLabel = new wxStaticText(this, -1, "Instruction");
 	tStepBtn = new wxBitmapButton( this, ID_TSTEP, bmpTStep);
-	wxStaticText* tStepBtnLabel = new wxStaticText(this, -1, (const wxChar *)"T-State");
-	editRegBtn = new wxButton(this, ID_EDITREG, (const wxChar *)"Edit Registers...");
+	wxStaticText* tStepBtnLabel = new wxStaticText(this, -1, "T-State");
+	editRegBtn = new wxButton(this, ID_EDITREG, "Edit Registers...");
 	
-	REGMode = new wxRadioButton(this, ID_REGMODE, (const wxChar *)"ZAD Mode off", wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
-	ZADMode = new wxRadioButton(this, ID_ZADMODE, (const wxChar *)"ZAD Mode on", wxDefaultPosition, wxDefaultSize);
-	SMARTMode = new wxRadioButton(this, ID_SMARTMODE, (const wxChar *)"ZAD Mode smart", wxDefaultPosition, wxDefaultSize);
+	REGMode = new wxRadioButton(this, ID_REGMODE, "ZAD Mode off", wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+	ZADMode = new wxRadioButton(this, ID_ZADMODE, "ZAD Mode on", wxDefaultPosition, wxDefaultSize);
+	SMARTMode = new wxRadioButton(this, ID_SMARTMODE, "ZAD Mode smart", wxDefaultPosition, wxDefaultSize);
 	
 	//default SMART mode to true
 	SMARTMode->SetValue(true);
 	
-	wxStaticText* ALabel = new wxStaticText(this, -1, (const wxChar *)"A = ");
-	AReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* BLabel = new wxStaticText(this, -1, (const wxChar *)"B = ");
-	BReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* CLabel = new wxStaticText(this, -1, (const wxChar *)"C = ");
-	CReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* DLabel = new wxStaticText(this, -1, (const wxChar *)"D = ");
-	DReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* ELabel = new wxStaticText(this, -1, (const wxChar *)"E = ");
-	EReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* HLabel = new wxStaticText(this, -1, (const wxChar *)"H = ");
-	HReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* LLabel = new wxStaticText(this, -1, (const wxChar *)"L = ");
-	LReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* IXLabel = new wxStaticText(this, -1, (const wxChar *)"IX = ");
-	IXReg = new wxStaticText(this, -1, (const wxChar *)"XXXX");
-	wxStaticText* IYLabel = new wxStaticText(this, -1, (const wxChar *)"IY = ");
-	IYReg = new wxStaticText(this, -1, (const wxChar *)"XXXX");
+	wxStaticText* ALabel = new wxStaticText(this, -1, "A = ");
+	AReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* BLabel = new wxStaticText(this, -1, "B = ");
+	BReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* CLabel = new wxStaticText(this, -1, "C = ");
+	CReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* DLabel = new wxStaticText(this, -1, "D = ");
+	DReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* ELabel = new wxStaticText(this, -1, "E = ");
+	EReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* HLabel = new wxStaticText(this, -1, "H = ");
+	HReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* LLabel = new wxStaticText(this, -1, "L = ");
+	LReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* IXLabel = new wxStaticText(this, -1, "IX = ");
+	IXReg = new wxStaticText(this, -1, "XXXX");
+	wxStaticText* IYLabel = new wxStaticText(this, -1, "IY = ");
+	IYReg = new wxStaticText(this, -1, "XXXX");
 
-	wxStaticText* AltALabel = new wxStaticText(this, -1, (const wxChar *)"A' = ");
-	AltAReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* AltBLabel = new wxStaticText(this, -1, (const wxChar *)"B' = ");
-	AltBReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* AltCLabel = new wxStaticText(this, -1, (const wxChar *)"C' = ");
-	AltCReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* AltDLabel = new wxStaticText(this, -1, (const wxChar *)"D' = ");
-	AltDReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* AltELabel = new wxStaticText(this, -1, (const wxChar *)"E' = ");
-	AltEReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* AltHLabel = new wxStaticText(this, -1, (const wxChar *)"H' = ");
-	AltHReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* AltLLabel = new wxStaticText(this, -1, (const wxChar *)"L' = ");
-	AltLReg = new wxStaticText(this, -1, (const wxChar *)"XX");
+	wxStaticText* AltALabel = new wxStaticText(this, -1, "A' = ");
+	AltAReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* AltBLabel = new wxStaticText(this, -1, "B' = ");
+	AltBReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* AltCLabel = new wxStaticText(this, -1, "C' = ");
+	AltCReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* AltDLabel = new wxStaticText(this, -1, "D' = ");
+	AltDReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* AltELabel = new wxStaticText(this, -1, "E' = ");
+	AltEReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* AltHLabel = new wxStaticText(this, -1, "H' = ");
+	AltHReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* AltLLabel = new wxStaticText(this, -1, "L' = ");
+	AltLReg = new wxStaticText(this, -1, "XX");
 	
-	wxStaticText* PCLabel = new wxStaticText(this, -1, (const wxChar *)"PC = ");
-	PCReg = new wxStaticText(this, -1, (const wxChar *)"XXXX");
-	wxStaticText* SPLabel = new wxStaticText(this, -1, (const wxChar *)"SP = ");
-	SPReg = new wxStaticText(this, -1, (const wxChar *)"XXXX");
-	wxStaticText* ILabel = new wxStaticText(this, -1, (const wxChar *)"I = ");
-	IReg = new wxStaticText(this, -1, (const wxChar *)"XX");
-	wxStaticText* IMLabel = new wxStaticText(this, -1, (const wxChar *)"IM = ");
-	IMode = new wxStaticText(this, -1, (const wxChar *)"Mode 0");
-	wxStaticText* IFFLabel = new wxStaticText(this, -1, (const wxChar *)"IFF = ");
-	IFFStatus = new wxStaticText(this, -1, (const wxChar *)"Disabled");
+	wxStaticText* PCLabel = new wxStaticText(this, -1, "PC = ");
+	PCReg = new wxStaticText(this, -1, "XXXX");
+	wxStaticText* SPLabel = new wxStaticText(this, -1, "SP = ");
+	SPReg = new wxStaticText(this, -1, "XXXX");
+	wxStaticText* ILabel = new wxStaticText(this, -1, "I = ");
+	IReg = new wxStaticText(this, -1, "XX");
+	wxStaticText* IMLabel = new wxStaticText(this, -1, "IM = ");
+	IMode = new wxStaticText(this, -1, "Mode 0");
+	wxStaticText* IFFLabel = new wxStaticText(this, -1, "IFF = ");
+	IFFStatus = new wxStaticText(this, -1, "Disabled");
 	
 	//FLAGS
 	//flags
-	wxStaticText* SFlagLabel = new wxStaticText(this, -1, (const wxChar *)"S = ");
-	SFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* ZFlagLabel = new wxStaticText(this, -1, (const wxChar *)"Z = ");
-	ZFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* HFlagLabel = new wxStaticText(this, -1, (const wxChar *)"H = ");
-	HFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* PVFlagLabel = new wxStaticText(this, -1, (const wxChar *)"P/V = ");
-	PVFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* NFlagLabel = new wxStaticText(this, -1, (const wxChar *)"N = ");
-	NFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* CFlagLabel = new wxStaticText(this, -1, (const wxChar *)"C = ");
-	CFlag = new wxStaticText(this, -1, (const wxChar *)"X");
+	wxStaticText* SFlagLabel = new wxStaticText(this, -1, "S = ");
+	SFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* ZFlagLabel = new wxStaticText(this, -1, "Z = ");
+	ZFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* HFlagLabel = new wxStaticText(this, -1, "H = ");
+	HFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* PVFlagLabel = new wxStaticText(this, -1, "P/V = ");
+	PVFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* NFlagLabel = new wxStaticText(this, -1, "N = ");
+	NFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* CFlagLabel = new wxStaticText(this, -1, "C = ");
+	CFlag = new wxStaticText(this, -1, "X");
 	
 	//alternate flags
-	wxStaticText* AltSFlagLabel = new wxStaticText(this, -1, (const wxChar *)"S' = ");
-	AltSFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* AltZFlagLabel = new wxStaticText(this, -1, (const wxChar *)"Z' = ");
-	AltZFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* AltHFlagLabel = new wxStaticText(this, -1, (const wxChar *)"H' = ");
-	AltHFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* AltPVFlagLabel = new wxStaticText(this, -1, (const wxChar *)"P/V' = ");
-	AltPVFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* AltNFlagLabel = new wxStaticText(this, -1, (const wxChar *)"N' = ");
-	AltNFlag = new wxStaticText(this, -1, (const wxChar *)"X");
-	wxStaticText* AltCFlagLabel = new wxStaticText(this, -1, (const wxChar *)"C' = ");
-	AltCFlag = new wxStaticText(this, -1, (const wxChar *)"X");
+	wxStaticText* AltSFlagLabel = new wxStaticText(this, -1, "S' = ");
+	AltSFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* AltZFlagLabel = new wxStaticText(this, -1, "Z' = ");
+	AltZFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* AltHFlagLabel = new wxStaticText(this, -1, "H' = ");
+	AltHFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* AltPVFlagLabel = new wxStaticText(this, -1, "P/V' = ");
+	AltPVFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* AltNFlagLabel = new wxStaticText(this, -1, "N' = ");
+	AltNFlag = new wxStaticText(this, -1, "X");
+	wxStaticText* AltCFlagLabel = new wxStaticText(this, -1, "C' = ");
+	AltCFlag = new wxStaticText(this, -1, "X");
 	
 	//current instruction
 	wxSize* CISize = new wxSize (300, 100);
 	
-	wxStaticText* CurrInstructionTitle = new wxStaticText(this, -1, (const wxChar *)"Current Instruction");
-	CurrentInstruction = new wxTextCtrl(this, -1, (const wxChar *)"", wxDefaultPosition, *CISize, wxTE_MULTILINE | wxTE_READONLY | wxTE_WORDWRAP);
+	wxStaticText* CurrInstructionTitle = new wxStaticText(this, -1, "Current Instruction");
+	CurrentInstruction = new wxTextCtrl(this, -1, "", wxDefaultPosition, *CISize, wxTE_MULTILINE | wxTE_READONLY | wxTE_WORDWRAP);
 
 	//hex display
-	hexDisp = new wxStaticText(this, -1, (const wxChar *)"000000");
+	hexDisp = new wxStaticText(this, -1, "000000");
 	wxFont* dispFont = new wxFont(30, wxFONTFAMILY_TELETYPE, -1, wxBOLD);
 	hexDisp->SetFont(*dispFont);
 	hexDisp->SetForegroundColour(0x3300FF);
@@ -233,31 +233,31 @@ Z80PopupDialog::Z80PopupDialog( guiGateZ80* newM_guiGateZ80,
 	wxSize* twoWideButtonSize = new wxSize(40, 20);
 	wxSize* kpresetbuttonSize = new wxSize (80, 20);
 	
-	KPButton0 = new wxButton(this, ID_KEY_0, (const wxChar *)"0", wxDefaultPosition, *kpbuttonSize);
-	KPButton1 = new wxButton(this, ID_KEY_1, (const wxChar *)"1", wxDefaultPosition, *kpbuttonSize);
-	KPButton2 = new wxButton(this, ID_KEY_2, (const wxChar *)"2", wxDefaultPosition, *kpbuttonSize);
-	KPButton3 = new wxButton(this, ID_KEY_3, (const wxChar *)"3", wxDefaultPosition, *kpbuttonSize);
+	KPButton0 = new wxButton(this, ID_KEY_0, "0", wxDefaultPosition, *kpbuttonSize);
+	KPButton1 = new wxButton(this, ID_KEY_1, "1", wxDefaultPosition, *kpbuttonSize);
+	KPButton2 = new wxButton(this, ID_KEY_2, "2", wxDefaultPosition, *kpbuttonSize);
+	KPButton3 = new wxButton(this, ID_KEY_3, "3", wxDefaultPosition, *kpbuttonSize);
 	
-	KPButton4 = new wxButton(this, ID_KEY_4, (const wxChar *)"4", wxDefaultPosition, *kpbuttonSize);
-	KPButton5 = new wxButton(this, ID_KEY_5, (const wxChar *)"5", wxDefaultPosition, *kpbuttonSize);
-	KPButton6 = new wxButton(this, ID_KEY_6, (const wxChar *)"6", wxDefaultPosition, *kpbuttonSize);
-	KPButton7 = new wxButton(this, ID_KEY_7, (const wxChar *)"7", wxDefaultPosition, *kpbuttonSize);
+	KPButton4 = new wxButton(this, ID_KEY_4, "4", wxDefaultPosition, *kpbuttonSize);
+	KPButton5 = new wxButton(this, ID_KEY_5, "5", wxDefaultPosition, *kpbuttonSize);
+	KPButton6 = new wxButton(this, ID_KEY_6, "6", wxDefaultPosition, *kpbuttonSize);
+	KPButton7 = new wxButton(this, ID_KEY_7, "7", wxDefaultPosition, *kpbuttonSize);
 	
-	KPButton8 = new wxButton(this, ID_KEY_8, (const wxChar *)"8", wxDefaultPosition, *kpbuttonSize);
-	KPButton9 = new wxButton(this, ID_KEY_9, (const wxChar *)"9", wxDefaultPosition, *kpbuttonSize);
-	KPButtonA = new wxButton(this, ID_KEY_A, (const wxChar *)"A", wxDefaultPosition, *kpbuttonSize);
-	KPButtonB = new wxButton(this, ID_KEY_B, (const wxChar *)"B", wxDefaultPosition, *kpbuttonSize);
+	KPButton8 = new wxButton(this, ID_KEY_8, "8", wxDefaultPosition, *kpbuttonSize);
+	KPButton9 = new wxButton(this, ID_KEY_9, "9", wxDefaultPosition, *kpbuttonSize);
+	KPButtonA = new wxButton(this, ID_KEY_A, "A", wxDefaultPosition, *kpbuttonSize);
+	KPButtonB = new wxButton(this, ID_KEY_B, "B", wxDefaultPosition, *kpbuttonSize);
 	
-	KPButtonC = new wxButton(this, ID_KEY_C, (const wxChar *)"C", wxDefaultPosition, *kpbuttonSize);
-	KPButtonD = new wxButton(this, ID_KEY_D, (const wxChar *)"D", wxDefaultPosition, *kpbuttonSize);
-	KPButtonE = new wxButton(this, ID_KEY_E, (const wxChar *)"E", wxDefaultPosition, *kpbuttonSize);
-	KPButtonF = new wxButton(this, ID_KEY_F, (const wxChar *)"F", wxDefaultPosition, *kpbuttonSize);
+	KPButtonC = new wxButton(this, ID_KEY_C, "C", wxDefaultPosition, *kpbuttonSize);
+	KPButtonD = new wxButton(this, ID_KEY_D, "D", wxDefaultPosition, *kpbuttonSize);
+	KPButtonE = new wxButton(this, ID_KEY_E, "E", wxDefaultPosition, *kpbuttonSize);
+	KPButtonF = new wxButton(this, ID_KEY_F, "F", wxDefaultPosition, *kpbuttonSize);
 	
-	KPButtonGo = new wxButton(this, ID_KEY_GO, (const wxChar *)"Go", wxDefaultPosition, *twoWideButtonSize);
-	KPButtonStep = new wxButton(this, ID_KEY_STEP, (const wxChar *)"Step", wxDefaultPosition, *twoWideButtonSize);
-	KPButtonNext = new wxButton(this, ID_KEY_NEXT, (const wxChar *)"Next", wxDefaultPosition, *twoWideButtonSize);
-	KPButtonPrev = new wxButton(this, ID_KEY_PREV, (const wxChar *)"Prev", wxDefaultPosition, *twoWideButtonSize);
-	KPButtonReset = new wxButton(this, ID_KEY_RESET, (const wxChar *)"Reset", wxDefaultPosition, *kpresetbuttonSize);
+	KPButtonGo = new wxButton(this, ID_KEY_GO, "Go", wxDefaultPosition, *twoWideButtonSize);
+	KPButtonStep = new wxButton(this, ID_KEY_STEP, "Step", wxDefaultPosition, *twoWideButtonSize);
+	KPButtonNext = new wxButton(this, ID_KEY_NEXT, "Next", wxDefaultPosition, *twoWideButtonSize);
+	KPButtonPrev = new wxButton(this, ID_KEY_PREV, "Prev", wxDefaultPosition, *twoWideButtonSize);
+	KPButtonReset = new wxButton(this, ID_KEY_RESET, "Reset", wxDefaultPosition, *kpresetbuttonSize);
 	
 //*************DATA REGISTERS***************************************************
 	DataRegSizer->Add( ALabel,wxSizerFlags(0).Align(wxALIGN_RIGHT).Border(wxALL, 1 ));
@@ -664,40 +664,41 @@ void Z80PopupDialog::EditReg ( wxCommandEvent& event ) {
 	
 	//This array will be used to pass current register information
 	//to the editRegDialog to populate the boxes with current values
-	string Z80Params[] = {(const char *)AReg->GetLabel().c_str(),				//params[0]
-		(const char *)BReg->GetLabel().c_str(),				//params[1]
-		(const char *)CReg->GetLabel().c_str(),				//params[2]
-		(const char *)DReg->GetLabel().c_str(),				//params[3]
-		(const char *)EReg->GetLabel().c_str(),				//params[4]
-		(const char *)HReg->GetLabel().c_str(),				//params[5]
-		(const char *)LReg->GetLabel().c_str(),				//params[6]
-		(const char *)IXReg->GetLabel().c_str(),			//params[7]
-		(const char *)IYReg->GetLabel().c_str(),			//params[8]
-		(const char *)AltAReg->GetLabel().c_str(),			//params[9]
-		(const char *)AltBReg->GetLabel().c_str(),			//params[10]
-		(const char *)AltCReg->GetLabel().c_str(),			//params[11]
-		(const char *)AltDReg->GetLabel().c_str(),			//params[12]
-		(const char *)AltEReg->GetLabel().c_str(),			//params[13]
-		(const char *)AltHReg->GetLabel().c_str(),			//params[14]
-		(const char *)AltLReg->GetLabel().c_str(),			//params[15]
-		(const char *)SFlag->GetLabel().c_str(),			//params[16]
-		(const char *)ZFlag->GetLabel().c_str(),			//params[17]
-		(const char *)HFlag->GetLabel().c_str(),			//params[18]
-		(const char *)PVFlag->GetLabel().c_str(),			//params[19]
-		(const char *)NFlag->GetLabel().c_str(),			//params[20]
-		(const char *)CFlag->GetLabel().c_str(),			//params[21]
-		(const char *)AltSFlag->GetLabel().c_str(),			//params[22]
-		(const char *)AltZFlag->GetLabel().c_str(),			//params[23]
-		(const char *)AltHFlag->GetLabel().c_str(),			//params[24]
-		(const char *)AltPVFlag->GetLabel().c_str(),		//params[25]
-		(const char *)AltNFlag->GetLabel().c_str(),			//params[26]
-		(const char *)AltCFlag->GetLabel().c_str(),			//params[27]
-		(const char *)PCReg->GetLabel().c_str(),			//params[28]
-		(const char *)SPReg->GetLabel().c_str(),			//params[29]
-		(const char *)IReg->GetLabel().c_str(),				//params[30]
-		(const char *)IMode->GetLabel().c_str(),			//params[31]
-		(const char *)IFFStatus->GetLabel().c_str()			//params[32]
-						  };
+	string Z80Params[] = {
+		AReg->GetLabel().ToStdString(),				//params[0]
+		BReg->GetLabel().ToStdString(),				//params[1]
+		CReg->GetLabel().ToStdString(),				//params[2]
+		DReg->GetLabel().ToStdString(),				//params[3]
+		EReg->GetLabel().ToStdString(),				//params[4]
+		HReg->GetLabel().ToStdString(),				//params[5]
+		LReg->GetLabel().ToStdString(),				//params[6]
+		IXReg->GetLabel().ToStdString(),			//params[7]
+		IYReg->GetLabel().ToStdString(),			//params[8]
+		AltAReg->GetLabel().ToStdString(),			//params[9]
+		AltBReg->GetLabel().ToStdString(),			//params[10]
+		AltCReg->GetLabel().ToStdString(),			//params[11]
+		AltDReg->GetLabel().ToStdString(),			//params[12]
+		AltEReg->GetLabel().ToStdString(),			//params[13]
+		AltHReg->GetLabel().ToStdString(),			//params[14]
+		AltLReg->GetLabel().ToStdString(),			//params[15]
+		SFlag->GetLabel().ToStdString(),			//params[16]
+		ZFlag->GetLabel().ToStdString(),			//params[17]
+		HFlag->GetLabel().ToStdString(),			//params[18]
+		PVFlag->GetLabel().ToStdString(),			//params[19]
+		NFlag->GetLabel().ToStdString(),			//params[20]
+		CFlag->GetLabel().ToStdString(),			//params[21]
+		AltSFlag->GetLabel().ToStdString(),			//params[22]
+		AltZFlag->GetLabel().ToStdString(),			//params[23]
+		AltHFlag->GetLabel().ToStdString(),			//params[24]
+		AltPVFlag->GetLabel().ToStdString(),		//params[25]
+		AltNFlag->GetLabel().ToStdString(),			//params[26]
+		AltCFlag->GetLabel().ToStdString(),			//params[27]
+		PCReg->GetLabel().ToStdString(),			//params[28]
+		SPReg->GetLabel().ToStdString(),			//params[29]
+		IReg->GetLabel().ToStdString(),				//params[30]
+		IMode->GetLabel().ToStdString(),			//params[31]
+		IFFStatus->GetLabel().ToStdString()			//params[32]
+	};
 	
 	EditRegDialog* editRegDialog = new EditRegDialog(this, m_guiGateZ80, gUICircuit, Z80Params);
 	editRegDialog->ShowModal();
@@ -706,128 +707,128 @@ void Z80PopupDialog::EditReg ( wxCommandEvent& event ) {
 //This will notify the popup of a change in a parameter and call a
 //method to retreive the updated param info from the hash
 void Z80PopupDialog::NotifyOfRegChange (){
-	wxString xxString = (const wxChar *)"XX";
-	wxString xxxxString = (const wxChar *)"XXXX";
-	wxString oneString = (const wxChar *)"1";
-	wxString zeroString = (const wxChar *)"0";
+	wxString xxString = "XX";
+	wxString xxxxString = "XXXX";
+	wxString oneString = "1";
+	wxString zeroString = "0";
 	
 	
 	//capture data registers
-	wxString aParam = (const wxChar *)m_guiGateZ80->getLogicParam("A").c_str();
-	wxString bParam = (const wxChar *)m_guiGateZ80->getLogicParam("B").c_str();
-	wxString cParam = (const wxChar *)m_guiGateZ80->getLogicParam("C").c_str();
-	wxString dParam = (const wxChar *)m_guiGateZ80->getLogicParam("D").c_str();
-	wxString eParam = (const wxChar *)m_guiGateZ80->getLogicParam("E").c_str();
-	wxString hParam = (const wxChar *)m_guiGateZ80->getLogicParam("H").c_str();
-	wxString lParam = (const wxChar *)m_guiGateZ80->getLogicParam("L").c_str();
-	wxString ixParam = (const wxChar *)m_guiGateZ80->getLogicParam("IX").c_str();
-	wxString iyParam = (const wxChar *)m_guiGateZ80->getLogicParam("IY").c_str();
+	wxString aParam = m_guiGateZ80->getLogicParam("A");
+	wxString bParam = m_guiGateZ80->getLogicParam("B");
+	wxString cParam = m_guiGateZ80->getLogicParam("C");
+	wxString dParam = m_guiGateZ80->getLogicParam("D");
+	wxString eParam = m_guiGateZ80->getLogicParam("E");
+	wxString hParam = m_guiGateZ80->getLogicParam("H");
+	wxString lParam = m_guiGateZ80->getLogicParam("L");
+	wxString ixParam = m_guiGateZ80->getLogicParam("IX");
+	wxString iyParam = m_guiGateZ80->getLogicParam("IY");
 	
 	//set data registers in popup
-	if (aParam == (const wxChar *)""){
+	if (aParam == ""){
 		setLabel( AReg, &xxString  );
 	} else { setLabel( AReg, &aParam  ); }
-	if (bParam == (const wxChar *)""){
+	if (bParam == ""){
 		setLabel( BReg, &xxString  );
 	} else { setLabel( BReg, &bParam  ); }
-	if (cParam == (const wxChar *)""){
+	if (cParam == ""){
 		setLabel( CReg, &xxString  );
 	} else { setLabel( CReg, &cParam  ); }
-	if (dParam == (const wxChar *)""){
+	if (dParam == ""){
 		setLabel( DReg, &xxString  );
 	} else { setLabel( DReg, &dParam  ); }
-	if (eParam == (const wxChar *)""){
+	if (eParam == ""){
 		setLabel( EReg, &xxString  );
 	} else { setLabel( EReg, &eParam  ); }
-	if (hParam == (const wxChar *)""){
+	if (hParam == ""){
 		setLabel( HReg, &xxString  );
 	} else { setLabel( HReg, &hParam  ); }
-	if (lParam == (const wxChar *)""){
+	if (lParam == ""){
 		setLabel( LReg, &xxString  );
 	} else { setLabel( LReg, &lParam  ); }
-	if (ixParam == (const wxChar *)""){
+	if (ixParam == ""){
 		setLabel( IXReg, &xxxxString  );
 	} else { setLabel( IXReg, &ixParam  ); }
-	if (iyParam == (const wxChar *)""){
+	if (iyParam == ""){
 		setLabel( IYReg, &xxxxString  );
 	} else { setLabel( IYReg, &iyParam  ); }
 	
 	//capture alternate registers
-	wxString AltaParam = (const wxChar *)m_guiGateZ80->getLogicParam("A'").c_str();
-	wxString AltbParam = (const wxChar *)m_guiGateZ80->getLogicParam("B'").c_str();
-	wxString AltcParam = (const wxChar *)m_guiGateZ80->getLogicParam("C'").c_str();
-	wxString AltdParam = (const wxChar *)m_guiGateZ80->getLogicParam("D'").c_str();
-	wxString AlteParam = (const wxChar *)m_guiGateZ80->getLogicParam("E'").c_str();
-	wxString AlthParam = (const wxChar *)m_guiGateZ80->getLogicParam("H'").c_str();
-	wxString AltlParam = (const wxChar *)m_guiGateZ80->getLogicParam("L'").c_str();
+	wxString AltaParam = m_guiGateZ80->getLogicParam("A'");
+	wxString AltbParam = m_guiGateZ80->getLogicParam("B'");
+	wxString AltcParam = m_guiGateZ80->getLogicParam("C'");
+	wxString AltdParam = m_guiGateZ80->getLogicParam("D'");
+	wxString AlteParam = m_guiGateZ80->getLogicParam("E'");
+	wxString AlthParam = m_guiGateZ80->getLogicParam("H'");
+	wxString AltlParam = m_guiGateZ80->getLogicParam("L'");
 	
 	//set alternate registers in popup
-	if (AltaParam == (const wxChar *)""){
+	if (AltaParam == ""){
 		setLabel( AltAReg, &xxString  );
 	} else { setLabel( AltAReg, &AltaParam  ); }
-	if (AltbParam == (const wxChar *)""){
+	if (AltbParam == ""){
 		setLabel( AltBReg, &xxString  );
 	} else { setLabel( AltBReg, &AltbParam  ); }
-	if (AltcParam == (const wxChar *)""){
+	if (AltcParam == ""){
 		setLabel( AltCReg, &xxString  );
 	} else { setLabel( AltCReg, &AltcParam  ); }
-	if (AltdParam == (const wxChar *)""){
+	if (AltdParam == ""){
 		setLabel( AltDReg, &xxString  );
 	} else { setLabel( AltDReg, &AltdParam  ); }
-	if (AlteParam == (const wxChar *)""){
+	if (AlteParam == ""){
 		setLabel( AltEReg, &xxString  );
 	} else { setLabel( AltEReg, &AlteParam  ); }
-	if (AlthParam == (const wxChar *)""){
+	if (AlthParam == ""){
 		setLabel( AltHReg, &xxString  );
 	} else { setLabel( AltHReg, &AlthParam  ); }
-	if (AltlParam == (const wxChar *)""){
+	if (AltlParam == ""){
 		setLabel( AltLReg, &xxString  );
 	} else { setLabel( AltLReg, &AltlParam  ); }
 	
 	//capture control registers
-	wxString pcParam = (const wxChar *)m_guiGateZ80->getLogicParam("PC").c_str();
-	wxString spParam = (const wxChar *)m_guiGateZ80->getLogicParam("SP").c_str();
-	wxString iParam = (const wxChar *)m_guiGateZ80->getLogicParam("I").c_str();
-	wxString imParam = (const wxChar *)m_guiGateZ80->getLogicParam("IMF").c_str();
-	wxString iffParam = (const wxChar *)m_guiGateZ80->getLogicParam("IFF1").c_str();
+	wxString pcParam = m_guiGateZ80->getLogicParam("PC");
+	wxString spParam = m_guiGateZ80->getLogicParam("SP");
+	wxString iParam = m_guiGateZ80->getLogicParam("I");
+	wxString imParam = m_guiGateZ80->getLogicParam("IMF");
+	wxString iffParam = m_guiGateZ80->getLogicParam("IFF1");
 	
 	//set control registers in popup
-	if (pcParam == (const wxChar *)""){
+	if (pcParam == ""){
 		setLabel( PCReg, &xxxxString );
 		//PCReg->SetLabel( xxString );
 	} else { 
 		//PCReg->SetLabel( pcParam ); 
 		setLabel( PCReg, &pcParam );
 	}
-	if (spParam == (const wxChar *)""){
+	if (spParam == ""){
 		setLabel( SPReg, &xxxxString  );
 	} else { setLabel( SPReg, &spParam  ); }
-	if (iParam == (const wxChar *)""){
+	if (iParam == ""){
 		setLabel( IReg, &xxString  );
 	} else { setLabel( IReg, &iParam  ); }
-	if (imParam == (const wxChar *)"2") { //2 is the encoding for 1
-		wxString mode1 = (const wxChar *)"Mode 1";
+	if (imParam == "2") { //2 is the encoding for 1
+		wxString mode1 = "Mode 1";
 		setLabel( IMode, &mode1  );
 	}
-	else if (imParam == (const wxChar *)"3") { //3 is the encoding for 2
-		wxString mode2 = (const wxChar *)"Mode 2";
+	else if (imParam == "3") { //3 is the encoding for 2
+		wxString mode2 = "Mode 2";
 		setLabel( IMode, &mode2  );
 	} else { 
-		wxString mode0 = (const wxChar *)"Mode 0";
+		wxString mode0 = "Mode 0";
 		setLabel( IMode, &mode0  ); 
 	}
 	if (iffParam == oneString) {
-		wxString enabled = (const wxChar *)"Enabled";
+		wxString enabled = "Enabled";
 		setLabel( IFFStatus, &enabled  );
 	} else { 
-		wxString disabled = (const wxChar *)"Disabled";
+		wxString disabled = "Disabled";
 		setLabel( IFFStatus, &disabled );
 	}
 
 	//capture flags
 		
-	string fParam = m_guiGateZ80->getLogicParam("F").c_str();
-	string AltfParam = m_guiGateZ80->getLogicParam("F'").c_str();
+	string fParam = m_guiGateZ80->getLogicParam("F");
+	string AltfParam = m_guiGateZ80->getLogicParam("F'");
 	
 	if (fParam == "") {
 		fParam = "00000000";
@@ -906,36 +907,36 @@ void Z80PopupDialog::NotifyOfRegChange (){
 	//captures a string object from hash,
 	//decodes it using method from Z_80LogicGate,
 	//and saves it in currInstr
-	wxString currInstr = (const wxChar *)decodeParam(m_guiGateZ80->getLogicParam("INFO_STRING")).c_str();
+	wxString currInstr = decodeParam(m_guiGateZ80->getLogicParam("INFO_STRING"));
 	
 	//set next instruction in popup
-	if (currInstr == (const wxChar *)"") {
-		CurrentInstruction->SetValue((const wxChar *)"No Instruction");
+	if (currInstr == "") {
+		CurrentInstruction->SetValue("No Instruction");
 	} else { CurrentInstruction->SetValue( currInstr ); }
 	
 	//capture current mode
 	
-	wxString currMode = (const wxChar *)m_guiGateZ80->getLogicParam("ZAD_MODE").c_str();
+	wxString currMode = m_guiGateZ80->getLogicParam("ZAD_MODE");
 	
 	//set current mode in popup
-	if (currMode == (const wxChar *)"SMART") {
+	if (currMode == "SMART") {
 		SMARTMode->SetValue(true);
 	}
-	else if (currMode == (const wxChar *)"ON") {
+	else if (currMode == "ON") {
 		ZADMode->SetValue(true);
 	}
-	else if (currMode == (const wxChar *)"OFF") {
+	else if (currMode == "OFF") {
 		REGMode->SetValue(true);
 	} else {
 		//no change
 	}
 	
 	//capture display
-	wxString dispParam = (const wxChar *)m_guiGateZ80->getLogicParam("HEX_DISP").c_str();
+	wxString dispParam = m_guiGateZ80->getLogicParam("HEX_DISP");
 	
 	//set display in popup
-	if (dispParam == (const wxChar *)""){
-		wxString zerros = (const wxChar *)"000000";
+	if (dispParam == ""){
+		wxString zerros = "000000";
 		setLabel( hexDisp, &zerros  );
 	} else { setLabel( hexDisp, &dispParam  ); }
 }

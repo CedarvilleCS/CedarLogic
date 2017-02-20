@@ -82,7 +82,7 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
 						temp += s; // Add it back to temp string
 						*newPasteText += s + "\n";
 
-						wxTheClipboard->AddData(new wxTextDataObject((wxChar*)newPasteText->c_str())); // Update clipboard data so subsequent pastes carry 
+						wxTheClipboard->AddData(new wxTextDataObject(*newPasteText)); // Update clipboard data so subsequent pastes carry 
 					/* END OF EDIT */
 					}
 
@@ -192,6 +192,6 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		delete copyWires[i];
 	}
 	if (!wxTheClipboard->Open()) return;
-	wxTheClipboard->AddData(new wxTextDataObject((wxChar*)(oss.str().c_str())));
+	wxTheClipboard->AddData(new wxTextDataObject(oss.str()));
 	wxTheClipboard->Close();
 }

@@ -33,7 +33,7 @@ ADCPopupDialog::ADCPopupDialog( guiGateADC* newguiGateADC, GUICircuit* newGUICir
 	wxBoxSizer* topSizer = new wxBoxSizer( wxHORIZONTAL );
 
 	slider = new wxSlider( this, ID_SLIDER, ADC_INIT_VALUE, 0, 255 );
-	label = new wxStaticText( this, -1, (const wxChar *)"XXX"  );     // KAS
+	label = new wxStaticText( this, -1, "XXX");
 	
 	topSizer->Add( slider, wxSizerFlags(0).Align(0).Border(wxALL, 5 ) );
 	topSizer->Add( label, wxSizerFlags(0).Align(0).Border(wxALL, 5 ) );
@@ -62,7 +62,7 @@ void ADCPopupDialog::notifyValueChanged(){
 	int currentValue = 0;
 	istringstream valueReader( currentValueAsString );
 	valueReader >> currentValue;
-	label->SetLabel( (const wxChar *)currentValueAsString.c_str() );  // KAS
+	label->SetLabel(currentValueAsString);
 	if( slider->GetValue() != currentValue ){
 		slider->SetValue( currentValue );
 	}

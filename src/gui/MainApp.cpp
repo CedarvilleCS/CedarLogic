@@ -70,8 +70,7 @@ bool MainApp::OnInit()
     //}	
     string cmdFilename;
 	if( argc >= 2 ){
-		// inserted the cast  KAS
-		cmdFilename = (const char *)argv[1];
+		cmdFilename = argv[1].ToStdString();
 //		logfile << "cmdFilename = " << cmdFilename << endl;
 	}
 	//End of edit
@@ -79,7 +78,7 @@ bool MainApp::OnInit()
 	
 
     // create the main application window
-    MainFrame *frame = new MainFrame(VERSION_TITLE(), cmdFilename.c_str());
+    MainFrame *frame = new MainFrame(VERSION_TITLE(), cmdFilename);
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)
     frame->Show(true);
@@ -118,7 +117,7 @@ void MainApp::loadSettings() {
 
 
 	string settingsIni = pathToExe + "res/settings.ini";
-	ifstream iniFile( settingsIni.c_str(), ios::in );
+	ifstream iniFile( settingsIni, ios::in );
 	
 	if (!iniFile) {
 		// set defaults

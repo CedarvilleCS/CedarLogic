@@ -108,7 +108,7 @@ void OscopeCanvas::OnRender(){
 	for (unsigned int i = 0; i < numberOfWires; i++) {
 		if (parentFrame->getFeedName(i) == NONE_STR) { wireNum++; continue; }//<-Josh Edit using access method
 
-		map< string, deque< StateType > >::iterator thisWire = stateValues.find(parentFrame->getFeedName(i).c_str()); //<-Josh Edit using access method
+		map< string, deque< StateType > >::iterator thisWire = stateValues.find(parentFrame->getFeedName(i));
 		if (thisWire == stateValues.end()) { wireNum++; continue; }
 		deque< StateType >::reverse_iterator wireVal = (thisWire->second).rbegin();
 		GLdouble horizLoc = OSCOPE_HORIZONTAL;
@@ -242,7 +242,7 @@ void OscopeCanvas::UpdateData(void){
 	map< string, bool > hasBeenAdded; 
 	
 	for (unsigned int i = 0; i < parentFrame->numberOfFeeds()-1; i++) {
-		string junctionName = parentFrame->getFeedName(i).c_str();
+		string junctionName = parentFrame->getFeedName(i);
 		if (junctionName == NONE_STR || junctionName == RMOVE_STR || junctionName == "") continue;	
 			
 		if(hasBeenAdded.find(junctionName) == hasBeenAdded.end()) {

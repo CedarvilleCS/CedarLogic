@@ -37,7 +37,7 @@ CircuitParse::CircuitParse(string fileName, vector< GUICanvas* > glc) {
 	gCanvases = glc;
 	gCanvas = glc[0];
 
-	fstream x(fileName.c_str(), ios::in);
+	fstream x(fileName, ios::in);
 	mParse = new XMLParser(&x, false);
 	this->fileName = fileName;
 }
@@ -47,7 +47,7 @@ CircuitParse::~CircuitParse() {
 }
 
 void CircuitParse::loadFile(string fileName) {
-	fstream x(fileName.c_str(), ios::in);
+	fstream x(fileName, ios::in);
 	mParse = new XMLParser(&x, false);
 	this->fileName = fileName;
 }
@@ -484,7 +484,7 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 	
 	mParse->closeTag("circuit");
 	
-	ofstream outfile(filename.c_str());
+	ofstream outfile(filename);
 	outfile << ossCircuit->str();
 	outfile.close();
 }
