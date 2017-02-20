@@ -12,6 +12,7 @@
 !Doxyfile
 !Makefile
 !.makefile
+!Structure.vsdx
 
 !installer/
 !installer/installer.wixproj
