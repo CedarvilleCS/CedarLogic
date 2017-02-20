@@ -290,10 +290,6 @@ wxMenu* MainFrame::buildEditMenu() {
 	editMenu->Append(wxID_COPY, "Copy\tCtrl+C", "Copy selection to clipboard");
 	editMenu->Append(wxID_PASTE, "Paste\tCtrl+V", "Paste selection from clipboard");
 
-	editMenu->AppendSeparator();
-
-	editMenu->AppendCheckItem(Tool_AutoIncrement, "Auto Increment Labels", "Automatically increment label (To/From) subscripts");
-
 	return editMenu;
 }
 wxMenu* MainFrame::buildViewMenu() {
@@ -302,6 +298,7 @@ wxMenu* MainFrame::buildViewMenu() {
 	wxMenu *settingsMenu = new wxMenu;
 	settingsMenu->AppendCheckItem(View_Gridline, "Display Gridlines", "Toggle gridline display");
 	settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
+	settingsMenu->AppendCheckItem(Tool_AutoIncrement, "Auto Increment Labels", "Automatically increment label (To/From) subscripts");
 	viewMenu->AppendSeparator();
 	viewMenu->AppendSubMenu(settingsMenu, "Settings");
 	return viewMenu;
@@ -694,7 +691,6 @@ void MainFrame::OnOscope(wxCommandEvent& WXUNUSED(event)) {
 void MainFrame::OnViewGridline(wxCommandEvent& event) {
 	wxGetApp().appSettings.gridlineVisible = event.IsChecked();
 	if (currentCanvas != NULL) currentCanvas->Update();
-	updateMenuOptions();
 	if (isBlackBox) {
 		((MainFrame*)GetParent())->updateMenuOptions();
 	}
@@ -703,7 +699,6 @@ void MainFrame::OnViewGridline(wxCommandEvent& event) {
 void MainFrame::OnViewWireConn(wxCommandEvent& event) {
 	wxGetApp().appSettings.wireConnVisible = event.IsChecked();
 	if (currentCanvas != NULL) currentCanvas->Update();
-	updateMenuOptions();
 	if (isBlackBox) {
 		((MainFrame*)GetParent())->updateMenuOptions();
 	}
@@ -711,7 +706,6 @@ void MainFrame::OnViewWireConn(wxCommandEvent& event) {
 
 void MainFrame::OnAutoIncrement(wxCommandEvent& event) {
 	wxGetApp().appSettings.autoIncrement = event.IsChecked();
-	updateMenuOptions();
 	if (isBlackBox) {
 		((MainFrame*)GetParent())->updateMenuOptions();
 	}
