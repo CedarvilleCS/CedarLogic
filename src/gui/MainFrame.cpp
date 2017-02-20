@@ -58,6 +58,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
 	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
 	EVT_TOOL(Tool_BlackBox, MainFrame::OnBlackBox)
+	EVT_MENU(Tool_AutoIncrement, MainFrame::OnAutoIncrement)
 
 	EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
 	EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
@@ -103,7 +104,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *paren
     
 	
     // now append the freshly created menu to the menu bar...
-    wxMenuBar *menuBar = new wxMenuBar();
+    menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
     menuBar->Append(editMenu, "&Edit");
     menuBar->Append(viewMenu, "&View");
@@ -112,6 +113,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *paren
     // set checkmarks on settings menu
     menuBar->Check(View_Gridline, wxGetApp().appSettings.gridlineVisible);
     menuBar->Check(View_WireConn, wxGetApp().appSettings.wireConnVisible);
+	menuBar->Check(Tool_AutoIncrement, wxGetApp().appSettings.autoIncrement);
     
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
@@ -296,6 +298,7 @@ wxMenu* MainFrame::buildViewMenu() {
 	wxMenu *settingsMenu = new wxMenu;
 	settingsMenu->AppendCheckItem(View_Gridline, "Display Gridlines", "Toggle gridline display");
 	settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
+	settingsMenu->AppendCheckItem(Tool_AutoIncrement, "Auto Increment Labels", "Automatically increment label (To/From) subscripts");
 	viewMenu->AppendSeparator();
 	viewMenu->AppendSubMenu(settingsMenu, "Settings");
 	return viewMenu;
@@ -505,7 +508,7 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	}
 
 	if (isBlackBox) {
-		this->GetParent()->Enable();
+		GetParent()->Enable();
 		wxGetApp().SetTopWindow(this->GetParent());
 	}
 
@@ -688,11 +691,24 @@ void MainFrame::OnOscope(wxCommandEvent& WXUNUSED(event)) {
 void MainFrame::OnViewGridline(wxCommandEvent& event) {
 	wxGetApp().appSettings.gridlineVisible = event.IsChecked();
 	if (currentCanvas != NULL) currentCanvas->Update();
+	if (isBlackBox) {
+		((MainFrame*)GetParent())->updateMenuOptions();
+	}
 }
 
 void MainFrame::OnViewWireConn(wxCommandEvent& event) {
 	wxGetApp().appSettings.wireConnVisible = event.IsChecked();
 	if (currentCanvas != NULL) currentCanvas->Update();
+	if (isBlackBox) {
+		((MainFrame*)GetParent())->updateMenuOptions();
+	}
+}
+
+void MainFrame::OnAutoIncrement(wxCommandEvent& event) {
+	wxGetApp().appSettings.autoIncrement = event.IsChecked();
+	if (isBlackBox) {
+		((MainFrame*)GetParent())->updateMenuOptions();
+	}
 }
 
 void MainFrame::OnTimer(wxTimerEvent& event) {
@@ -877,6 +893,13 @@ wxBitmap MainFrame::getBitmap(bool withGrid) {
 	return circuitBitmap;
 }
 
+void MainFrame::updateMenuOptions()
+{
+	menuBar->Check(View_Gridline, wxGetApp().appSettings.gridlineVisible);
+	menuBar->Check(View_WireConn, wxGetApp().appSettings.wireConnVisible);
+	menuBar->Check(Tool_AutoIncrement, wxGetApp().appSettings.autoIncrement);
+}
+
 void MainFrame::OnPause(wxCommandEvent& event) {
 	PauseSim();
 }
@@ -944,6 +967,7 @@ void MainFrame::saveSettings() {
 	iniFile << "WireConnRadius=" << wxGetApp().appSettings.wireConnRadius << endl;
 	iniFile << "WireConnVisible=" << wxGetApp().appSettings.wireConnVisible << endl;
 	iniFile << "GridlineVisible=" << wxGetApp().appSettings.gridlineVisible << endl;
+	iniFile << "AutoIncrement=" << wxGetApp().appSettings.autoIncrement << endl;
 	iniFile.close();
 }
 

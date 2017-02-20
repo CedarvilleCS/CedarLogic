@@ -48,44 +48,10 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
 
 				/* EDIT by Colin Broberg, 10/6/16
 				   logic to increment number on end of TO/FROM tag */
-
-				string numEnd = "";	// String of numbers on end that we will build
-				string temp2 = temp;
-
+				bool enabled = wxGetApp().appSettings.autoIncrement;
 				// If we are copying more than one thing, don't increment them -- that would be annoying
-				if (pasteText.find("creategate", pasteText.find("creategate") + 1) == std::string::npos) {
-
-					// Loop from end of temp to beginning, gathering up numbers to build unto numEnd
-					// Starts at temp.length() - 2 so that it starts at the end minus one because 
-					// temp always ends with a /t
-					for (int i = temp.length() - 2; i > 0; i--) {
-						if (isdigit(temp[i])) {
-							numEnd = temp[i] + numEnd;
-						}
-						else {
-							break;
-						}
-					}
-
-					// If we have numbers to add and we are naming a junction_id
-					if (numEnd != "" && temp.find("JUNCTION_ID") != std::string::npos) {
-						string *newPasteText = new string();
-						*newPasteText = pasteText; // This string will be modified and rewritten to the clipboard so that subsequent pastes continue to increment
-
-						temp.erase(temp.length() - 1 - numEnd.length(), numEnd.length() + 1); // Erase number at end of tag, add 1 to erase the \t also
-						newPasteText->erase(newPasteText->length() - 2 - numEnd.length(), numEnd.length() + 2);  // Modify clipboard data similarly, but +2 so it erases the \n also
-
-						int holder = stoi(numEnd);
-						holder++; // The whole point of this -- increment number at end of tag by 1
-						string s = to_string(holder) + "\t";
-
-						temp += s; // Add it back to temp string
-						*newPasteText += s + "\n";
-
-						wxTheClipboard->AddData(new wxTextDataObject((wxChar*)newPasteText->c_str())); // Update clipboard data so subsequent pastes carry 
-					/* END OF EDIT */
-					}
-
+				if (enabled && pasteText.find("creategate", pasteText.find("creategate") + 1) == std::string::npos) {
+					increment(temp, pasteText);
 				}
 				cg = new cmdSetParams(temp);
 			}
@@ -118,6 +84,42 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
 
 	if (cmdList.size() > 0) return new cmdPasteBlock ( cmdList );
 	return NULL;
+}
+
+void klsClipboard::increment(string &temp, const string &pasteText) {
+
+	string numEnd = "";	// String of numbers on end that we will build
+
+	// Loop from end of temp to beginning, gathering up numbers to build unto numEnd
+	// Starts at temp.length() - 2 so that it starts at the end minus one because 
+	// temp always ends with a /t
+	for (int i = temp.length() - 2; i > 0; i--) {
+		if (isdigit(temp[i])) {
+			numEnd = temp[i] + numEnd;
+		}
+		else {
+			break;
+		}
+	}
+
+	// If we have numbers to add and we are naming a junction_id
+	if (numEnd != "" && temp.find("JUNCTION_ID") != std::string::npos) {
+		string *newPasteText = new string();
+		*newPasteText = pasteText; // This string will be modified and rewritten to the clipboard so that subsequent pastes continue to increment
+
+		temp.erase(temp.length() - 1 - numEnd.length(), numEnd.length() + 1); // Erase number at end of tag, add 1 to erase the \t also
+		newPasteText->erase(newPasteText->length() - 2 - numEnd.length(), numEnd.length() + 2);  // Modify clipboard data similarly, but +2 so it erases the \n also
+
+		int holder = stoi(numEnd);
+		holder++; // The whole point of this -- increment number at end of tag by 1
+		string s = to_string(holder) + "\t";
+
+		temp += s; // Add it back to temp string
+		*newPasteText += s + "\n";
+
+		wxTheClipboard->AddData(new wxTextDataObject((wxChar*)newPasteText->c_str())); // Update clipboard data so subsequent pastes carry 
+																					   /* END OF EDIT */
+	}
 }
 
 void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector < unsigned long > gates, vector < unsigned long > wires ) {

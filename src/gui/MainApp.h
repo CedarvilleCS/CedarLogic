@@ -45,6 +45,7 @@ struct ApplicationSettings {
     float wireConnRadius;
     bool wireConnVisible;
 	bool gridlineVisible;
+	bool autoIncrement;
 };
 
 class MainApp : public wxApp {

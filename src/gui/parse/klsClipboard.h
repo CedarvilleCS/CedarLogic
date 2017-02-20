@@ -25,6 +25,8 @@ public:
 	
 	cmdPasteBlock* pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanvas );
 	void copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector < unsigned long > gates, vector < unsigned long > wires );
+private:
+	void increment(string &temp, const string &pasteText);
 };
 
 #endif /*KLSCLIPBOARD_H_*/

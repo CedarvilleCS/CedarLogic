@@ -134,6 +134,7 @@ void MainApp::loadSettings() {
 		appSettings.wireConnRadius = 0.18f;
 		appSettings.wireConnVisible = true;
 		appSettings.gridlineVisible = true;
+		appSettings.autoIncrement = false;
 	} else {
 		// load from the file
 		string line;
@@ -210,6 +211,12 @@ void MainApp::loadSettings() {
         line = line.substr(pos+1,line.size()-(pos+1));
         istringstream issGridVisible(line);
         issGridVisible >> appSettings.gridlineVisible;
+		// auto increment enabled
+		getline(iniFile, line, '\n');
+		pos = line.find('=', 0);
+		line = line.substr(pos + 1, line.size() - (pos + 1));
+		istringstream isAutoIncrement(line);
+		isAutoIncrement >> appSettings.gridlineVisible;
 
         // all done
         iniFile.close();

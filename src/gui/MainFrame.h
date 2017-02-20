@@ -53,6 +53,7 @@ enum
 	Tool_NewTab,
 	Tool_DeleteTab,
 	Tool_BlackBox,
+	Tool_AutoIncrement,
 
 	Help_ReportABug,
 	Help_RequestAFeature,
@@ -91,6 +92,7 @@ public:
 	void OnOscope(wxCommandEvent& event);
 	void OnViewGridline(wxCommandEvent& event);
 	void OnViewWireConn(wxCommandEvent& event);
+	void OnAutoIncrement(wxCommandEvent& event);
 	void OnPause(wxCommandEvent& event);
 	void OnStep(wxCommandEvent& event);
 	void OnZoomIn(wxCommandEvent& event);
@@ -146,6 +148,8 @@ private:
 	threadLogic *CreateThread();
 	autoSaveThread *CreateSaveThread(); //Julian
 
+	void updateMenuOptions();
+
 	vector< GUICanvas* > canvases;
 	GUICircuit* gCircuit;
 	GUICanvas* currentCanvas;
@@ -155,6 +159,7 @@ private:
 
 	wxPanel* mainPanel;
 	wxToolBar* toolBar;
+	wxMenuBar* menuBar;
 
 	//Julian: Re-added timers to fix refresh error
 	wxTimer* simTimer;
