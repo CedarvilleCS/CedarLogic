@@ -12,6 +12,9 @@ CedarLogic is Cedarville University's digital logic simulator.
 3. Run wxWidgets source installer or extract zip.
 
 4. Set windows environment variable `WXWIN` to point to your wxWidgets directory.
+   This step is not strictly necessary. Without WXWIN defined, the visual studio
+   project file will look in `C:\wxWidgets-3.1.0`. It is, however, reccomended that
+   you set this environment variable to make the next step (a little bit) easier.
 
 5. Open an `x86 native tools` command prompt and run these commands.
 

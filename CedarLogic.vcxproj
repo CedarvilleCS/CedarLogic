@@ -117,16 +117,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <!-- Set variable if environment variable is not set (good for computers without admin access). -->
-  <PropertyGroup>
-    <WXWIN Condition="'$(WXWIN)' == ''">c:\wxWidgets-2.8.12</WXWIN>
-  </PropertyGroup>
-  <!-- Copy resources to output directory. -->
-  <ItemGroup>
-    <Content Include="res/**/*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gui\gate\gateHotspot.cpp" />
     <ClCompile Include="src\gui\gate\guiGate.cpp" />
@@ -271,5 +261,15 @@
     <ClInclude Include="src\z80\WaveformFSM.h" />
     <ClInclude Include="src\z80\Z_80LogicGate.h" />
     <ClInclude Include="src\z80\Z_80Registers.h" />
+  </ItemGroup>
+  <!-- Set variable if environment variable is not set (good for computers without admin access). -->
+  <PropertyGroup>
+    <WXWIN Condition="'$(WXWIN)' == ''">c:\wxWidgets-3.1.0</WXWIN>
+  </PropertyGroup>
+  <!-- Copy resources to output directory. -->
+  <ItemGroup>
+    <Content Include="res/**/*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>
