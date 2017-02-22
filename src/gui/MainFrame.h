@@ -88,7 +88,8 @@ public:
 	void OnUndo(wxCommandEvent& event);
 	void OnRedo(wxCommandEvent& event);
 	void OnCopy(wxCommandEvent& event);
-	void OnPaste(wxCommandEvent& event);	
+	void OnPaste(wxCommandEvent& event);
+	void OnCut(wxCommandEvent& event);
 	void OnOscope(wxCommandEvent& event);
 	void OnViewGridline(wxCommandEvent& event);
 	void OnViewWireConn(wxCommandEvent& event);

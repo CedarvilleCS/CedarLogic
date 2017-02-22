@@ -45,6 +45,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_MENU(wxID_REDO, MainFrame::OnRedo)
 	EVT_MENU(wxID_COPY, MainFrame::OnCopy)
 	EVT_MENU(wxID_PASTE, MainFrame::OnPaste)
+	EVT_MENU(wxID_CUT, MainFrame::OnCut)
 	
     EVT_MENU(View_Oscope, MainFrame::OnOscope)
     EVT_MENU(View_Gridline, MainFrame::OnViewGridline)
@@ -285,9 +286,10 @@ wxMenu* MainFrame::buildEditMenu() {
 		editMenu->AppendSeparator();
 	}
 
+	editMenu->Append(wxID_CUT, "Cut\tCtrl+X", "Cut selection to clipboard");
 	editMenu->Append(wxID_COPY, "Copy\tCtrl+C", "Copy selection to clipboard");
 	editMenu->Append(wxID_PASTE, "Paste\tCtrl+V", "Paste selection from clipboard");
-
+	
 	editMenu->AppendSeparator();
 
 	editMenu->AppendCheckItem(Tool_AutoIncrement, "Auto Increment Labels", "Automatically increment label (To/From) subscripts");
@@ -320,10 +322,11 @@ wxToolBar* MainFrame::buildToolBar() {
 
 	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
 	// to read the bitmaps from file directly, without the use of a resource file.  KAS
-	string    bitmaps[] = { "new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "blackbox", "apply", "applyall", "cancel"};
-	wxBitmap *bmp[19];
+	string    bitmaps[] = { "new", "open", "save", "undo", "redo", "cut", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "blackbox", "apply", "applyall", "cancel"};
+	//						 0		1		2		3		4		5	   6	   7		8		 9		 10		  11	  12		13		   14		 15		   16		   17		18			19
+	wxBitmap *bmp[20];
 
-	for (int i = 0; i < 19; i++) {
+	for (int i = 0; i < 20; i++) {
 		bitmaps[i] = "res/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
@@ -337,24 +340,25 @@ wxToolBar* MainFrame::buildToolBar() {
 		tools->AddTool(wxID_NEW, "New", *bmp[0], "New");
 		tools->AddTool(wxID_OPEN, "Open", *bmp[1], "Open");
 		tools->AddTool(wxID_SAVE, "Save", *bmp[2], "Save");
-		tools->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
+		tools->AddTool(Tool_NewTab, "New Tab", *bmp[15], "New Tab");
 	} else {
-		tools->AddTool(File_Apply, "Apply", *bmp[16], "Apply");
-		tools->AddTool(File_ApplyAll, "Apply All", *bmp[17], "Apply All");
-		tools->AddTool(File_Cancel, "Cancel", *bmp[18], "Cancel");
+		tools->AddTool(File_Apply, "Apply", *bmp[17], "Apply");
+		tools->AddTool(File_ApplyAll, "Apply All", *bmp[18], "Apply All");
+		tools->AddTool(File_Cancel, "Cancel", *bmp[19], "Cancel");
 	}
 	tools->AddSeparator();
 	tools->AddTool(wxID_UNDO, "Undo", *bmp[3], "Undo");
 	tools->AddTool(wxID_REDO, "Redo", *bmp[4], "Redo");
 	tools->AddSeparator();
-	tools->AddTool(wxID_COPY, "Copy", *bmp[5], "Copy");
-	tools->AddTool(wxID_PASTE, "Paste", *bmp[6], "Paste");
+	tools->AddTool(wxID_CUT, "Cut", *bmp[5], "Cut");
+	tools->AddTool(wxID_COPY, "Copy", *bmp[6], "Copy");
+	tools->AddTool(wxID_PASTE, "Paste", *bmp[7], "Paste");
 	tools->AddSeparator();
-	tools->AddTool(Tool_ZoomIn, "Zoom In", *bmp[11], "Zoom In");
-	tools->AddTool(Tool_ZoomOut, "Zoom Out", *bmp[12], "Zoom Out");
+	tools->AddTool(Tool_ZoomIn, "Zoom In", *bmp[12], "Zoom In");
+	tools->AddTool(Tool_ZoomOut, "Zoom Out", *bmp[13], "Zoom Out");
 	tools->AddSeparator();
-	tools->AddTool(Tool_Pause, "Pause/Resume", *bmp[9], "Pause/Resume", wxITEM_CHECK);
-	tools->AddTool(Tool_Step, "Step", *bmp[10], "Step");
+	tools->AddTool(Tool_Pause, "Pause/Resume", *bmp[10], "Pause/Resume", wxITEM_CHECK);
+	tools->AddTool(Tool_Step, "Step", *bmp[11], "Step");
 	timeStepModSlider = new wxSlider(tools, wxID_ANY, wxGetApp().timeStepMod, 1, 500, wxDefaultPosition, wxSize(125, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS);
 	ostringstream oss;
 	oss << wxGetApp().timeStepMod << "ms";
@@ -362,19 +366,19 @@ wxToolBar* MainFrame::buildToolBar() {
 	tools->AddControl(timeStepModSlider);
 	tools->AddControl(timeStepModVal);
 	tools->AddSeparator();
-	tools->AddCheckTool(Tool_Lock, "Lock state", *bmp[13], wxNullBitmap, "Lock state");
+	tools->AddCheckTool(Tool_Lock, "Lock state", *bmp[14], wxNullBitmap, "Lock state");
 	tools->AddSeparator();
-	tools->AddCheckTool(Tool_AutoIncrement, "Toggle auto increment", *bmp[14], wxNullBitmap, "Toggle auto increment");
+	tools->AddCheckTool(Tool_AutoIncrement, "Toggle auto increment", *bmp[15], wxNullBitmap, "Toggle auto increment");
 	if (!isBlackBox) {
-		tools->AddTool(Tool_BlackBox, "Black Box", *bmp[15], "Black Box");
+		tools->AddTool(Tool_BlackBox, "Black Box", *bmp[16], "Black Box");
 	}
 	tools->AddSeparator();
-	tools->AddTool(wxID_ABOUT, "About", *bmp[8], "About");
+	tools->AddTool(wxID_ABOUT, "About", *bmp[9], "About");
 	SetToolBar(tools);
 	tools->Show(true);
 
 	//finished with the bitmaps, so we can release the pointers  KAS
-	for (int i = 0; i < 19; i++) {
+	for (int i = 0; i < 20; i++) {
 		delete bmp[i];
 	}
 
@@ -809,6 +813,13 @@ void MainFrame::OnUndo(wxCommandEvent& event) {
 
 void MainFrame::OnRedo(wxCommandEvent& event) {
 	commandProcessor->Redo();
+	currentCanvas->Update();
+}
+
+void MainFrame::OnCut(wxCommandEvent& event)
+{
+	currentCanvas->copyBlockToClipboard();
+	currentCanvas->deleteSelection();
 	currentCanvas->Update();
 }
 
