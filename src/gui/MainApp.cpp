@@ -216,7 +216,7 @@ void MainApp::loadSettings() {
 		pos = line.find('=', 0);
 		line = line.substr(pos + 1, line.size() - (pos + 1));
 		istringstream isAutoIncrement(line);
-		isAutoIncrement >> appSettings.gridlineVisible;
+		isAutoIncrement >> appSettings.autoIncrement;
 
         // all done
         iniFile.close();

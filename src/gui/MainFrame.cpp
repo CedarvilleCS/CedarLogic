@@ -109,11 +109,6 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *paren
     menuBar->Append(editMenu, "&Edit");
     menuBar->Append(viewMenu, "&View");
     menuBar->Append(helpMenu, "&Help");
-
-    // set checkmarks on settings menu
-    menuBar->Check(View_Gridline, wxGetApp().appSettings.gridlineVisible);
-    menuBar->Check(View_WireConn, wxGetApp().appSettings.wireConnVisible);
-	menuBar->Check(Tool_AutoIncrement, wxGetApp().appSettings.autoIncrement);
     
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
@@ -241,6 +236,9 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *paren
 			wxLogError("Autosave thread not started!");
 		}	
 	}
+
+	updateMenuOptions();
+
 	handlingEvent = false;
 	wxInitAllImageHandlers(); //Julian: Added to allow saving all types of image files
 
@@ -364,12 +362,13 @@ wxToolBar* MainFrame::buildToolBar() {
 	tools->AddControl(timeStepModSlider);
 	tools->AddControl(timeStepModVal);
 	tools->AddSeparator();
-	tools->AddTool(Tool_Lock, "Lock state", *bmp[13], "Lock state", wxITEM_CHECK);
+	tools->AddCheckTool(Tool_Lock, "Lock state", *bmp[13], wxNullBitmap, "Lock state");
 	tools->AddSeparator();
+	tools->AddCheckTool(Tool_AutoIncrement, "Toggle auto increment", *bmp[14], wxNullBitmap, "Toggle auto increment");
 	if (!isBlackBox) {
 		tools->AddTool(Tool_BlackBox, "Black Box", *bmp[15], "Black Box");
-		tools->AddSeparator();
 	}
+	tools->AddSeparator();
 	tools->AddTool(wxID_ABOUT, "About", *bmp[8], "About");
 	SetToolBar(tools);
 	tools->Show(true);
@@ -904,6 +903,8 @@ void MainFrame::updateMenuOptions()
 	menuBar->Check(View_Gridline, wxGetApp().appSettings.gridlineVisible);
 	menuBar->Check(View_WireConn, wxGetApp().appSettings.wireConnVisible);
 	menuBar->Check(Tool_AutoIncrement, wxGetApp().appSettings.autoIncrement);
+	toolBar->FindById(Tool_AutoIncrement)->Toggle(wxGetApp().appSettings.autoIncrement);
+	toolBar->Realize();
 }
 
 void MainFrame::OnPause(wxCommandEvent& event) {
