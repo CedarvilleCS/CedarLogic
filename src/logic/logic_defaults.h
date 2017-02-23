@@ -14,7 +14,7 @@
 #define LOGIC_DEFAULTS_H
 
 
-#include "logic_values.h"
+#include "common.h"
 
 
 // Warning message macro:

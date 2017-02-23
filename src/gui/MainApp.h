@@ -20,7 +20,7 @@
 #include "wx/docview.h"
 #include "wx/help.h"
 #include "wx/fs_zip.h"
-#include "../logic/logic_values.h"
+#include "common.h"
 #include "parse/GateLibrary.h"
 #include "graphics/gl_defs.h"
 

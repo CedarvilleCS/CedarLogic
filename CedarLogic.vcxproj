@@ -52,7 +52,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(WXWIN)/include;$(WXADDITIONS)/include;$(WXWIN)/contrib/include;$(WXWIN)/include/msvc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)/include;$(WXADDITIONS)/include;$(WXWIN)/contrib/include;$(WXWIN)/include/msvc/;src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_PRODUCTION_;WIN32;STRICT;__WXMSW__;__WX__;__WXDEBUG__;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -187,6 +187,7 @@
     <ClCompile Include="src\z80\Z_80Registers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\common.h" />
     <ClInclude Include="src\gui\gate\gateHotspot.h" />
     <ClInclude Include="src\gui\gate\guiGate.h" />
     <ClInclude Include="src\gui\gate\guiGateADC.h" />
@@ -254,7 +255,6 @@
     <ClInclude Include="src\logic\logic_event.h" />
     <ClInclude Include="src\logic\logic_gate.h" />
     <ClInclude Include="src\logic\logic_junction.h" />
-    <ClInclude Include="src\logic\logic_values.h" />
     <ClInclude Include="src\logic\logic_wire.h" />
     <ClInclude Include="src\version.h" />
     <ClInclude Include="src\z80\InstructionManager.h" />

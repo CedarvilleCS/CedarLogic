@@ -15,7 +15,7 @@
 #include "wx/wxprec.h"
 #include "wx/wx.h"
 #include "wx/thread.h"
-#include "../../logic/logic_values.h"
+#include "common.h"
 #include "../message/Message.h"
 
 using namespace std;

@@ -18,7 +18,7 @@
 #include <map>
 #include <sstream>
 
-#include "../../logic/logic_values.h"
+#include "common.h"
 #include "float.h"
 
 // Plain-Old-Data for gate hotspot information.

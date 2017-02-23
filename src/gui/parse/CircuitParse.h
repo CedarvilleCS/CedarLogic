@@ -13,7 +13,7 @@
 
 #include <string>
 #include <vector>
-#include "../../logic/logic_values.h"
+#include "common.h"
 using namespace std;
 
 class GUICanvas;

@@ -14,7 +14,7 @@
 #include <cfloat>
 #include <string>
 #include <vector>
-#include "../../logic/logic_values.h" // StateType
+#include "common.h"
 #include "../collision/klsCollisionChecker.h"
 #include "wireSegment.h"
 
