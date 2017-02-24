@@ -7,10 +7,10 @@
 
 
 // The type used for gate and wire id's:
-using IDType = unsigned long long;
+using IDType = unsigned long;
 
 // The ID that represents an unconnected wire or gate:
-const IDType ID_NONE = ULLONG_MAX;
+const IDType ID_NONE = ULONG_MAX;
 
 
 

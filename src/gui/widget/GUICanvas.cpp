@@ -1097,16 +1097,15 @@ void GUICanvas::unselectAllWires() {
 }	
 
 void GUICanvas::copyBlockToClipboard () {
-	klsClipboard myClipboard;
+
 	// Ship the selected gates and wires out to the clipboard
-	myClipboard.copyBlock( gCircuit, this, selectedGates, selectedWires );
+	klsClipboard::copyBlock( gCircuit, this, selectedGates, selectedWires );
 }
 
 void GUICanvas::pasteBlockFromClipboard () {
 	if (this->isLocked()) return;
 	
-	klsClipboard myClipboard;
-	pasteCommand = myClipboard.pasteBlock( gCircuit, this );
+	pasteCommand = (cmdPasteBlock *)klsClipboard::pasteBlock( gCircuit, this );
 	if (pasteCommand == NULL) return;
 	currentDragState = DRAG_SELECTION; // drag until dropped
 	isWithinPaste = true;
