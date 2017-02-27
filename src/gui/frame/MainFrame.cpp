@@ -128,7 +128,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *paren
 #endif
 
 	if (!isBlackBox) {
-		LibraryParse newLib(libPath);
+		GateLibrary newLib(libPath);
 		wxGetApp().libParser = newLib;
 	}
 	
@@ -170,7 +170,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *paren
 			canvases.push_back(new GUICanvas(canvasBook, gCircuit, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS));
 			ostringstream oss;
 			oss << "Page " << (i + 1);
-			canvasBook->AddPage(canvases[i], (const wxChar *)oss.str().c_str(), (i == 0 ? true : false));  // KAS
+			canvasBook->AddPage(canvases[i], oss.str(), (i == 0 ? true : false));  // KAS
 		}
 		currentCanvas = canvases[0];
 	}
@@ -323,11 +323,11 @@ wxToolBar* MainFrame::buildToolBar() {
 
 	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
 	// to read the bitmaps from file directly, without the use of a resource file.  KAS
-	string    bitmaps[] = { "new", "open", "save", "undo", "redo", "cut", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "blackbox", "apply", "applyall", "cancel"};
-	//						 0		1		2		3		4		5	   6	   7		8		 9		 10		  11	  12		13		   14		 15		   16		   17		18			19
-	wxBitmap *bmp[20];
+	string    bitmaps[] = { "new", "open", "save", "undo", "redo", "cut", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "blackbox", "apply", "applyall", "cancel", "autoinc"};
+	//						 0		1		2		3		4		5	   6	   7		8		 9		 10		  11	  12		13		   14		 15		   16		   17		18			19		  20
+	wxBitmap *bmp[21];
 
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < 21; i++) {
 		bitmaps[i] = "res/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
@@ -363,13 +363,13 @@ wxToolBar* MainFrame::buildToolBar() {
 	timeStepModSlider = new wxSlider(tools, wxID_ANY, wxGetApp().timeStepMod, 1, 500, wxDefaultPosition, wxSize(125, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS);
 	ostringstream oss;
 	oss << wxGetApp().timeStepMod << "ms";
-	timeStepModVal = new wxStaticText(tools, wxID_ANY, (const wxChar *)oss.str().c_str(), wxDefaultPosition, wxSize(45, -1), wxSUNKEN_BORDER | wxALIGN_RIGHT | wxST_NO_AUTORESIZE);  // added cast KAS
+	timeStepModVal = new wxStaticText(tools, wxID_ANY, oss.str(), wxDefaultPosition, wxSize(45, -1), wxSUNKEN_BORDER | wxALIGN_RIGHT | wxST_NO_AUTORESIZE);  // added cast KAS
 	tools->AddControl(timeStepModSlider);
 	tools->AddControl(timeStepModVal);
 	tools->AddSeparator();
 	tools->AddCheckTool(Tool_Lock, "Lock state", *bmp[14], wxNullBitmap, "Lock state");
 	tools->AddSeparator();
-	tools->AddCheckTool(Tool_AutoIncrement, "Toggle auto increment", *bmp[15], wxNullBitmap, "Toggle auto increment");
+	tools->AddCheckTool(Tool_AutoIncrement, "Toggle auto increment", *bmp[20], wxNullBitmap, "Toggle auto increment");
 	if (!isBlackBox) {
 		tools->AddTool(Tool_BlackBox, "Black Box", *bmp[16], "Black Box");
 	}
@@ -379,7 +379,7 @@ wxToolBar* MainFrame::buildToolBar() {
 	tools->Show(true);
 
 	//finished with the bitmaps, so we can release the pointers  KAS
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < 21; i++) {
 		delete bmp[i];
 	}
 
