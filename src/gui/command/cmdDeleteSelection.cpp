@@ -1,7 +1,7 @@
 
 #include "cmdDeleteSelection.h"
-#include "../circuit/GUICircuit.h"
-#include "../OscopeFrame.h"
+#include "../GUICircuit.h"
+#include "../frame/OscopeFrame.h"
 #include "cmdDeleteWire.h"
 #include "cmdDeleteGate.h"
 

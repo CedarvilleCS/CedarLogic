@@ -2,8 +2,8 @@
 #pragma once
 #include "klsCommand.h"
 #include <map>
-#include "../circuit/wireSegment.h"
-#include "../gl_wrapper.h"
+#include "../wire/wireSegment.h"
+#include "../graphics/gl_wrapper.h"
 
 // Just a map of wire segments
 typedef std::map<long, wireSegment> SegmentMap;

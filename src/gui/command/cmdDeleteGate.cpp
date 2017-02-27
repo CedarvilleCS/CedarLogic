@@ -1,12 +1,12 @@
 
 #include "cmdDeleteGate.h"
 #include <map>
-#include "../gl_defs.h"
-#include "../circuit/GUICircuit.h"
-#include "../circuit/guiWire.h"
-#include "../circuit/gate/guiGate.h"
+#include "../graphics/gl_defs.h"
+#include "../GUICircuit.h"
+#include "../wire/guiWire.h"
+#include "../gate/guiGate.h"
 #include "../widget/GUICanvas.h"
-#include "../thread/Message.h"
+#include "../message/Message.h"
 #include "../MainApp.h"
 #include "cmdDisconnectWire.h"
 #include "cmdDeleteWire.h"

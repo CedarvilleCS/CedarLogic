@@ -2,10 +2,10 @@
 #include "cmdCreateWire.h"
 #include <sstream>
 #include "../widget/GUICanvas.h"
-#include "../circuit/GUICircuit.h"
-#include "../circuit/gate/guiGate.h"
-#include "../circuit/gate/gateHotspot.h"
-#include "../thread/Message.h"
+#include "../GUICircuit.h"
+#include "../gate/guiGate.h"
+#include "../gate/gateHotspot.h"
+#include "../message/Message.h"
 #include "cmdConnectWire.h"
 
 cmdCreateWire::cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit,

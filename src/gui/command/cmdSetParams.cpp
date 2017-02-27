@@ -1,8 +1,8 @@
 
 #include "cmdSetParams.h"
-#include "../circuit/GUICircuit.h"
-#include "../circuit/gate/guiGate.h"
-#include "../OscopeFrame.h"
+#include "../GUICircuit.h"
+#include "../gate/guiGate.h"
+#include "../frame/OscopeFrame.h"
 #include "../MainApp.h"
 
 DECLARE_APP(MainApp);

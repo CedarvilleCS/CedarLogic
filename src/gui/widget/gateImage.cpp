@@ -12,10 +12,10 @@
 #include "wx/image.h"
 #include "wx/wx.h"
 #include "klsGLCanvas.h"
-#include "../gl_text.h"
+#include "../graphics/gl_text.h"
 #include <fstream>
 
-BEGIN_EVENT_TABLE(gateImage, wxStaticBitmap)
+BEGIN_EVENT_TABLE(gateImage, wxWindow)
     EVT_PAINT(gateImage::OnPaint)
     EVT_ENTER_WINDOW( gateImage::OnEnterWindow )
     EVT_LEAVE_WINDOW( gateImage::OnLeaveWindow )
@@ -41,7 +41,7 @@ gateImage::gateImage( string gateName, wxWindow *parent, wxWindowID id,
 	update();
 
 	delete m_gate;
-	this->SetToolTip((const wxChar *)wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption.c_str()); // added cast KAS
+	this->SetToolTip(wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption);
 }
 
 gateImage::~gateImage() {

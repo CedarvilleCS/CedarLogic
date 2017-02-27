@@ -19,7 +19,7 @@
 #include <string>
 #include <deque>
 #include "wx/glcanvas.h"
-#include "../gl_defs.h"
+#include "../graphics/gl_defs.h"
 
 class klsMiniMap;
 
@@ -187,6 +187,8 @@ public:
 protected:
 	// The minimap associated with this canvas
 	klsMiniMap* minimap;
+
+	wxGLContext* glcontext;
 
 private:
 	wxPoint mouseScreenCoords;

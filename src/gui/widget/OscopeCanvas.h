@@ -16,8 +16,8 @@ class OscopeCanvas;
 
 #include "../MainApp.h"
 #include "wx/glcanvas.h"
-#include "../circuit/GUICircuit.h"
-#include "../../logic/logic_values.h"
+#include "../GUICircuit.h"
+#include "common.h"
 
 #include <map>
 #include <vector>
@@ -60,6 +60,8 @@ public:
 	GUICircuit* gCircuit;
 
 private:
+	wxGLContext *glcontext;
+
 	// Stored values of wire states:
 	map< string, deque< StateType > > stateValues;
 	

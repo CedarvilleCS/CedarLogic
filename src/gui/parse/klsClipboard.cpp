@@ -1,31 +1,22 @@
-/*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
-
-   klsClipboard: handles copy and paste of blocks
-*****************************************************************************/
 
 #include "klsClipboard.h"
-#include "../OscopeFrame.h"
+#include "../frame/OscopeFrame.h"
 #include <fstream>
 #include <map>
-#include <unordered_map>   // removed .h  KAS
+#include <unordered_map>
 
 #include "../MainApp.h"
 #include "../commands.h"
 #include "../widget/GUICanvas.h"
-#include "../circuit/GUICircuit.h"
-#include "../circuit/gate/guiGate.h"
-#include "../circuit/guiWire.h"
+#include "../GUICircuit.h"
+#include "../gate/guiGate.h"
+#include "../wire/guiWire.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"
 
 DECLARE_APP(MainApp)
 
-cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanvas ) {
+klsCommand * klsClipboard::pasteBlock(GUICircuit *gCircuit, GUICanvas *gCanvas) {
 	if (!wxTheClipboard->Open()) return NULL;
 	if ( !wxTheClipboard->IsSupported(wxDF_TEXT) ) {
 		wxTheClipboard->Close();
@@ -34,7 +25,7 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
     wxTextDataObject text;
     vector < klsCommand* > cmdList;
     if ( wxTheClipboard->GetData(text) ) {
-    	string pasteText = (char*)(text.GetText().c_str());
+		string pasteText = text.GetText();
     	if (pasteText.find('\n',0) == string::npos) return NULL;
     	istringstream iss(pasteText);
     	string temp;
@@ -122,20 +113,29 @@ void klsClipboard::increment(string &temp, const string &pasteText) {
 	}
 }
 
-void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector < unsigned long > gates, vector < unsigned long > wires ) {
-	if (gates.size() == 0) return;
+void klsClipboard::copyBlock(GUICircuit* gCircuit, GUICanvas* gCanvas,
+		const vector<IDType> &gates, const vector<IDType> &wires) {
+
+	if (gates.empty()) {
+		return;
+	}
+
 	ostringstream oss;
 	klsCommand* cmdTemp;
-	map < unsigned long, unsigned long > connectWireList;
+	map<IDType, IDType> connectWireList;
+
 	// Write strings to copy gates
 	for (unsigned int i = 0; i < gates.size(); i++) {
+
 		// generate list of wire connections
 		map < string, GLPoint2f > hotspotmap = (*(gCircuit->getGates()))[gates[i]]->getHotspotList();
 		map < string, GLPoint2f >::iterator hsmapWalk = hotspotmap.begin();
+
 		while (hsmapWalk != hotspotmap.end()) {
 			if ( (*(gCircuit->getGates()))[gates[i]]->isConnected(hsmapWalk->first) )connectWireList[(*(gCircuit->getGates()))[gates[i]]->getConnection(hsmapWalk->first)->getID()]++;
 			hsmapWalk++;
 		}
+
 		// Creation of a gate takes care of type, position, id; all other items are in params
 		float x, y;
 		(*(gCircuit->getGates()))[gates[i]]->getGLcoords(x,y);
@@ -147,21 +147,28 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
 	}
+
 	// For wires, only copy if more than one active connection, and trim shape
 	vector < guiWire* > copyWires;
 	map < unsigned long, unsigned long >::iterator wireWalk = connectWireList.begin();
 	while (wireWalk != connectWireList.end()) {
+
 		if ( wireWalk->second < 2 ) { wireWalk++; continue; }
+
 		guiWire* wire = new guiWire();
 		// Set the IDs
 		wire->setIDs( (*gCircuit->getWires())[wireWalk->first]->getIDs() );
 		// Shove all the connections
 		vector < wireConnection > wireConns = (*(gCircuit->getWires()))[wireWalk->first]->getConnections();
+
 		for (unsigned int i = 0; i < wireConns.size(); i++) wire->addConnection( wireConns[i].cGate, wireConns[i].connection, true );
+
 		// Now get the segment map copy
 		wire->setSegmentMap( (*(gCircuit->getWires()))[wireWalk->first]->getSegmentMap() );
+
 		// Now that we have a good copy of the wire object, we can trim the connections that we don't want to carry over
 		for (unsigned int i = 0; i < wireConns.size(); i++) {
+
 			bool found = false;
 			for (unsigned int j = 0; j < gates.size() && !found; j++) if (gates[j] == wireConns[i].gid) found = true;
 			if (found) continue; // we found this connection; don't trim it
@@ -172,8 +179,10 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		copyWires.push_back(wire);
 		wireWalk++;
 	}
+
 	// Now actually generate copy of wire
 	for (unsigned int i = 0; i < copyWires.size(); i++) {
+
 		vector < wireConnection > wconns = copyWires[i]->getConnections();
 		// now generate the connections - connections 1 and 2 must be passed to create the wire
 		//	after which all connections may be done in succession.
@@ -182,18 +191,22 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		cmdTemp = new cmdCreateWire(gCanvas, gCircuit, gCircuit->getWires()->at(copyWires[i]->getID())->getIDs(), conn1, conn2);
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
+
 		for (unsigned int j = 2; j < wconns.size(); j++) {
 			cmdTemp = new cmdConnectWire(gCircuit, copyWires[i]->getID(), wconns[j].cGate->getID(), wconns[j].connection);
 			oss << cmdTemp->toString() << endl;
 			delete cmdTemp;
 		}
+
 		// now track the wire's shape:
 		cmdTemp = new cmdMoveWire(gCircuit, copyWires[i]->getID(), copyWires[i]->getSegmentMap(), copyWires[i]->getSegmentMap());
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
 		delete copyWires[i];
 	}
-	if (!wxTheClipboard->Open()) return;
-	wxTheClipboard->AddData(new wxTextDataObject((wxChar*)(oss.str().c_str())));
-	wxTheClipboard->Close();
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->AddData(new wxTextDataObject(oss.str()));
+		wxTheClipboard->Close();
+	}
 }

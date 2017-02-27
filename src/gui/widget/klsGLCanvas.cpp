@@ -12,7 +12,7 @@
 #include "../MainApp.h"
 #include "../dialog/paramDialog.h"
 #include "../GLFont/glfont2.h"
-#include "../gl_text.h"
+#include "../graphics/gl_text.h"
 #include "klsMiniMap.h"
 
 // Included to use the min() and max() templates:
@@ -43,7 +43,9 @@ END_EVENT_TABLE()
 
 klsGLCanvas::klsGLCanvas(wxWindow *parent, const wxString& name, wxWindowID id,
 						const wxPoint& pos, const wxSize& size, long style ) : 
-						wxGLCanvas(parent, (wxGLCanvas*) NULL, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxWANTS_CHARS, name ) {
+						wxGLCanvas(parent, id, nullptr, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxWANTS_CHARS, name) {
+
+	glcontext = new wxGLContext(this);
 
 	// Zoom and OpenGL coordinate of upper-left corner of this canvas:
 	viewZoom = DEFAULT_ZOOM;
@@ -186,7 +188,7 @@ wxImage klsGLCanvas::renderToImage( unsigned long width, unsigned long height, u
 	// Set the OpenGL context back to the klsGLCanvas' context, rather
 	// than NULL. (Gates depend on having an OpenGL context live in order
 	// to do their translation matrix setup.):
-	SetCurrent();
+	SetCurrent(*glcontext);
 	
 	return theBM.ConvertToImage();
 }
@@ -385,11 +387,8 @@ void klsGLCanvas::klsGLCanvasRender( bool noColor ) {
 
 void klsGLCanvas::wxOnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
-#ifndef __WXMOTIF__
-	if (!GetContext()) return;
-#endif
 
-	SetCurrent();
+	SetCurrent(*glcontext);
 	// Init OpenGL once, but after SetCurrent
 	if (!glInitialized)
 	{
@@ -420,7 +419,6 @@ void klsGLCanvas::wxOnPaint(wxPaintEvent& event) {
 		glInitialized = true;
 	}
 
-	SetCurrent();
 	reclaimViewport();
 	klsGLCanvasRender();
 	
@@ -438,26 +436,8 @@ void klsGLCanvas::wxOnEraseBackground(wxEraseEvent& WXUNUSED(event))
 
 void klsGLCanvas::wxOnSize(wxSizeEvent& event)
 {
-    // this is also necessary to update the context on some platforms
-    wxGLCanvas::OnSize(event);
-
-    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
-	#ifndef __WXMOTIF__
-		if (GetContext())
-	#endif
-    {
-        SetCurrent();
-        Refresh();
-    }
-
-	/**********
-	 * Edit by David Riggleman 5/22/11
-	 * 	These methods seemed to be causing flickering on resize events upon startup
-	 * 	so I commented them out
-	 */
-	//OnSize();
-    //event.Skip();
-
+    SetCurrent(*glcontext);
+    Refresh();
 }
 
 
@@ -606,7 +586,7 @@ void klsGLCanvas::wxOnMouseEvent(wxMouseEvent& event) {
 			wxSize sz = GetClientSize();
 			wxImage screenShot = renderToImage(sz.GetWidth(), sz.GetHeight());
 			wxBitmap myBMP( screenShot );
-			myBMP.SaveFile((const wxChar *)"screen_shot.bmp", wxBITMAP_TYPE_BMP);  // added cast KAS
+			myBMP.SaveFile("screen_shot.bmp", wxBITMAP_TYPE_BMP);
 		}
 		
 	} else if( event.MiddleUp() ) {

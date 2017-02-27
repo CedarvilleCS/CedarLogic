@@ -19,15 +19,14 @@
 #include "wx/docview.h"
 #include "wx/help.h"
 #include "wx/fs_zip.h"
-#include "../logic/logic_values.h"
-#include "parse/LibraryParse.h"
-#include "gl_defs.h"
+#include "common.h"
+#include "parse/GateLibrary.h"
+#include "graphics/gl_defs.h"
 
 class MainFrame;
 class threadLogic;
 class autoSaveThread;
 class Message;
-
 
 using namespace std;
 
@@ -71,7 +70,7 @@ public:
 	//	of which one we are currently displaying.  We also have a map of which gate
 	//	belongs to which library (child to parent)
 	string currentLibrary;
-	LibraryParse libParser;
+	GateLibrary libParser;
 	map < string, map < string, LibraryGate > > libraries;
 	map < string, string > gateNameToLibrary;
 		

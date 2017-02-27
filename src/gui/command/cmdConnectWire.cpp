@@ -1,11 +1,11 @@
 
 #include "cmdConnectWire.h"
 #include <sstream>
-#include "../circuit/GUICircuit.h"
-#include "../circuit/guiWire.h"
-#include "../circuit/gate/guiGate.h"
-#include "../circuit/gate/gateHotspot.h"
-#include "../thread/Message.h"
+#include "../GUICircuit.h"
+#include "../wire/guiWire.h"
+#include "../gate/guiGate.h"
+#include "../gate/gateHotspot.h"
+#include "../message/Message.h"
 
 cmdConnectWire::cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid,
 		const std::string &hotspot, bool noCalcShape) :

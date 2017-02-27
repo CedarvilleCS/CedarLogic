@@ -23,7 +23,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -52,7 +52,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(WXWIN)/include;$(WXADDITIONS)/include;$(WXWIN)/contrib/include;$(WXWIN)/include/msvc/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)/include;$(WXADDITIONS)/include;$(WXWIN)/contrib/include;$(WXWIN)/include/msvc/;src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_PRODUCTION_;WIN32;STRICT;__WXMSW__;__WX__;__WXDEBUG__;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -117,23 +117,159 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="src\gui\gate\gateHotspot.cpp" />
+    <ClCompile Include="src\gui\gate\guiGate.cpp" />
+    <ClCompile Include="src\gui\gate\guiGateADC.cpp" />
+    <ClCompile Include="src\gui\gate\guiGateKEYPAD.cpp" />
+    <ClCompile Include="src\gui\gate\guiGateLED.cpp" />
+    <ClCompile Include="src\gui\gate\guiGatePULSE.cpp" />
+    <ClCompile Include="src\gui\gate\guiGateRAM.cpp" />
+    <ClCompile Include="src\gui\gate\guiGateREGISTER.cpp" />
+    <ClCompile Include="src\gui\gate\guiGateTOGGLE.cpp" />
+    <ClCompile Include="src\gui\gate\guiGateZ80.cpp" />
+    <ClCompile Include="src\gui\gate\guiLabel.cpp" />
+    <ClCompile Include="src\gui\gate\guiTO_FROM.cpp" />
+    <ClCompile Include="src\gui\GUICircuit.cpp" />
+    <ClCompile Include="src\gui\wire\guiWire.cpp" />
+    <ClCompile Include="src\gui\wire\wireSegment.cpp" />
+    <ClCompile Include="src\gui\command\cmdAddTab.cpp" />
+    <ClCompile Include="src\gui\command\cmdConnectWire.cpp" />
+    <ClCompile Include="src\gui\command\cmdCreateGate.cpp" />
+    <ClCompile Include="src\gui\command\cmdCreateWire.cpp" />
+    <ClCompile Include="src\gui\command\cmdDeleteGate.cpp" />
+    <ClCompile Include="src\gui\command\cmdDeleteSelection.cpp" />
+    <ClCompile Include="src\gui\command\cmdDeleteTab.cpp" />
+    <ClCompile Include="src\gui\command\cmdDeleteWire.cpp" />
+    <ClCompile Include="src\gui\command\cmdDisconnectWire.cpp" />
+    <ClCompile Include="src\gui\command\cmdMoveGate.cpp" />
+    <ClCompile Include="src\gui\command\cmdMoveSelection.cpp" />
+    <ClCompile Include="src\gui\command\cmdMoveWire.cpp" />
+    <ClCompile Include="src\gui\command\cmdPasteBlock.cpp" />
+    <ClCompile Include="src\gui\command\cmdSetParams.cpp" />
+    <ClCompile Include="src\gui\command\cmdWireSegDrag.cpp" />
+    <ClCompile Include="src\gui\command\klsCommand.cpp" />
+    <ClCompile Include="src\gui\dialog\ADCPopupDialog.cpp" />
+    <ClCompile Include="src\gui\dialog\EditRegDialog.cpp" />
+    <ClCompile Include="src\gui\dialog\paramDialog.cpp" />
+    <ClCompile Include="src\gui\dialog\RamPopupDialog.cpp" />
+    <ClCompile Include="src\gui\dialog\Z80PopupDialog.cpp" />
+    <ClCompile Include="src\gui\DynamicGate.cpp" />
+    <ClCompile Include="src\gui\GLFont\glfont2.cpp" />
+    <ClCompile Include="src\gui\graphics\gl_defs.cpp" />
+    <ClCompile Include="src\gui\graphics\gl_text.cpp" />
+    <ClCompile Include="src\gui\collision\klsCollisionChecker.cpp" />
+    <ClCompile Include="src\gui\MainApp.cpp" />
+    <ClCompile Include="src\gui\frame\MainFrame.cpp" />
+    <ClCompile Include="src\gui\frame\OscopeFrame.cpp" />
+    <ClCompile Include="src\gui\parse\CircuitParse.cpp" />
+    <ClCompile Include="src\gui\parse\GateLibrary.cpp" />
+    <ClCompile Include="src\gui\parse\klsClipboard.cpp" />
+    <ClCompile Include="src\gui\parse\XMLParser.cpp" />
+    <ClCompile Include="src\gui\thread\autoSaveThread.cpp" />
+    <ClCompile Include="src\gui\thread\threadLogic.cpp" />
+    <ClCompile Include="src\gui\widget\gateImage.cpp" />
+    <ClCompile Include="src\gui\widget\GUICanvas.cpp" />
+    <ClCompile Include="src\gui\widget\klsGLCanvas.cpp" />
+    <ClCompile Include="src\gui\widget\klsMiniMap.cpp" />
+    <ClCompile Include="src\gui\widget\OscopeCanvas.cpp" />
+    <ClCompile Include="src\gui\widget\PaletteCanvas.cpp" />
+    <ClCompile Include="src\gui\widget\PaletteFrame.cpp" />
+    <ClCompile Include="src\logic\logic_circuit.cpp" />
+    <ClCompile Include="src\logic\logic_event.cpp" />
+    <ClCompile Include="src\logic\logic_gate.cpp" />
+    <ClCompile Include="src\logic\logic_junction.cpp" />
+    <ClCompile Include="src\logic\logic_wire.cpp" />
+    <ClCompile Include="src\version.cpp" />
+    <ClCompile Include="src\z80\InstructionManager.cpp" />
+    <ClCompile Include="src\z80\WaveformFSM.cpp" />
+    <ClCompile Include="src\z80\Z_80LogicGate.cpp" />
+    <ClCompile Include="src\z80\Z_80Registers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\gui\gate\gateHotspot.h" />
+    <ClInclude Include="src\gui\gate\guiGate.h" />
+    <ClInclude Include="src\gui\gate\guiGateADC.h" />
+    <ClInclude Include="src\gui\gate\guiGateKEYPAD.h" />
+    <ClInclude Include="src\gui\gate\guiGateLED.h" />
+    <ClInclude Include="src\gui\gate\guiGatePULSE.h" />
+    <ClInclude Include="src\gui\gate\guiGateRAM.h" />
+    <ClInclude Include="src\gui\gate\guiGateREGISTER.h" />
+    <ClInclude Include="src\gui\gate\guiGateTOGGLE.h" />
+    <ClInclude Include="src\gui\gate\guiGateZ80.h" />
+    <ClInclude Include="src\gui\gate\guiLabel.h" />
+    <ClInclude Include="src\gui\gate\guiTO_FROM.h" />
+    <ClInclude Include="src\gui\GUICircuit.h" />
+    <ClInclude Include="src\gui\guiGates.h" />
+    <ClInclude Include="src\gui\wire\guiWire.h" />
+    <ClInclude Include="src\gui\wire\wireSegment.h" />
+    <ClInclude Include="src\gui\commands.h" />
+    <ClInclude Include="src\gui\command\cmdAddTab.h" />
+    <ClInclude Include="src\gui\command\cmdConnectWire.h" />
+    <ClInclude Include="src\gui\command\cmdCreateGate.h" />
+    <ClInclude Include="src\gui\command\cmdCreateWire.h" />
+    <ClInclude Include="src\gui\command\cmdDeleteGate.h" />
+    <ClInclude Include="src\gui\command\cmdDeleteSelection.h" />
+    <ClInclude Include="src\gui\command\cmdDeleteTab.h" />
+    <ClInclude Include="src\gui\command\cmdDeleteWire.h" />
+    <ClInclude Include="src\gui\command\cmdDisconnectWire.h" />
+    <ClInclude Include="src\gui\command\cmdMoveGate.h" />
+    <ClInclude Include="src\gui\command\cmdMoveSelection.h" />
+    <ClInclude Include="src\gui\command\cmdMoveWire.h" />
+    <ClInclude Include="src\gui\command\cmdPasteBlock.h" />
+    <ClInclude Include="src\gui\command\cmdSetParams.h" />
+    <ClInclude Include="src\gui\command\cmdWireSegDrag.h" />
+    <ClInclude Include="src\gui\command\klsCommand.h" />
+    <ClInclude Include="src\gui\dialog\ADCPopupDialog.h" />
+    <ClInclude Include="src\gui\dialog\EditRegDialog.h" />
+    <ClInclude Include="src\gui\dialog\paramDialog.h" />
+    <ClInclude Include="src\gui\dialog\RamPopupDialog.h" />
+    <ClInclude Include="src\gui\dialog\Z80PopupDialog.h" />
+    <ClInclude Include="src\gui\DynamicGate.h" />
+    <ClInclude Include="src\gui\GLFont\glfont2.h" />
+    <ClInclude Include="src\gui\graphics\gl_defs.h" />
+    <ClInclude Include="src\gui\graphics\gl_text.h" />
+    <ClInclude Include="src\gui\graphics\gl_wrapper.h" />
+    <ClInclude Include="src\gui\collision\klsBBox.h" />
+    <ClInclude Include="src\gui\collision\klsCollisionChecker.h" />
+    <ClInclude Include="src\gui\MainApp.h" />
+    <ClInclude Include="src\gui\frame\MainFrame.h" />
+    <ClInclude Include="src\gui\frame\OscopeFrame.h" />
+    <ClInclude Include="src\gui\parse\CircuitParse.h" />
+    <ClInclude Include="src\gui\parse\GateLibrary.h" />
+    <ClInclude Include="src\gui\parse\klsClipboard.h" />
+    <ClInclude Include="src\gui\parse\XMLParser.h" />
+    <ClInclude Include="src\gui\thread\autoSaveThread.h" />
+    <ClInclude Include="src\gui\message\Message.h" />
+    <ClInclude Include="src\gui\thread\threadLogic.h" />
+    <ClInclude Include="src\gui\widget\gateImage.h" />
+    <ClInclude Include="src\gui\widget\GUICanvas.h" />
+    <ClInclude Include="src\gui\widget\klsGLCanvas.h" />
+    <ClInclude Include="src\gui\widget\klsMiniMap.h" />
+    <ClInclude Include="src\gui\widget\OscopeCanvas.h" />
+    <ClInclude Include="src\gui\widget\PaletteCanvas.h" />
+    <ClInclude Include="src\gui\widget\PaletteFrame.h" />
+    <ClInclude Include="src\logic\logic_circuit.h" />
+    <ClInclude Include="src\logic\logic_defaults.h" />
+    <ClInclude Include="src\logic\logic_event.h" />
+    <ClInclude Include="src\logic\logic_gate.h" />
+    <ClInclude Include="src\logic\logic_junction.h" />
+    <ClInclude Include="src\logic\logic_wire.h" />
+    <ClInclude Include="src\version.h" />
+    <ClInclude Include="src\z80\InstructionManager.h" />
+    <ClInclude Include="src\z80\WaveformFSM.h" />
+    <ClInclude Include="src\z80\Z_80LogicGate.h" />
+    <ClInclude Include="src\z80\Z_80Registers.h" />
+  </ItemGroup>
   <!-- Set variable if environment variable is not set (good for computers without admin access). -->
   <PropertyGroup>
-    <WXWIN Condition="'$(WXWIN)' == ''">c:\wxWidgets-2.8.12</WXWIN>
+    <WXWIN Condition="'$(WXWIN)' == ''">c:\wxWidgets-3.1.0</WXWIN>
   </PropertyGroup>
-  <!-- Include all code. -->
-  <ItemGroup>
-    <ClCompile Include="src/**/*.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src/**/*.h" />
-  </ItemGroup>
   <!-- Copy resources to output directory. -->
-  <!--
-    <ItemGroup>
-      <Content Include="res/**/*">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-  -->
+  <ItemGroup>
+    <Content Include="res/**/*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

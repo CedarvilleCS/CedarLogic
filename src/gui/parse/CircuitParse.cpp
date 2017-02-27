@@ -9,15 +9,15 @@
 *****************************************************************************/
 
 #include "CircuitParse.h"
-#include "../OscopeFrame.h"
+#include "../frame/OscopeFrame.h"
 #include "../MainApp.h"
 #include <fstream>
 #include <sstream>
 
 #include "XMLParser.h"
-#include "../circuit/gate/guiGate.h"
-#include "../circuit/guiWire.h"
-#include "../circuit/GUICircuit.h"
+#include "../gate/guiGate.h"
+#include "../wire/guiWire.h"
+#include "../GUICircuit.h"
 #include "../widget/GUICanvas.h"
 #include <map>
 #include <unordered_map>
@@ -37,7 +37,7 @@ CircuitParse::CircuitParse(string fileName, vector< GUICanvas* > glc) {
 	gCanvases = glc;
 	gCanvas = glc[0];
 
-	fstream x(fileName.c_str(), ios::in);
+	fstream x(fileName, ios::in);
 	mParse = new XMLParser(&x, false);
 	this->fileName = fileName;
 }
@@ -47,7 +47,7 @@ CircuitParse::~CircuitParse() {
 }
 
 void CircuitParse::loadFile(string fileName) {
-	fstream x(fileName.c_str(), ios::in);
+	fstream x(fileName, ios::in);
 	mParse = new XMLParser(&x, false);
 	this->fileName = fileName;
 }
@@ -85,8 +85,8 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	do { // while next tag is not close circuit
 		string temp = mParse->readTag();
 		char pageNum = temp[temp.size()-1] - '0';
-		if ((int)pageNum > (int)(gCanvases.size()-1)) {
-			gCanvas = new GUICanvas(gCanvases[0]->GetParent(), gCanvases[0]->getCircuit(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
+		if ((int)pageNum != 0) {
+			gCanvas = new GUICanvas(gCanvases[0]->GetParent(), gCanvases[0]->getCircuit(), wxID_ANY, wxDefaultPosition, gCanvases[0]->GetSize(), wxWANTS_CHARS);
 			gCanvases.push_back(gCanvas);
 		}
 		else {
@@ -220,6 +220,8 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	if (mParse->readTag() == "throw_away") {
 		mParse->readCloseTag();
 		gCanvases[0]->clearCircuit();
+		gCanvas->clearCircuit();
+		gCanvas->getCircuit()->reInitializeLogicCircuit();
 		return parseFile();
 	}
 
@@ -482,7 +484,7 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 	
 	mParse->closeTag("circuit");
 	
-	ofstream outfile(filename.c_str());
+	ofstream outfile(filename);
 	outfile << ossCircuit->str();
 	outfile.close();
 }

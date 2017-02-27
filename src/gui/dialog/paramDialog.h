@@ -12,8 +12,8 @@
 #define PARAMDIALOG_H_
 
 #include "../MainApp.h"
-#include "../circuit/GUICircuit.h"
-#include "../circuit/gate/guiGate.h"
+#include "../GUICircuit.h"
+#include "../gate/guiGate.h"
 #include <string>
 #include <map>
 

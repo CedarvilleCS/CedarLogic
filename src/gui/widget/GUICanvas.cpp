@@ -13,11 +13,11 @@
 #include "../MainApp.h"
 #include "../dialog/paramDialog.h"
 #include "../parse/klsClipboard.h"
-#include "../circuit/guiWire.h"
-#include "../circuit/GUICircuit.h"
-#include "../circuit/gate/gateHotspot.h"
+#include "../wire/guiWire.h"
+#include "../GUICircuit.h"
+#include "../gate/gateHotspot.h"
 #include "../commands.h"
-#include "../thread/Message.h"
+#include "../message/Message.h"
 #include "klsMiniMap.h"
 
 // Included to use the min() and max() templates:
@@ -1090,16 +1090,15 @@ void GUICanvas::unselectAllWires() {
 }	
 
 void GUICanvas::copyBlockToClipboard () {
-	klsClipboard myClipboard;
+
 	// Ship the selected gates and wires out to the clipboard
-	myClipboard.copyBlock( gCircuit, this, selectedGates, selectedWires );
+	klsClipboard::copyBlock( gCircuit, this, selectedGates, selectedWires );
 }
 
 void GUICanvas::pasteBlockFromClipboard () {
 	if (this->isLocked()) return;
 	
-	klsClipboard myClipboard;
-	pasteCommand = myClipboard.pasteBlock( gCircuit, this );
+	pasteCommand = (cmdPasteBlock *)klsClipboard::pasteBlock( gCircuit, this );
 	if (pasteCommand == NULL) return;
 	currentDragState = DRAG_SELECTION; // drag until dropped
 	isWithinPaste = true;

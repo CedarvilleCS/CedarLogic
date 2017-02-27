@@ -11,9 +11,9 @@
 #include "OscopeCanvas.h"
 #include "../MainApp.h"
 #include "GUICanvas.h"
-#include "../gl_text.h"
-#include "../OscopeFrame.h"
-#include "../circuit/guiWire.h"
+#include "../graphics/gl_text.h"
+#include "../frame/OscopeFrame.h"
+#include "../wire/guiWire.h"
 
 // Included to use the min() and max() templates:
 #include <algorithm>
@@ -29,8 +29,9 @@ END_EVENT_TABLE()
 
 OscopeCanvas::OscopeCanvas(wxWindow *parent, GUICircuit* gCircuit, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-	: wxGLCanvas( parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxSUNKEN_BORDER ) {
+	: wxGLCanvas( parent, id, nullptr, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxSUNKEN_BORDER ) {
 
+	this->glcontext = new wxGLContext(this);
 	this->gCircuit = gCircuit;
 	m_init = false;
 	parentFrame = (OscopeFrame*) parent;
@@ -107,7 +108,7 @@ void OscopeCanvas::OnRender(){
 	for (unsigned int i = 0; i < numberOfWires; i++) {
 		if (parentFrame->getFeedName(i) == NONE_STR) { wireNum++; continue; }//<-Josh Edit using access method
 
-		map< string, deque< StateType > >::iterator thisWire = stateValues.find(parentFrame->getFeedName(i).c_str()); //<-Josh Edit using access method
+		map< string, deque< StateType > >::iterator thisWire = stateValues.find(parentFrame->getFeedName(i));
 		if (thisWire == stateValues.end()) { wireNum++; continue; }
 		deque< StateType >::reverse_iterator wireVal = (thisWire->second).rbegin();
 		GLdouble horizLoc = OSCOPE_HORIZONTAL;
@@ -183,11 +184,9 @@ void OscopeCanvas::OnRender(){
 
 void OscopeCanvas::OnPaint(wxPaintEvent& event){ 
 	wxPaintDC dc(this);
-#ifndef __WXMOTIF__
-	if (!GetContext()) return;
-#endif
 
-	SetCurrent();
+
+	SetCurrent(*glcontext);
 	// Init OpenGL once, but after SetCurrent
 	if (!m_init)
 	{
@@ -214,17 +213,8 @@ void OscopeCanvas::OnPaint(wxPaintEvent& event){
 
 void OscopeCanvas::OnSize(wxSizeEvent& event)
 {
-    // this is also necessary to update the context on some platforms
-    wxGLCanvas::OnSize(event);
-
-    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
-#ifndef __WXMOTIF__
-    if (GetContext())
-#endif
-    {
-        Refresh();
-        //Render();
-    }
+	SetCurrent(*glcontext);
+    Refresh();
 }
 
 
@@ -252,7 +242,7 @@ void OscopeCanvas::UpdateData(void){
 	map< string, bool > hasBeenAdded; 
 	
 	for (unsigned int i = 0; i < parentFrame->numberOfFeeds()-1; i++) {
-		string junctionName = parentFrame->getFeedName(i).c_str();
+		string junctionName = parentFrame->getFeedName(i);
 		if (junctionName == NONE_STR || junctionName == RMOVE_STR || junctionName == "") continue;	
 			
 		if(hasBeenAdded.find(junctionName) == hasBeenAdded.end()) {

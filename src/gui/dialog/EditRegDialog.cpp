@@ -12,9 +12,9 @@
 #include <wx/statline.h>
 #include "EditRegDialog.h"
 #include "../MainApp.h"
-#include "../circuit/gate/guiGateZ80.h"
-#include "../circuit/GUICircuit.h"
-#include "../MainFrame.h"
+#include "../gate/guiGateZ80.h"
+#include "../GUICircuit.h"
+#include "../frame/MainFrame.h"
 #include <stdlib.h>
 
 using namespace std;
@@ -63,117 +63,117 @@ EditRegDialog::EditRegDialog( Z80PopupDialog* newZ80Popup, guiGateZ80* newM_guiG
 	wxStaticLine* VLine2 = new wxStaticLine (this, -1, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
 	
 //Buttons
-	clearBtn = new wxButton( this, ID_CLEARBTN, (const wxChar *)"Clear" );  // KAS
-	cancelBtn = new wxButton(this, wxID_CLOSE, (const wxChar *)"Cancel");   // KAS
+	clearBtn = new wxButton( this, ID_CLEARBTN, "Clear" );
+	cancelBtn = new wxButton(this, wxID_CLOSE, "Cancel");
 	saveBtn = new wxButton ( this, wxID_SAVE );
 	
 	wxSize* txtCtrlSize1Byte = new wxSize(25, 20);
 	
-	wxStaticText* ALabel = new wxStaticText(this, -1, (const wxChar *)"A = "); // and following casts of same nature KAS
-	AReg = new wxTextCtrl(this, -1, (const wxChar *)params[0].c_str(), wxDefaultPosition, *txtCtrlSize1Byte); // and following casts of same nature KAS
+	wxStaticText* ALabel = new wxStaticText(this, -1, "A = ");
+	AReg = new wxTextCtrl(this, -1, params[0], wxDefaultPosition, *txtCtrlSize1Byte);
 	AReg->SetMaxLength(2);
-	wxStaticText* BLabel = new wxStaticText(this, -1, (const wxChar *)"B = ");
-	BReg = new wxTextCtrl(this, -1, (const wxChar *)params[1].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* BLabel = new wxStaticText(this, -1, "B = ");
+	BReg = new wxTextCtrl(this, -1, params[1], wxDefaultPosition, *txtCtrlSize1Byte);
 	BReg->SetMaxLength(2);
-	wxStaticText* CLabel = new wxStaticText(this, -1, (const wxChar *)"C = ");
-	CReg = new wxTextCtrl(this, -1, (const wxChar *)params[2].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* CLabel = new wxStaticText(this, -1, "C = ");
+	CReg = new wxTextCtrl(this, -1, params[2], wxDefaultPosition, *txtCtrlSize1Byte);
 	CReg->SetMaxLength(2);
-	wxStaticText* DLabel = new wxStaticText(this, -1, (const wxChar *)"D = ");
-	DReg = new wxTextCtrl(this, -1, (const wxChar *)params[3].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* DLabel = new wxStaticText(this, -1, "D = ");
+	DReg = new wxTextCtrl(this, -1, params[3], wxDefaultPosition, *txtCtrlSize1Byte);
 	DReg->SetMaxLength(2);
-	wxStaticText* ELabel = new wxStaticText(this, -1, (const wxChar *)"E = ");
-	EReg = new wxTextCtrl(this, -1, (const wxChar *)params[4].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* ELabel = new wxStaticText(this, -1, "E = ");
+	EReg = new wxTextCtrl(this, -1, params[4], wxDefaultPosition, *txtCtrlSize1Byte);
 	EReg->SetMaxLength(2);
-	wxStaticText* HLabel = new wxStaticText(this, -1, (const wxChar *)"H = ");
-	HReg = new wxTextCtrl(this, -1, (const wxChar *)params[5].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* HLabel = new wxStaticText(this, -1, "H = ");
+	HReg = new wxTextCtrl(this, -1, params[5], wxDefaultPosition, *txtCtrlSize1Byte);
 	HReg->SetMaxLength(2);
-	wxStaticText* LLabel = new wxStaticText(this, -1, (const wxChar *)"L = ");
-	LReg = new wxTextCtrl(this, -1, (const wxChar *)params[6].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* LLabel = new wxStaticText(this, -1, "L = ");
+	LReg = new wxTextCtrl(this, -1, params[6], wxDefaultPosition, *txtCtrlSize1Byte);
 	LReg->SetMaxLength(2);
 	
 	wxSize* txtCtrlSize2Bytes = new wxSize(40, 20);
 	
-	wxStaticText* IXLabel = new wxStaticText(this, -1, (const wxChar *)"IX = ");
-	IXReg = new wxTextCtrl(this, -1, (const wxChar *)params[7].c_str(), wxDefaultPosition, *txtCtrlSize2Bytes);
+	wxStaticText* IXLabel = new wxStaticText(this, -1, "IX = ");
+	IXReg = new wxTextCtrl(this, -1, params[7], wxDefaultPosition, *txtCtrlSize2Bytes);
 	IXReg->SetMaxLength(4);
-	wxStaticText* IYLabel = new wxStaticText(this, -1, (const wxChar *)"IY = ");
-	IYReg = new wxTextCtrl(this, -1, (const wxChar *)params[8].c_str(), wxDefaultPosition, *txtCtrlSize2Bytes);
+	wxStaticText* IYLabel = new wxStaticText(this, -1, "IY = ");
+	IYReg = new wxTextCtrl(this, -1, params[8], wxDefaultPosition, *txtCtrlSize2Bytes);
 	IYReg->SetMaxLength(4);
 
-	wxStaticText* AltALabel = new wxStaticText(this, -1, (const wxChar *)"A' = ");
-	AltAReg = new wxTextCtrl(this, -1, (const wxChar *)params[9].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* AltALabel = new wxStaticText(this, -1, "A' = ");
+	AltAReg = new wxTextCtrl(this, -1, params[9], wxDefaultPosition, *txtCtrlSize1Byte);
 	AltAReg->SetMaxLength(2);
-	wxStaticText* AltBLabel = new wxStaticText(this, -1, (const wxChar *)"B' = ");
-	AltBReg = new wxTextCtrl(this, -1, (const wxChar *)params[10].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* AltBLabel = new wxStaticText(this, -1, "B' = ");
+	AltBReg = new wxTextCtrl(this, -1, params[10], wxDefaultPosition, *txtCtrlSize1Byte);
 	AltBReg->SetMaxLength(2);
-	wxStaticText* AltCLabel = new wxStaticText(this, -1, (const wxChar *)"C' = ");
-	AltCReg = new wxTextCtrl(this, -1, (const wxChar *)params[11].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* AltCLabel = new wxStaticText(this, -1, "C' = ");
+	AltCReg = new wxTextCtrl(this, -1, params[11], wxDefaultPosition, *txtCtrlSize1Byte);
 	AltCReg->SetMaxLength(2);
-	wxStaticText* AltDLabel = new wxStaticText(this, -1, (const wxChar *)"D' = ");
-	AltDReg = new wxTextCtrl(this, -1, (const wxChar *)params[12].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* AltDLabel = new wxStaticText(this, -1, "D' = ");
+	AltDReg = new wxTextCtrl(this, -1, params[12], wxDefaultPosition, *txtCtrlSize1Byte);
 	AltDReg->SetMaxLength(2);
-	wxStaticText* AltELabel = new wxStaticText(this, -1, (const wxChar *)"E' = ");
-	AltEReg = new wxTextCtrl(this, -1, (const wxChar *)params[13].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* AltELabel = new wxStaticText(this, -1, "E' = ");
+	AltEReg = new wxTextCtrl(this, -1, params[13], wxDefaultPosition, *txtCtrlSize1Byte);
 	AltEReg->SetMaxLength(2);
-	wxStaticText* AltHLabel = new wxStaticText(this, -1, (const wxChar *)"H' = ");
-	AltHReg = new wxTextCtrl(this, -1, (const wxChar *)params[14].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* AltHLabel = new wxStaticText(this, -1, "H' = ");
+	AltHReg = new wxTextCtrl(this, -1, params[14], wxDefaultPosition, *txtCtrlSize1Byte);
 	AltHReg->SetMaxLength(2);
-	wxStaticText* AltLLabel = new wxStaticText(this, -1, (const wxChar *)"L' = ");
-	AltLReg = new wxTextCtrl(this, -1, (const wxChar *)params[15].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* AltLLabel = new wxStaticText(this, -1, "L' = ");
+	AltLReg = new wxTextCtrl(this, -1, params[15], wxDefaultPosition, *txtCtrlSize1Byte);
 	AltLReg->SetMaxLength(2);
 	
 	
-	wxStaticText* PCLabel = new wxStaticText(this, -1, (const wxChar *)"PC = ");
-	PCReg = new wxTextCtrl(this, -1, (const wxChar *)params[28].c_str(), wxDefaultPosition, *txtCtrlSize2Bytes);
+	wxStaticText* PCLabel = new wxStaticText(this, -1, "PC = ");
+	PCReg = new wxTextCtrl(this, -1, params[28], wxDefaultPosition, *txtCtrlSize2Bytes);
 	PCReg->SetMaxLength(4);
-	wxStaticText* SPLabel = new wxStaticText(this, -1, (const wxChar *)"SP = ");
-	SPReg = new wxTextCtrl(this, -1, (const wxChar *)params[29].c_str(), wxDefaultPosition, *txtCtrlSize2Bytes);
+	wxStaticText* SPLabel = new wxStaticText(this, -1, "SP = ");
+	SPReg = new wxTextCtrl(this, -1, params[29], wxDefaultPosition, *txtCtrlSize2Bytes);
 	SPReg->SetMaxLength(4);
-	wxStaticText* ILabel = new wxStaticText(this, -1, (const wxChar *)"I = ");
-	IReg = new wxTextCtrl(this, -1, (const wxChar *)params[30].c_str(), wxDefaultPosition, *txtCtrlSize1Byte);
+	wxStaticText* ILabel = new wxStaticText(this, -1, "I = ");
+	IReg = new wxTextCtrl(this, -1, params[30], wxDefaultPosition, *txtCtrlSize1Byte);
 	IReg->SetMaxLength(2);
 	
-	wxString IMChoices[] = { (const wxChar *)"Mode 0", (const wxChar *)"Mode 1", (const wxChar *)"Mode 2" };
-	wxString IFFChoices[] = { (const wxChar *)"Disabled", (const wxChar *)"Enabled" };
+	wxString IMChoices[] = { "Mode 0", "Mode 1", "Mode 2" };
+	wxString IFFChoices[] = { "Disabled", "Enabled" };
 	wxSize* dropDownSize = new wxSize(70, 20);
 	
-	wxStaticText* IMLabel = new wxStaticText(this, -1, (const wxChar *)"IM = ");
-	IMode = new wxComboBox(this, ID_IMBOX, (const wxChar *)params[31].c_str(), wxDefaultPosition, *dropDownSize, 3, IMChoices, wxCB_READONLY);
-	wxStaticText* IFFLabel = new wxStaticText(this, -1, (const wxChar *)"IFF1 = ");
-	IFFStatus = new wxComboBox(this, ID_IFFBOX, (const wxChar *)params[32].c_str(), wxDefaultPosition, *dropDownSize, 2, IFFChoices, wxCB_READONLY);
+	wxStaticText* IMLabel = new wxStaticText(this, -1, "IM = ");
+	IMode = new wxComboBox(this, ID_IMBOX, params[31], wxDefaultPosition, *dropDownSize, 3, IMChoices, wxCB_READONLY);
+	wxStaticText* IFFLabel = new wxStaticText(this, -1, "IFF1 = ");
+	IFFStatus = new wxComboBox(this, ID_IFFBOX, params[32], wxDefaultPosition, *dropDownSize, 2, IFFChoices, wxCB_READONLY);
 	
 	//FLAGS
 	//flags
 	
-	wxString FlagChoices[] = { (const wxChar *)"0", (const wxChar *)"1" };
+	wxString FlagChoices[] = { "0", "1" };
 	wxSize* flagDDSize = new wxSize(35, 20);
 	
-	wxStaticText* SFlagLabel = new wxStaticText(this, -1, (const wxChar *)"S = ");
-	SFlag = new wxComboBox(this, -1, (const wxChar *)params[16].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* ZFlagLabel = new wxStaticText(this, -1, (const wxChar *)"Z = ");
-	ZFlag = new wxComboBox(this, -1, (const wxChar *)params[17].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* HFlagLabel = new wxStaticText(this, -1, (const wxChar *)"H = ");
-	HFlag = new wxComboBox(this, -1, (const wxChar *)params[18].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* PVFlagLabel = new wxStaticText(this, -1, (const wxChar *)"P/V = ");
-	PVFlag = new wxComboBox(this, -1, (const wxChar *)params[19].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* NFlagLabel = new wxStaticText(this, -1, (const wxChar *)"N = ");
-	NFlag = new wxComboBox(this, -1, (const wxChar *)params[20].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* CFlagLabel = new wxStaticText(this, -1, (const wxChar *)"C = ");
-	CFlag = new wxComboBox(this, -1, (const wxChar *)params[21].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* SFlagLabel = new wxStaticText(this, -1, "S = ");
+	SFlag = new wxComboBox(this, -1, params[16], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* ZFlagLabel = new wxStaticText(this, -1, "Z = ");
+	ZFlag = new wxComboBox(this, -1, params[17], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* HFlagLabel = new wxStaticText(this, -1, "H = ");
+	HFlag = new wxComboBox(this, -1, params[18], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* PVFlagLabel = new wxStaticText(this, -1, "P/V = ");
+	PVFlag = new wxComboBox(this, -1, params[19], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* NFlagLabel = new wxStaticText(this, -1, "N = ");
+	NFlag = new wxComboBox(this, -1, params[20], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* CFlagLabel = new wxStaticText(this, -1, "C = ");
+	CFlag = new wxComboBox(this, -1, params[21], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
 	
 	//alternate flags
-	wxStaticText* AltSFlagLabel = new wxStaticText(this, -1, (const wxChar *)"S' = ");
-	AltSFlag = new wxComboBox(this, -1, (const wxChar *)params[22].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* AltZFlagLabel = new wxStaticText(this, -1, (const wxChar *)"Z' = ");
-	AltZFlag = new wxComboBox(this, -1, (const wxChar *)params[23].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* AltHFlagLabel = new wxStaticText(this, -1, (const wxChar *)"H' = ");
-	AltHFlag = new wxComboBox(this, -1, (const wxChar *)params[24].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* AltPVFlagLabel = new wxStaticText(this, -1, (const wxChar *)"P/V' = ");
-	AltPVFlag = new wxComboBox(this, -1, (const wxChar *)params[25].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* AltNFlagLabel = new wxStaticText(this, -1, (const wxChar *)"N' = ");
-	AltNFlag = new wxComboBox(this, -1, (const wxChar *)params[26].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
-	wxStaticText* AltCFlagLabel = new wxStaticText(this, -1, (const wxChar *)"C' = ");
-	AltCFlag = new wxComboBox(this, -1, (const wxChar *)params[27].c_str(), wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* AltSFlagLabel = new wxStaticText(this, -1, "S' = ");
+	AltSFlag = new wxComboBox(this, -1, params[22], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* AltZFlagLabel = new wxStaticText(this, -1, "Z' = ");
+	AltZFlag = new wxComboBox(this, -1, params[23], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* AltHFlagLabel = new wxStaticText(this, -1, "H' = ");
+	AltHFlag = new wxComboBox(this, -1, params[24], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* AltPVFlagLabel = new wxStaticText(this, -1, "P/V' = ");
+	AltPVFlag = new wxComboBox(this, -1, params[25], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* AltNFlagLabel = new wxStaticText(this, -1, "N' = ");
+	AltNFlag = new wxComboBox(this, -1, params[26], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
+	wxStaticText* AltCFlagLabel = new wxStaticText(this, -1, "C' = ");
+	AltCFlag = new wxComboBox(this, -1, params[27], wxDefaultPosition, *flagDDSize, 2, FlagChoices, wxCB_READONLY);
 	
 	
 	buttonSizer->Add( clearBtn, wxSizerFlags(0).Align(0).Border(wxALL, 5 ));
@@ -322,148 +322,148 @@ void EditRegDialog::OnBtnCancel( wxCommandEvent& event ){
 //This command makes a convenient way to clear all the registers
 //in the z80
 void EditRegDialog::OnBtnClear( wxCommandEvent& event ){
-	AReg->SetValue((const wxChar *)"00");  AReg->MarkDirty();
-	BReg->SetValue((const wxChar *)"00");  BReg->MarkDirty();
-	CReg->SetValue((const wxChar *)"00");  CReg->MarkDirty();
-	DReg->SetValue((const wxChar *)"00");  DReg->MarkDirty();
-	EReg->SetValue((const wxChar *)"00");  EReg->MarkDirty();
-	HReg->SetValue((const wxChar *)"00");  HReg->MarkDirty();
-	LReg->SetValue((const wxChar *)"00");  LReg->MarkDirty();
-	IXReg->SetValue((const wxChar *)"0000");  IXReg->MarkDirty();
-	IYReg->SetValue((const wxChar *)"0000");  IYReg->MarkDirty();
+	AReg->SetValue("00");  AReg->MarkDirty();
+	BReg->SetValue("00");  BReg->MarkDirty();
+	CReg->SetValue("00");  CReg->MarkDirty();
+	DReg->SetValue("00");  DReg->MarkDirty();
+	EReg->SetValue("00");  EReg->MarkDirty();
+	HReg->SetValue("00");  HReg->MarkDirty();
+	LReg->SetValue("00");  LReg->MarkDirty();
+	IXReg->SetValue("0000");  IXReg->MarkDirty();
+	IYReg->SetValue("0000");  IYReg->MarkDirty();
 	
 	
-	AltAReg->SetValue((const wxChar *)"00");  AltAReg->MarkDirty();
-	AltBReg->SetValue((const wxChar *)"00");  AltBReg->MarkDirty();
-	AltCReg->SetValue((const wxChar *)"00");  AltCReg->MarkDirty();
-	AltDReg->SetValue((const wxChar *)"00");  AltDReg->MarkDirty();
-	AltEReg->SetValue((const wxChar *)"00");  AltEReg->MarkDirty();
-	AltHReg->SetValue((const wxChar *)"00");  AltHReg->MarkDirty();
-	AltLReg->SetValue((const wxChar *)"00");  AltLReg->MarkDirty();
+	AltAReg->SetValue("00");  AltAReg->MarkDirty();
+	AltBReg->SetValue("00");  AltBReg->MarkDirty();
+	AltCReg->SetValue("00");  AltCReg->MarkDirty();
+	AltDReg->SetValue("00");  AltDReg->MarkDirty();
+	AltEReg->SetValue("00");  AltEReg->MarkDirty();
+	AltHReg->SetValue("00");  AltHReg->MarkDirty();
+	AltLReg->SetValue("00");  AltLReg->MarkDirty();
 	
-	PCReg->SetValue((const wxChar *)"0000"); PCReg->MarkDirty();
-	SPReg->SetValue((const wxChar *)"0000"); SPReg->MarkDirty();
+	PCReg->SetValue("0000"); PCReg->MarkDirty();
+	SPReg->SetValue("0000"); SPReg->MarkDirty();
 	
-	IReg->SetValue((const wxChar *)"00"); IReg->MarkDirty();
+	IReg->SetValue("00"); IReg->MarkDirty();
 	
-	SFlag->SetValue((const wxChar *)"0");
-	ZFlag->SetValue((const wxChar *)"0");
-	HFlag->SetValue((const wxChar *)"0");
-	PVFlag->SetValue((const wxChar *)"0");
-	NFlag->SetValue((const wxChar *)"0");
-	CFlag->SetValue((const wxChar *)"0");
+	SFlag->SetValue("0");
+	ZFlag->SetValue("0");
+	HFlag->SetValue("0");
+	PVFlag->SetValue("0");
+	NFlag->SetValue("0");
+	CFlag->SetValue("0");
 	
-	AltSFlag->SetValue((const wxChar *)"0");
-	AltZFlag->SetValue((const wxChar *)"0");
-	AltHFlag->SetValue((const wxChar *)"0");
-	AltPVFlag->SetValue((const wxChar *)"0");
-	AltNFlag->SetValue((const wxChar *)"0");
-	AltCFlag->SetValue((const wxChar *)"0");
+	AltSFlag->SetValue("0");
+	AltZFlag->SetValue("0");
+	AltHFlag->SetValue("0");
+	AltPVFlag->SetValue("0");
+	AltNFlag->SetValue("0");
+	AltCFlag->SetValue("0");
 	
-	IMode->SetValue((const wxChar *)"Mode 0");
+	IMode->SetValue("Mode 0");
 	
-	IFFStatus->SetValue((const wxChar *)"Disabled");
+	IFFStatus->SetValue("Disabled");
 }
 
 void EditRegDialog::OnBtnSave( wxCommandEvent& event ){
 	if (AReg->IsModified()) {
-		ChangeRegValue(AReg, "A", (const char *)AReg->GetLabel().c_str(), 2);
+		ChangeRegValue(AReg, "A", AReg->GetLabel().ToStdString(), 2);
 	}
 	if (BReg->IsModified()) {
-		ChangeRegValue(BReg, "B", (const char *)BReg->GetLabel().c_str(), 2);
+		ChangeRegValue(BReg, "B", BReg->GetLabel().ToStdString(), 2);
 	}
 	if (CReg->IsModified()) {
-		ChangeRegValue(CReg, "C", (const char *)CReg->GetLabel().c_str(), 2);
+		ChangeRegValue(CReg, "C", CReg->GetLabel().ToStdString(), 2);
 	}
 	if (DReg->IsModified()) {
-		ChangeRegValue(DReg, "D", (const char *)DReg->GetLabel().c_str(), 2);
+		ChangeRegValue(DReg, "D", DReg->GetLabel().ToStdString(), 2);
 	}
 	if (EReg->IsModified()) {
-		ChangeRegValue(EReg, "E", (const char *)EReg->GetLabel().c_str(), 2);
+		ChangeRegValue(EReg, "E", EReg->GetLabel().ToStdString(), 2);
 	}
 	if (HReg->IsModified()) {
-		ChangeRegValue(HReg, "H", (const char *)HReg->GetLabel().c_str(), 2);
+		ChangeRegValue(HReg, "H", HReg->GetLabel().ToStdString(), 2);
 	}
 	if (LReg->IsModified()) {
-		ChangeRegValue(LReg, "L", (const char *)LReg->GetLabel().c_str(), 2);
+		ChangeRegValue(LReg, "L", LReg->GetLabel().ToStdString(), 2);
 	}
 	if (IXReg->IsModified()) {
-		ChangeRegValue(IXReg, "IX", (const char *)IXReg->GetLabel().c_str(), 4);
+		ChangeRegValue(IXReg, "IX", IXReg->GetLabel().ToStdString(), 4);
 	}
 	if (IYReg->IsModified()) {
-		ChangeRegValue(IYReg, "IY", (const char *)IYReg->GetLabel().c_str(), 4);
+		ChangeRegValue(IYReg, "IY", IYReg->GetLabel().ToStdString(), 4);
 	}
 	if (AltAReg->IsModified()) {
-		ChangeRegValue(AltAReg, "A'", (const char *)AltAReg->GetLabel().c_str(), 2);
+		ChangeRegValue(AltAReg, "A'", AltAReg->GetLabel().ToStdString(), 2);
 	}
 	if (AltBReg->IsModified()) {
-		ChangeRegValue(AltBReg, "B'", (const char *)AltBReg->GetLabel().c_str(), 2);
+		ChangeRegValue(AltBReg, "B'", AltBReg->GetLabel().ToStdString(), 2);
 	}
 	if (AltCReg->IsModified()) {
-		ChangeRegValue(AltCReg, "C'", (const char *)AltCReg->GetLabel().c_str(), 2);
+		ChangeRegValue(AltCReg, "C'", AltCReg->GetLabel().ToStdString(), 2);
 	}
 	if (AltDReg->IsModified()) {
-		ChangeRegValue(AltDReg, "D'", (const char *)AltDReg->GetLabel().c_str(), 2);
+		ChangeRegValue(AltDReg, "D'", AltDReg->GetLabel().ToStdString(), 2);
 	}
 	if (AltEReg->IsModified()) {
-		ChangeRegValue(AltEReg, "E'", (const char *)AltEReg->GetLabel().c_str(), 2);
+		ChangeRegValue(AltEReg, "E'", AltEReg->GetLabel().ToStdString(), 2);
 	}
 	if (AltHReg->IsModified()) {
-		ChangeRegValue(AltHReg, "H'", (const char *)AltHReg->GetLabel().c_str(), 2);
+		ChangeRegValue(AltHReg, "H'", AltHReg->GetLabel().ToStdString(), 2);
 	}
 	if (AltLReg->IsModified()) {
-		ChangeRegValue(AltLReg, "L'", (const char *)AltLReg->GetLabel().c_str(), 2);
+		ChangeRegValue(AltLReg, "L'", AltLReg->GetLabel().ToStdString(), 2);
 	}
 	if (PCReg->IsModified()) {
-		ChangeRegValue(PCReg, "PC", (const char *)PCReg->GetLabel().c_str(), 4);
+		ChangeRegValue(PCReg, "PC", PCReg->GetLabel().ToStdString(), 4);
 	}
 	if (SPReg->IsModified()) {
-		ChangeRegValue(SPReg, "SP", (const char *)SPReg->GetLabel().c_str(), 4);
+		ChangeRegValue(SPReg, "SP", SPReg->GetLabel().ToStdString(), 4);
 	}
 	if (IReg->IsModified()) {
-		ChangeRegValue(IReg, "I", (const char *)IReg->GetLabel().c_str(), 2);
+		ChangeRegValue(IReg, "I", IReg->GetLabel().ToStdString(), 2);
 	}
 	
 	
 	
 	//update the flags
 	int newFValue = 0;
-	if( SFlag->GetValue() == (const wxChar *)"1" ){
+	if( SFlag->GetValue() == "1" ){
 		newFValue |= S_FLAG;
 	}
-	if (ZFlag->GetValue() == (const wxChar *)"1"){
+	if (ZFlag->GetValue() == "1"){
 		newFValue |= Z_FLAG;
 	}
-	if (HFlag->GetValue() == (const wxChar *)"1"){
+	if (HFlag->GetValue() == "1"){
 		newFValue |= H_FLAG;
 	}
-	if (PVFlag->GetValue() == (const wxChar *)"1"){
+	if (PVFlag->GetValue() == "1"){
 		newFValue |= P_V_FLAG;
 	}
-	if (NFlag->GetValue() == (const wxChar *)"1"){
+	if (NFlag->GetValue() == "1"){
 		newFValue |= N_FLAG;
 	}
-	if (CFlag->GetValue() == (const wxChar *)"1"){
+	if (CFlag->GetValue() == "1"){
 		newFValue |= C_FLAG;
 	}
 	
 	int newAltFValue = 0;
-	if (AltSFlag->GetValue() == (const wxChar *)"1"){
+	if (AltSFlag->GetValue() == "1"){
 		newAltFValue |= S_FLAG;
 	}
-	if (AltZFlag->GetValue() == (const wxChar *)"1"){
+	if (AltZFlag->GetValue() == "1"){
 		newAltFValue |= Z_FLAG;
 	}
-	if( AltHFlag->GetValue() == (const wxChar *)"1" ){
+	if( AltHFlag->GetValue() == "1" ){
 		newAltFValue |= H_FLAG;
 	}
-	if (AltPVFlag->GetValue() == (const wxChar *)"1"){
+	if (AltPVFlag->GetValue() == "1"){
 		newAltFValue |= P_V_FLAG;
 	}
-	if (AltNFlag->GetValue() == (const wxChar *)"1"){
+	if (AltNFlag->GetValue() == "1"){
 		newAltFValue |= N_FLAG;
 	}
-	if (AltCFlag->GetValue() == (const wxChar *)"1"){
+	if (AltCFlag->GetValue() == "1"){
 		newAltFValue |= C_FLAG;
 	}
 	//send f and f' to core
@@ -477,15 +477,15 @@ void EditRegDialog::OnBtnSave( wxCommandEvent& event ){
 	string RegVal;
 	bool change;
 	
-	if (IMode->GetValue() == (const wxChar *)"Mode 0") {
+	if (IMode->GetValue() == "Mode 0") {
 		RegVal = "0";
 		change = true;
 	}
-	else if (IMode->GetValue() == (const wxChar *)"Mode 1") {
+	else if (IMode->GetValue() == "Mode 1") {
 		RegVal = "2";
 		change = true;
 	}
-	else if (IMode->GetValue() == (const wxChar *)"Mode 2") {
+	else if (IMode->GetValue() == "Mode 2") {
 		RegVal = "3";
 		change = true;
 	}
@@ -493,7 +493,7 @@ void EditRegDialog::OnBtnSave( wxCommandEvent& event ){
 		//TODO : Message box
 		change = false;
 		//debug
-		cout << "IMode-> '" << IMode->GetValue().c_str() << "'" << endl;
+		cout << "IMode-> '" << IMode->GetValue() << "'" << endl;
 	}
 	if (change) {
 		gUICircuit->sendMessageToCore(new Message_SET_GATE_PARAM(m_guiGateZ80->getID(), "IMF", RegVal));
@@ -503,11 +503,11 @@ void EditRegDialog::OnBtnSave( wxCommandEvent& event ){
 	//send IFF1 Param
 	change = false;
 	
-	if (IFFStatus->GetValue().c_str() == (const wxChar *)"Disabled") {
+	if (IFFStatus->GetValue().ToStdString() == "Disabled") {
 		RegVal = "0";
 		change = true;
 	}
-	else if (IFFStatus->GetValue().c_str() == (const wxChar *)"Enabled") {
+	else if (IFFStatus->GetValue().ToStdString() == "Enabled") {
 		RegVal = "1";
 		change = true;
 	}

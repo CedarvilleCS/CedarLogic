@@ -8,8 +8,8 @@ heirarchy.
 #ifndef DYNAMICGATE_H_
 #define DYNAMICGATE_H_
 
-#include "parse/LibraryParse.h"
-#include "circuit/gate/guiGate.h"
+#include "parse/GateLibrary.h"
+#include "gate/guiGate.h"
 #include "widget/GUICanvas.h"
 
 using namespace std;
