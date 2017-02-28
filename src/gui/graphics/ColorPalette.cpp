@@ -6,6 +6,13 @@ void ColorPalette::setColor(const Color &color) {
 	glColor4f(color.r, color.g, color.b, color.a);
 }
 
+Color ColorPalette::getColor() {
+	
+	GLfloat color[4];
+	glGetFloatv(GL_CURRENT_COLOR, color);
+	return Color(color[0], color[1], color[2], color[3]);
+}
+
 Color ColorPalette::SchematicBackground(1.0f, 1.0f, 1.0f);
 Color ColorPalette::SchematicGrid(0.0f, 0.0f, 0.08f, 0.08f);
 

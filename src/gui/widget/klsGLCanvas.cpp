@@ -80,11 +80,9 @@ klsGLCanvas::klsGLCanvas(wxWindow *parent, const wxString& name, wxWindowID id,
 	scrollTimer->Stop();
 
 	setHorizGrid(1);
-	setHorizGridColor(0, 0, (GLfloat)GRID_INTENSITY, (GLfloat)GRID_INTENSITY);
 	disableHorizGrid();
 
 	setVertGrid(1);
-	setVertGridColor(0, 0, (GLfloat)GRID_INTENSITY, (GLfloat)GRID_INTENSITY);
 	disableVertGrid();
 
 	glInitialized = false;
@@ -283,8 +281,7 @@ void klsGLCanvas::klsGLCanvasRender(bool noColor) {
 		//	around the visible area.  This is so when the user pans, there will be no
 		//	flicker at the edge of the grid.
 
-		GLfloat oldColor[4];
-		glGetFloatv(GL_CURRENT_COLOR, oldColor);
+		Color oldColor = ColorPalette::getColor();
 
 		GLdouble vW = panX;
 		GLdouble vE = panX + (w * viewZoom);
@@ -296,8 +293,8 @@ void klsGLCanvas::klsGLCanvasRender(bool noColor) {
 			long glSpacing = max((long)gridSpacing, (long)(MIN_GRID_SCREEN_SPACING * viewZoom));
 
 			long firstX = (long)(glSpacing * floor((vW - (PAN_STEP*viewZoom)) / (float)glSpacing + 0.5));
-
-			glColor4fv(hColor);
+			
+			ColorPalette::setColor(ColorPalette::SchematicGrid);
 			glBegin(GL_LINES);
 			for (long x = firstX; x < vE + (PAN_STEP*viewZoom); x += glSpacing) {
 				glVertex2f(x, vS - (PAN_STEP*viewZoom));
@@ -311,8 +308,8 @@ void klsGLCanvas::klsGLCanvasRender(bool noColor) {
 			long glSpacing = max((long)gridSpacing, (long)(MIN_GRID_SCREEN_SPACING * viewZoom));
 
 			long firstY = (long)(glSpacing * floor((vS - (PAN_STEP*viewZoom)) / (float)glSpacing + 0.5));
-
-			glColor4fv(vColor);
+			
+			ColorPalette::setColor(ColorPalette::SchematicGrid);
 			glBegin(GL_LINES);
 			for (long y = firstY; y < vN + (PAN_STEP*viewZoom); y += glSpacing) {
 				glVertex2f(vW - (PAN_STEP*viewZoom), y);
@@ -322,7 +319,7 @@ void klsGLCanvas::klsGLCanvasRender(bool noColor) {
 		}
 
 		// Set the color back to the old color:
-		glColor4fv(oldColor);
+		ColorPalette::setColor(oldColor);
 	}
 
 
@@ -783,13 +780,6 @@ void klsGLCanvas::setHorizGrid(GLfloat hSpacing) {
 	if (hSpacing != 0.0) horizSpacing = hSpacing;
 }
 
-void klsGLCanvas::setHorizGridColor(GLfloat a, GLfloat b, GLfloat c, GLfloat d) {
-	hColor[0] = a;
-	hColor[1] = b;
-	hColor[2] = c;
-	hColor[3] = d;
-}
-
 void klsGLCanvas::disableHorizGrid() {
 	horizOn = false;
 }
@@ -797,13 +787,6 @@ void klsGLCanvas::disableHorizGrid() {
 void klsGLCanvas::setVertGrid(GLfloat vSpacing) {
 	vertOn = true;
 	if (vSpacing != 0.0) vertSpacing = vSpacing;
-}
-
-void klsGLCanvas::setVertGridColor(GLfloat a, GLfloat b, GLfloat c, GLfloat d) {
-	vColor[0] = a;
-	vColor[1] = b;
-	vColor[2] = c;
-	vColor[3] = d;
 }
 
 void klsGLCanvas::disableVertGrid() {

@@ -66,11 +66,8 @@ void OscopeCanvas::OnRender() {
 	// Set the model matrix:
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	glColor4f(0.0, 0.0, 0.0, 1.0);
-	float intensity = (GLfloat)GRID_INTENSITY;
-	glColor4f(0.0, 0.0, intensity, intensity);
-
+	
+	ColorPalette::setColor(ColorPalette::SchematicGrid);
 
 	//Drawing Vertical Lines
 	glBegin(GL_LINES);
@@ -114,9 +111,8 @@ void OscopeCanvas::OnRender() {
 		GLdouble horizLoc = OSCOPE_HORIZONTAL;
 		GLdouble y = 0.0, lastY = 0.0;
 		StateType theState;
-
-		float intensity = (GLfloat)GRID_INTENSITY;
-		glColor4f(0.0, 0.0, intensity, intensity);
+		
+		ColorPalette::setColor(ColorPalette::SchematicGrid);
 
 		//Draws Horizontal for wire
 		glBegin(GL_LINES);

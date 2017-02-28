@@ -150,20 +150,16 @@ public:
 	// (Can turn grid back on without changing the past
 	// setting by calling it with no params.)
 	void setHorizGrid(GLfloat hSpacing = 0.0);
-	void setHorizGridColor(GLfloat a, GLfloat b, GLfloat c, GLfloat d);
 	void disableHorizGrid(void);
 
 	void setVertGrid(GLfloat vSpacing = 0.0);
-	void setVertGridColor(GLfloat a, GLfloat b, GLfloat c, GLfloat d);
 	void disableVertGrid(void);
 
 	bool horizOn = true; // Horizontal grid lines on/off.
 	GLfloat horizSpacing; // Horizontal grid spacing.
-	GLfloat hColor[4]; // Horizontal grid color.
 
 	bool vertOn = true;  // Vertical grid lines on/off.
 	GLfloat vertSpacing; // Vertical grid spacing.
-	GLfloat vColor[4]; // Vertical grid color.
 
 	// OpenGL handling routines:
 	// Setup the GL matrices for this canvas:
