@@ -130,6 +130,8 @@
     <ClCompile Include="src\gui\gate\guiGateZ80.cpp" />
     <ClCompile Include="src\gui\gate\guiLabel.cpp" />
     <ClCompile Include="src\gui\gate\guiTO_FROM.cpp" />
+    <ClCompile Include="src\gui\graphics\Color.cpp" />
+    <ClCompile Include="src\gui\graphics\ColorPalette.cpp" />
     <ClCompile Include="src\gui\GUICircuit.cpp" />
     <ClCompile Include="src\gui\wire\guiWire.cpp" />
     <ClCompile Include="src\gui\wire\wireSegment.cpp" />
@@ -200,6 +202,8 @@
     <ClInclude Include="src\gui\gate\guiGateZ80.h" />
     <ClInclude Include="src\gui\gate\guiLabel.h" />
     <ClInclude Include="src\gui\gate\guiTO_FROM.h" />
+    <ClInclude Include="src\gui\graphics\Color.h" />
+    <ClInclude Include="src\gui\graphics\ColorPalette.h" />
     <ClInclude Include="src\gui\GUICircuit.h" />
     <ClInclude Include="src\gui\guiGates.h" />
     <ClInclude Include="src\gui\wire\guiWire.h" />

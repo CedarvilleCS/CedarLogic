@@ -44,7 +44,6 @@ using namespace std;
 #define SCROLL_TIMER_RATE 30
 #define SCROLL_TIMER_ID 1
 
-#define GRID_INTENSITY 0.08
 #define MIN_GRID_SCREEN_SPACING 13
 
 enum mouseButton {

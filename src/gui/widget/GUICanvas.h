@@ -82,7 +82,6 @@ struct ConnectionSource {
 #define WIRE_HOVER_SCREEN_DELTA 5.0
 #define MOUSE_HOVER_DELTA 4.5
 
-#define GRID_INTENSITY 0.08
 #define MIN_GRID_SCREEN_SPACING 13
 
 #define ZOOM_ALL_MARGIN 0.25
