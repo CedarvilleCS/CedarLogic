@@ -22,7 +22,7 @@ void guiGateLED::draw(bool color) {
 
 	// Get the first connected input in the LED's library description:
 	// map i/o name to wire id
-	map< string, guiWire* >::iterator theCnk = connections.begin();
+	auto theCnk = connections.begin();
 	if (theCnk != connections.end()) {
 		outputState = (theCnk->second)->getState()[0];
 	}

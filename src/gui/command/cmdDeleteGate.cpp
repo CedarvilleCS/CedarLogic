@@ -16,8 +16,8 @@
 DECLARE_APP(MainApp);
 
 cmdDeleteGate::cmdDeleteGate(GUICircuit* gCircuit, GUICanvas* gCanvas,
-		IDType gateId) :
-			klsCommand(true, "Delete Gate") {
+	IDType gateId) :
+	klsCommand(true, "Delete Gate") {
 
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
@@ -37,7 +37,7 @@ bool cmdDeleteGate::Do() {
 	//make sure the gate exists
 	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; //error: gate not found
 	std::map<std::string, GLPoint2f> gateConns = (*(gCircuit->getGates()))[gateId]->getHotspotList();
-	std::map<std::string, GLPoint2f>::iterator connWalk = gateConns.begin();
+	auto connWalk = gateConns.begin();
 	std::vector < int > deleteWires;
 	//we will need to disconect all wires that connect to that gate from that gate
 	//we iterate over the connections

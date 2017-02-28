@@ -53,7 +53,7 @@ void guiGateKEYPAD::setLogicParam(const std::string &paramName, const std::strin
 		ossParamName << "KEYPAD_BOX_" << currentValue;
 		if (gparams.find(ossParamName.str()) == gparams.end()) {
 			ossParamName.str("");
-			map < string, string >::iterator gparamWalk = gparams.begin();
+			auto gparamWalk = gparams.begin();
 			while (gparamWalk != gparams.end()) {
 				if ((gparamWalk->first).substr(0, 11) != "KEYPAD_BOX_") { gparamWalk++; continue; }
 				ossParamName << gparamWalk->first;
@@ -74,7 +74,7 @@ void guiGateKEYPAD::setLogicParam(const std::string &paramName, const std::strin
 
 // Check the click boxes for the keypad and set appropriately:
 Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick(GLfloat x, GLfloat y) {
-	map < string, string >::iterator gparamWalk = gparams.begin();
+	auto gparamWalk = gparams.begin();
 	while (gparamWalk != gparams.end()) {
 		// Is this a keypad box param?
 		if ((gparamWalk->first).substr(0, 11) != "KEYPAD_BOX_") { gparamWalk++; continue; }

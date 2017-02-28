@@ -13,15 +13,15 @@ paramSet::paramSet(ParameterMap *g, ParameterMap* l) {
 };
 
 cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid,
-		paramSet pSet, bool setMode) :
-			klsCommand(true, "Set Parameter") {
+	paramSet pSet, bool setMode) :
+	klsCommand(true, "Set Parameter") {
 
 	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return; // error: gate not found
 	this->gCircuit = gCircuit;
 	this->gid = gid;
 	this->fromString = setMode;
 	// Save the original set of parameters
-	map < string, string >::iterator paramWalk = (*(gCircuit->getGates()))[gid]->getAllGUIParams()->begin();
+	auto paramWalk = (*(gCircuit->getGates()))[gid]->getAllGUIParams()->begin();
 	while (paramWalk != (*(gCircuit->getGates()))[gid]->getAllGUIParams()->end()) {
 		oldGUIParamList[paramWalk->first] = paramWalk->second;
 		paramWalk++;
@@ -74,7 +74,7 @@ cmdSetParams::cmdSetParams(string def) : klsCommand(true, "Set Parameter") {
 bool cmdSetParams::Do() {
 
 	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
-	map < string, string >::iterator paramWalk = newLogicParamList.begin();
+	auto paramWalk = newLogicParamList.begin();
 	vector < string > dontSendMessages;
 	LibraryGate lg = wxGetApp().libraries[(*(gCircuit->getGates()))[gid]->getLibraryName()][(*(gCircuit->getGates()))[gid]->getLibraryGateName()];
 	for (unsigned int i = 0; i < lg.dlgParams.size(); i++) {
@@ -102,7 +102,7 @@ bool cmdSetParams::Do() {
 bool cmdSetParams::Undo() {
 
 	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
-	map < string, string >::iterator paramWalk = oldLogicParamList.begin();
+	auto paramWalk = oldLogicParamList.begin();
 	vector < string > dontSendMessages;
 	LibraryGate lg = wxGetApp().libraries[(*(gCircuit->getGates()))[gid]->getLibraryName()][(*(gCircuit->getGates()))[gid]->getLibraryGateName()];
 	for (unsigned int i = 0; i < lg.dlgParams.size(); i++) {
@@ -145,7 +145,7 @@ string cmdSetParams::toString() const {
 }
 
 void cmdSetParams::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas,
-		TranslationMap &gateids, TranslationMap &wireids) {
+	TranslationMap &gateids, TranslationMap &wireids) {
 
 	gid = gateids[gid];
 	this->gCircuit = gCircuit;

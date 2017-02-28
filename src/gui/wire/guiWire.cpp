@@ -55,7 +55,7 @@ guiWire::guiWire() : klsCollisionObject(COLL_WIRE) {
 	// Reset state of currentDragSeg is -1
 	currentDragSegment = -1;
 	headSegment = 0; // since the base vertical seg is 0
-	
+
 	// By default, wires have only one line.
 	// Also by default, the state of this line is HI_Z.
 	ids.resize(1);
@@ -91,7 +91,7 @@ void guiWire::addConnection(guiGate* iGate, string connection, bool openMode) {
 	GLPoint2f hsPoint;
 	float minDistance = FLT_MAX; long closestSeg = headSegment;
 	iGate->getHotspotCoords(connection, hsPoint.x, hsPoint.y);
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	auto segWalk = segMap.begin();
 	while (segWalk != segMap.end()) {
 		float distance = distanceToLine(hsPoint, (segWalk->second).begin, (segWalk->second).end);
 		if (distance < minDistance) {
@@ -138,7 +138,7 @@ void guiWire::removeConnection(guiGate* iGate, string connection) {
 	// Now I need to find the segment with this thing and update the tree
 	unsigned long gid = iGate->getID();
 	long segID = 0; bool found = false;
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	auto segWalk = segMap.begin();
 	while (segWalk != segMap.end() && !found) {
 		for (unsigned int i = 0; i < (segWalk->second).connections.size(); i++) {
 			if ((segWalk->second).connections[i].gid == gid && (segWalk->second).connections[i].connection == connection) {
@@ -354,7 +354,7 @@ void guiWire::move(GLPoint2f origin, GLPoint2f delta) {
 
 	GLPoint2f realDelta = origin + delta - segMap[headSegment].begin;
 
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	auto segWalk = segMap.begin();
 
 	// Walk the list from second seg on out to move segs by differentials
 	while (segWalk != segMap.end()) {
@@ -375,7 +375,7 @@ void guiWire::move(GLPoint2f origin, GLPoint2f delta) {
 void guiWire::calcBBox() {
 	this->deleteSubObjects();
 
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	auto segWalk = segMap.begin();
 	while (segWalk != segMap.end()) {
 		this->insertSubObject(&(segWalk->second));
 		segWalk++;
@@ -389,10 +389,10 @@ void guiWire::calcBBox() {
 bool guiWire::refreshIntersections(bool removeBadSegs) {
 	bool retVal = false;
 	// Update the intersection maps for the new locations
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	auto segWalk = segMap.begin();
 	while (segWalk != segMap.end()) {
 		map < GLfloat, vector < long > > refreshMap;
-		map < GLfloat, vector < long > >::iterator isectWalk = (segWalk->second).intersects.begin();
+		auto isectWalk = (segWalk->second).intersects.begin();
 		while (isectWalk != (segWalk->second).intersects.end()) {
 			for (unsigned int j = 0; j < (isectWalk->second).size(); j++) {
 				// Simply set value at new location...
@@ -464,7 +464,7 @@ void guiWire::saveWire(XMLParser* xparse) {
 	// Save the tree
 	xparse->openTag("shape");
 	// Step through the map, save each seg's info
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	auto segWalk = segMap.begin();
 	while (segWalk != segMap.end()) {
 		if ((segWalk->second).isVertical()) xparse->openTag("vsegment");
 		else xparse->openTag("hsegment");
@@ -496,7 +496,7 @@ void guiWire::saveWire(XMLParser* xparse) {
 			xparse->closeTag("connection");
 		}
 		// intersections - must store the intersection map
-		map < GLfloat, vector < long > >::iterator isectWalk = (segWalk->second).intersects.begin();
+		auto isectWalk = (segWalk->second).intersects.begin();
 		while (isectWalk != (segWalk->second).intersects.end()) {
 			for (unsigned int j = 0; j < (isectWalk->second).size(); j++) {
 				xparse->openTag("intersection");
@@ -587,7 +587,7 @@ void guiWire::calcShape() {
 				segMap[nextSegID].connections.push_back(connectPoints[counter--]);
 				segMap[nextSegID].intersects[centerx].push_back(0);
 				segMap[0].intersects[segMap[nextSegID].begin.y].push_back(segMap[nextSegID].id);
-				
+
 
 				segMap[nextSegID].calcBBox();
 				nextSegID++;
@@ -674,7 +674,7 @@ bool guiWire::startSegDrag(klsCollisionObject* mouse) {
 	if (cg.size() == 0) return false;
 	this->deleteSubObjects(); // prevent coll checker pointers from invalidating	
 	// Otherwise just grab the first one found and fix the connection points with new segments
-	CollisionGroup::iterator cgWalk = cg.begin();
+	auto cgWalk = cg.begin();
 	GLPoint2f vertex;
 	// Don't mess up the pointers; just add to this vector until we don't need the pointer anymore
 	vector < wireSegment > segsToAddWhenFound;
@@ -725,7 +725,7 @@ void guiWire::updateSegDrag(klsCollisionObject* mouse) {
 	segMap[currentDragSegment].calcBBox();
 	refreshIntersections();
 	// Update the other segments by extending/shrinking
-	map < GLfloat, vector < long > >::iterator isectWalk = segMap[currentDragSegment].intersects.begin();
+	auto isectWalk = segMap[currentDragSegment].intersects.begin();
 	while (isectWalk != segMap[currentDragSegment].intersects.end()) {
 		// Cases here are if intersection is on endpoint or if intersection is in middle
 		// 	if on endpoint, then shrink or grow intersected segment as necessary
@@ -744,7 +744,7 @@ void guiWire::updateSegDrag(klsCollisionObject* mouse) {
 					hsMin = min(hsMin, hsPoint.x);
 					hsMax = max(hsMax, hsPoint.x);
 				}
-				map < GLfloat, vector < long > >::iterator wsLeft = ws->intersects.begin();
+				auto wsLeft = ws->intersects.begin();
 				float isectLeft = (wsLeft != ws->intersects.end() ? wsLeft->first : FLT_MAX);
 				map < GLfloat, vector < long > >::reverse_iterator wsRight = ws->intersects.rbegin();
 				float isectRight = (wsRight != ws->intersects.rend() ? wsRight->first : -FLT_MAX);
@@ -762,7 +762,7 @@ void guiWire::updateSegDrag(klsCollisionObject* mouse) {
 					hsMin = min(hsMin, hsPoint.y);
 					hsMax = max(hsMax, hsPoint.y);
 				}
-				map < GLfloat, vector < long > >::iterator wsBottom = ws->intersects.begin();
+				auto wsBottom = ws->intersects.begin();
 				float isectBottom = (wsBottom != ws->intersects.end() ? wsBottom->first : FLT_MAX);
 				map < GLfloat, vector < long > >::reverse_iterator wsTop = ws->intersects.rbegin();
 				float isectTop = (wsTop != ws->intersects.rend() ? wsTop->first : -FLT_MAX);
@@ -801,7 +801,7 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 	bool foundit = false;
 	GLPoint2f newLocation;
 	unsigned int connID = 0;
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	auto segWalk = segMap.begin();
 
 	while (segWalk != segMap.end() && !foundit) {
 		for (unsigned int j = 0; j < (segWalk->second).connections.size() && !foundit; j++) {
@@ -850,7 +850,7 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 		segMap[currentDragSegment].connections.push_back(wc);
 		// Extend/shrink the endpoints if necessary, if in the middle then no mod necessary
 		GLPoint2f hsPoint;
-		map < GLfloat, vector < long > >::iterator wsLeft = segMap[currentDragSegment].intersects.begin();
+		auto wsLeft = segMap[currentDragSegment].intersects.begin();
 		float isectLeft = (wsLeft != segMap[currentDragSegment].intersects.end() ? wsLeft->first : FLT_MAX);
 		map < GLfloat, vector < long > >::reverse_iterator wsRight = segMap[currentDragSegment].intersects.rbegin();
 		float isectRight = (wsRight != segMap[currentDragSegment].intersects.rend() ? wsRight->first : -FLT_MAX);
@@ -893,7 +893,7 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 		segMap[currentDragSegment].connections.push_back(wc);
 		// Extend/shrink the endpoints if necessary, if in the middle then no mod necessary
 		GLPoint2f hsPoint;
-		map < GLfloat, vector < long > >::iterator wsBottom = segMap[currentDragSegment].intersects.begin();
+		auto wsBottom = segMap[currentDragSegment].intersects.begin();
 		float isectBottom = (wsBottom != segMap[currentDragSegment].intersects.end() ? wsBottom->first : FLT_MAX);
 		map < GLfloat, vector < long > >::reverse_iterator wsTop = segMap[currentDragSegment].intersects.rbegin();
 		float isectTop = (wsTop != segMap[currentDragSegment].intersects.rend() ? wsTop->first : -FLT_MAX);
@@ -924,7 +924,7 @@ void guiWire::mergeSegments() {
 	map < long, wireSegment > newSegMap; // holds the new segment map that contains merged segments
 	map < long, long > mapIDs; // maps old ids to new ids
 
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	auto segWalk = segMap.begin();
 
 	while (segWalk != segMap.end()) {
 		wireSegment* cSeg = &(segWalk->second);
@@ -936,7 +936,7 @@ void guiWire::mergeSegments() {
 		// Once cSeg is merged with one seg in the map, setting this flag will enable
 		//	merging with a seg on the other side (internal to the new seg map).
 		bool mergingInMap = false;
-		map < long, wireSegment >::iterator walkNewSegs = newSegMap.begin();
+		auto walkNewSegs = newSegMap.begin();
 		while (walkNewSegs != newSegMap.end()) {
 			wireSegment* nSeg = &(walkNewSegs->second);
 			// Only merge with segs of same orientation
@@ -956,7 +956,7 @@ void guiWire::mergeSegments() {
 				//	and intersects are merged (ids are checked by the id map later)
 				for (unsigned int i = 0; i < cSeg->connections.size(); i++)
 					nSeg->connections.push_back(cSeg->connections[i]);
-				map < GLfloat, vector< long > >::iterator isectWalk = cSeg->intersects.begin();
+				auto isectWalk = cSeg->intersects.begin();
 				while (isectWalk != cSeg->intersects.end()) {
 					for (unsigned int i = 0; i < (isectWalk->second).size(); i++) {
 						nSeg->intersects[isectWalk->first].push_back((isectWalk->second)[i]);
@@ -993,7 +993,7 @@ void guiWire::mergeSegments() {
 				//	and intersects are merged (ids are checked by the id map later)
 				for (unsigned int i = 0; i < cSeg->connections.size(); i++)
 					nSeg->connections.push_back(cSeg->connections[i]);
-				map < GLfloat, vector< long > >::iterator isectWalk = cSeg->intersects.begin();
+				auto isectWalk = cSeg->intersects.begin();
 				while (isectWalk != cSeg->intersects.end()) {
 					for (unsigned int i = 0; i < (isectWalk->second).size(); i++) {
 						nSeg->intersects[isectWalk->first].push_back((isectWalk->second)[i]);
@@ -1047,7 +1047,7 @@ void guiWire::mergeSegments() {
 		if (nSeg->isVertical()) { nSeg->begin.y = hsMin; nSeg->end.y = hsMax; }
 		else { nSeg->begin.x = hsMin; nSeg->end.x = hsMax; }
 		// now set the intersects
-		map < GLfloat, vector< long > >::iterator isectWalk = (segWalk->second).intersects.begin();
+		auto isectWalk = (segWalk->second).intersects.begin();
 		while (isectWalk != (segWalk->second).intersects.end()) {
 			set < long > isectSegIDs;
 			isectSegIDs.insert((isectWalk->second).begin(), (isectWalk->second).end());
@@ -1074,7 +1074,7 @@ void guiWire::mergeSegments() {
 //	their ultimate horrible deaths.
 void guiWire::removeZeroLengthSegments() {
 	map < long, wireSegment > newSegMap = segMap; // Start with a copy of the segment map; I really don't trust these buggers
-	map < long, wireSegment >::iterator segWalk = newSegMap.begin();
+	auto segWalk = newSegMap.begin();
 	vector < long > eraseIDs; // hold a list of IDs we need to bomb
 	// One special case is that all the stupid segments could be zero length...
 	bool allZeroLength = true;
@@ -1104,7 +1104,7 @@ void guiWire::removeZeroLengthSegments() {
 		foundOne = true;
 		// Otherwise make it go away
 		eraseIDs.push_back(segWalk->first);
-		map < GLfloat, vector < long > >::iterator isect = (segWalk->second).intersects.begin(); // Get the intersection
+		auto isect = (segWalk->second).intersects.begin(); // Get the intersection
 		bool connectionsDone = false;
 		// Just hook up the connections to the first one we see...
 		//	THAT ISN'T ANOTHER STUPID ZERO-LENGTH SECTOR THAT DESERVES TO DIE
@@ -1146,7 +1146,7 @@ void guiWire::generateRenderInfo() {
 	}
 
 	// lines and segment intersections
-	map < long, wireSegment >::iterator segWalk = segMap.begin();
+	auto segWalk = segMap.begin();
 	while (segWalk != segMap.end()) {
 		glLine.begin = GLPoint2f((segWalk->second).begin.x, (segWalk->second).begin.y);
 		glLine.end = GLPoint2f((segWalk->second).end.x, (segWalk->second).end.y);
@@ -1154,7 +1154,7 @@ void guiWire::generateRenderInfo() {
 		renderInfo.lineSegments.push_back(glLine);
 
 		// Save the intersection points for non-elbows:
-		map < GLfloat, vector< long > >::iterator isectWalk = (segWalk->second).intersects.begin();
+		auto isectWalk = (segWalk->second).intersects.begin();
 		while (isectWalk != (segWalk->second).intersects.end()) {
 			if ((segWalk->second).isVertical()) {
 				if (isectWalk->first == (segWalk->second).begin.y || isectWalk->first == (segWalk->second).end.y) { isectWalk++; continue; }

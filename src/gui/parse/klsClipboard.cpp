@@ -18,23 +18,23 @@ DECLARE_APP(MainApp)
 
 klsCommand * klsClipboard::pasteBlock(GUICircuit *gCircuit, GUICanvas *gCanvas) {
 	if (!wxTheClipboard->Open()) return NULL;
-	if ( !wxTheClipboard->IsSupported(wxDF_TEXT) ) {
+	if (!wxTheClipboard->IsSupported(wxDF_TEXT)) {
 		wxTheClipboard->Close();
 		return NULL;
 	}
-    wxTextDataObject text;
-    vector < klsCommand* > cmdList;
-    if ( wxTheClipboard->GetData(text) ) {
+	wxTextDataObject text;
+	vector < klsCommand* > cmdList;
+	if (wxTheClipboard->GetData(text)) {
 		string pasteText = text.GetText();
-    	if (pasteText.find('\n',0) == string::npos) return NULL;
-    	istringstream iss(pasteText);
-    	string temp;
-		
+		if (pasteText.find('\n', 0) == string::npos) return NULL;
+		istringstream iss(pasteText);
+		string temp;
+
 		TranslationMap gateids;
 		TranslationMap wireids;
-    	while (getline( iss, temp, '\n' )) {
-    		klsCommand* cg = NULL;
-    		if (temp.substr(0,10) == "creategate") cg = new cmdCreateGate(temp);
+		while (getline(iss, temp, '\n')) {
+			klsCommand* cg = NULL;
+			if (temp.substr(0, 10) == "creategate") cg = new cmdCreateGate(temp);
 			else if (temp.substr(0, 9) == "setparams") {
 
 				/* EDIT by Colin Broberg, 10/6/16
@@ -80,23 +80,23 @@ klsCommand * klsClipboard::pasteBlock(GUICircuit *gCircuit, GUICanvas *gCanvas) 
 				}
 				cg = new cmdSetParams(temp);
 			}
-    		else if (temp.substr(0,10) == "createwire") cg = new cmdCreateWire(temp);
-    		else if (temp.substr(0,11) == "connectwire") cg = new cmdConnectWire(temp);
-    		else if (temp.substr(0,8) == "movewire") cg = new cmdMoveWire(temp);
-    		else break;
-    		cmdList.push_back( cg );
-    		cg->setPointers( gCircuit, gCanvas, gateids, wireids );
-    		cg->Do();
-	    	if (iss.str().find('\n',0) == string::npos) return NULL;
-    	}
+			else if (temp.substr(0, 10) == "createwire") cg = new cmdCreateWire(temp);
+			else if (temp.substr(0, 11) == "connectwire") cg = new cmdConnectWire(temp);
+			else if (temp.substr(0, 8) == "movewire") cg = new cmdMoveWire(temp);
+			else break;
+			cmdList.push_back(cg);
+			cg->setPointers(gCircuit, gCanvas, gateids, wireids);
+			cg->Do();
+			if (iss.str().find('\n', 0) == string::npos) return NULL;
+		}
 		gCanvas->unselectAllGates();
 		gCanvas->unselectAllWires();
-		TranslationMap::iterator gateWalk = gateids.begin();
+		auto gateWalk = gateids.begin();
 		while (gateWalk != gateids.end()) {
 			(*(gCircuit->getGates()))[gateWalk->second]->select();
 			gateWalk++;
 		}
-		TranslationMap::iterator wireWalk = wireids.begin();
+		auto wireWalk = wireids.begin();
 		while (wireWalk != wireids.end()) {
 			guiWire *wire = (*(gCircuit->getWires()))[wireWalk->second];
 			if (wire != nullptr) {
@@ -105,14 +105,14 @@ klsCommand * klsClipboard::pasteBlock(GUICircuit *gCircuit, GUICanvas *gCanvas) 
 			wireWalk++;
 		}
 		gCircuit->getOscope()->UpdateMenu();
-    }
+	}
 
-	if (cmdList.size() > 0) return new cmdPasteBlock ( cmdList );
+	if (cmdList.size() > 0) return new cmdPasteBlock(cmdList);
 	return NULL;
 }
 
 void klsClipboard::copyBlock(GUICircuit* gCircuit, GUICanvas* gCanvas,
-		const vector<IDType> &gates, const vector<IDType> &wires) {
+	const vector<IDType> &gates, const vector<IDType> &wires) {
 
 	if (gates.empty()) {
 		return;
@@ -127,42 +127,42 @@ void klsClipboard::copyBlock(GUICircuit* gCircuit, GUICanvas* gCanvas,
 
 		// generate list of wire connections
 		map < string, GLPoint2f > hotspotmap = (*(gCircuit->getGates()))[gates[i]]->getHotspotList();
-		map < string, GLPoint2f >::iterator hsmapWalk = hotspotmap.begin();
+		auto hsmapWalk = hotspotmap.begin();
 
 		while (hsmapWalk != hotspotmap.end()) {
-			if ( (*(gCircuit->getGates()))[gates[i]]->isConnected(hsmapWalk->first) )connectWireList[(*(gCircuit->getGates()))[gates[i]]->getConnection(hsmapWalk->first)->getID()]++;
+			if ((*(gCircuit->getGates()))[gates[i]]->isConnected(hsmapWalk->first))connectWireList[(*(gCircuit->getGates()))[gates[i]]->getConnection(hsmapWalk->first)->getID()]++;
 			hsmapWalk++;
 		}
 
 		// Creation of a gate takes care of type, position, id; all other items are in params
 		float x, y;
-		(*(gCircuit->getGates()))[gates[i]]->getGLcoords(x,y);
-		cmdTemp = new cmdCreateGate( gCanvas, gCircuit, gates[i], (*(gCircuit->getGates()))[gates[i]]->getLibraryGateName(), x, y);
+		(*(gCircuit->getGates()))[gates[i]]->getGLcoords(x, y);
+		cmdTemp = new cmdCreateGate(gCanvas, gCircuit, gates[i], (*(gCircuit->getGates()))[gates[i]]->getLibraryGateName(), x, y);
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
 		guiGate* gGate = (*(gCircuit->getGates()))[gates[i]];
-		cmdTemp = new cmdSetParams( gCircuit, gates[i], paramSet(gGate->getAllGUIParams(), gGate->getAllLogicParams()) );
+		cmdTemp = new cmdSetParams(gCircuit, gates[i], paramSet(gGate->getAllGUIParams(), gGate->getAllLogicParams()));
 		oss << cmdTemp->toString() << endl;
 		delete cmdTemp;
 	}
 
 	// For wires, only copy if more than one active connection, and trim shape
 	vector < guiWire* > copyWires;
-	map < unsigned long, unsigned long >::iterator wireWalk = connectWireList.begin();
+	auto wireWalk = connectWireList.begin();
 	while (wireWalk != connectWireList.end()) {
 
-		if ( wireWalk->second < 2 ) { wireWalk++; continue; }
+		if (wireWalk->second < 2) { wireWalk++; continue; }
 
 		guiWire* wire = new guiWire();
 		// Set the IDs
-		wire->setIDs( (*gCircuit->getWires())[wireWalk->first]->getIDs() );
+		wire->setIDs((*gCircuit->getWires())[wireWalk->first]->getIDs());
 		// Shove all the connections
 		vector < wireConnection > wireConns = (*(gCircuit->getWires()))[wireWalk->first]->getConnections();
 
-		for (unsigned int i = 0; i < wireConns.size(); i++) wire->addConnection( wireConns[i].cGate, wireConns[i].connection, true );
+		for (unsigned int i = 0; i < wireConns.size(); i++) wire->addConnection(wireConns[i].cGate, wireConns[i].connection, true);
 
 		// Now get the segment map copy
-		wire->setSegmentMap( (*(gCircuit->getWires()))[wireWalk->first]->getSegmentMap() );
+		wire->setSegmentMap((*(gCircuit->getWires()))[wireWalk->first]->getSegmentMap());
 
 		// Now that we have a good copy of the wire object, we can trim the connections that we don't want to carry over
 		for (unsigned int i = 0; i < wireConns.size(); i++) {
@@ -171,7 +171,7 @@ void klsClipboard::copyBlock(GUICircuit* gCircuit, GUICanvas* gCanvas,
 			for (unsigned int j = 0; j < gates.size() && !found; j++) if (gates[j] == wireConns[i].gid) found = true;
 			if (found) continue; // we found this connection; don't trim it
 			// get rid of it
-			wire->removeConnection( wireConns[i].cGate, wireConns[i].connection );
+			wire->removeConnection(wireConns[i].cGate, wireConns[i].connection);
 		}
 		// Wire should now have a completely valid shape to copy, shove it on the vector
 		copyWires.push_back(wire);

@@ -17,7 +17,7 @@ guiGate::guiGate() : klsCollisionObject(COLL_GATE) {
 guiGate::~guiGate() {
 	// Destry the hotspots:
 
-	map< string, gateHotspot* >::iterator hs = hotspots.begin();
+	auto hs = hotspots.begin();
 	while (hs != hotspots.end()) {
 		// delete (hs->second);
 		hotspots.erase(hs);
@@ -155,7 +155,7 @@ string guiGate::checkHotspots(GLfloat x, GLfloat y, GLfloat delta) {
 
 	// Check if any hotspots hit the mouse:
 	CollisionGroup results = this->checkSubsToObj(&mouse);
-	CollisionGroup::iterator rs = results.begin();
+	auto rs = results.begin();
 	while (rs != results.end()) {
 		// If there were any hotspots that hit, then return
 		// the first one to the caller:
@@ -206,7 +206,7 @@ bool guiGate::isVerticalHotspot(string hsName) {
 
 // Run through my connections and update the merges
 void guiGate::updateConnectionMerges() {
-	map < string, guiWire* >::iterator connWalk = connections.begin();
+	auto connWalk = connections.begin();
 	while (connWalk != connections.end()) {
 		(connWalk->second)->endSegDrag();
 		connWalk++;
@@ -266,7 +266,7 @@ void guiGate::saveGate(XMLParser* xparse) {
 	oss << x << "," << y;
 	xparse->writeTag("position", oss.str());
 	xparse->closeTag("position");
-	map< string, guiWire* >::iterator pC = connections.begin();
+	auto pC = connections.begin();
 	while (pC != connections.end()) {
 		xparse->openTag((isInput[pC->first] ? "input" : "output"));
 		xparse->openTag("ID");
@@ -282,7 +282,7 @@ void guiGate::saveGate(XMLParser* xparse) {
 		xparse->closeTag((isInput[pC->first] ? "input" : "output"));
 		pC++;
 	}
-	map< string, string >::iterator pParams = gparams.begin();
+	auto pParams = gparams.begin();
 	while (pParams != gparams.end()) {
 		xparse->openTag("gparam");
 		oss.str("");
@@ -329,7 +329,7 @@ void guiGate::saveGate(XMLParser* xparse) {
 map<string, GLPoint2f> guiGate::getHotspotList() {
 
 	map< string, GLPoint2f > remappedHS;
-	map< string, gateHotspot* >::iterator hs = hotspots.begin();
+	auto hs = hotspots.begin();
 	while (hs != hotspots.end()) {
 		remappedHS[hs->first] = (hs->second)->getLocation();
 		hs++;
@@ -473,7 +473,7 @@ void guiGate::updateBBoxes(bool noUpdateWires) {
 	glLoadIdentity();
 
 	// Update all of the hotspots' world coordinates:
-	map< string, gateHotspot* >::iterator hs = hotspots.begin();
+	auto hs = hotspots.begin();
 	while (hs != hotspots.end()) {
 		(hs->second)->worldLocation = modelToWorld((hs->second)->modelLocation);
 		(hs->second)->calcBBox();
@@ -489,7 +489,7 @@ void guiGate::updateBBoxes(bool noUpdateWires) {
 	this->setBBox(worldBBox);
 
 	// Update the connected wires' shapes to accomidate the new gate position:
-	map < string, guiWire* >::iterator connWalk = connections.begin();
+	auto connWalk = connections.begin();
 	while (!noUpdateWires && connWalk != connections.end()) {
 		(connWalk->second)->updateConnectionPos(this->getID(), connWalk->first);
 		connWalk++;

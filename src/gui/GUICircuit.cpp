@@ -1,9 +1,9 @@
 /*****************************************************************************
    Project: CEDAR Logic Simulator
    Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
+					 Matt Lewellyn, and David Knierim
    All rights reserved.
-   For license information see license.txt included with distribution.   
+   For license information see license.txt included with distribution.
 
    GUICircuit: Contains GUI circuit manipulation functions
 *****************************************************************************/
@@ -28,7 +28,7 @@ GUICircuit::GUICircuit() {
 }
 
 GUICircuit::~GUICircuit() {
-	
+
 	if (commandProcessor != nullptr) {
 		delete commandProcessor;
 	}
@@ -42,19 +42,19 @@ void GUICircuit::reInitializeLogicCircuit() {
 	sendMessageToCore(new Message_REINITIALIZE());
 	waitToSendMessage = iswaiting;
 
-	guiWireMap::iterator thisWire = wireList.begin();
-	while( thisWire != wireList.end() ) {
+	auto thisWire = wireList.begin();
+	while (thisWire != wireList.end()) {
 		if (thisWire->second != nullptr) {
 			delete thisWire->second;
 		}
 		thisWire++;
 	}
 
-	guiGateMap::iterator thisGate = gateList.begin();
-	while( thisGate != gateList.end() ) {
+	auto thisGate = gateList.begin();
+	while (thisGate != gateList.end()) {
 		delete thisGate->second;
 		thisGate++;
-	} 
+	}
 
 	gateList.clear();
 	wireList.clear();
@@ -67,15 +67,15 @@ void GUICircuit::reInitializeLogicCircuit() {
 guiGate * GUICircuit::createGate(const std::string &gateName, IDType id, bool noOscope) {
 
 	string libName = wxGetApp().gateNameToLibrary[gateName];
-	
+
 	if (id == ID_NONE) {
 		id = getNextAvailableGateID();
 	}
-	
+
 	LibraryGate gateDef = wxGetApp().libraries[libName][gateName];
 
 	string ggt = gateDef.guiType;
-	
+
 	guiGate* newGate = NULL;
 
 	if (ggt == "REGISTER") {
@@ -112,7 +112,7 @@ guiGate * GUICircuit::createGate(const std::string &gateName, IDType id, bool no
 		newGate = new guiGate();
 	}
 
-	newGate->setLibraryName( libName, gateName );
+	newGate->setLibraryName(libName, gateName);
 
 	for (unsigned int i = 0; i < gateDef.shape.size(); i++) {
 		LibraryGateLine tempLine = gateDef.shape[i];
@@ -124,7 +124,7 @@ guiGate * GUICircuit::createGate(const std::string &gateName, IDType id, bool no
 		if (tempHS.isInput) newGate->declareInput(tempHS.name);
 		else newGate->declareOutput(tempHS.name);
 	}
-	map < string, string >::iterator paramWalk = gateDef.guiParams.begin();
+	auto paramWalk = gateDef.guiParams.begin();
 	while (paramWalk != gateDef.guiParams.end()) {
 		newGate->setGUIParam(paramWalk->first, paramWalk->second);
 		paramWalk++;
@@ -137,12 +137,12 @@ guiGate * GUICircuit::createGate(const std::string &gateName, IDType id, bool no
 	newGate->calcBBox();
 	gateList[id] = newGate;
 	gateList[id]->setID(id);
-	
+
 	// Update the OScope with the new info:
-	if(ggt == "TO" && !noOscope) {
+	if (ggt == "TO" && !noOscope) {
 		myOscope->UpdateMenu();
 	}
-	
+
 	return newGate;
 }
 
@@ -202,7 +202,7 @@ void GUICircuit::deleteWire(IDType wireId) {
 }
 
 void GUICircuit::connectWire(IDType wireId, IDType gateId, const std::string &hotspotName, bool hasShape) {
-	
+
 	guiWire *wire = wireList.at(wireId);
 	guiGate *gate = gateList.at(gateId);
 
@@ -227,16 +227,16 @@ IDType GUICircuit::getNextAvailableGateID() {
 
 	while (gateList.find(nextGateID) != gateList.end())
 		nextGateID++;
-	
+
 	return nextGateID;
 }
 
 IDType GUICircuit::getNextAvailableWireID() {
 	nextWireID++;
-	
+
 	while (wireList.find(nextWireID) != wireList.end())
 		nextWireID++;
-	
+
 	return nextWireID;
 }
 
@@ -263,66 +263,66 @@ void GUICircuit::parseMessage(Message *message) {
 	string temp, type;
 	static bool shouldRender = false;
 	switch (message->type) {
-		case MessageType::SET_WIRE_STATE: {
+	case MessageType::SET_WIRE_STATE: {
 
-			shouldRender = true;
+		shouldRender = true;
 
-			auto msg = (Message_SET_WIRE_STATE*)message;
+		auto msg = (Message_SET_WIRE_STATE*)message;
 
-			setWireState(msg->wireId, msg->state);
+		setWireState(msg->wireId, msg->state);
 
-			break;
+		break;
+	}
+	case MessageType::SET_GATE_PARAM: {
+
+		shouldRender = true;
+
+		auto msg = (Message_SET_GATE_PARAM*)message;
+
+		if (gateList.find(msg->gateId) != gateList.end()) {
+			gateList[msg->gateId]->setLogicParam(msg->paramName, msg->paramValue);
 		}
-		case MessageType::SET_GATE_PARAM: {
 
-			shouldRender = true;
 
-			auto msg = (Message_SET_GATE_PARAM*)message;
-
-			if (gateList.find(msg->gateId) != gateList.end()) {
-				gateList[msg->gateId]->setLogicParam(msg->paramName, msg->paramValue);
-			}
-
-			
-			if(msg->paramName == "PAUSE_SIM" ){
-				pausing = true;
-				panic = true;
-			}
-			break;
+		if (msg->paramName == "PAUSE_SIM") {
+			pausing = true;
+			panic = true;
 		}
-		case MessageType::DONESTEP: { // DONESTEP
+		break;
+	}
+	case MessageType::DONESTEP: { // DONESTEP
 
-			auto msg = (Message_DONESTEP*)message;
+		auto msg = (Message_DONESTEP*)message;
 
-			simulate = true;
+		simulate = true;
 
-			int logicTime = msg->logicTime;
+		int logicTime = msg->logicTime;
 
-			// Panic if core isn't keeping up, keep a 3ms buffer...
-			panic = (logicTime > lastTime+3) || panic;
+		// Panic if core isn't keeping up, keep a 3ms buffer...
+		panic = (logicTime > lastTime + 3) || panic;
 
-			// Now we can send the waiting messages
-			for (unsigned int i = 0; i < messageQueue.size(); i++) {
-				sendMessageToCore(messageQueue[i]);
-			}
-
-			messageQueue.clear();
-
-			// Only render at the end of a step and only if necessary
-			if (shouldRender) {
-				gCanvas->Refresh();
-				shouldRender = false;
-			}
-			break;
+		// Now we can send the waiting messages
+		for (unsigned int i = 0; i < messageQueue.size(); i++) {
+			sendMessageToCore(messageQueue[i]);
 		}
-		case MessageType::COMPLETE_INTERIM_STEP: {// COMPLETE INTERIM STEP - UPDATE OSCOPE
-			myOscope->UpdateData();
-			/* CB: Updated should render to fix chaotic display issues due to oscope*/
-			shouldRender = true;
-			break;
+
+		messageQueue.clear();
+
+		// Only render at the end of a step and only if necessary
+		if (shouldRender) {
+			gCanvas->Refresh();
+			shouldRender = false;
 		}
-		default:
-			break;
+		break;
+	}
+	case MessageType::COMPLETE_INTERIM_STEP: {// COMPLETE INTERIM STEP - UPDATE OSCOPE
+		myOscope->UpdateData();
+		/* CB: Updated should render to fix chaotic display issues due to oscope*/
+		shouldRender = true;
+		break;
+	}
+	default:
+		break;
 	}
 }
 

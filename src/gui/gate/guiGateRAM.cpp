@@ -84,7 +84,7 @@ void guiGateRAM::setLogicParam(const std::string &paramName, const std::string &
 //Saves the ram contents to the circuit file
 //when the circuit saves
 void guiGateRAM::saveGateTypeSpecifics(XMLParser* xparse) {
-	for (map< unsigned long, unsigned long >::iterator I = memory.begin();
+	for (auto I = memory.begin();
 		I != memory.end();  ++I) {
 		if (I->second != 0) {
 			xparse->openTag("lparam");
@@ -103,7 +103,7 @@ unsigned long guiGateRAM::getValueAt(unsigned long address) {
 	//we want to refrain from creating an entry for an item
 	//if it does not already exist.  Therefore we will not
 	//use the [] operator
-	map<unsigned long, unsigned long>::iterator finder = memory.find(address);
+	auto finder = memory.find(address);
 	if (finder != memory.end())
 		return finder->second;
 	return 0;

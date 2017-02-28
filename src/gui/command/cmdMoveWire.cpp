@@ -5,8 +5,8 @@
 #include "../wire/guiWire.h"
 
 cmdMoveWire::cmdMoveWire(GUICircuit* gCircuit, unsigned long wid,
-		const SegmentMap &oldList, const SegmentMap &newList) :
-			klsCommand(true, "Move Wire") {
+	const SegmentMap &oldList, const SegmentMap &newList) :
+	klsCommand(true, "Move Wire") {
 
 	this->gCircuit = gCircuit;
 	this->wid = wid;
@@ -16,8 +16,8 @@ cmdMoveWire::cmdMoveWire(GUICircuit* gCircuit, unsigned long wid,
 }
 
 cmdMoveWire::cmdMoveWire(GUICircuit* gCircuit, unsigned long wid,
-		const SegmentMap &oldList, GLPoint2f delta) :
-			klsCommand(true, "Move Wire") {
+	const SegmentMap &oldList, GLPoint2f delta) :
+	klsCommand(true, "Move Wire") {
 
 	this->gCircuit = gCircuit;
 	this->wid = wid;
@@ -69,7 +69,7 @@ bool cmdMoveWire::Do() {
 	if ((gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end()) return false; // error, wire not found
 
 	if (delta.x != 0 || delta.y != 0) {
-		map < long, wireSegment >::iterator segWalk = oldSegList.begin();
+		auto segWalk = oldSegList.begin();
 		while (segWalk != oldSegList.end()) {
 			for (unsigned int i = 0; i < (segWalk->second).connections.size(); i++) {
 				(segWalk->second).connections[i].cGate = (*(gCircuit->getGates()))[(segWalk->second).connections[i].gid];
@@ -81,7 +81,7 @@ bool cmdMoveWire::Do() {
 		(*(gCircuit->getWires()))[wid]->setSegmentMap(oldSegList);
 	}
 	else {
-		map < long, wireSegment >::iterator segWalk = newSegList.begin();
+		auto segWalk = newSegList.begin();
 		while (segWalk != newSegList.end()) {
 			for (unsigned int i = 0; i < (segWalk->second).connections.size(); i++) {
 				(segWalk->second).connections[i].cGate = (*(gCircuit->getGates()))[(segWalk->second).connections[i].gid];
@@ -98,7 +98,7 @@ bool cmdMoveWire::Undo() {
 
 	if ((gCircuit->getWires())->find(wid) == (gCircuit->getWires())->end()) return false; // error, wire not found
 
-	map < long, wireSegment >::iterator segWalk = oldSegList.begin();
+	auto segWalk = oldSegList.begin();
 	while (segWalk != oldSegList.end()) {
 		for (unsigned int i = 0; i < (segWalk->second).connections.size(); i++) {
 			(segWalk->second).connections[i].cGate = (*(gCircuit->getGates()))[(segWalk->second).connections[i].gid];
@@ -106,7 +106,7 @@ bool cmdMoveWire::Undo() {
 		segWalk++;
 	}
 	if (delta.x != 0 || delta.y != 0) {
-		map < long, wireSegment >::iterator segWalk = oldSegList.begin();
+		auto segWalk = oldSegList.begin();
 		while (segWalk != oldSegList.end()) {
 			(segWalk->second).begin.x -= delta.x; (segWalk->second).begin.y -= delta.y;
 			(segWalk->second).end.x -= delta.x; (segWalk->second).end.y -= delta.y;
@@ -154,11 +154,11 @@ string cmdMoveWire::toString() const {
 }
 
 void cmdMoveWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas,
-		TranslationMap &gateids, TranslationMap &wireids) {
+	TranslationMap &gateids, TranslationMap &wireids) {
 
 	this->gCircuit = gCircuit;
 	wid = wireids[wid];
-	map < long, wireSegment >::iterator segWalk = newSegList.begin();
+	auto segWalk = newSegList.begin();
 	while (segWalk != newSegList.end()) {
 		for (unsigned int i = 0; i < (segWalk->second).connections.size(); i++) {
 			(segWalk->second).connections[i].gid = gateids[(segWalk->second).connections[i].gid];

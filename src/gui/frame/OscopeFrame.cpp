@@ -1,9 +1,9 @@
 /*****************************************************************************
    Project: CEDAR Logic Simulator
    Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
+					 Matt Lewellyn, and David Knierim
    All rights reserved.
-   For license information see license.txt included with distribution.   
+   For license information see license.txt included with distribution.
 
    OscopeFrame: Window frame for the Oscope
 *****************************************************************************/
@@ -32,95 +32,96 @@
 DECLARE_APP(MainApp)
 
 BEGIN_EVENT_TABLE(OscopeFrame, wxFrame)
-	EVT_TOGGLEBUTTON(ID_PAUSE_BUTTON, OscopeFrame::OnToggleButton)
-	EVT_COMBOBOX(ID_COMBOBOX, OscopeFrame::OnComboUpdate)
-	EVT_BUTTON(ID_EXPORT, OscopeFrame::OnExport)
-	EVT_BUTTON(ID_LOAD, OscopeFrame::OnLoad)
-	EVT_BUTTON(ID_SAVE, OscopeFrame::OnSave)
-	
-	// Hide, but don't close, the window:	
-	EVT_CLOSE(OscopeFrame::OnClose)
+EVT_TOGGLEBUTTON(ID_PAUSE_BUTTON, OscopeFrame::OnToggleButton)
+EVT_COMBOBOX(ID_COMBOBOX, OscopeFrame::OnComboUpdate)
+EVT_BUTTON(ID_EXPORT, OscopeFrame::OnExport)
+EVT_BUTTON(ID_LOAD, OscopeFrame::OnLoad)
+EVT_BUTTON(ID_SAVE, OscopeFrame::OnSave)
+
+// Hide, but don't close, the window:	
+EVT_CLOSE(OscopeFrame::OnClose)
 END_EVENT_TABLE()
 
 OscopeFrame::OscopeFrame(wxWindow *parent, const wxString& title, GUICircuit* gCircuit)
-       : wxFrame(parent, wxID_ANY, title, wxDefaultPosition, wxSize(800,250))
+	: wxFrame(parent, wxID_ANY, title, wxDefaultPosition, wxSize(800, 250))
 {
 	// Match the background color of buttons for the button area:
-	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
+	this->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	// Copy the circuit pointer to this frame:
 	this->gCircuit = gCircuit;
 
 	// set up the panel and make canvases
-	oSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+	oSizer = new wxBoxSizer(wxHORIZONTAL);
+
 	//Sets vertical sizer
-	vSizer = new wxGridSizer( 1 );
+	vSizer = new wxGridSizer(1);
 
 	//Combo box 
 	//JoshEdit 3/15/07
-	appendNewFeed( NONE_STR );
-	
+	appendNewFeed(NONE_STR);
+
 	//Adds vertical sizer to canvas
-	oSizer->Add(vSizer, wxSizerFlags(0).Expand().Border(wxALL, 5) );
+	oSizer->Add(vSizer, wxSizerFlags(0).Expand().Border(wxALL, 5));
 
 	wxSize sz = GetClientSize();
-	theCanvas = new OscopeCanvas(this, gCircuit, wxID_ANY, wxDefaultPosition, wxSize(sz.GetWidth(), sz.GetHeight()), wxWANTS_CHARS|wxSUNKEN_BORDER);
-	oSizer->Add( theCanvas, wxSizerFlags(1).Expand().Border(wxALL, 0) );
+	theCanvas = new OscopeCanvas(this, gCircuit, wxID_ANY, wxDefaultPosition, wxSize(sz.GetWidth(), sz.GetHeight()), wxWANTS_CHARS | wxSUNKEN_BORDER);
+	oSizer->Add(theCanvas, wxSizerFlags(1).Expand().Border(wxALL, 0));
 	oSizer->Show(theCanvas);
 
-	buttonSizer = new wxGridSizer( 1 );
+	buttonSizer = new wxGridSizer(1);
 
 	pauseButton = new wxToggleButton(this, ID_PAUSE_BUTTON, "Pause", wxDefaultPosition, wxDefaultSize);
 	pauseButton->SetValue(false);
-	buttonSizer->Add(pauseButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
+	buttonSizer->Add(pauseButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0));
 
 	exportButton = new wxButton(this, ID_EXPORT, "Export", wxDefaultPosition, wxDefaultSize);
-	buttonSizer->Add(exportButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
+	buttonSizer->Add(exportButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0));
 
 	loadButton = new wxButton(this, ID_LOAD, "Load", wxDefaultPosition, wxDefaultSize);
-	buttonSizer->Add(loadButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
+	buttonSizer->Add(loadButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0));
 
 	saveButton = new wxButton(this, ID_SAVE, "Save", wxDefaultPosition, wxDefaultSize);
-	buttonSizer->Add(saveButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
+	buttonSizer->Add(saveButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0));
 
-	oSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL, 5) );
-	SetSizer( oSizer );
- }
+	oSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL, 5));
+	SetSizer(oSizer);
+}
 
 // event handlers
 
-void OscopeFrame::UpdateData(void){ 
+void OscopeFrame::UpdateData(void) {
 	// If the button is not pressed, then update the data:
-	if( !(pauseButton->GetValue()) ) {
+	if (!(pauseButton->GetValue())) {
 		theCanvas->UpdateData();
 	}
 }
 
-void OscopeFrame::UpdateMenu(void){ 
+void OscopeFrame::UpdateMenu(void) {
 	theCanvas->UpdateMenu();
 }
 
 // Hide, but don't close the frame:
-void OscopeFrame::OnClose( wxCloseEvent& event ){ 
+void OscopeFrame::OnClose(wxCloseEvent& event) {
 	// Veto the close event:
 	event.Veto();
-	
+
 	// Hide the window:
 	this->Show(false);
 }
 
 
-void OscopeFrame::OnToggleButton( wxCommandEvent& event ){ 
-	if( !(pauseButton->GetValue()) ) {
+void OscopeFrame::OnToggleButton(wxCommandEvent& event) {
+	if (!(pauseButton->GetValue())) {
 		theCanvas->clearData();
 		pauseButton->SetLabel("Pause");
-	} else {
+	}
+	else {
 		pauseButton->SetLabel("Reset");
 	}
 }
 
-void OscopeFrame::OnComboUpdate( wxCommandEvent& event ){ 
+void OscopeFrame::OnComboUpdate(wxCommandEvent& event) {
 	//***************************************
 	//Edit by Joshua Lansford 3/11/07
 	//In an effort to find the case insensitive bug,
@@ -128,69 +129,69 @@ void OscopeFrame::OnComboUpdate( wxCommandEvent& event ){
 	//end of this function.
 
 	vector< int > idsToRemove;
-	
+
 	//make sure we don't delete the last one
-	if( numberOfFeeds() > 1 ){
-		for( unsigned int i = 0; i < numberOfFeeds(); ++i ){
-			if( getFeedName( i ) == RMOVE_STR ){
-				idsToRemove.push_back( i );
-			}		
+	if (numberOfFeeds() > 1) {
+		for (unsigned int i = 0; i < numberOfFeeds(); ++i) {
+			if (getFeedName(i) == RMOVE_STR) {
+				idsToRemove.push_back(i);
+			}
 		}
 	}
-	
+
 	//now we need to pull all the ones that we are going to toss
 	//out of the sizer
-	for( vector< int >::reverse_iterator I = idsToRemove.rbegin(); I != idsToRemove.rend(); ++I ){
-		removeFeed( *I );
+	for (vector< int >::reverse_iterator I = idsToRemove.rbegin(); I != idsToRemove.rend(); ++I) {
+		removeFeed(*I);
 	}
-	
+
 	//now we need to make sure that there is not two [None]s at the end
 	int feedNum = numberOfFeeds();
-	while( feedNum >= 2 &&
-			getFeedName( feedNum - 2 ) == NONE_STR &&
-			getFeedName( feedNum - 1 ) == NONE_STR ){
-		
-		removeFeed( feedNum - 1 );	
+	while (feedNum >= 2 &&
+		getFeedName(feedNum - 2) == NONE_STR &&
+		getFeedName(feedNum - 1) == NONE_STR) {
+
+		removeFeed(feedNum - 1);
 		feedNum = numberOfFeeds();
 	}
-	
+
 	//now make sure there is an empty one on the end for the use of adding
-	if( feedNum == 0 || getFeedName( feedNum - 1 ) != NONE_STR ){
-		appendNewFeed( NONE_STR );
+	if (feedNum == 0 || getFeedName(feedNum - 1) != NONE_STR) {
+		appendNewFeed(NONE_STR);
 	}
-	
-	
+
+
 	//update layout
 	Layout();
-	
+
 	//just in case we added someone, make sure
 	//that they get updated with a list of what feeds are possable
 	theCanvas->UpdateMenu();
-	
+
 	verifyReferenceOrder();
 
 	/*
-	if (comboBoxVector[comboBoxVector.size()-1]->GetValue() != "[None]") {		
+	if (comboBoxVector[comboBoxVector.size()-1]->GetValue() != "[None]") {
 		//starts new array of strings
 		wxArrayString strings;
 		strings.Add("[None]");
-	
-		comboBoxVector.push_back(new wxComboBox(this, ID_COMBOBOX, "[None]", wxDefaultPosition, wxDefaultSize, strings, 
-	      wxCB_READONLY | wxCB_DROPDOWN	| wxCB_SORT));
-	      
+
+		comboBoxVector.push_back(new wxComboBox(this, ID_COMBOBOX, "[None]", wxDefaultPosition, wxDefaultSize, strings,
+		  wxCB_READONLY | wxCB_DROPDOWN	| wxCB_SORT));
+
 		//Adds selection box to vSizer
 		vSizer->Add(comboBoxVector[comboBoxVector.size()-1], wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
-	
+
 		//Call layout function
 		vSizer->Layout();
 	}
 
 	vector < unsigned int > deleteComboIDs;
 	// Are last two set to [None] - if so then remove last one
-	if (comboBoxVector.size() > 1 && 
+	if (comboBoxVector.size() > 1 &&
 		comboBoxVector[comboBoxVector.size()-1]->GetValue() == "[None]" &&
 		comboBoxVector[comboBoxVector.size()-2]->GetValue() == "[None]") {
-		
+
 		deleteComboIDs.push_back(comboBoxVector.size()-1);
 	}
 
@@ -206,11 +207,11 @@ void OscopeFrame::OnComboUpdate( wxCommandEvent& event ){
 			vSizer->Detach(comboBoxVector[deleteComboIDs[i-1]]);
 			comboBoxVector.erase(comboBoxVector.begin()+deleteComboIDs[i-1]);
 		}
-		vSizer->Layout();	
+		vSizer->Layout();
 	}
 	//Calls updatemenu
 	theCanvas->UpdateMenu();
-	
+
 	// Sort pointer vector by y-coord position
 	// 	Cheap bubble sort hack
 	for (unsigned int i = 0; i < comboBoxVector.size(); i++) {
@@ -223,40 +224,40 @@ void OscopeFrame::OnComboUpdate( wxCommandEvent& event ){
 		}
 	}
 	*/
- }
+}
 
-void OscopeFrame::OnExport( wxCommandEvent& event ){ 
+void OscopeFrame::OnExport(wxCommandEvent& event) {
 	wxSize imageSize = theCanvas->GetClientSize();
 	wxImage circuitImage = theCanvas->generateImage();
 	wxBitmap circuitBitmap(circuitImage);
-	
+
 	wxMemoryDC memDC;
-	wxBitmap labelBitmap(theCanvas->GetPosition().x+theCanvas->GetSize().GetWidth(), getFeedYPos( numberOfFeeds() - 1 ));
+	wxBitmap labelBitmap(theCanvas->GetPosition().x + theCanvas->GetSize().GetWidth(), getFeedYPos(numberOfFeeds() - 1));
 	memDC.SelectObject(labelBitmap);
 	memDC.SetBackground(*wxWHITE_BRUSH);
 	memDC.Clear();
 	wxFont font(10, wxFONTFAMILY_DEFAULT, wxNORMAL, wxFONTWEIGHT_NORMAL);
-	memDC.SetFont( font );
+	memDC.SetFont(font);
 	memDC.SetTextForeground(*wxBLACK);
 	memDC.SetTextBackground(*wxWHITE);
 	//JoshEdit 3/15/07
-	for( unsigned int i = 0; i < numberOfFeeds()-1; ++i ){
+	for (unsigned int i = 0; i < numberOfFeeds() - 1; ++i) {
 		memDC.DrawText(getFeedName(i), wxPoint(5, getFeedYPos(i)));
 	}
 	memDC.DrawBitmap(circuitBitmap, theCanvas->GetPosition().x, 0, false);
-	
+
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(labelBitmap));
 		wxTheClipboard->Close();
 	}
- }
+}
 
-void OscopeFrame::OnLoad( wxCommandEvent& event ){ 
+void OscopeFrame::OnLoad(wxCommandEvent& event) {
 	wxString caption = "Open an O-scope Layout";
 	wxString wildcard = "CEDAR O-scope Layout files (*.cdo)|*.cdo";
 	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	
+
 	if (dialog.ShowModal() == wxID_OK) {
 		string path = dialog.GetPath();
 		ifstream inFile(path);
@@ -269,21 +270,21 @@ void OscopeFrame::OnLoad( wxCommandEvent& event ){
 
 		// Remove the old boxes
 		for (unsigned int i = numberOfFeeds(); i > 0; i--) {
-			removeFeed( i-1 );
+			removeFeed(i - 1);
 		}
 
 		for (unsigned int i = 0; i < numLines; i++) {
 			getline(inFile, lineFile, '\n');
-			appendNewFeed( lineFile );
-		}		
+			appendNewFeed(lineFile);
+		}
 		//Call layout function
 		Layout();
 		theCanvas->UpdateMenu();
 		theCanvas->clearData();
 	}
- }
+}
 
-void OscopeFrame::OnSave( wxCommandEvent& event ){ 
+void OscopeFrame::OnSave(wxCommandEvent& event) {
 	wxString caption = "Save o-scope layout";
 	wxString wildcard = "CEDAR O-scope Layout files (*.cdo)|*.cdo";
 	wxString defaultFilename = "";
@@ -297,7 +298,7 @@ void OscopeFrame::OnSave( wxCommandEvent& event ){
 		for (unsigned int i = 0; i < numberOfFeeds(); i++) outFile << getFeedName(i) << endl;
 		outFile.close();
 	}
- }
+}
 
 //*******************************
 //Edit by Joshua Lansford 3/11/06
@@ -313,15 +314,15 @@ void OscopeFrame::OnSave( wxCommandEvent& event ){
 //This makes sure that our vector of combo boxes
 //are sorted in the same order as the way the combo
 //boxes apear on the screen
-void OscopeFrame::verifyReferenceOrder(){
+void OscopeFrame::verifyReferenceOrder() {
 	bool didSwap = true;
-	while( didSwap ){
+	while (didSwap) {
 		didSwap = false;
-		for (unsigned int j = 0; j < comboBoxes.size()-1; j++) {
-			if (comboBoxes[j+1]->GetPosition().y < comboBoxes[j]->GetPosition().y) {
+		for (unsigned int j = 0; j < comboBoxes.size() - 1; j++) {
+			if (comboBoxes[j + 1]->GetPosition().y < comboBoxes[j]->GetPosition().y) {
 				wxComboBox* tmp = comboBoxes[j];
-				comboBoxes[j] = comboBoxes[j+1];
-				comboBoxes[j+1] = tmp;
+				comboBoxes[j] = comboBoxes[j + 1];
+				comboBoxes[j + 1] = tmp;
 				didSwap = true;
 			}
 		}
@@ -330,98 +331,99 @@ void OscopeFrame::verifyReferenceOrder(){
 
 //creates a new feed by the specified name
 //and appends it to the end.
-void OscopeFrame::appendNewFeed( string newName ){
+void OscopeFrame::appendNewFeed(string newName) {
 	wxArrayString strings;
 	strings.Add(encodeFeedName(NONE_STR));
-	if( numberOfFeeds() > 0 ){
-		strings.Add(encodeFeedName( RMOVE_STR ));
+	if (numberOfFeeds() > 0) {
+		strings.Add(encodeFeedName(RMOVE_STR));
 	}
-	
+
 	wxComboBox* newCombo = new wxComboBox(this, ID_COMBOBOX, encodeFeedName(newName), wxDefaultPosition, wxDefaultSize, strings,
-	      wxCB_READONLY  | wxCB_DROPDOWN | wxCB_SORT );
-	comboBoxes.push_back( newCombo );
+		wxCB_READONLY | wxCB_DROPDOWN | wxCB_SORT);
+	comboBoxes.push_back(newCombo);
 
 	//Adds vertical box to canvas
-	vSizer->Add( newCombo, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
+	vSizer->Add(newCombo, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0));
 }
 
 //this renames an existing feed
-void OscopeFrame::setFeedName( int i, string newName ){
+void OscopeFrame::setFeedName(int i, string newName) {
 	comboBoxes[i]->SetValue(encodeFeedName(newName));
 	//feedNames[i] = newName;
 }
 
 //Returns how many active feeds there are in the
 //Oscope. i.e. how many combo boxes there are
-unsigned int OscopeFrame::numberOfFeeds(){
+unsigned int OscopeFrame::numberOfFeeds() {
 	return comboBoxes.size();
 }
 
 //takes a feed out with the combo box it was in
-void OscopeFrame::removeFeed( int i ){
-	vSizer->Hide( i );
-	vSizer->Remove( i );
-	comboBoxes.erase( comboBoxes.begin() + i );
+void OscopeFrame::removeFeed(int i) {
+	vSizer->Hide(i);
+	vSizer->Remove(i);
+	comboBoxes.erase(comboBoxes.begin() + i);
 }
 
 //Returns the name of feed i.  i.e. the current
 //contents in the ith combo box
-string OscopeFrame::getFeedName( int i ){
+string OscopeFrame::getFeedName(int i) {
 	return decodeFeedName(comboBoxes[i]->GetValue().ToStdString());
 }
 
 //Removes the feed from the list.
 //This was originally done by setting
 //the name to '[None]'
-void OscopeFrame::cancelFeed( int i ){
-	setFeedName( i, NONE_STR );
+void OscopeFrame::cancelFeed(int i) {
+	setFeedName(i, NONE_STR);
 }
-	
+
 //returns the y location of this feed in
 //the canves
-int OscopeFrame::getFeedYPos( int i ){
+int OscopeFrame::getFeedYPos(int i) {
 	return comboBoxes[i]->GetPosition().y;
 }
 
-	
+
 //This will cause the OscopeFrame
 //to update the list of
-void OscopeFrame::updatePossableFeeds( vector< string >* newPossabilities ){ 
+void OscopeFrame::updatePossableFeeds(vector< string >* newPossabilities) {
 
 	//refresh the combo boxes and set their values to [None] if they
 	//are not valid anymore.
-	for( unsigned int i = 0; i < numberOfFeeds(); ++i ){
+	for (unsigned int i = 0; i < numberOfFeeds(); ++i) {
 		//clear dumps the current value also
-		string currentFeedName = getFeedName( i );
-		
+		string currentFeedName = getFeedName(i);
+
 		comboBoxes[i]->Clear();
-		
+
 		bool valueValid = false;
-		
+
 		//iterate over the new possabilities adding them to the current combo
 		//box and checking if any of them match the current name which is being
 		//used as the feed.
-		for( vector< string >::iterator I = newPossabilities->begin(); I != newPossabilities->end(); ++I ){
+		for (auto I = newPossabilities->begin(); I != newPossabilities->end(); ++I) {
 			comboBoxes[i]->Append(encodeFeedName(*I));
-			if( (*I) == currentFeedName ){
+			if ((*I) == currentFeedName) {
 				valueValid = true;
 			}
 		}
-		
+
 		comboBoxes[i]->Append(encodeFeedName(NONE_STR));
-		if( numberOfFeeds() > 1 ){
+		if (numberOfFeeds() > 1) {
 			comboBoxes[i]->Append(encodeFeedName(RMOVE_STR));
 		}
-		
+
 		//if the value wasn't valid anymore, then we set it to [None]
-		if( valueValid ){
-			setFeedName( i, currentFeedName );
-		}else{
-			setFeedName( i, NONE_STR );
+		if (valueValid) {
+			setFeedName(i, currentFeedName);
+		}
+		else {
+			setFeedName(i, NONE_STR);
 		}
 	}
-	
-	
+
+
 	verifyReferenceOrder();
 }
 
@@ -430,34 +432,35 @@ void OscopeFrame::updatePossableFeeds( vector< string >* newPossabilities ){
 //(a name with more spaces on the end)
 //so that this name will be unique
 //from any other name despice case difference
-string OscopeFrame::encodeFeedName( string name ){
-	if( realNameToEncName.find( name ) == realNameToEncName.end() ){
+string OscopeFrame::encodeFeedName(string name) {
+	if (realNameToEncName.find(name) == realNameToEncName.end()) {
 		ostringstream encNameUpper;
 		ostringstream encName;
-		
-		encNameUpper << toUpperCase( name );
+
+		encNameUpper << toUpperCase(name);
 		encName << name;
-		
-		while( uppercasedEncNames.find( encNameUpper.str() ) != uppercasedEncNames.end() ){
+
+		while (uppercasedEncNames.find(encNameUpper.str()) != uppercasedEncNames.end()) {
 			encNameUpper << " ";
 			encName << " ";
 		}
-		
-		uppercasedEncNames[ encNameUpper.str() ] = true;
-		
-		encNameToRealName[ encName.str() ] = name;
-		realNameToEncName[ name ] = encName.str();
-		
+
+		uppercasedEncNames[encNameUpper.str()] = true;
+
+		encNameToRealName[encName.str()] = name;
+		realNameToEncName[name] = encName.str();
+
 		return encName.str();
-	}else{
-		return realNameToEncName[ name ];
+	}
+	else {
+		return realNameToEncName[name];
 	}
 }
 
 //This undoes the encoding done in encodeFeed
-string OscopeFrame::decodeFeedName( string name ){
-	if( encNameToRealName.find( name ) != encNameToRealName.end() ){
-		return encNameToRealName[ name ];
+string OscopeFrame::decodeFeedName(string name) {
+	if (encNameToRealName.find(name) != encNameToRealName.end()) {
+		return encNameToRealName[name];
 	}
 	return name;
 }
@@ -465,9 +468,9 @@ string OscopeFrame::decodeFeedName( string name ){
 //this is used by encodeFeedName to check
 //if two names are the same if you
 //disregard the case
-string OscopeFrame::toUpperCase( string name ){
-	for( unsigned int i = 0; i < name.size(); ++i ){
-		if( name[i] >= 'a' && name[i] <= 'z' ){
+string OscopeFrame::toUpperCase(string name) {
+	for (unsigned int i = 0; i < name.size(); ++i) {
+		if (name[i] >= 'a' && name[i] <= 'z') {
 			name[i] = name[i] - 'a' + 'A';
 		}
 	}
