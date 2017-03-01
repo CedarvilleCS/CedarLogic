@@ -19,21 +19,35 @@ Color ColorPalette::getColor() {
 
 void ColorPalette::save(std::ostream &out) {
 	
-	out << "SchematicBackground: " << SchematicBackground << std::endl;
-	out << "SchematicGrid: " << SchematicGrid << std::endl;
-	out << "GateShape: " << GateShape << std::endl;
-	out << "GateHotspot: " << GateHotspot << std::endl;
-	out << "GateOverlap: " << GateOverlap << std::endl;
-	out << "WireHigh: " << WireHigh << std::endl;
-	out << "WireLow: " << WireLow << std::endl;
-	out << "WireHiZ: " << WireHiZ << std::endl;
-	out << "WireUnknown: " << WireUnknown << std::endl;
-	out << "WireConflict: " << WireConflict << std::endl;
-	out << "KeypadSelection: " << KeypadSelection << std::endl;
-	out << "Text: " << Text << std::endl;
-	out << "TextSelected: " << TextSelected << std::endl;
-	out << "SelectionBoxFill: " << SelectionBoxFill << std::endl;
-	out << "SelectionBoxBorder: " << SelectionBoxBorder << std::endl;
+	out << "SchematicBackground:\n" << SchematicBackground << "\n\n";
+
+	out << "SchematicGrid:\n" << SchematicGrid << "\n\n";
+
+	out << "GateShape:\n" << GateShape << "\n\n";
+
+	out << "GateHotspot:\n" << GateHotspot << "\n\n";
+
+	out << "GateOverlap:\n" << GateOverlap << "\n\n";
+
+	out << "WireHigh:\n" << WireHigh << "\n\n";
+
+	out << "WireLow:\n" << WireLow << "\n\n";
+
+	out << "WireHiZ:\n" << WireHiZ << "\n\n";
+
+	out << "WireUnknown:\n" << WireUnknown << "\n\n";
+
+	out << "WireConflict:\n" << WireConflict << "\n\n";
+
+	out << "KeypadSelection:\n" << KeypadSelection << "\n\n";
+
+	out << "Text:\n" << Text << "\n\n";
+
+	out << "TextSelected:\n" << TextSelected << "\n\n";
+
+	out << "SelectionBoxFill:\n" << SelectionBoxFill << "\n\n";
+
+	out << "SelectionBoxBorder:\n" << SelectionBoxBorder << "\n\n";
 }
 
 void ColorPalette::load(std::istream &in) {

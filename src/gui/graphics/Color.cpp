@@ -1,6 +1,7 @@
 
 #include "Color.h"
 #include <iostream>
+#include <iomanip>
 
 Color::Color() : r(1.0f), g(1.0f), b(1.0f), a(1.0f) { }
 
@@ -22,6 +23,7 @@ std::istream & operator >> (std::istream &in, Color &c) {
 }
 
 std::ostream & operator << (std::ostream &out, const Color &c) {
-	out << c.r << ' ' << c.g << ' ' << c.b << ' ' << c.a;
+	out << std::setprecision(2) << std::fixed <<
+		c.r << ' ' << c.g << ' ' << c.b << ' ' << c.a;
 	return out;
 }
