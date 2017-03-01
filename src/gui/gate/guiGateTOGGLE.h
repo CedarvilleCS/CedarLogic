@@ -21,5 +21,5 @@ public:
 private:
 	int renderInfo_outputNum;
 
-	GLLine2f renderInfo_clickBox;
+	LineSegment renderInfo_clickBox;
 };

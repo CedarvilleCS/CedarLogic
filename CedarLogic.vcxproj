@@ -205,6 +205,7 @@
     <ClInclude Include="src\gui\gate\guiTO_FROM.h" />
     <ClInclude Include="src\gui\graphics\Color.h" />
     <ClInclude Include="src\gui\graphics\ColorPalette.h" />
+    <ClInclude Include="src\gui\graphics\LineSegment.h" />
     <ClInclude Include="src\gui\graphics\Point.h" />
     <ClInclude Include="src\gui\GUICircuit.h" />
     <ClInclude Include="src\gui\guiGates.h" />

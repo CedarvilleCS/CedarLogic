@@ -26,7 +26,7 @@ float distanceToLine(Point p, Point l1, Point l2);
 struct glWireRenderInfo {
 	vector< Point > vertexPoints;
 	vector< Point > intersectPoints;
-	vector< GLLine2f > lineSegments;
+	vector< LineSegment > lineSegments;
 };
 
 class guiWire : public klsCollisionObject {

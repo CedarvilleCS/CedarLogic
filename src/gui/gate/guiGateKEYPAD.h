@@ -14,7 +14,7 @@ public:
 	virtual Message_SET_GATE_PARAM* checkClick(GLfloat x, GLfloat y) override;
 
 private:
-	GLLine2f renderInfo_valueBox;
+	LineSegment renderInfo_valueBox;
 
 	std::string keypadValue;
 };

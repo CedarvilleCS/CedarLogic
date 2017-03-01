@@ -11,5 +11,5 @@ public:
 	virtual void setGUIParam(const std::string &paramName, const std::string &value) override;
 
 protected:
-	GLLine2f renderInfo_ledBox;
+	LineSegment renderInfo_ledBox;
 };

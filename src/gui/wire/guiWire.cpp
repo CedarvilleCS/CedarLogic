@@ -244,7 +244,7 @@ void guiWire::draw(bool color) {
 	}
 
 	// Draw the wire from the previously-saved render info
-	vector< GLLine2f >* lineSegments = &(renderInfo.lineSegments);
+	vector< LineSegment >* lineSegments = &(renderInfo.lineSegments);
 	glLineWidth(ids.size() != 1 ? 4 : 1);
 	glBegin(GL_LINES);
 	for (unsigned int i = 0; i < lineSegments->size(); i++) {
@@ -1134,7 +1134,7 @@ void guiWire::removeZeroLengthSegments() {
 // fill out some info to avoid loss of cycles in render loop
 void guiWire::generateRenderInfo() {
 	float x, y;
-	GLLine2f glLine;
+	LineSegment glLine;
 
 	// clear out the old information.  this function is only called when
 	//	the wire shape has changed.
