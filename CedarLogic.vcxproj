@@ -237,7 +237,7 @@
     <ClInclude Include="src\gui\GLFont\glfont2.h" />
     <ClInclude Include="src\gui\graphics\gl_defs.h" />
     <ClInclude Include="src\gui\graphics\gl_text.h" />
-    <ClInclude Include="src\gui\graphics\gl_wrapper.h" />
+    <ClInclude Include="src\gui\graphics\OpenGL.h" />
     <ClInclude Include="src\gui\collision\klsBBox.h" />
     <ClInclude Include="src\gui\collision\klsCollisionChecker.h" />
     <ClInclude Include="src\gui\MainApp.h" />

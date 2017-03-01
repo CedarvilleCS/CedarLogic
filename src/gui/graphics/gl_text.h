@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "gl_wrapper.h"
+#include "OpenGL.h"
 #include <string>
 
 using namespace std;

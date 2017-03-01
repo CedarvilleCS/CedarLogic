@@ -3,7 +3,6 @@
 #include "klsCommand.h"
 #include <map>
 #include "../wire/wireSegment.h"
-#include "../graphics/gl_wrapper.h"
 
 // Just a map of wire segments
 typedef std::map<long, wireSegment> SegmentMap;

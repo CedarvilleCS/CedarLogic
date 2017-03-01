@@ -1,6 +1,6 @@
 
 #pragma once
-#include "gl_wrapper.h"
+#include "OpenGL.h"
 #include "Point.h"
 #include "LineSegment.h"
 

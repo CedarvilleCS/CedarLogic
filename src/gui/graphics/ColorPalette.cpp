@@ -1,6 +1,6 @@
 
 #include "ColorPalette.h"
-#include "gl_wrapper.h"
+#include "OpenGL.h"
 
 void ColorPalette::setColor(const Color &color) {
 	glColor4f(color.r, color.g, color.b, color.a);
