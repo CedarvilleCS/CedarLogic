@@ -1,5 +1,6 @@
 
 #pragma once
+#include <iosfwd>
 #include "Color.h"
 
 struct ColorPalette {
@@ -13,9 +14,16 @@ struct ColorPalette {
 	// Get OpenGL draw color.
 	static Color getColor();
 
+	// Write color palette to file.
+	static void save(std::ostream &out);
+
+	// Read color palette from file.
+	static void load(std::istream &in);
+
 	// ===================================================================
 	// Colors used throughout CedarLogic.
 	// When new colors are used, they should be put here and referenced.
+	// They should also be added to the save/load commands declared above.
 	// ===================================================================
 
 	static Color SchematicBackground;

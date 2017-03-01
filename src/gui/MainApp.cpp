@@ -44,6 +44,7 @@ bool MainApp::OnInit()
     logfile.open( "guilog.log" );
 #endif
 	loadSettings();
+	loadColors();
 	
     wxFileSystem::AddHandler( new wxZipFSHandler );
 	helpController = new wxHelpController;
@@ -220,5 +221,19 @@ void MainApp::loadSettings() {
 			appSettings.mainFrameLeft = appSettings.mainFrameTop = 20;	
 		}
 
+	}
+}
+
+void MainApp::loadColors() {
+
+	std::string colorsFilename = pathToExe + "res/colors.txt";
+	std::fstream colorsFile(colorsFilename, std::ios::in);
+
+	if (colorsFile) {
+		ColorPalette::load(colorsFile);
+	}
+	else {
+		colorsFile = std::fstream(colorsFilename, std::ios::out);
+		ColorPalette::save(colorsFile);
 	}
 }

@@ -107,7 +107,10 @@ public:
 	bool doingBitmapExport;
 	
 private:
-	void loadSettings( void );
+	void loadSettings();
+
+	// Load colors if they exist, or write a colors file for future use.
+	void loadColors();
 };
 
 #endif /*MAINAPP_H_*/

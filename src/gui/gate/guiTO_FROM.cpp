@@ -28,11 +28,12 @@ void guiTO_FROM::draw(bool color) {
 
 	// Pick the color for the text:
 	if (selected && color) {
-		GLdouble c = 1.0 - SELECTED_LABEL_INTENSITY;
-		theText.setColor(1.0, c / 4, c / 4, SELECTED_LABEL_INTENSITY);
+		Color &c = ColorPalette::TextSelected;
+		theText.setColor(c.r, c.g, c.b, c.a);
 	}
 	else {
-		theText.setColor(0.0, 0.0, 0.0, 1.0);
+		Color &c = ColorPalette::Text;
+		theText.setColor(c.r, c.g, c.b, c.a);
 	}
 
 	//********************************

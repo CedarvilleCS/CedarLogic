@@ -17,6 +17,48 @@ Color ColorPalette::getColor() {
 	return Color(color[0], color[1], color[2], color[3]);
 }
 
+void ColorPalette::save(std::ostream &out) {
+	
+	out << "SchematicBackground: " << SchematicBackground << std::endl;
+	out << "SchematicGrid: " << SchematicGrid << std::endl;
+	out << "GateShape: " << GateShape << std::endl;
+	out << "GateHotspot: " << GateHotspot << std::endl;
+	out << "GateOverlap: " << GateOverlap << std::endl;
+	out << "WireHigh: " << WireHigh << std::endl;
+	out << "WireLow: " << WireLow << std::endl;
+	out << "WireHiZ: " << WireHiZ << std::endl;
+	out << "WireUnknown: " << WireUnknown << std::endl;
+	out << "WireConflict: " << WireConflict << std::endl;
+	out << "KeypadSelection: " << KeypadSelection << std::endl;
+	out << "Text: " << Text << std::endl;
+	out << "TextSelected: " << TextSelected << std::endl;
+	out << "SelectionBoxFill: " << SelectionBoxFill << std::endl;
+	out << "SelectionBoxBorder: " << SelectionBoxBorder << std::endl;
+}
+
+void ColorPalette::load(std::istream &in) {
+
+	std::string trash;
+
+	in >> trash >> SchematicBackground;
+	in >> trash >> SchematicGrid;
+	in >> trash >> GateShape;
+	in >> trash >> GateHotspot;
+	in >> trash >> GateOverlap;
+	in >> trash >> WireHigh;
+	in >> trash >> WireLow;
+	in >> trash >> WireHiZ;
+	in >> trash >> WireUnknown;
+	in >> trash >> WireConflict;
+	in >> trash >> KeypadSelection;
+	in >> trash >> Text;
+	in >> trash >> TextSelected;
+	in >> trash >> SelectionBoxFill;
+	in >> trash >> SelectionBoxBorder;
+}
+
+
+
 Color ColorPalette::SchematicBackground(1.0f, 1.0f, 1.0f);
 Color ColorPalette::SchematicGrid(0.0f, 0.0f, 0.08f, 0.08f);
 
