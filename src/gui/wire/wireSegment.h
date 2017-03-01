@@ -40,8 +40,8 @@ public:
 
 	// Endpoints of the segment.
 	// Begin is always less than end.
-	GLPoint2f begin;
-	GLPoint2f end;
+	Point begin;
+	Point end;
 
 	// Keep a list of the connections that are on this segment
 	vector < wireConnection > connections;
@@ -57,7 +57,7 @@ public:
 	wireSegment();
 
 	// Give the segment initial values - begin and end points, and orientation
-	wireSegment(GLPoint2f nB, GLPoint2f nE, bool nisVertical, unsigned long nid);
+	wireSegment(Point nB, Point nE, bool nisVertical, unsigned long nid);
 };
 
 #endif

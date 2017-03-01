@@ -36,7 +36,7 @@ bool cmdDeleteGate::Do() {
 
 	//make sure the gate exists
 	if ((gCircuit->getGates())->find(gateId) == (gCircuit->getGates())->end()) return false; //error: gate not found
-	std::map<std::string, GLPoint2f> gateConns = (*(gCircuit->getGates()))[gateId]->getHotspotList();
+	std::map<std::string, Point> gateConns = (*(gCircuit->getGates()))[gateId]->getHotspotList();
 	auto connWalk = gateConns.begin();
 	std::vector < int > deleteWires;
 	//we will need to disconect all wires that connect to that gate from that gate

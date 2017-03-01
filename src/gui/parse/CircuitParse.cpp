@@ -104,8 +104,8 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 
 				// Set the page viewport:
 				istringstream iss(pageView);
-				GLPoint2f topLeft(0, 0);
-				GLPoint2f bottomRight(50, 50);
+				Point topLeft(0, 0);
+				Point bottomRight(50, 50);
 				char dump;
 				iss >> topLeft.x >> dump >> topLeft.y >> dump >> bottomRight.x >> dump >> bottomRight.y;
 				gCanvas->setViewport(topLeft, bottomRight);
@@ -360,7 +360,7 @@ void CircuitParse::parseWireToSend(void) {
 					}
 					else if (temp == "points") {
 						// points are begin.x, begin.y, end.x, end.y; comma delimited
-						GLPoint2f begin, end;
+						Point begin, end;
 						istringstream iss(mParse->readTagValue("points"));
 						iss >> begin.x >> dump >> begin.y >> dump >> end.x >> dump >> end.y;
 						newSeg.begin = begin;
@@ -473,7 +473,7 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 		mParse->openTag("PageViewport");
 		oss.str("");
 		oss.clear();
-		GLPoint2f topLeft, bottomRight;
+		Point topLeft, bottomRight;
 		glc[i]->getViewport(topLeft, bottomRight);
 		oss << topLeft.x << "," << topLeft.y << "," << bottomRight.x << "," << bottomRight.y;
 		mParse->writeTag("PageViewport", oss.str());

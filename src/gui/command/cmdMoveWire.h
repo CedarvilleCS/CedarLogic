@@ -15,7 +15,7 @@ public:
 		const SegmentMap &oldList, const SegmentMap &newList);
 
 	cmdMoveWire(GUICircuit* gCircuit, unsigned long wid,
-		const SegmentMap &oldList, GLPoint2f delta);
+		const SegmentMap &oldList, Point delta);
 
 	cmdMoveWire(std::string def);
 
@@ -32,5 +32,5 @@ protected:
 	unsigned long wid;
 	SegmentMap oldSegList;
 	SegmentMap newSegList;
-	GLPoint2f delta;
+	Point delta;
 };

@@ -126,7 +126,7 @@ void klsClipboard::copyBlock(GUICircuit* gCircuit, GUICanvas* gCanvas,
 	for (unsigned int i = 0; i < gates.size(); i++) {
 
 		// generate list of wire connections
-		map < string, GLPoint2f > hotspotmap = (*(gCircuit->getGates()))[gates[i]]->getHotspotList();
+		map < string, Point > hotspotmap = (*(gCircuit->getGates()))[gates[i]]->getHotspotList();
 		auto hsmapWalk = hotspotmap.begin();
 
 		while (hsmapWalk != hotspotmap.end()) {

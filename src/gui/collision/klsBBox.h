@@ -11,7 +11,7 @@
 #ifndef KLSBBOX_H_
 #define KLSBBOX_H_
 
-// For GLfloat and GLPoint2f:
+// For GLfloat and Point:
 #include "../graphics/gl_defs.h"
 
 // For FLT_MAX and fabs():
@@ -32,8 +32,8 @@ public:
 
 	// Clear the bbox to be ready to add points to it:
 	void reset( void ) {
-		bboxMin = GLPoint2f(FLT_MAX, FLT_MAX);
-		bboxMax = GLPoint2f(-FLT_MAX, -FLT_MAX);
+		bboxMin = Point(FLT_MAX, FLT_MAX);
+		bboxMax = Point(-FLT_MAX, -FLT_MAX);
 	};
 
 	bool empty( void ) {
@@ -42,7 +42,7 @@ public:
 
 	// Insert a point into the box, expanding the box dimensions to
 	// enclose the new point if needed.
-	void addPoint( GLPoint2f newPt ) {
+	void addPoint( Point newPt ) {
 		if( newPt.x < bboxMin.x ) {
 			bboxMin.x = newPt.x;
 		}		
@@ -64,7 +64,7 @@ public:
 	};
 
 	// Check if a point is within the bbox:
-	bool contains( GLPoint2f inPt ) {
+	bool contains( Point inPt ) {
 		// Make sure that the bboxes are valid:
 		if( this->empty() ) return false;
 		
@@ -109,7 +109,7 @@ public:
 			// For each axis, just use the largest "start" and the smallest "end"
 			// coordinate as the intersection box.
 
-			GLPoint2f a, b;
+			Point a, b;
 			a.x = max( this->getLeft(), oBox.getLeft() );
 			a.y = max( this->getBottom(), oBox.getBottom() );
 			
@@ -127,10 +127,10 @@ public:
 	};
 
 	// Corner access methods:
-	GLPoint2f getTopLeft( void ) { return GLPoint2f(bboxMin.x, bboxMax.y); };
-	GLPoint2f getTopRight( void ) { return GLPoint2f(bboxMax.x, bboxMax.y); };
-	GLPoint2f getBottomLeft( void ) { return GLPoint2f(bboxMin.x, bboxMin.y); };
-	GLPoint2f getBottomRight( void ) { return GLPoint2f(bboxMax.x, bboxMin.y); };
+	Point getTopLeft( void ) { return Point(bboxMin.x, bboxMax.y); };
+	Point getTopRight( void ) { return Point(bboxMax.x, bboxMax.y); };
+	Point getBottomLeft( void ) { return Point(bboxMin.x, bboxMin.y); };
+	Point getBottomRight( void ) { return Point(bboxMax.x, bboxMin.y); };
 
 	// Edge access methods:
 	GLfloat getLeft( void ) { return bboxMin.x; };
@@ -173,7 +173,7 @@ public:
 	};
 
 protected:
-	GLPoint2f bboxMin, bboxMax;
+	Point bboxMin, bboxMax;
 };
 
 #endif /*KLSBBOX_H_*/

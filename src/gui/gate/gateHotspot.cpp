@@ -29,7 +29,7 @@ void gateHotspot::calcBBox() {
 	this->setBBox(newBBox);
 }
 
-GLPoint2f gateHotspot::getLocation() {
+Point gateHotspot::getLocation() {
 	return worldLocation;
 }
 

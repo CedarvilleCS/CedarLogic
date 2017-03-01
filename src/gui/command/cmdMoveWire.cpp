@@ -12,11 +12,11 @@ cmdMoveWire::cmdMoveWire(GUICircuit* gCircuit, unsigned long wid,
 	this->wid = wid;
 	oldSegList = oldList;
 	newSegList = newList;
-	delta = GLPoint2f(0, 0);
+	delta = Point(0, 0);
 }
 
 cmdMoveWire::cmdMoveWire(GUICircuit* gCircuit, unsigned long wid,
-	const SegmentMap &oldList, GLPoint2f delta) :
+	const SegmentMap &oldList, Point delta) :
 	klsCommand(true, "Move Wire") {
 
 	this->gCircuit = gCircuit;
@@ -37,7 +37,7 @@ cmdMoveWire::cmdMoveWire(string def) : klsCommand(true, "Move Wire") {
 	while (temp == "vsegment" || temp == "hsegment") {
 		bool isVertical = (temp == "vsegment");
 		int segID;
-		GLPoint2f begin, end;
+		Point begin, end;
 		iss >> segID >> begin.x >> dump >> begin.y >> dump >> end.x >> dump >> end.y;
 		newSegList[segID] = wireSegment(begin, end, isVertical, segID);
 		if (!doneFirstSeg) {
@@ -61,7 +61,7 @@ cmdMoveWire::cmdMoveWire(string def) : klsCommand(true, "Move Wire") {
 		doneFirstSeg = true;
 	}
 	oldSegList = newSegList;
-	delta = GLPoint2f(0, 0);
+	delta = Point(0, 0);
 }
 
 bool cmdMoveWire::Do() {

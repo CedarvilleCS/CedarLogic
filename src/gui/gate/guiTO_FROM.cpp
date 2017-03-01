@@ -96,13 +96,13 @@ void guiTO_FROM::calcBBox() {
 	// Adjust the bounding box based on the text's bbox:
 	GLdouble textWidth = textBBox.right - textBBox.left;
 	if (getGUIType() == "TO") {
-		GLPoint2f bR = modelBBox.getBottomRight();
+		Point bR = modelBBox.getBottomRight();
 		bR.x += textWidth;
 		modelBBox.addPoint(bR);
 		theText.setPosition(TO_BUFFER, TO_FROM_TEXT_HEIGHT / 2 + 0.30);
 	}
 	else if (getGUIType() == "FROM") {
-		GLPoint2f tL = modelBBox.getTopLeft();
+		Point tL = modelBBox.getTopLeft();
 		tL.x -= (textWidth + FROM_BUFFER);
 		modelBBox.addPoint(tL);
 		theText.setPosition(tL.x + FROM_FIX_SHIFT, TO_FROM_TEXT_HEIGHT / 2 + 0.30);

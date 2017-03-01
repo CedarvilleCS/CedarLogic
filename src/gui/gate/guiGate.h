@@ -106,7 +106,7 @@ public:
 	void saveGate(XMLParser*);
 
 	// Return the map of hotspot names to their coordinates:
-	std::map<std::string, GLPoint2f> getHotspotList();
+	std::map<std::string, Point> getHotspotList();
 
 	virtual void draw(bool color = true);
 
@@ -129,7 +129,7 @@ public:
 protected:
 
 	// Convert model->world coordinates:
-	GLPoint2f modelToWorld(GLPoint2f c);
+	Point modelToWorld(Point c);
 
 	// Get a world-space bounding box:
 	klsBBox getWorldBBox() { return this->getBBox(); };
@@ -155,7 +155,7 @@ protected:
 				   // Model space bounding box:
 	klsBBox modelBBox;
 
-	std::vector<GLPoint2f> vertices;
+	std::vector<Point> vertices;
 
 	// map i/o name to hotspot coord
 	std::map< std::string, gateHotspot* > hotspots;

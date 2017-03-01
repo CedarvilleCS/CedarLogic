@@ -31,7 +31,7 @@ bool wireSegment::isVertical() const {
 wireSegment::wireSegment() : klsCollisionObject(COLL_WIRE_SEG) {};
 
 // Give the segment initial values - begin and end points, and orientation
-wireSegment::wireSegment(GLPoint2f nB, GLPoint2f nE, bool nisVertical, unsigned long nid) :
+wireSegment::wireSegment(Point nB, Point nE, bool nisVertical, unsigned long nid) :
 	klsCollisionObject(COLL_WIRE_SEG), verticalSeg(nisVertical), begin(nB), end(nE), id(nid) {
 	calcBBox();
 };

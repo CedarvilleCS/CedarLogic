@@ -57,14 +57,14 @@ void klsMiniMap::setViewport() {
 	if (endpoint.x > maxX) maxX = endpoint.x;
 	if (endpoint.y < minY) minY = endpoint.y;
 
-	minCorner = GLPoint2f(minX - 5, maxY + 5);
-	maxCorner = GLPoint2f(maxX + 5, minY - 5);
+	minCorner = Point(minX - 5, maxY + 5);
+	maxCorner = Point(maxX + 5, minY - 5);
 
 	double screenAspect = (double)sz.GetHeight() / (double)sz.GetWidth();
 	double mapWidth = maxCorner.x - minCorner.x;
 	double mapHeight = minCorner.y - maxCorner.y; // max and min corner's defs are weird...
 
-	GLPoint2f orthoBoxTL, orthoBoxBR;
+	Point orthoBoxTL, orthoBoxBR;
 
 	// If the map's width is the limiting factor:
 	if (screenAspect * mapWidth >= mapHeight) {
@@ -73,8 +73,8 @@ void klsMiniMap::setViewport() {
 
 		// Set the ortho box width equal to the map width, and center the
 		// height in the box:
-		orthoBoxTL = GLPoint2f(minCorner.x, minCorner.y + 0.5*(imageHeight - mapHeight));
-		orthoBoxBR = GLPoint2f(maxCorner.x, maxCorner.y - 0.5*(imageHeight - mapHeight));
+		orthoBoxTL = Point(minCorner.x, minCorner.y + 0.5*(imageHeight - mapHeight));
+		orthoBoxBR = Point(maxCorner.x, maxCorner.y - 0.5*(imageHeight - mapHeight));
 	}
 	else {
 		// Fit to height:
@@ -82,8 +82,8 @@ void klsMiniMap::setViewport() {
 
 		// Set the ortho box height equal to the map height, and center the
 		// width in the box:
-		orthoBoxTL = GLPoint2f(minCorner.x - 0.5*(imageWidth - mapWidth), minCorner.y);
-		orthoBoxBR = GLPoint2f(maxCorner.x + 0.5*(imageWidth - mapWidth), maxCorner.y);
+		orthoBoxTL = Point(minCorner.x - 0.5*(imageWidth - mapWidth), minCorner.y);
+		orthoBoxBR = Point(maxCorner.x + 0.5*(imageWidth - mapWidth), maxCorner.y);
 	}
 
 	// gluOrtho2D(left, right, bottom, top); (In world-space coords.)
@@ -223,7 +223,7 @@ void klsMiniMap::renderMap() {
 	glLineWidth(lineWidthOld);
 }
 
-void klsMiniMap::update(GLPoint2f origin, GLPoint2f endpoint) {
+void klsMiniMap::update(Point origin, Point endpoint) {
 	//wxClientDC dc(this);
 	//dc.FloodFill(0, 0, *wxWHITE);
 	this->origin = origin;
@@ -278,10 +278,10 @@ void klsMiniMap::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
 
 void klsMiniMap::OnMouseEvent(wxMouseEvent& evt) {
 	if (evt.LeftIsDown() && currentCanvas != NULL) {
-		GLPoint2f p1, p2;
+		Point p1, p2;
 		wxSize sz = GetClientSize();
 		currentCanvas->getViewport(p1, p2);
-		GLPoint2f halfViewport((p2.x - p1.x) / 2, (p2.y - p1.y) / 2);
+		Point halfViewport((p2.x - p1.x) / 2, (p2.y - p1.y) / 2);
 		int diffX = evt.GetPosition().x, diffY = evt.GetPosition().y;
 		float fdiffX = diffX * (maxCorner.x - minCorner.x) / sz.GetWidth();
 		float fdiffY = diffY * (maxCorner.y - minCorner.y) / sz.GetHeight();

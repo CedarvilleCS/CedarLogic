@@ -280,7 +280,7 @@ void OscopeCanvas::UpdateData(void) {
 				continue;
 			}
 
-			map<string, GLPoint2f> hsList = currentGate->getHotspotList();
+			map<string, Point> hsList = currentGate->getHotspotList();
 			if (hsList.size() != 0) {
 				string firstInput = (hsList.begin())->first;
 

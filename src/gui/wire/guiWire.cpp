@@ -19,16 +19,16 @@
 DECLARE_APP(MainApp)
 
 // Returns distance from p1 to p2
-float lineMagnitude(GLPoint2f p1, GLPoint2f p2) {
+float lineMagnitude(Point p1, Point p2) {
 	return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }
 
 // Returns distance from point p to line defined by l1 and l2
-float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2) {
+float distanceToLine(Point p, Point l1, Point l2) {
 
 	float lineMag = lineMagnitude(l1, l2);
 
-	if (lineMag < EQUALRANGE) {
+	if (lineMag < Point::EqualRange) {
 		return FLT_MAX;
 	}
 
@@ -36,11 +36,11 @@ float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2) {
 
 	u = u / pow(lineMag, 2);
 
-	if (u < EQUALRANGE || u > 1) {
+	if (u < Point::EqualRange || u > 1) {
 		return min(lineMagnitude(p, l1), lineMagnitude(p, l2));
 	}
 	else {
-		return lineMagnitude(p, GLPoint2f(l1.x + u*(l2.x - l1.x), l1.y + u*(l2.y - l1.y)));
+		return lineMagnitude(p, Point(l1.x + u*(l2.x - l1.x), l1.y + u*(l2.y - l1.y)));
 	}
 }
 
@@ -88,7 +88,7 @@ void guiWire::addConnection(guiGate* iGate, string connection, bool openMode) {
 	if (connectPoints.size() < 3) { setVerticalBar = true; calcShape(); return; }
 	this->deleteSubObjects(); // prevent coll checker pointers from invalidating
 	// Find the nearest segment
-	GLPoint2f hsPoint;
+	Point hsPoint;
 	float minDistance = FLT_MAX; long closestSeg = headSegment;
 	iGate->getHotspotCoords(connection, hsPoint.x, hsPoint.y);
 	auto segWalk = segMap.begin();
@@ -105,13 +105,13 @@ void guiWire::addConnection(guiGate* iGate, string connection, bool openMode) {
 	//	When mergeSegments is called, extension of existing segments is accomplished.
 	if (segMap[closestSeg].isHorizontal()) { // create the vertical seg
 		if (segMap[closestSeg].begin == segMap[closestSeg].end) segMap[closestSeg].end.x += 1;
-		segMap[nextSegID] = wireSegment(GLPoint2f(hsPoint.x, min(hsPoint.y, segMap[closestSeg].begin.y)), GLPoint2f(hsPoint.x, max(hsPoint.y, segMap[closestSeg].begin.y)), true, nextSegID);
+		segMap[nextSegID] = wireSegment(Point(hsPoint.x, min(hsPoint.y, segMap[closestSeg].begin.y)), Point(hsPoint.x, max(hsPoint.y, segMap[closestSeg].begin.y)), true, nextSegID);
 		segMap[closestSeg].intersects[hsPoint.x].push_back(nextSegID);
 		segMap[nextSegID].intersects[segMap[closestSeg].begin.y].push_back(closestSeg);
 	}
 	else { // create the horizontal seg
 		if (segMap[closestSeg].begin == segMap[closestSeg].end) segMap[closestSeg].end.y += 1;
-		segMap[nextSegID] = wireSegment(GLPoint2f(min(hsPoint.x, segMap[closestSeg].begin.x), hsPoint.y), GLPoint2f(max(hsPoint.x, segMap[closestSeg].begin.x), hsPoint.y), false, nextSegID);
+		segMap[nextSegID] = wireSegment(Point(min(hsPoint.x, segMap[closestSeg].begin.x), hsPoint.y), Point(max(hsPoint.x, segMap[closestSeg].begin.x), hsPoint.y), false, nextSegID);
 		segMap[closestSeg].intersects[hsPoint.y].push_back(nextSegID);
 		segMap[nextSegID].intersects[segMap[closestSeg].begin.x].push_back(closestSeg);
 	}
@@ -267,7 +267,7 @@ void guiWire::draw(bool color) {
 	}
 
 
-	vector< GLPoint2f >* isectPoints = &(renderInfo.intersectPoints);
+	vector< Point >* isectPoints = &(renderInfo.intersectPoints);
 	for (unsigned int i = 0; i < isectPoints->size(); i++) {
 		// Draw the connection point:
 		glTranslatef((*isectPoints)[i].x, (*isectPoints)[i].y, 0.0);
@@ -287,7 +287,7 @@ void guiWire::draw(bool color) {
 	}
 
 	if (wxGetApp().appSettings.wireConnVisible) {
-		vector< GLPoint2f >* vertexPoints = &(renderInfo.vertexPoints);
+		vector< Point >* vertexPoints = &(renderInfo.vertexPoints);
 		for (unsigned int i = 0; i < vertexPoints->size(); i++) {
 			// Draw the connection point:
 			glTranslatef((*vertexPoints)[i].x, (*vertexPoints)[i].y, 0.0);
@@ -322,7 +322,7 @@ bool guiWire::hover(float cx, float cy, float delta) {
 	// Set up the mouse as a collision object:
 	klsCollisionObject mouse(COLL_MOUSEBOX);
 	klsBBox mBox = mouse.getBBox();
-	mBox.addPoint(GLPoint2f(cx, cy));
+	mBox.addPoint(Point(cx, cy));
 	mBox.extendTop(delta);
 	mBox.extendBottom(delta);
 	mBox.extendLeft(delta);
@@ -343,11 +343,11 @@ bool guiWire::hover(float cx, float cy, float delta) {
 // Return the begin point of the initial vertical bar seg segMap[headSegment].  All other segs
 //	hold a delta to this so we know where to move them when the 
 //	user shifts the whole wire
-GLPoint2f guiWire::getCenter(void) {
+Point guiWire::getCenter(void) {
 	return segMap[headSegment].begin;
 }
 
-void guiWire::move(GLPoint2f origin, GLPoint2f delta) {
+void guiWire::move(Point origin, Point delta) {
 
 	// Only move if all connections are selected, else just let the updateConnectionPos
 	//		figure it all out as various connections are moved
@@ -355,7 +355,7 @@ void guiWire::move(GLPoint2f origin, GLPoint2f delta) {
 		if (!(connectPoints[i].cGate->isSelected())) return;
 	}
 
-	GLPoint2f realDelta = origin + delta - segMap[headSegment].begin;
+	Point realDelta = origin + delta - segMap[headSegment].begin;
 
 	auto segWalk = segMap.begin();
 
@@ -541,9 +541,9 @@ void guiWire::calcShape() {
 
 	// If there are less than 2 connect points then there is no reason to create a shape
 	if (connectPoints.size() < 2) return;
-	GLPoint2f vertex;
+	Point vertex;
 	float minx = FLT_MAX, maxx = -FLT_MAX, miny = FLT_MAX, maxy = -FLT_MAX;
-	stack < GLPoint2f > vertices;
+	stack < Point > vertices;
 	// Find the vertices and the center point
 	for (unsigned int i = 0; i < connectPoints.size(); i++) {
 		connectPoints[i].cGate->getHotspotCoords(connectPoints[i].connection, vertex.x, vertex.y);
@@ -551,7 +551,7 @@ void guiWire::calcShape() {
 		if (vertex.x < minx) minx = vertex.x;
 		if (vertex.y > maxy) maxy = vertex.y;
 		if (vertex.y < miny) miny = vertex.y;
-		vertices.push(GLPoint2f(vertex.x, vertex.y));
+		vertices.push(Point(vertex.x, vertex.y));
 	}
 	int counter = connectPoints.size() - 1;
 
@@ -585,7 +585,7 @@ void guiWire::calcShape() {
 			// Create a new horizontal segment with begin being left of end
 			//	If this would be a 0-length seg, then just add the connection to the vbar and call it even
 			if (min(vertices.top().x, centerx) != max(vertices.top().x, centerx)) {
-				segMap[nextSegID] = wireSegment(GLPoint2f(min(vertices.top().x, centerx), vertices.top().y), GLPoint2f(max(vertices.top().x, centerx), vertices.top().y), false, nextSegID);
+				segMap[nextSegID] = wireSegment(Point(min(vertices.top().x, centerx), vertices.top().y), Point(max(vertices.top().x, centerx), vertices.top().y), false, nextSegID);
 				// Assign the connection vertex to the proper segment
 				segMap[nextSegID].connections.push_back(connectPoints[counter--]);
 				segMap[nextSegID].intersects[centerx].push_back(0);
@@ -626,7 +626,7 @@ void guiWire::calcShape() {
 			// Create a new horizontal segment with begin being left of end
 			//	If this would be a 0-length seg, then just add the connection to the vbar and call it even
 			if (min(vertices.top().y, centery) != max(vertices.top().y, centery)) {
-				segMap[nextSegID] = wireSegment(GLPoint2f(vertices.top().x, min(vertices.top().y, centery)), GLPoint2f(vertices.top().x, max(vertices.top().y, centery)), true, nextSegID);
+				segMap[nextSegID] = wireSegment(Point(vertices.top().x, min(vertices.top().y, centery)), Point(vertices.top().x, max(vertices.top().y, centery)), true, nextSegID);
 				// Assign the connection vertex to the proper segment
 				segMap[nextSegID].connections.push_back(connectPoints[counter--]);
 				segMap[nextSegID].intersects[centery].push_back(2);
@@ -645,14 +645,14 @@ void guiWire::calcShape() {
 	else {
 		unsigned int verticalConn = (isOneVertical ? 0 : 1);
 		unsigned int horizontalConn = (isOneVertical ? 1 : 0);
-		GLPoint2f verticalVertex, horizontalVertex;
+		Point verticalVertex, horizontalVertex;
 		if (verticalConn == 1) verticalVertex = vertices.top();
 		else horizontalVertex = vertices.top();
 		vertices.pop();
 		if (verticalConn == 0) verticalVertex = vertices.top();
 		else horizontalVertex = vertices.top();
-		segMap[0] = wireSegment(GLPoint2f(verticalVertex.x, min(verticalVertex.y, horizontalVertex.y)), GLPoint2f(verticalVertex.x, max(verticalVertex.y, horizontalVertex.y)), true, 0);
-		segMap[1] = wireSegment(GLPoint2f(min(verticalVertex.x, horizontalVertex.x), horizontalVertex.y), GLPoint2f(max(verticalVertex.x, horizontalVertex.x), horizontalVertex.y), false, 1);
+		segMap[0] = wireSegment(Point(verticalVertex.x, min(verticalVertex.y, horizontalVertex.y)), Point(verticalVertex.x, max(verticalVertex.y, horizontalVertex.y)), true, 0);
+		segMap[1] = wireSegment(Point(min(verticalVertex.x, horizontalVertex.x), horizontalVertex.y), Point(max(verticalVertex.x, horizontalVertex.x), horizontalVertex.y), false, 1);
 
 		segMap[0].connections.push_back(connectPoints[verticalConn]);
 		segMap[1].connections.push_back(connectPoints[horizontalConn]);
@@ -678,7 +678,7 @@ bool guiWire::startSegDrag(klsCollisionObject* mouse) {
 	this->deleteSubObjects(); // prevent coll checker pointers from invalidating	
 	// Otherwise just grab the first one found and fix the connection points with new segments
 	auto cgWalk = cg.begin();
-	GLPoint2f vertex;
+	Point vertex;
 	// Don't mess up the pointers; just add to this vector until we don't need the pointer anymore
 	vector < wireSegment > segsToAddWhenFound;
 	// Check connections on the current seg, if we need to extend segments to connections then do it
@@ -742,7 +742,7 @@ void guiWire::updateSegDrag(klsCollisionObject* mouse) {
 			if (segMap[currentDragSegment].isVertical()) {
 				// Extend/shrink the endpoints if necessary, if in the middle then no mod necessary
 				for (unsigned int i = 0; i < ws->connections.size(); i++) {
-					GLPoint2f hsPoint;
+					Point hsPoint;
 					ws->connections[i].cGate->getHotspotCoords(ws->connections[i].connection, hsPoint.x, hsPoint.y);
 					hsMin = min(hsMin, hsPoint.x);
 					hsMax = max(hsMax, hsPoint.x);
@@ -760,7 +760,7 @@ void guiWire::updateSegDrag(klsCollisionObject* mouse) {
 			else {
 				// Extend/shrink the endpoints if necessary, if in the middle then no mod necessary
 				for (unsigned int i = 0; i < ws->connections.size(); i++) {
-					GLPoint2f hsPoint;
+					Point hsPoint;
 					ws->connections[i].cGate->getHotspotCoords(ws->connections[i].connection, hsPoint.x, hsPoint.y);
 					hsMin = min(hsMin, hsPoint.y);
 					hsMax = max(hsMax, hsPoint.y);
@@ -802,7 +802,7 @@ void guiWire::endSegDrag() {
 //	and another one from the new position to pass to updateSegDrag
 void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 	bool foundit = false;
-	GLPoint2f newLocation;
+	Point newLocation;
 	unsigned int connID = 0;
 	auto segWalk = segMap.begin();
 
@@ -825,7 +825,7 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 		// We found the segment we're looking for
 		if (segMap[currentDragSegment].isVertical()) {
 			// If the seg is vertical then create a horizontal seg to handle the connection and remove the connection from the vertical seg
-			segMap[nextSegID] = wireSegment(newLocation, GLPoint2f(segMap[currentDragSegment].begin.x, newLocation.y), false, nextSegID);
+			segMap[nextSegID] = wireSegment(newLocation, Point(segMap[currentDragSegment].begin.x, newLocation.y), false, nextSegID);
 			segMap[nextSegID].intersects[segMap[currentDragSegment].begin.x].push_back(currentDragSegment);
 			segMap[nextSegID].connections.push_back(segMap[currentDragSegment].connections[connID]);
 			segMap[currentDragSegment].intersects[newLocation.y].push_back(nextSegID);
@@ -838,7 +838,7 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 		// make new segs for other connections on my selected segment
 		for (unsigned int j = 0; j < segMap[currentDragSegment].connections.size(); j++) {
 			if (j != connID) {
-				GLPoint2f connPoint;
+				Point connPoint;
 				segMap[currentDragSegment].connections[j].cGate->getHotspotCoords(segMap[currentDragSegment].connections[j].connection, connPoint.x, connPoint.y);
 				segMap[nextSegID] = wireSegment(connPoint, connPoint, true, nextSegID);
 				segMap[nextSegID].intersects[connPoint.y].push_back(currentDragSegment);
@@ -852,23 +852,23 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 		segMap[currentDragSegment].connections.clear();
 		segMap[currentDragSegment].connections.push_back(wc);
 		// Extend/shrink the endpoints if necessary, if in the middle then no mod necessary
-		GLPoint2f hsPoint;
+		Point hsPoint;
 		auto wsLeft = segMap[currentDragSegment].intersects.begin();
 		float isectLeft = (wsLeft != segMap[currentDragSegment].intersects.end() ? wsLeft->first : FLT_MAX);
 		map < GLfloat, vector < long > >::reverse_iterator wsRight = segMap[currentDragSegment].intersects.rbegin();
 		float isectRight = (wsRight != segMap[currentDragSegment].intersects.rend() ? wsRight->first : -FLT_MAX);
-		origin.addPoint(GLPoint2f(0, segMap[currentDragSegment].begin.y));
+		origin.addPoint(Point(0, segMap[currentDragSegment].begin.y));
 		mouseCoords = origin;
 		segMap[currentDragSegment].begin.x = min(newLocation.x, isectLeft);
 		segMap[currentDragSegment].end.x = max(newLocation.x, isectRight);
 		origin.reset();
-		origin.addPoint(GLPoint2f(0, newLocation.y));
+		origin.addPoint(Point(0, newLocation.y));
 	}
 	else {
 		// We found the segment we're looking for
 		if (segMap[currentDragSegment].isHorizontal()) {
 			// If the seg is horizontal then create a vertical seg to handle the connection and remove the connection from the horizontal seg
-			segMap[nextSegID] = wireSegment(newLocation, GLPoint2f(newLocation.x, segMap[currentDragSegment].begin.y), true, nextSegID);
+			segMap[nextSegID] = wireSegment(newLocation, Point(newLocation.x, segMap[currentDragSegment].begin.y), true, nextSegID);
 			segMap[nextSegID].intersects[segMap[currentDragSegment].begin.y].push_back(currentDragSegment);
 			segMap[nextSegID].connections.push_back(segMap[currentDragSegment].connections[connID]);
 			segMap[currentDragSegment].intersects[newLocation.x].push_back(nextSegID);
@@ -881,7 +881,7 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 		// make new segs for other connections on my selected segment
 		for (unsigned int j = 0; j < segMap[currentDragSegment].connections.size(); j++) {
 			if (j != connID) {
-				GLPoint2f connPoint;
+				Point connPoint;
 				segMap[currentDragSegment].connections[j].cGate->getHotspotCoords(segMap[currentDragSegment].connections[j].connection, connPoint.x, connPoint.y);
 				segMap[nextSegID] = wireSegment(connPoint, connPoint, false, nextSegID);
 				segMap[nextSegID].intersects[connPoint.x].push_back(currentDragSegment);
@@ -895,17 +895,17 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 		segMap[currentDragSegment].connections.clear();
 		segMap[currentDragSegment].connections.push_back(wc);
 		// Extend/shrink the endpoints if necessary, if in the middle then no mod necessary
-		GLPoint2f hsPoint;
+		Point hsPoint;
 		auto wsBottom = segMap[currentDragSegment].intersects.begin();
 		float isectBottom = (wsBottom != segMap[currentDragSegment].intersects.end() ? wsBottom->first : FLT_MAX);
 		map < GLfloat, vector < long > >::reverse_iterator wsTop = segMap[currentDragSegment].intersects.rbegin();
 		float isectTop = (wsTop != segMap[currentDragSegment].intersects.rend() ? wsTop->first : -FLT_MAX);
-		origin.addPoint(GLPoint2f(segMap[currentDragSegment].begin.x, 0));
+		origin.addPoint(Point(segMap[currentDragSegment].begin.x, 0));
 		mouseCoords = origin;
 		segMap[currentDragSegment].begin.y = min(newLocation.y, isectBottom);
 		segMap[currentDragSegment].end.y = max(newLocation.y, isectTop);
 		origin.reset();
-		origin.addPoint(GLPoint2f(newLocation.x, 0));
+		origin.addPoint(Point(newLocation.x, 0));
 	}
 	klsCollisionObject shiftLocation(COLL_MOUSEBOX);
 	shiftLocation.setBBox(origin);
@@ -949,10 +949,10 @@ void guiWire::mergeSegments() {
 			if (cSeg->isHorizontal() && (cSeg->begin.y != nSeg->begin.y)) { walkNewSegs++; continue; }
 			// Now a valid check can be made on endpoints.  Consider that for horizontal
 			//	segments, begin's x is always less than end's x (same for y's in vertical)
-			if (cSeg->isVertical() && ((cSeg->begin.y >= nSeg->begin.y - EQUALRANGE && cSeg->begin.y <= nSeg->end.y + EQUALRANGE) ||
-				(cSeg->end.y >= nSeg->begin.y - EQUALRANGE && cSeg->end.y <= nSeg->end.y + EQUALRANGE) ||
-				(nSeg->begin.y >= cSeg->begin.y - EQUALRANGE && nSeg->begin.y <= cSeg->end.y + EQUALRANGE) ||
-				(nSeg->end.y >= cSeg->begin.y - EQUALRANGE && nSeg->end.y <= cSeg->end.y + EQUALRANGE))) {
+			if (cSeg->isVertical() && ((cSeg->begin.y >= nSeg->begin.y - Point::EqualRange && cSeg->begin.y <= nSeg->end.y + Point::EqualRange) ||
+				(cSeg->end.y >= nSeg->begin.y - Point::EqualRange && cSeg->end.y <= nSeg->end.y + Point::EqualRange) ||
+				(nSeg->begin.y >= cSeg->begin.y - Point::EqualRange && nSeg->begin.y <= cSeg->end.y + Point::EqualRange) ||
+				(nSeg->end.y >= cSeg->begin.y - Point::EqualRange && nSeg->end.y <= cSeg->end.y + Point::EqualRange))) {
 				// Bounds are checked and the segments need merged.  Always merge to the segment
 				//	already in the new seg list.  Begin point becomes min of the begin points,
 				//	end point becomes max of the end points, connections are pushed on the vector
@@ -966,7 +966,7 @@ void guiWire::mergeSegments() {
 					}
 					isectWalk++;
 				}
-				GLPoint2f hsPoint; float hsMin = FLT_MAX, hsMax = -FLT_MAX;
+				Point hsPoint; float hsMin = FLT_MAX, hsMax = -FLT_MAX;
 				for (unsigned int i = 0; i < nSeg->connections.size(); i++) {
 					nSeg->connections[i].cGate->getHotspotCoords(nSeg->connections[i].connection, hsPoint.x, hsPoint.y);
 					hsMin = min(hsMin, hsPoint.y);
@@ -986,10 +986,10 @@ void guiWire::mergeSegments() {
 				cSeg = nSeg;
 				found = mergingInMap = true;
 			}
-			else if (cSeg->isHorizontal() && ((cSeg->begin.x >= nSeg->begin.x - EQUALRANGE && cSeg->begin.x <= nSeg->end.x + EQUALRANGE) ||
-				(cSeg->end.x >= nSeg->begin.x - EQUALRANGE && cSeg->end.x <= nSeg->end.x + EQUALRANGE) ||
-				(nSeg->begin.x >= cSeg->begin.x - EQUALRANGE && nSeg->begin.x <= cSeg->end.x + EQUALRANGE) ||
-				(nSeg->end.x >= cSeg->begin.x - EQUALRANGE && nSeg->end.x <= cSeg->end.x + EQUALRANGE))) {
+			else if (cSeg->isHorizontal() && ((cSeg->begin.x >= nSeg->begin.x - Point::EqualRange && cSeg->begin.x <= nSeg->end.x + Point::EqualRange) ||
+				(cSeg->end.x >= nSeg->begin.x - Point::EqualRange && cSeg->end.x <= nSeg->end.x + Point::EqualRange) ||
+				(nSeg->begin.x >= cSeg->begin.x - Point::EqualRange && nSeg->begin.x <= cSeg->end.x + Point::EqualRange) ||
+				(nSeg->end.x >= cSeg->begin.x - Point::EqualRange && nSeg->end.x <= cSeg->end.x + Point::EqualRange))) {
 				// Bounds are checked and the segments need merged.  Always merge to the segment
 				//	already in the new seg list.  Begin point becomes min of the begin points,
 				//	end point becomes max of the end points, connections are pushed on the vector
@@ -1003,7 +1003,7 @@ void guiWire::mergeSegments() {
 					}
 					isectWalk++;
 				}
-				GLPoint2f hsPoint; float hsMin = FLT_MAX, hsMax = -FLT_MAX;
+				Point hsPoint; float hsMin = FLT_MAX, hsMax = -FLT_MAX;
 				for (unsigned int i = 0; i < nSeg->connections.size(); i++) {
 					nSeg->connections[i].cGate->getHotspotCoords(nSeg->connections[i].connection, hsPoint.x, hsPoint.y);
 					hsMin = min(hsMin, hsPoint.x);
@@ -1040,7 +1040,7 @@ void guiWire::mergeSegments() {
 	while (segWalk != newSegMap.end()) {
 		wireSegment* nSeg = &(segWalk->second);
 		// trim endpoints first
-		GLPoint2f hsPoint; float hsMin = FLT_MAX, hsMax = -FLT_MAX;
+		Point hsPoint; float hsMin = FLT_MAX, hsMax = -FLT_MAX;
 		for (unsigned int i = 0; i < nSeg->connections.size(); i++) {
 			nSeg->connections[i].cGate->getHotspotCoords(nSeg->connections[i].connection, hsPoint.x, hsPoint.y);
 			if (nSeg->isHorizontal()) { hsMin = min(hsMin, hsPoint.x); hsMax = max(hsMax, hsPoint.x); }
@@ -1145,14 +1145,14 @@ void guiWire::generateRenderInfo() {
 	// gate connection points
 	for (unsigned int i = 0; i < connectPoints.size(); i++) {
 		connectPoints[i].cGate->getHotspotCoords(connectPoints[i].connection, x, y);
-		renderInfo.vertexPoints.push_back(GLPoint2f(x, y));
+		renderInfo.vertexPoints.push_back(Point(x, y));
 	}
 
 	// lines and segment intersections
 	auto segWalk = segMap.begin();
 	while (segWalk != segMap.end()) {
-		glLine.begin = GLPoint2f((segWalk->second).begin.x, (segWalk->second).begin.y);
-		glLine.end = GLPoint2f((segWalk->second).end.x, (segWalk->second).end.y);
+		glLine.begin = Point((segWalk->second).begin.x, (segWalk->second).begin.y);
+		glLine.end = Point((segWalk->second).end.x, (segWalk->second).end.y);
 
 		renderInfo.lineSegments.push_back(glLine);
 
@@ -1168,7 +1168,7 @@ void guiWire::generateRenderInfo() {
 			for (unsigned int i = 0; i < (isectWalk->second).size(); i++) {
 				x = ((segWalk->second).isVertical() ? (segWalk->second).begin.x : isectWalk->first);
 				y = ((segWalk->second).isVertical() ? isectWalk->first : (segWalk->second).begin.y);
-				renderInfo.intersectPoints.push_back(GLPoint2f(x, y));
+				renderInfo.intersectPoints.push_back(Point(x, y));
 			}
 			isectWalk++;
 		}

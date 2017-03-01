@@ -21,11 +21,11 @@
 class guiGate;
 class XMLParser;
 
-float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2);
+float distanceToLine(Point p, Point l1, Point l2);
 
 struct glWireRenderInfo {
-	vector< GLPoint2f > vertexPoints;
-	vector< GLPoint2f > intersectPoints;
+	vector< Point > vertexPoints;
+	vector< Point > intersectPoints;
 	vector< GLLine2f > lineSegments;
 };
 
@@ -54,10 +54,10 @@ public:
 
 	bool hover(float cx, float cy, float delta);
 
-	GLPoint2f getCenter();
+	Point getCenter();
 
 	// Moving functions
-	void move(GLPoint2f origin, GLPoint2f delta);
+	void move(Point origin, Point delta);
 
 	// Create the bbox for this wire, based on
 	// the bboxes of the wire segments. Also,

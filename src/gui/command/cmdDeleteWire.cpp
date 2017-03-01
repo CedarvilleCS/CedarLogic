@@ -35,7 +35,7 @@ bool cmdDeleteWire::Do() {
 	wireIds = wire->getIDs();
 
 	std::vector < wireConnection > destroyList = wire->getConnections();
-	cmdMoveWire* movewire = new cmdMoveWire(gCircuit, wireIds[0], wire->getSegmentMap(), GLPoint2f(0, 0));
+	cmdMoveWire* movewire = new cmdMoveWire(gCircuit, wireIds[0], wire->getSegmentMap(), Point(0, 0));
 	cmdList.push(movewire);
 
 	for (unsigned int j = 0; j < destroyList.size(); j++) {

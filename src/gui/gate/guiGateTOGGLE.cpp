@@ -74,12 +74,12 @@ Message_SET_GATE_PARAM* guiGateTOGGLE::checkClick(GLfloat x, GLfloat y) {
 	char dump;
 	iss >> minx >> dump >> miny >> dump >> maxx >> dump >> maxy;
 
-	toggleButton.addPoint(modelToWorld(GLPoint2f(minx, miny)));
-	toggleButton.addPoint(modelToWorld(GLPoint2f(minx, maxy)));
-	toggleButton.addPoint(modelToWorld(GLPoint2f(maxx, miny)));
-	toggleButton.addPoint(modelToWorld(GLPoint2f(maxx, maxy)));
+	toggleButton.addPoint(modelToWorld(Point(minx, miny)));
+	toggleButton.addPoint(modelToWorld(Point(minx, maxy)));
+	toggleButton.addPoint(modelToWorld(Point(maxx, miny)));
+	toggleButton.addPoint(modelToWorld(Point(maxx, maxy)));
 
-	if (toggleButton.contains(GLPoint2f(x, y))) {
+	if (toggleButton.contains(Point(x, y))) {
 		setLogicParam("OUTPUT_NUM", (getLogicParam("OUTPUT_NUM") == "0") ? "1" : "0");
 		/*		ostringstream oss;
 		oss << "SET GATE ID " << getID() << " PARAMETER OUTPUT_NUM " << getLogicParam("OUTPUT_NUM"); */

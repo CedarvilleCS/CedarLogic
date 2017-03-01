@@ -93,12 +93,12 @@ Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick(GLfloat x, GLfloat y) {
 		char dump;
 		iss >> minx >> dump >> miny >> dump >> maxx >> dump >> maxy;
 
-		keyButton.addPoint(modelToWorld(GLPoint2f(minx, miny)));
-		keyButton.addPoint(modelToWorld(GLPoint2f(minx, maxy)));
-		keyButton.addPoint(modelToWorld(GLPoint2f(maxx, miny)));
-		keyButton.addPoint(modelToWorld(GLPoint2f(maxx, maxy)));
+		keyButton.addPoint(modelToWorld(Point(minx, miny)));
+		keyButton.addPoint(modelToWorld(Point(minx, maxy)));
+		keyButton.addPoint(modelToWorld(Point(maxx, miny)));
+		keyButton.addPoint(modelToWorld(Point(maxx, maxy)));
 
-		if (keyButton.contains(GLPoint2f(x, y))) {
+		if (keyButton.contains(Point(x, y))) {
 			// Retrieve the value of the box
 			iss.clear();
 			keypadValue = (gparamWalk->first).substr(11, (gparamWalk->first).size() - 11);

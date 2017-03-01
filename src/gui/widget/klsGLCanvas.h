@@ -105,14 +105,14 @@ public:
 
 	// Event query methods:
 	// (Need member vars to back these up, too.)
-	GLPoint2f getDragStartCoords( mouseButton whichButton = BUTTON_LEFT ) { return dragStartCoords[whichButton]; };
-	GLPoint2f getMouseCoords(void) { return mouseCoords; };
+	Point getDragStartCoords( mouseButton whichButton = BUTTON_LEFT ) { return dragStartCoords[whichButton]; };
+	Point getMouseCoords(void) { return mouseCoords; };
 	bool isMouseInWindow(void) { return !mouseOutOfWindow; }
-	GLPoint2f getDragEndCoords( mouseButton whichButton = BUTTON_LEFT ) { return dragEndCoords[whichButton]; };
+	Point getDragEndCoords( mouseButton whichButton = BUTTON_LEFT ) { return dragEndCoords[whichButton]; };
 	bool isDragging(  mouseButton whichButton = BUTTON_LEFT ) { return isDraggingFlag[whichButton]; };
 	
 	// Return the point snapped to the nearest grid point:
-	GLPoint2f getSnappedPoint( GLPoint2f c );
+	Point getSnappedPoint( Point c );
 
 	void updateMiniMap(void);
 	
@@ -144,7 +144,7 @@ public:
 	GLdouble getZoom() { return viewZoom; };
 	void setZoom(GLdouble newZoom);
 	void zoomToMouse(long); //Julian
-	GLPoint2f getCenter(); //Julian
+	Point getCenter(); //Julian
 
 	// Grid background:
 	// (Can turn grid back on without changing the past
@@ -170,10 +170,10 @@ public:
 	// NOTE: It will enforce a 1:1 aspect ratio, but it will make the best
 	// attempt to fit the zoom box as close as possible. Basically, it will
 	// fit the longest side to the window, and center the rest.
-	void setViewport(GLPoint2f topLeft, GLPoint2f bottomRight);
+	void setViewport(Point topLeft, Point bottomRight);
 
 	// Retrieves the current viewport (left/top and right/bottom)
-	void getViewport(GLPoint2f&, GLPoint2f&);
+	void getViewport(Point&, Point&);
 
 	void autoScrollEnable(void) { autoScrollActive = true; };
 	void autoScrollDisable(void) { autoScrollActive = false; };
@@ -192,17 +192,17 @@ private:
 	void setMouseScreenCoords( wxPoint newCoords ) { mouseScreenCoords = newCoords; }
 
 
-	GLPoint2f dragStartCoords[NUM_BUTTONS];
-	void setDragStartCoords( GLPoint2f newCoords, mouseButton whichButton = BUTTON_LEFT ) { dragStartCoords[whichButton] = newCoords; };
+	Point dragStartCoords[NUM_BUTTONS];
+	void setDragStartCoords( Point newCoords, mouseButton whichButton = BUTTON_LEFT ) { dragStartCoords[whichButton] = newCoords; };
 
-	GLPoint2f mouseCoords;
-	void setMouseCoords( GLPoint2f newCoords ) { mouseCoords = newCoords; };
+	Point mouseCoords;
+	void setMouseCoords( Point newCoords ) { mouseCoords = newCoords; };
 
 	// Set the mouse coords by converting last known screen coords:
 	void setMouseCoords();
 
-	GLPoint2f dragEndCoords[NUM_BUTTONS];
-	void setDragEndCoords( GLPoint2f newCoords, mouseButton whichButton = BUTTON_LEFT ) { dragEndCoords[whichButton] = newCoords; };
+	Point dragEndCoords[NUM_BUTTONS];
+	void setDragEndCoords( Point newCoords, mouseButton whichButton = BUTTON_LEFT ) { dragEndCoords[whichButton] = newCoords; };
 
 	bool isDraggingFlag[NUM_BUTTONS];
 	void setIsDragging( bool isDragging, mouseButton whichButton = BUTTON_LEFT ) { isDraggingFlag[whichButton] = isDragging; };

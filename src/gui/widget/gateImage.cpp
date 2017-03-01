@@ -82,14 +82,14 @@ void gateImage::setViewport() {
 
 	wxSize sz = GetClientSize();
 	klsBBox m_gatebox = m_gate->getModelBBox();
-	GLPoint2f minCorner = GLPoint2f(m_gatebox.getLeft() - 0.5, m_gatebox.getTop() + 0.5);
-	GLPoint2f maxCorner = GLPoint2f(m_gatebox.getRight() + 0.5, m_gatebox.getBottom() - 0.5);
+	Point minCorner = Point(m_gatebox.getLeft() - 0.5, m_gatebox.getTop() + 0.5);
+	Point maxCorner = Point(m_gatebox.getRight() + 0.5, m_gatebox.getBottom() - 0.5);
 
 	double screenAspect = (double)sz.GetHeight() / (double)sz.GetWidth();
 	double mapWidth = maxCorner.x - minCorner.x;
 	double mapHeight = minCorner.y - maxCorner.y; // max and min corner's defs are weird...
 
-	GLPoint2f orthoBoxTL, orthoBoxBR;
+	Point orthoBoxTL, orthoBoxBR;
 
 	// If the map's width is the limiting factor:
 	if (screenAspect * mapWidth >= mapHeight) {
@@ -98,8 +98,8 @@ void gateImage::setViewport() {
 
 		// Set the ortho box width equal to the map width, and center the
 		// height in the box:
-		orthoBoxTL = GLPoint2f(minCorner.x, minCorner.y + 0.5*(imageHeight - mapHeight));
-		orthoBoxBR = GLPoint2f(maxCorner.x, maxCorner.y - 0.5*(imageHeight - mapHeight));
+		orthoBoxTL = Point(minCorner.x, minCorner.y + 0.5*(imageHeight - mapHeight));
+		orthoBoxBR = Point(maxCorner.x, maxCorner.y - 0.5*(imageHeight - mapHeight));
 	}
 	else {
 		// Fit to height:
@@ -107,8 +107,8 @@ void gateImage::setViewport() {
 
 		// Set the ortho box height equal to the map height, and center the
 		// width in the box:
-		orthoBoxTL = GLPoint2f(minCorner.x - 0.5*(imageWidth - mapWidth), minCorner.y);
-		orthoBoxBR = GLPoint2f(maxCorner.x + 0.5*(imageWidth - mapWidth), maxCorner.y);
+		orthoBoxTL = Point(minCorner.x - 0.5*(imageWidth - mapWidth), minCorner.y);
+		orthoBoxBR = Point(maxCorner.x + 0.5*(imageWidth - mapWidth), maxCorner.y);
 	}
 
 	// gluOrtho2D(left, right, bottom, top); (In world-space coords.)

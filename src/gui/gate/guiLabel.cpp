@@ -84,8 +84,8 @@ void guiLabel::calcBBox(void) {
 	double currentX, currentY; theText.getPosition(currentX, currentY);
 	theText.setPosition(-dx, +dy);
 	modelBBox.reset();
-	modelBBox.addPoint(GLPoint2f(textBBox.left - dx, textBBox.bottom + dy));
-	modelBBox.addPoint(GLPoint2f(textBBox.right - dx, textBBox.top + dy));
+	modelBBox.addPoint(Point(textBBox.left - dx, textBBox.bottom + dy));
+	modelBBox.addPoint(Point(textBBox.right - dx, textBBox.top + dy));
 
 	// Recalculate the world-space bbox:
 	updateBBoxes();

@@ -20,7 +20,7 @@ public:
 	// Create the bbox for this hotspot:
 	void calcBBox();
 
-	GLPoint2f getLocation();
+	Point getLocation();
 
 	void setBusLines(int busLines);
 
@@ -30,5 +30,5 @@ public:
 
 protected:
 	int busLines;
-	GLPoint2f modelLocation, worldLocation;
+	Point modelLocation, worldLocation;
 };

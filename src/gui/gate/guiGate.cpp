@@ -107,7 +107,7 @@ void guiGate::select() {
 // this gate's bounding box in GL coordinates.
 // Return true if this gate is selected.
 bool guiGate::clickSelect(GLfloat x, GLfloat y) {
-	if (this->getBBox().contains(GLPoint2f(x, y))) {
+	if (this->getBBox().contains(Point(x, y))) {
 		selected = true;
 		return true;
 	}
@@ -118,8 +118,8 @@ bool guiGate::clickSelect(GLfloat x, GLfloat y) {
 
 // Insert a line in the line list.
 void guiGate::insertLine(float x1, float y1, float x2, float y2) {
-	vertices.push_back(GLPoint2f(x1, y1));
-	vertices.push_back(GLPoint2f(x2, y2));
+	vertices.push_back(Point(x1, y1));
+	vertices.push_back(Point(x2, y2));
 }
 
 // Insert a hotspot in the hotspot list.
@@ -127,7 +127,7 @@ void guiGate::insertHotspot(float x1, float y1, string connection, int busLines)
 	if (hotspots.find(connection) != hotspots.end()) return; // error: hotspot already exists
 
 	gateHotspot* newHS = new gateHotspot(connection);
-	newHS->modelLocation = GLPoint2f(x1, y1);
+	newHS->modelLocation = Point(x1, y1);
 	newHS->setBusLines(busLines);
 
 	// Add the hs to the gate's struct:
@@ -146,7 +146,7 @@ string guiGate::checkHotspots(GLfloat x, GLfloat y, GLfloat delta) {
 	// Set up the mouse as a collision object:
 	klsCollisionObject mouse(COLL_MOUSEBOX);
 	klsBBox mBox;
-	mBox.addPoint(GLPoint2f(x, y));
+	mBox.addPoint(Point(x, y));
 	mBox.extendTop(delta);
 	mBox.extendBottom(delta);
 	mBox.extendLeft(delta);
@@ -176,7 +176,7 @@ void guiGate::getHotspotCoords(string hsName, float &x, float &y) {
 		return;
 	}
 
-	GLPoint2f hs = hotspots[hsName]->getLocation();
+	Point hs = hotspots[hsName]->getLocation();
 	x = hs.x;
 	y = hs.y;
 	return;
@@ -184,11 +184,11 @@ void guiGate::getHotspotCoords(string hsName, float &x, float &y) {
 
 std::string guiGate::getHotspotPal(const std::string &hotspot) {
 
-	GLPoint2f coords;
+	Point coords;
 	getHotspotCoords(hotspot, coords.x, coords.y);
 
 	//looping looking for another hotspot with the same location
-	map<string, GLPoint2f> hotspotList = getHotspotList();
+	map<string, Point> hotspotList = getHotspotList();
 
 	for (const auto &possiblePal : hotspotList) {
 		if (possiblePal.first != hotspot && possiblePal.second == coords) {
@@ -326,9 +326,9 @@ void guiGate::saveGate(XMLParser* xparse) {
 }
 
 // Return the map of hotspot names to their coordinates:
-map<string, GLPoint2f> guiGate::getHotspotList() {
+map<string, Point> guiGate::getHotspotList() {
 
-	map< string, GLPoint2f > remappedHS;
+	map< string, Point > remappedHS;
 	auto hs = hotspots.begin();
 	while (hs != hotspots.end()) {
 		remappedHS[hs->first] = (hs->second)->getLocation();
@@ -433,13 +433,13 @@ void guiGate::saveGateTypeSpecifics(XMLParser* xparse) { }
 
 
 // Convert model->world coordinates:
-GLPoint2f guiGate::modelToWorld(GLPoint2f c) {
+Point guiGate::modelToWorld(Point c) {
 
 	// Perform a matrix-vector multiply to get the point coordinates in world-space:
 	GLfloat x = c.x * mModel[0] + c.y * mModel[4] + 1.0*mModel[12];
 	GLfloat y = c.x * mModel[1] + c.y * mModel[5] + 1.0*mModel[13];
 
-	return GLPoint2f(x, y);
+	return Point(x, y);
 }
 
 // Update the position matrices, and

@@ -60,20 +60,20 @@ klsGLCanvas::klsGLCanvas(wxWindow *parent, const wxString& name, wxWindowID id,
 	wheelRotation = 0.0;
 
 	// Set the mouse coords memory:
-	setMouseCoords(GLPoint2f(0.0, 0.0));
+	setMouseCoords(Point(0.0, 0.0));
 	setMouseScreenCoords(wxPoint(0, 0));
 
 	setIsDragging(false, BUTTON_LEFT);
-	setDragStartCoords(GLPoint2f(0.0, 0.0), BUTTON_LEFT);
-	setDragEndCoords(GLPoint2f(0.0, 0.0), BUTTON_LEFT);
+	setDragStartCoords(Point(0.0, 0.0), BUTTON_LEFT);
+	setDragEndCoords(Point(0.0, 0.0), BUTTON_LEFT);
 
 	setIsDragging(false, BUTTON_MIDDLE);
-	setDragStartCoords(GLPoint2f(0.0, 0.0), BUTTON_MIDDLE);
-	setDragEndCoords(GLPoint2f(0.0, 0.0), BUTTON_MIDDLE);
+	setDragStartCoords(Point(0.0, 0.0), BUTTON_MIDDLE);
+	setDragEndCoords(Point(0.0, 0.0), BUTTON_MIDDLE);
 
 	setIsDragging(false, BUTTON_RIGHT);
-	setDragStartCoords(GLPoint2f(0.0, 0.0), BUTTON_RIGHT);
-	setDragEndCoords(GLPoint2f(0.0, 0.0), BUTTON_RIGHT);
+	setDragStartCoords(Point(0.0, 0.0), BUTTON_RIGHT);
+	setDragEndCoords(Point(0.0, 0.0), BUTTON_RIGHT);
 
 	// Set up scrolling timer:
 	scrollTimer = new wxTimer(this, SCROLL_TIMER_ID);
@@ -100,7 +100,7 @@ klsGLCanvas::~klsGLCanvas() {
 }
 
 void klsGLCanvas::updateMiniMap() {
-	GLPoint2f p1, p2;
+	Point p1, p2;
 	getViewport(p1, p2);
 	if (minimap != NULL) minimap->update(p1, p2);
 }
@@ -216,7 +216,7 @@ void klsGLCanvas::reclaimViewport(void) {
 // NOTE: It will enforce a 1:1 aspect ratio, but it will make the best
 // attempt to fit the zoom box as close as possible. Basically, it will
 // fit the longest side to the window, and center the rest.
-void klsGLCanvas::setViewport(GLPoint2f topLeft, GLPoint2f bottomRight) {
+void klsGLCanvas::setViewport(Point topLeft, Point bottomRight) {
 	wxSize sz = GetClientSize();
 	double sAspect = (double)sz.GetHeight() / (double)sz.GetWidth();
 
@@ -227,7 +227,7 @@ void klsGLCanvas::setViewport(GLPoint2f topLeft, GLPoint2f bottomRight) {
 	bool useWidth = aspect < sAspect; // Use the width as the limiting factor.
 
 	double newZoom = 1.0;
-	GLPoint2f newPan;
+	Point newPan;
 
 	if (useWidth) {
 		// The box width determines the new zoom factor:
@@ -256,7 +256,7 @@ void klsGLCanvas::setViewport(GLPoint2f topLeft, GLPoint2f bottomRight) {
 }
 
 
-void klsGLCanvas::getViewport(GLPoint2f& p1, GLPoint2f& p2) {
+void klsGLCanvas::getViewport(Point& p1, Point& p2) {
 	wxSize sz = GetClientSize();
 	p1.x = panX;
 	p1.y = panY;
@@ -406,7 +406,7 @@ void klsGLCanvas::setPan(GLdouble newX, GLdouble newY) {
 	// Reset the mouse coordinates to the new pan settings, and
 	// call OnMouseMove() because the mouse's gl coords have changed:
 	setMouseCoords();
-	GLPoint2f m = getMouseCoords();
+	Point m = getMouseCoords();
 	OnMouseMove(m.x, m.y, isShiftDown, isControlDown);
 	updateMiniMap();
 
@@ -417,9 +417,9 @@ void klsGLCanvas::setPan(GLdouble newX, GLdouble newY) {
 //Julian: Added to assist in zoom to mouse
 void klsGLCanvas::setCenter(GLdouble newX, GLdouble newY)
 {
-	GLPoint2f topLeft;
-	GLPoint2f bottomRight;
-	GLPoint2f center;
+	Point topLeft;
+	Point bottomRight;
+	Point center;
 
 	getViewport(topLeft, bottomRight);
 	center = getCenter();
@@ -480,13 +480,13 @@ void klsGLCanvas::setZoom(GLdouble newZoom) {
 	newZoom = max(newZoom, MIN_ZOOM);
 	newZoom = min(newZoom, MAX_ZOOM);
 
-	GLPoint2f center = getCenter();
-	GLPoint2f topLeft;
-	GLPoint2f bottomRight;
+	Point center = getCenter();
+	Point topLeft;
+	Point bottomRight;
 	getViewport(topLeft, bottomRight);
 
-	GLPoint2f oldDist = center - topLeft;
-	GLPoint2f newDist = oldDist;
+	Point oldDist = center - topLeft;
+	Point newDist = oldDist;
 
 	oldDist.x *= newZoom / viewZoom;
 	oldDist.y *= newZoom / viewZoom;
@@ -567,14 +567,14 @@ void klsGLCanvas::wxOnMouseEvent(wxMouseEvent& event) {
 		else {
 			// Handle the drag-pan event here if needed:
 			if (isDragging(BUTTON_MIDDLE)) {
-				GLPoint2f mouseDelta(getMouseCoords().x - getDragStartCoords(BUTTON_MIDDLE).x,
+				Point mouseDelta(getMouseCoords().x - getDragStartCoords(BUTTON_MIDDLE).x,
 					getMouseCoords().y - getDragStartCoords(BUTTON_MIDDLE).y);
 
 				translatePan(-mouseDelta.x, -mouseDelta.y);
 			}
 
 			// It's nothing else, so it must be a mouse motion event:
-			GLPoint2f m = getMouseCoords();
+			Point m = getMouseCoords();
 			OnMouseMove(m.x, m.y, event.ShiftDown(), event.ControlDown());
 		}
 
@@ -604,7 +604,7 @@ void klsGLCanvas::wxOnMouseWheel(wxMouseEvent& event) {
 
 	// Update the drag-pan event here if needed:
 	if (isDragging(BUTTON_MIDDLE)) {
-		GLPoint2f mouseDelta(getMouseCoords().x - getDragStartCoords(BUTTON_MIDDLE).x,
+		Point mouseDelta(getMouseCoords().x - getDragStartCoords(BUTTON_MIDDLE).x,
 			getMouseCoords().y - getDragStartCoords(BUTTON_MIDDLE).y);
 
 		translatePan(-mouseDelta.x, -mouseDelta.y);
@@ -715,10 +715,10 @@ void klsGLCanvas::OnMouseWheel(long numOfLines) {
 	zoomToMouse(numOfLines);
 }
 
-GLPoint2f klsGLCanvas::getSnappedPoint(GLPoint2f c) {
+Point klsGLCanvas::getSnappedPoint(Point c) {
 	GLfloat x = horizSpacing * floor(c.x / horizSpacing + 0.5);
 	GLfloat y = vertSpacing * floor(c.y / vertSpacing + 0.5);
-	return GLPoint2f(x, y);
+	return Point(x, y);
 }
 
 void klsGLCanvas::setHorizGrid(GLfloat hSpacing) {
@@ -746,16 +746,16 @@ void klsGLCanvas::setMouseCoords() {
 	float glX = panX + (m.x * viewZoom);
 	float glY = panY - (m.y * viewZoom);
 
-	setMouseCoords(GLPoint2f(glX, glY));
+	setMouseCoords(Point(glX, glY));
 }
 
 //Julian: Added to allow for zoom to mouse
 void klsGLCanvas::zoomToMouse(long numLines)
 {
-	GLPoint2f center = getCenter();
-	GLPoint2f mouse = getMouseCoords();
+	Point center = getCenter();
+	Point mouse = getMouseCoords();
 
-	GLPoint2f centerToMouse = mouse - center;
+	Point centerToMouse = mouse - center;
 	centerToMouse.x /= getZoom();
 	centerToMouse.y /= getZoom();
 
@@ -772,11 +772,11 @@ void klsGLCanvas::zoomToMouse(long numLines)
 	setCenter(mouse.x - centerToMouse.x, mouse.y - centerToMouse.y);
 }
 
-GLPoint2f klsGLCanvas::getCenter() {
-	GLPoint2f topLeft, bottomRight;
+Point klsGLCanvas::getCenter() {
+	Point topLeft, bottomRight;
 	getViewport(topLeft, bottomRight);
 
-	GLPoint2f center = bottomRight + topLeft;
+	Point center = bottomRight + topLeft;
 	center.x /= 2;
 	center.y /= 2;
 

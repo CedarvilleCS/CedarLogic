@@ -36,7 +36,7 @@ public:
 		this->wireList = wireList;
 	};
 	
-	void update(GLPoint2f origin = GLPoint2f(0,0), GLPoint2f endpoint = GLPoint2f(0,0));
+	void update(Point origin = Point(0,0), Point endpoint = Point(0,0));
 	void setCanvas( klsGLCanvas* kcanvas ) { currentCanvas = kcanvas; };
 	void OnPaint(wxPaintEvent& evt);
 	void OnMouseEvent(wxMouseEvent& evt);
@@ -50,7 +50,7 @@ private:
 	void renderMap();
 	
 	// viewport rect
-	GLPoint2f origin, endpoint;
+	Point origin, endpoint;
 	
 	unordered_map< unsigned long, guiGate* >* gateList;
 	unordered_map< unsigned long, guiWire* >* wireList;
@@ -60,7 +60,7 @@ private:
 
 	klsGLCanvas* currentCanvas;	
 	
-	GLPoint2f minCorner, maxCorner;
+	Point minCorner, maxCorner;
 DECLARE_EVENT_TABLE()
 };
 

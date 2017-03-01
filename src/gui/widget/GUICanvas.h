@@ -39,10 +39,10 @@ struct GateState {
 // Struct WireState
 //		stores the relative position (to itself) of a wire so we know where we moved from
 struct WireState {
-	WireState( unsigned int nID, GLPoint2f nPoint, map < long, wireSegment > nTree ) : 
+	WireState( unsigned int nID, Point nPoint, map < long, wireSegment > nTree ) : 
 		id(nID), point(nPoint), oldWireTree(nTree) {}
 	unsigned int id;
-	GLPoint2f point;
+	Point point;
 	map < long, wireSegment > oldWireTree;
 };
 
@@ -190,7 +190,7 @@ private:
 	// Hotspot and wire highlights:
 	unsigned long hotspotGate; // The gate in which a hotspot is highlighted.
 	string hotspotHighlight; // The hotSpot to highlight when rendering. If == "", then none are highlighted.
-	vector < GLPoint2f > potentialConnectionHotspots; // Points to highlight for connection when moving a gate.
+	vector < Point > potentialConnectionHotspots; // Points to highlight for connection when moving a gate.
 	bool drawWireHover; // Whether or not to draw a wire hover X value.
 	unsigned long wireHoverID;
 	ConnectionSource currentConnectionSource;

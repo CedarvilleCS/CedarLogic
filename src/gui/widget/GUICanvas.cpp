@@ -76,7 +76,7 @@ void GUICanvas::OnMouseDown(wxMouseEvent &event) {
 }
 
 void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
-	GLPoint2f m = getMouseCoords();
+	Point m = getMouseCoords();
 	bool handled = false;
 	// If I am in a paste operation then mouse-up is all I am concerned with
 	if (isWithinPaste) return;
@@ -216,7 +216,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 }
 
 void GUICanvas::mouseRightDown(wxMouseEvent& event) {
-	GLPoint2f m = getMouseCoords();
+	Point m = getMouseCoords();
 	vector < unsigned long >::iterator sGate;
 
 	if (isWithinPaste || (currentDragState != DRAG_NONE)) return; // Left mouse up is the next event we are looking for
@@ -266,7 +266,7 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 				guiGate* hitGate = ((guiGate*)(*hit));
 				// BEGIN WORKAROUND
 				//	Gates that have connections cannot be rotated without sacrificing wire sanity
-				map < string, GLPoint2f > gateHotspots = hitGate->getHotspotList();
+				map < string, Point > gateHotspots = hitGate->getHotspotList();
 				auto ghsWalk = gateHotspots.begin();
 				bool gateConnected = false;
 				while (ghsWalk != gateHotspots.end()) {
@@ -319,13 +319,13 @@ void GUICanvas::OnMouseMove(GLdouble glX, GLdouble glY, bool ShiftDown, bool Ctr
 		shouldRender = true;
 	}
 
-	GLPoint2f m = getMouseCoords();
-	GLPoint2f dStart = getDragStartCoords(BUTTON_LEFT);
-	GLPoint2f diff(m.x - dStart.x, m.y - dStart.y); // What is the difference between start and now
+	Point m = getMouseCoords();
+	Point dStart = getDragStartCoords(BUTTON_LEFT);
+	Point diff(m.x - dStart.x, m.y - dStart.y); // What is the difference between start and now
 
-	GLPoint2f mSnap = getSnappedPoint(m); // Work with a snapped mouse coord
-	GLPoint2f dStartSnap = getSnappedPoint(dStart);
-	GLPoint2f diffSnap(mSnap.x - dStartSnap.x, mSnap.y - dStartSnap.y);
+	Point mSnap = getSnappedPoint(m); // Work with a snapped mouse coord
+	Point dStartSnap = getSnappedPoint(dStart);
+	Point diffSnap(mSnap.x - dStartSnap.x, mSnap.y - dStartSnap.y);
 
 	// Update the mouse as a collision object:
 	klsBBox mBox;
@@ -492,7 +492,7 @@ void GUICanvas::OnMouseMove(GLdouble glX, GLdouble glY, bool ShiftDown, bool Ctr
 }
 
 void GUICanvas::OnMouseUp(wxMouseEvent& event) {
-	GLPoint2f m = getMouseCoords();
+	Point m = getMouseCoords();
 	SetCursor(wxCursor(wxCURSOR_ARROW));
 	unordered_map < unsigned long, guiGate* >::iterator thisGate;
 	cmdMoveSelection* movecommand = NULL;
@@ -706,7 +706,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 }
 
 void GUICanvas::OnMouseEnter(wxMouseEvent& event) {
-	GLPoint2f m = getMouseCoords();
+	Point m = getMouseCoords();
 
 	// Do a collision detection on all first-level objects.
 	// The map collisionChecker.overlaps now contains
@@ -855,7 +855,7 @@ void GUICanvas::OnRender(bool noColor) {
 		glDisable(GL_LINE_STIPPLE);
 
 		float diff = HOTSPOT_SCREEN_RADIUS * getZoom();
-		GLPoint2f m = getMouseCoords();
+		Point m = getMouseCoords();
 		glBegin(GL_LINES);
 		glVertex2f(m.x - diff, m.y + diff);
 		glVertex2f(m.x + diff, m.y - diff);
@@ -904,8 +904,8 @@ void GUICanvas::OnRender(bool noColor) {
 		ColorPalette::setColor(ColorPalette::SelectionBoxBorder);
 
 		// Draw the solid outline box:
-		GLPoint2f start = getDragStartCoords();
-		GLPoint2f end = getMouseCoords();
+		Point start = getDragStartCoords();
+		Point end = getMouseCoords();
 		glBegin(GL_LINE_LOOP);
 		glVertex2f(start.x, start.y);
 		glVertex2f(start.x, end.y);
@@ -921,8 +921,8 @@ void GUICanvas::OnRender(bool noColor) {
 	}
 	// Drag-connect line 
 	else if (currentDragState == DRAG_CONNECT) {
-		GLPoint2f start = getDragStartCoords();
-		GLPoint2f end = getMouseCoords();
+		Point start = getDragStartCoords();
+		Point end = getMouseCoords();
 
 		ColorPalette::setColor(ColorPalette::WireHiZ);
 
@@ -1104,14 +1104,14 @@ void GUICanvas::pasteBlockFromClipboard() {
 	preMove.clear();
 	auto thisGate = gateList.begin();
 	unsigned long snapToGateID = 0;
-	GLPoint2f gatecoord;
+	Point gatecoord;
 	// paste only to snapped point
-	GLPoint2f mc = getSnappedPoint(getMouseCoords());
-	GLPoint2f minPoint;
+	Point mc = getSnappedPoint(getMouseCoords());
+	Point minPoint;
 	bool ref = false;
 	// Find top-left-most point
 	while (thisGate != gateList.end()) {
-		GLPoint2f temp;
+		Point temp;
 		if ((thisGate->second)->isSelected()) {
 			(thisGate->second)->getGLcoords(temp.x, temp.y);
 			if (temp.x < minPoint.x || !ref) minPoint.x = temp.x;
@@ -1125,7 +1125,7 @@ void GUICanvas::pasteBlockFromClipboard() {
 	double minMagnitude = 0.0;
 	thisGate = gateList.begin();
 	while (thisGate != gateList.end()) {
-		GLPoint2f temp;
+		Point temp;
 		if ((thisGate->second)->isSelected()) {
 			if (ref) {
 				(thisGate->second)->getGLcoords(temp.x, temp.y);
@@ -1149,7 +1149,7 @@ void GUICanvas::pasteBlockFromClipboard() {
 	}
 
 	// What is the difference between that gate and the mouse coords
-	GLPoint2f diff(mc.x - gatecoord.x, mc.y - gatecoord.y);
+	Point diff(mc.x - gatecoord.x, mc.y - gatecoord.y);
 	// Shift all the gates and track their differences by command
 	thisGate = gateList.begin();
 	while (thisGate != gateList.end()) {
@@ -1229,7 +1229,7 @@ void GUICanvas::setZoomAll() {
 
 	// Make sure to not have a dumb zoom factor on an empty canvas:
 	if (gateList.empty()) {
-		zoomBox.addPoint(GLPoint2f(0, 0));
+		zoomBox.addPoint(Point(0, 0));
 	}
 
 	// Put some margin around the zoom box:
