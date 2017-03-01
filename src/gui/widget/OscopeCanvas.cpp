@@ -129,24 +129,24 @@ void OscopeCanvas::OnRender() {
 			solid = false;
 			switch (theState) {
 			case ZERO:
-				glColor4f(0.0, 0.0, 0.0, 1.0);
+				ColorPalette::setColor(ColorPalette::WireLow);
 				y = 1.0 + wireNum * 1.5;
 				break;
 			case ONE:
-				glColor4f(1.0, 0.0, 0.0, 1.0);
+				ColorPalette::setColor(ColorPalette::WireHigh);
 				y = 0.0 + wireNum * 1.5;
 				break;
 			case HI_Z:
-				glColor4f(0.0, 0.78f, 0.0, 1.0);
+				ColorPalette::setColor(ColorPalette::WireHiZ);
 				y = 0.5 + wireNum * 1.5;
 				break;
 			case UNKNOWN:
-				glColor4f(0.3f, 0.3f, 1.0, 1.0);
+				ColorPalette::setColor(ColorPalette::WireUnknown);
 				y = 0.75 + wireNum * 1.5;
 				solid = true;
 				break;
 			case CONFLICT:
-				glColor4f(0.0, 1.0, 1.0, 1.0);
+				ColorPalette::setColor(ColorPalette::WireConflict);
 				y = 0.75 + wireNum * 1.5;
 				solid = true;
 				break;
@@ -189,7 +189,9 @@ void OscopeCanvas::OnPaint(wxPaintEvent& event) {
 	{
 		//InitGL();
 		m_init = true;
-		glClearColor(1.0, 1.0, 1.0, 0.0);
+
+		ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
 
@@ -484,8 +486,8 @@ wxImage OscopeCanvas::generateImage() {
 //	glViewport(0, 0, (GLint) sz.GetWidth(), (GLint) sz.GetHeight());
 
 	// Set the bitmap clear color:
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glColor3b(0, 0, 0);
+	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+	ColorPalette::setColor(ColorPalette::GateShape);
 
 	//TODO: Check if alpha is hardware supported, and
 	// don't enable it if not!

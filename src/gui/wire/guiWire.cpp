@@ -224,20 +224,23 @@ void guiWire::draw(bool color) {
 		redness /= pow(2, state.size()) - 1;
 
 		if (conflict) {
-			glColor4f(0.0, 1.0, 1.0, 1.0);
+			ColorPalette::setColor(ColorPalette::WireConflict);
 		}
 		else if (unknown) {
-			glColor4f(0.3f, 0.3f, 1.0, 1.0);
+			ColorPalette::setColor(ColorPalette::WireUnknown);
 		}
 		else if (hiz) {
-			glColor4f(0.0, 0.78f, 0.0, 1.0);
+			ColorPalette::setColor(ColorPalette::WireHiZ);
 		}
 		else {
-			glColor4f(redness, 0.0, 0.0, 1.0);
+			Color blended = ColorPalette::WireLow.interpolate(
+				ColorPalette::WireHigh, redness);
+
+			ColorPalette::setColor(blended);
 		}
 	}
 	else {
-		glColor4f(0.0, 0.0, 0.0, 1.0);
+		ColorPalette::setColor(ColorPalette::WireLow);
 	}
 
 	// Draw the wire from the previously-saved render info

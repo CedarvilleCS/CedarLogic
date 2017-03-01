@@ -6,6 +6,10 @@ void ColorPalette::setColor(const Color &color) {
 	glColor4f(color.r, color.g, color.b, color.a);
 }
 
+void ColorPalette::setClearColor(const Color &color) {
+	glClearColor(color.r, color.g, color.b, color.a);
+}
+
 Color ColorPalette::getColor() {
 	
 	GLfloat color[4];
@@ -18,6 +22,7 @@ Color ColorPalette::SchematicGrid(0.0f, 0.0f, 0.08f, 0.08f);
 
 Color ColorPalette::GateShape(0.0f, 0.0f, 0.0f);
 Color ColorPalette::GateHotspot(1.0f, 0.0f, 0.0f);
+Color ColorPalette::GateOverlap(0.4f, 0.1f, 0.0f, 0.3f);
 
 Color ColorPalette::WireHigh(1.0f, 0.0f, 0.0f);
 Color ColorPalette::WireLow(0.0f, 0.0f, 0.0f);

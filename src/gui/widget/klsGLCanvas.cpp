@@ -148,9 +148,9 @@ wxImage klsGLCanvas::renderToImage(unsigned long width, unsigned long height, un
 	// Reset the glViewport to the size of the bitmap:
 	glViewport(0, 0, (GLint)width, (GLint)height);
 
-	// Set the bitmap clear color:
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glColor3b(0, 0, 0);
+
+	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+	ColorPalette::setColor(ColorPalette::GateShape);
 
 	// Load the font texture
 	gl_text::loadFont(wxGetApp().appSettings.textFontFile);
@@ -272,7 +272,6 @@ void klsGLCanvas::klsGLCanvasRender(bool noColor) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glColor4f(0, 0, 0, 1);
 
 	// Render the background grid:
 	if ((horizOn || vertOn) && wxGetApp().appSettings.gridlineVisible) {
@@ -322,60 +321,6 @@ void klsGLCanvas::klsGLCanvasRender(bool noColor) {
 		ColorPalette::setColor(oldColor);
 	}
 
-
-	// Draw the canvas debugging info if requested:
-#ifdef CANVAS_DEBUG_TESTS_ON
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	// Origin Marker:
-	glColor4f(0, 0, 0, 1);
-	glBegin(GL_LINES);
-	glVertex2f(-20, 20);
-	glVertex2f(20, -20);
-	glVertex2f(-20, -20);
-	glVertex2f(20, 20);
-	glEnd();
-
-	mouseButton whichB = BUTTON_LEFT;
-	glColor4f(1, 0, 0, 1);
-	if (isDragging(whichB)) {
-		GLPoint2f start = getDragStartCoords(whichB);
-		GLPoint2f end = getMouseCoords();
-
-		glBegin(GL_LINES);
-		glVertex2f(start.x, start.y);
-		glVertex2f(end.x, end.y);
-		glEnd();
-	}
-
-	whichB = BUTTON_MIDDLE;
-	glColor4f(0, 1, 0, 1);
-	if (isDragging(whichB)) {
-		GLPoint2f start = getDragStartCoords(whichB);
-		GLPoint2f end = getMouseCoords();
-
-		glBegin(GL_LINES);
-		glVertex2f(start.x, start.y);
-		glVertex2f(end.x, end.y);
-		glEnd();
-	}
-
-	whichB = BUTTON_RIGHT;
-	glColor4f(0, 0, 1, 1);
-	if (isDragging(whichB)) {
-		GLPoint2f start = getDragStartCoords(whichB);
-		GLPoint2f end = getMouseCoords();
-
-		glBegin(GL_LINES);
-		glVertex2f(start.x, start.y);
-		glVertex2f(end.x, end.y);
-		glEnd();
-	}
-
-#endif
-
 	// Call subclassed Render():
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -390,8 +335,9 @@ void klsGLCanvas::wxOnPaint(wxPaintEvent& event) {
 	// Init OpenGL once, but after SetCurrent
 	if (!glInitialized)
 	{
-		glClearColor(1.0, 1.0, 1.0, 0.0);
-		glColor3b(0, 0, 0);
+
+		ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+		ColorPalette::setColor(ColorPalette::GateShape);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		//TODO: Check if alpha is hardware supported, and

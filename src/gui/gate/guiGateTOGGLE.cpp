@@ -25,15 +25,21 @@ void guiGateTOGGLE::draw(bool color) {
 	// Draw the default lines:
 	guiGate::draw(color);
 
+	Color oldColor = ColorPalette::getColor();
+
 	// Add the rectangle:
-	glColor4f((float)renderInfo_outputNum, 0.0, 0.0, 1.0);
+	if (renderInfo_outputNum == 1) {
+		ColorPalette::setColor(ColorPalette::WireHigh);
+	}
+	else {
+		ColorPalette::setColor(ColorPalette::WireLow);
+	}
 
 	//Inner Square
 	if (color) glRectd(renderInfo_clickBox.begin.x, renderInfo_clickBox.begin.y,
 		renderInfo_clickBox.end.x, renderInfo_clickBox.end.y);
 
-	// Set the color back to the old color:
-	glColor4f(0.0, 0.0, 0.0, 1.0);
+	ColorPalette::setColor(oldColor);
 }
 
 void guiGateTOGGLE::setGUIParam(const std::string & paramName, const std::string & value) {

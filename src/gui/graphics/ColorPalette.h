@@ -7,6 +7,9 @@ struct ColorPalette {
 	// Set OpenGL draw color.
 	static void setColor(const Color &color);
 
+	// Set OpenGL draw color.
+	static void setClearColor(const Color &color);
+
 	// Get OpenGL draw color.
 	static Color getColor();
 
@@ -20,6 +23,7 @@ struct ColorPalette {
 
 	static Color GateShape;
 	static Color GateHotspot;
+	static Color GateOverlap;
 
 	static Color WireHigh;
 	static Color WireLow;

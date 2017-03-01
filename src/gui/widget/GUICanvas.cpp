@@ -800,15 +800,13 @@ void GUICanvas::OnSize() {
 };
 
 void GUICanvas::OnRender(bool noColor) {
-	glColor4f(0.0, 0.0, 0.0, 1.0);
 
-	// Draw the wires:
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	wxStopWatch renderTimer;
-	glColor4f(0.0, 0.0, 0.0, 1.0);
 
 	// Draw the gates:
+	ColorPalette::setColor(ColorPalette::GateShape);
 	auto thisGate = gateList.begin();
 	while (thisGate != gateList.end()) {
 		(thisGate->second)->draw(!noColor);
@@ -836,9 +834,7 @@ void GUICanvas::OnRender(bool noColor) {
 	// Mouse-over hotspot
 	if (hotspotHighlight.size() > 0) {
 		// Outline the hotspots:
-		GLfloat oldColor[4];
-		glGetFloatv(GL_CURRENT_COLOR, oldColor);
-		glColor4f(1.0, 0.0, 0.0, 1.0);
+		ColorPalette::setColor(ColorPalette::GateHotspot);
 		glDisable(GL_LINE_STIPPLE);
 
 		float diff = HOTSPOT_SCREEN_RADIUS * getZoom();
@@ -850,17 +846,12 @@ void GUICanvas::OnRender(bool noColor) {
 		glVertex2f(x + diff, y - diff);
 		glVertex2f(x - diff, y - diff);
 		glEnd();
-
-		// Set the color back to the old color:
-		glColor4f(oldColor[0], oldColor[1], oldColor[2], oldColor[3]);
 	}
 
 	// Mouse-over wire
 	if (drawWireHover) {
 		// Outline the hotspot:
-		GLfloat oldColor[4];
-		glGetFloatv(GL_CURRENT_COLOR, oldColor);
-		glColor4f(1.0, 0.0, 0.0, 1.0);
+		ColorPalette::setColor(ColorPalette::GateHotspot);
 		glDisable(GL_LINE_STIPPLE);
 
 		float diff = HOTSPOT_SCREEN_RADIUS * getZoom();
@@ -873,16 +864,15 @@ void GUICanvas::OnRender(bool noColor) {
 		glVertex2f(m.x + diff, m.y + diff);
 		glVertex2f(m.x - diff, m.y - diff);
 		glEnd();
-
-		// Set the color back to the old color:
-		glColor4f(oldColor[0], oldColor[1], oldColor[2], oldColor[3]);
 	}
 
 	// Collisions
 	bool drawOverlaps = true;
 	if (drawOverlaps) {
+
+		ColorPalette::setColor(ColorPalette::GateOverlap);
+
 		// Draw the alpha-blended selection box over top of the overlap:
-		glColor4f(0.4f, 0.1f, 0.0f, 0.3f);
 
 		auto ovrLists = collisionChecker.overlaps.begin();
 		while (ovrLists != collisionChecker.overlaps.end()) {
@@ -906,15 +896,12 @@ void GUICanvas::OnRender(bool noColor) {
 			ovrLists++;
 		}
 
-		// Reset the color back to black:
-		glColor4f(0.0, 0.0, 0.0, 1.0);
 	}
 
 	// Drag select box
 	if (currentDragState == DRAG_SELECT) {
-		// If we're in drag-select, draw the sel box
 
-		glColor4f(0.0, 0.4f, 1.0, 1.0);
+		ColorPalette::setColor(ColorPalette::SelectionBoxBorder);
 
 		// Draw the solid outline box:
 		GLPoint2f start = getDragStartCoords();
@@ -928,32 +915,34 @@ void GUICanvas::OnRender(bool noColor) {
 
 
 		// Draw the alpha-blended selection box over top of the gates:
-		glColor4f(0.0, 0.4f, 1.0, 0.3f);
+		ColorPalette::setColor(ColorPalette::SelectionBoxFill);
 
 		glRectf(start.x, start.y, end.x, end.y);
-
-		// Reset the color back to black:
-		glColor4f(0.0, 0.0, 0.0, 1.0);
 	}
 	// Drag-connect line 
 	else if (currentDragState == DRAG_CONNECT) {
 		GLPoint2f start = getDragStartCoords();
 		GLPoint2f end = getMouseCoords();
-		glColor4f(0.0, 0.78f, 0.0, 1.0);
+
+		ColorPalette::setColor(ColorPalette::WireHiZ);
+
 		glBegin(GL_LINES);
 		glVertex2f(start.x, start.y);
 		glVertex2f(end.x, end.y);
 		glEnd();
-		glColor4f(0.0, 0.0, 0.0, 1.0);
+
 	}
 	// Draw the new gate for Drag_Newgate 
 	else if (currentDragState == DRAG_NEWGATE) {
+		ColorPalette::setColor(ColorPalette::GateShape);
 		newDragGate->draw();
 	}
 
 	// Draw potential connection hotspots
 	glLoadIdentity();
-	glColor4f(0.3f, 0.3f, 1.0, 1.0);
+
+	ColorPalette::setColor(ColorPalette::WireUnknown);
+
 	for (unsigned int i = 0; i < potentialConnectionHotspots.size(); i++) {
 		float diff = HOTSPOT_SCREEN_RADIUS * getZoom();
 		float x = potentialConnectionHotspots[i].x, y = potentialConnectionHotspots[i].y;
@@ -964,7 +953,6 @@ void GUICanvas::OnRender(bool noColor) {
 		glVertex2f(x - diff, y - diff);
 		glEnd();
 	}
-	glColor4f(0.0, 0.0, 0.0, 1.0);
 }
 
 

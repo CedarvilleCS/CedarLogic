@@ -27,21 +27,23 @@ void guiGateLED::draw(bool color) {
 		outputState = (theCnk->second)->getState()[0];
 	}
 
+	Color oldColor = ColorPalette::getColor();
+
 	switch (outputState) {
 	case ZERO:
-		glColor4f(0.0, 0.0, 0.0, 1.0);
+		ColorPalette::setColor(ColorPalette::WireLow);
 		break;
 	case ONE:
-		glColor4f(1.0, 0.0, 0.0, 1.0);
+		ColorPalette::setColor(ColorPalette::WireHigh);
 		break;
 	case HI_Z:
-		glColor4f(0.0, 0.78f, 0.0, 1.0);
+		ColorPalette::setColor(ColorPalette::WireHiZ);
 		break;
 	case UNKNOWN:
-		glColor4f(0.3f, 0.3f, 1.0, 1.0);
+		ColorPalette::setColor(ColorPalette::WireUnknown);
 		break;
 	case CONFLICT:
-		glColor4f(0.0, 1.0, 1.0, 1.0);
+		ColorPalette::setColor(ColorPalette::WireUnknown);
 		break;
 	}
 
@@ -49,8 +51,7 @@ void guiGateLED::draw(bool color) {
 	if (color) glRectd(renderInfo_ledBox.begin.x, renderInfo_ledBox.begin.y,
 		renderInfo_ledBox.end.x, renderInfo_ledBox.end.y);
 
-	// Set the color back to black:
-	glColor4f(0.0, 0.0, 0.0, 1.0);
+	ColorPalette::setColor(oldColor);
 }
 
 void guiGateLED::setGUIParam(const std::string &paramName, const std::string &value) {

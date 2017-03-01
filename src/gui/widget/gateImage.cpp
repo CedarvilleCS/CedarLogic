@@ -171,9 +171,8 @@ void gateImage::generateImage() {
 	// Reset the glViewport to the size of the bitmap:
 	glViewport(0, 0, GATEIMAGESIZE, GATEIMAGESIZE);
 
-	// Set the bitmap clear color:
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glColor3b(0, 0, 0);
+	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+	ColorPalette::setColor(ColorPalette::GateShape);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -213,7 +212,6 @@ void gateImage::renderMap() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glColor4f(0, 0, 0, 1);
 
 	if (m_gate != NULL) m_gate->draw();
 }

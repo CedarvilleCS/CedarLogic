@@ -23,15 +23,17 @@ void guiGateKEYPAD::draw(bool color) {
 	// Position the gate at its x and y coordinates:
 	glLoadMatrixd(mModel);
 
+	Color oldColor = ColorPalette::getColor();
+
 	// Add the rectangle - this is a highlight so needs done before main gate draw:
-	glColor4f(0.0, 0.4f, 1.0, 0.3f);
+	ColorPalette::setColor(ColorPalette::KeypadSelection);
 
 	//Inner Square
 	if (color) glRectd(renderInfo_valueBox.begin.x, renderInfo_valueBox.begin.y,
 		renderInfo_valueBox.end.x, renderInfo_valueBox.end.y);
 
 	// Set the color back to the old color:
-	glColor4f(0.0, 0.0, 0.0, 1.0);
+	ColorPalette::setColor(oldColor);
 
 	// Draw the default lines:
 	guiGate::draw(color);

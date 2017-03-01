@@ -146,9 +146,8 @@ void klsMiniMap::generateImage() {
 	// Reset the glViewport to the size of the bitmap:
 	glViewport(0, 0, (GLint)sz.GetWidth(), (GLint)sz.GetHeight());
 
-	// Set the bitmap clear color:
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glColor3b(0, 0, 0);
+	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+	ColorPalette::setColor(ColorPalette::GateShape);
 
 	//TODO: Check if alpha is hardware supported, and
 	// don't enable it if not!
@@ -188,7 +187,7 @@ void klsMiniMap::renderMap() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glColor4f(0, 0, 0, 1);
+	ColorPalette::setColor(ColorPalette::GateShape);
 
 	// Draw the wires:
 	glMatrixMode(GL_MODELVIEW);
@@ -196,7 +195,7 @@ void klsMiniMap::renderMap() {
 	auto thisWire = wireList->begin();
 	while (thisWire != wireList->end()) {
 		if (thisWire->second != nullptr) {
-			(thisWire->second)->draw(false);
+			(thisWire->second)->draw(true);
 		}
 		thisWire++;
 	}
@@ -204,13 +203,14 @@ void klsMiniMap::renderMap() {
 	// Draw the gates:
 	auto thisGate = gateList->begin();
 	while (thisGate != gateList->end()) {
-		(thisGate->second)->draw(false);
+		(thisGate->second)->draw(true);
 		thisGate++;
 	}
 
 	if (gateList->size() == 0) return;
 	glLoadIdentity();
-	glColor4f(1, 0, 0, 1);
+
+	ColorPalette::setColor(ColorPalette::GateHotspot);
 	GLfloat lineWidthOld;
 	glGetFloatv(GL_LINE_WIDTH, &lineWidthOld);
 	glLineWidth(2.0);

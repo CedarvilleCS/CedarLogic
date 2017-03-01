@@ -33,9 +33,15 @@ void guiGateREGISTER::draw(bool color) {
 		glVertex2f(renderInfo_valueBox.end.x, renderInfo_valueBox.begin.y);
 		glEnd();
 
+		Color oldColor = ColorPalette::getColor();
+
 		// Draw the number in red (or blue if inputs are not all sane)
-		if (renderInfo_drawBlue) glColor4f(0.3f, 0.3f, 1.0, 1.0);
-		else glColor4f(1.0, 0.0, 0.0, 1.0);
+		if (renderInfo_drawBlue) {
+			ColorPalette::setColor(ColorPalette::WireConflict);
+		}
+		else {
+			ColorPalette::setColor(ColorPalette::WireHigh);
+		}
 
 		GLfloat lineWidthOld;
 		glGetFloatv(GL_LINE_WIDTH, &lineWidthOld);
@@ -77,7 +83,7 @@ void guiGateREGISTER::draw(bool color) {
 		}
 		glEnd();
 		glLineWidth(lineWidthOld);
-		glColor4f(0.0, 0.0, 0.0, 1.0);
+		ColorPalette::setColor(oldColor);
 	}
 }
 
