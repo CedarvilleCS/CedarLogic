@@ -17,9 +17,13 @@ void ColorSettingsDialog::OnEditColor(wxCommandEvent& event) {
 	wxColour color = wxGetColourFromUser();
 	
 	if (color.IsOk()) {
-		switch (event.GetId) {
+		switch (event.GetId()) {
 		case SchematicBackground: setColor(ColorPalette::SchematicBackground, color);
+			break;
 		}
 	}
 }
 
+void ColorSettingsDialog::setColor(Color color, wxColor newColor) {
+
+}
