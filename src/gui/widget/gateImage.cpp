@@ -4,52 +4,74 @@
 #include "wx/wx.h"
 #include "klsGLCanvas.h"
 #include "../graphics/gl_text.h"
+#include "gui/graphics/gl_defs.h"
 #include <fstream>
 #include "gui/gate/guiGate.h"
 #include "gui/GUICircuit.h"
 
-BEGIN_EVENT_TABLE(gateImage, wxWindow)
+wxBEGIN_EVENT_TABLE(gateImage, wxWindow)
 EVT_PAINT(gateImage::OnPaint)
 EVT_ENTER_WINDOW(gateImage::OnEnterWindow)
 EVT_LEAVE_WINDOW(gateImage::OnLeaveWindow)
 EVT_MOUSE_EVENTS(gateImage::OnMouseEvent)
 EVT_ERASE_BACKGROUND(gateImage::OnEraseBackground)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 DECLARE_APP(MainApp)
-
 
 using namespace std;
 
 gateImage::gateImage(const string &gateName, wxWindow *parent) :
-	wxWindow(parent, wxID_ANY, wxDefaultPosition, wxSize(IMAGESIZE, IMAGESIZE), wxFULL_REPAINT_ON_RESIZE, "") {
+	wxGLCanvas(parent, wxID_ANY, nullptr, wxDefaultPosition, wxSize(IMAGESIZE, IMAGESIZE), wxFULL_REPAINT_ON_RESIZE, "") {
 
-	inImage = false;
+	if (count == 0) {
+		glContext = new wxGLContext(this);
+		count++;
+	}
 
-	m_gate = GUICircuit().createGate(gateName, 0, true);
-	if (m_gate == NULL) return;
+	mouseHover = false;
+
+	guiGate *m_gate = GUICircuit().createGate(gateName, 0, true);
+
+	if (m_gate == NULL)
+		return;
+
 	m_gate->setGLcoords(0, 0);
 	m_gate->calcBBox();
+
 	this->gateName = gateName;
-	update();
+
+	//setViewport(m_gate);
+	//generateImage(m_gate);
 
 	delete m_gate;
 	this->SetToolTip(wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption);
 }
 
-void gateImage::OnPaint(wxPaintEvent &event) {
-	wxPaintDC dc(this);
-	wxBitmap gatebitmap(gImage);
+gateImage::~gateImage() {
 
-	dc.DrawBitmap(gatebitmap, 0, 0, true);
-	if (inImage) {
-		dc.SetPen(wxPen(*wxBLUE, 2));
+	count--;
+	if (count == 0) {
+		delete glContext;
+	}
+}
+
+void gateImage::OnPaint(wxPaintEvent &event) {
+
+	glContext->SetCurrent(*this);
+
+	if (mouseHover) {
+		ColorPalette::setClearColor(ColorPalette::GateHotspot);
 	}
 	else {
-		dc.SetPen(wxPen(*wxWHITE, 2));
+		ColorPalette::setClearColor(ColorPalette::SchematicBackground);
 	}
-	dc.SetBrush(wxBrush(*wxTRANSPARENT_BRUSH));
-	dc.DrawRectangle(0, 0, IMAGESIZE, IMAGESIZE);
+
+	glClear(GL_COLOR_BUFFER_BIT);
+
+
+
+	SwapBuffers();
 }
 
 void gateImage::OnMouseEvent(wxMouseEvent& event) {
@@ -65,14 +87,14 @@ void gateImage::OnMouseEvent(wxMouseEvent& event) {
 void gateImage::OnEnterWindow(wxMouseEvent& event) {
 
 	if (!(event.LeftIsDown()))
-		inImage = true;
+		mouseHover = true;
 
 	Refresh();
 }
 
 void gateImage::OnLeaveWindow(wxMouseEvent& event) {
 
-	inImage = false;
+	mouseHover = false;
 	Refresh();
 }
 
@@ -80,7 +102,7 @@ void gateImage::OnEraseBackground(wxEraseEvent& event) {
 	// Do nothing, so that the palette doesn't flicker!
 }
 
-void gateImage::setViewport() {
+void gateImage::setViewport(guiGate *m_gate) {
 	// Set the projection matrix:	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -130,7 +152,7 @@ void gateImage::setViewport() {
 }
 
 // Print the canvas contents to a bitmap:
-void gateImage::generateImage() {
+void gateImage::generateImage(guiGate *m_gate) {
 	//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
 	// DIB Section OpenGL rendering.
 
@@ -172,7 +194,7 @@ void gateImage::generateImage() {
 	::wglMakeCurrent((HDC)theHDC, hRC);
 
 	// Setup the viewport for rendering:
-	setViewport();
+	setViewport(m_gate);
 	// Reset the glViewport to the size of the bitmap:
 	glViewport(0, 0, GATEIMAGESIZE, GATEIMAGESIZE);
 
@@ -198,7 +220,7 @@ void gateImage::generateImage() {
 	gl_text::loadFont(wxGetApp().appSettings.textFontFile);
 
 	// Do the rendering here.
-	renderMap();
+	renderMap(m_gate);
 
 	// Flush the OpenGL buffer to make sure the rendering has happened:	
 	glFlush();
@@ -209,10 +231,10 @@ void gateImage::generateImage() {
 	//::wglMakeCurrent( NULL, NULL );
 	::wglDeleteContext(hRC);
 	myDC.SelectObject(wxNullBitmap);
-	gImage = theBM.ConvertToImage();
+	// relevant, but compiler error gImage = theBM.ConvertToImage();
 }
 
-void gateImage::renderMap() {
+void gateImage::renderMap(guiGate *m_gate) {
 	//clear window
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
@@ -221,7 +243,5 @@ void gateImage::renderMap() {
 	if (m_gate != NULL) m_gate->draw();
 }
 
-void gateImage::update() {
-	setViewport();
-	generateImage();
-}
+wxGLContext *gateImage::glContext = nullptr;
+int gateImage::count = 0;

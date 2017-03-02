@@ -11,12 +11,14 @@ const int IMAGESIZE = 34;
 
 class guiGate;
 
-class gateImage : public wxWindow {
+class gateImage : public wxGLCanvas {
 
 	wxDECLARE_EVENT_TABLE();
 
 public:
     gateImage(const std::string &gateName, wxWindow *parent);
+
+	virtual ~gateImage();
 
     void OnPaint(wxPaintEvent& event);
 
@@ -26,23 +28,25 @@ public:
 
 	void OnLeaveWindow(wxMouseEvent& event);
 
-	void OnEraseBackground( wxEraseEvent& event );
+	void OnEraseBackground(wxEraseEvent& event);
 
 private:
 
-	void setViewport();
+	void setViewport(guiGate *m_gate);
 
-	void generateImage();
+	void generateImage(guiGate *m_gate);
 
-	void renderMap();
-
-	void update();
+	void renderMap(guiGate *m_gate);
 	
-	guiGate* m_gate;
+
 
 	std::string gateName;
 
-	bool inImage;
+	bool mouseHover;
 
-	wxImage gImage;
+
+
+	// GLContext shared for all gateImage's.
+	static wxGLContext *glContext;
+	static int count;
 };
