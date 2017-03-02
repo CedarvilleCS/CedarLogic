@@ -61,7 +61,7 @@ void guiGateTOGGLE::setLogicParam(const std::string & paramName, const std::stri
 }
 
 // Toggle the output button on and off:
-Message_SET_GATE_PARAM* guiGateTOGGLE::checkClick(GLfloat x, GLfloat y) {
+Message_SET_GATE_PARAM* guiGateTOGGLE::checkClick(float x, float y) {
 	klsBBox toggleButton;
 
 	// Get the size of the CLICK square from the parameters:

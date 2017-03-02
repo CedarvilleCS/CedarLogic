@@ -211,7 +211,7 @@ void klsMiniMap::renderMap() {
 	glLoadIdentity();
 
 	ColorPalette::setColor(ColorPalette::GateHotspot);
-	GLfloat lineWidthOld;
+	float lineWidthOld;
 	glGetFloatv(GL_LINE_WIDTH, &lineWidthOld);
 	glLineWidth(2.0);
 	glBegin(GL_LINE_LOOP);

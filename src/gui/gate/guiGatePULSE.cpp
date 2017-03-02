@@ -17,7 +17,7 @@ guiGatePULSE::guiGatePULSE() : guiGate() {
 
 // Send a pulse message to the logic core whenever the gate is
 // clicked on:
-Message_SET_GATE_PARAM* guiGatePULSE::checkClick(GLfloat x, GLfloat y) {
+Message_SET_GATE_PARAM* guiGatePULSE::checkClick(float x, float y) {
 	klsBBox toggleButton;
 
 	// Get the size of the CLICK square from the parameters:

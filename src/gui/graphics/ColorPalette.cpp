@@ -12,7 +12,7 @@ void ColorPalette::setClearColor(const Color &color) {
 
 Color ColorPalette::getColor() {
 	
-	GLfloat color[4];
+	float color[4];
 	glGetFloatv(GL_CURRENT_COLOR, color);
 	return Color(color[0], color[1], color[2], color[3]);
 }

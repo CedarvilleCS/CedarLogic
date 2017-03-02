@@ -280,7 +280,7 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 				// END WORKAROUND
 				map < string, string > newParams(*(hitGate->getAllGUIParams()));
 				istringstream issAngle(newParams["angle"]);
-				GLfloat angle;
+				float angle;
 				issAngle >> angle;
 				angle += 90.0;
 				if (angle >= 360.0) angle -= 360.0;

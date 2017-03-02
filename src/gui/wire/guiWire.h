@@ -15,7 +15,8 @@
 #include <string>
 #include <vector>
 #include "common.h"
-#include "../collision/klsCollisionChecker.h"
+#include "gui/collision/klsCollisionChecker.h"
+#include "gui/graphics/LineSegment.h"
 #include "wireSegment.h"
 
 class guiGate;

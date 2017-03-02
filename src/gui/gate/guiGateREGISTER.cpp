@@ -1,6 +1,7 @@
 
 #include "guiGateREGISTER.h"
 #include <sstream>
+#include "gui/graphics/gl_defs.h"
 
 using namespace std;
 
@@ -43,7 +44,7 @@ void guiGateREGISTER::draw(bool color) {
 			ColorPalette::setColor(ColorPalette::WireHigh);
 		}
 
-		GLfloat lineWidthOld;
+		float lineWidthOld;
 		glGetFloatv(GL_LINE_WIDTH, &lineWidthOld);
 		glLineWidth(2.0);
 

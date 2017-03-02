@@ -16,7 +16,7 @@ public:
 
 	virtual void setLogicParam(const std::string & paramName, const std::string & value) override;
 
-	virtual Message_SET_GATE_PARAM* checkClick(GLfloat x, GLfloat y) override;
+	virtual Message_SET_GATE_PARAM* checkClick(float x, float y) override;
 
 private:
 	int renderInfo_outputNum;

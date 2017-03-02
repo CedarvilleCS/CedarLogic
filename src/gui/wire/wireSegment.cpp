@@ -3,6 +3,8 @@
 #include "../MainApp.h"
 DECLARE_APP(MainApp)
 
+#define WIRE_BBOX_THICKNESS 0.25
+
 void wireSegment::calcBBox() {
 	klsBBox newBBox;
 	newBBox.addPoint(begin);

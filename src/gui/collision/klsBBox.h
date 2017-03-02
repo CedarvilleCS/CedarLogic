@@ -11,8 +11,7 @@
 #ifndef KLSBBOX_H_
 #define KLSBBOX_H_
 
-// For GLfloat and Point:
-#include "../graphics/gl_defs.h"
+#include "gui/graphics/Point.h"
 
 // For FLT_MAX and fabs():
 #include <float.h>
@@ -133,14 +132,14 @@ public:
 	Point getBottomRight( void ) { return Point(bboxMax.x, bboxMin.y); };
 
 	// Edge access methods:
-	GLfloat getLeft( void ) { return bboxMin.x; };
-	GLfloat getRight( void ) { return bboxMax.x; };
-	GLfloat getTop( void ) { return bboxMax.y; };
-	GLfloat getBottom( void ) { return bboxMin.y; };
+	float getLeft( void ) { return bboxMin.x; };
+	float getRight( void ) { return bboxMax.x; };
+	float getTop( void ) { return bboxMax.y; };
+	float getBottom( void ) { return bboxMin.y; };
 	
 	// Edge modification methods:
 	// They enforce that left < right, and bottom < top!
-	void extendLeft( GLfloat amt ) {
+	void extendLeft( float amt ) {
 		if( (amt > 0.0) ||  ( fabs(amt) < (getRight() - getLeft()) ) ) {
 			bboxMin.x = getLeft() - amt;
 		} else {
@@ -148,7 +147,7 @@ public:
 		}
 	};
 	
-	void extendRight( GLfloat amt ) {
+	void extendRight( float amt ) {
 		if( (amt > 0.0) ||  ( fabs(amt) < (getRight() - getLeft()) ) ) {
 			bboxMax.x = getRight() + amt;
 		} else {
@@ -156,7 +155,7 @@ public:
 		}
 	};
 
-	void extendBottom( GLfloat amt ) {
+	void extendBottom( float amt ) {
 		if( (amt > 0.0) ||  ( fabs(amt) < (getTop() - getBottom()) ) ) {
 			bboxMin.y = getBottom() - amt;
 		} else {
@@ -164,7 +163,7 @@ public:
 		}
 	};
 	
-	void extendTop( GLfloat amt ) {
+	void extendTop( float amt ) {
 		if( (amt > 0.0) ||  ( fabs(amt) < (getTop() - getBottom()) ) ) {
 			bboxMax.y = getTop() + amt;
 		} else {

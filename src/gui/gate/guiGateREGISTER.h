@@ -1,6 +1,7 @@
 
 #pragma once
 #include "guiGate.h"
+#include "gui/graphics/LineSegment.h"
 
 class guiGateREGISTER : public guiGate {
 public:
@@ -15,9 +16,9 @@ public:
 private:
 	LineSegment renderInfo_valueBox;
 
-	GLdouble renderInfo_diffx;
+	double renderInfo_diffx;
 
-	GLdouble renderInfo_diffy;
+	double renderInfo_diffy;
 
 	bool renderInfo_drawBlue;
 

@@ -53,7 +53,7 @@ cmdMoveWire::cmdMoveWire(string def) : klsCommand(true, "Move Wire") {
 			iss >> temp;
 		}
 		while (temp == "isect") {
-			GLfloat key; long sid;
+			float key; long sid;
 			iss >> key >> sid;
 			newSegList[segID].intersects[key].push_back(sid);
 			iss >> temp;
@@ -139,7 +139,7 @@ string cmdMoveWire::toString() const {
 			oss << (segWalk->second).connections[i].gid << " " << (segWalk->second).connections[i].connection << " ";
 		}
 		// intersections - must store the intersection map
-		map < GLfloat, vector < long > >::const_iterator isectWalk = (segWalk->second).intersects.cbegin();
+		map < float, vector < long > >::const_iterator isectWalk = (segWalk->second).intersects.cbegin();
 		while (isectWalk != (segWalk->second).intersects.cend()) {
 			for (unsigned int j = 0; j < (isectWalk->second).size(); j++) {
 				oss << "isect ";

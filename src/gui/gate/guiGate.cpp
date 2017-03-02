@@ -1,9 +1,10 @@
 
 #include "guiGate.h"
 
-#include "../MainApp.h"
-#include "../dialog/paramDialog.h"
-#include "../wire/guiWire.h"
+#include "gui/MainApp.h"
+#include "gui/dialog/paramDialog.h"
+#include "gui/wire/guiWire.h"
+#include "gui/graphics/gl_defs.h"
 #include "gateHotspot.h"
 DECLARE_APP(MainApp)
 
@@ -102,11 +103,7 @@ void guiGate::select() {
 	selected = true;
 }
 
-// Draw this gate as selected from now until unselect() is
-// called, if the coordinate passed to it is within
-// this gate's bounding box in GL coordinates.
-// Return true if this gate is selected.
-bool guiGate::clickSelect(GLfloat x, GLfloat y) {
+bool guiGate::clickSelect(float x, float y) {
 	if (this->getBBox().contains(Point(x, y))) {
 		selected = true;
 		return true;
@@ -142,7 +139,7 @@ void guiGate::insertHotspot(float x1, float y1, string connection, int busLines)
 
 // Check if any of the hotspots of this gate are within the delta
 // of the world coordinates sX and sY. delta is in gl coords.
-string guiGate::checkHotspots(GLfloat x, GLfloat y, GLfloat delta) {
+string guiGate::checkHotspots(float x, float y, float delta) {
 	// Set up the mouse as a collision object:
 	klsCollisionObject mouse(COLL_MOUSEBOX);
 	klsBBox mBox;
@@ -409,7 +406,7 @@ string guiGate::getLogicParam(const std::string & paramName) {
 	return lparams[paramName];
 }
 
-Message_SET_GATE_PARAM* guiGate::checkClick(GLfloat x, GLfloat y) {
+Message_SET_GATE_PARAM* guiGate::checkClick(float x, float y) {
 	return nullptr;
 }
 
@@ -436,8 +433,8 @@ void guiGate::saveGateTypeSpecifics(XMLParser* xparse) { }
 Point guiGate::modelToWorld(Point c) {
 
 	// Perform a matrix-vector multiply to get the point coordinates in world-space:
-	GLfloat x = c.x * mModel[0] + c.y * mModel[4] + 1.0*mModel[12];
-	GLfloat y = c.x * mModel[1] + c.y * mModel[5] + 1.0*mModel[13];
+	float x = c.x * mModel[0] + c.y * mModel[4] + 1.0*mModel[12];
+	float y = c.x * mModel[1] + c.y * mModel[5] + 1.0*mModel[13];
 
 	return Point(x, y);
 }
@@ -453,7 +450,7 @@ void guiGate::updateBBoxes(bool noUpdateWires) {
 
 	// Get the angle vars:
 	istringstream iss(gparams["angle"]);
-	GLfloat angle;
+	float angle;
 	iss >> angle;
 
 	glMatrixMode(GL_MODELVIEW);

@@ -1,7 +1,6 @@
 
 #include "cmdDeleteGate.h"
 #include <map>
-#include "../graphics/gl_defs.h"
 #include "../GUICircuit.h"
 #include "../wire/guiWire.h"
 #include "../gate/guiGate.h"

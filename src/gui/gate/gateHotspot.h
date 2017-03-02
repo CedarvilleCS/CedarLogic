@@ -2,9 +2,9 @@
 
 
 #pragma once
-#include "../collision/klsCollisionChecker.h"
+#include "gui/collision/klsCollisionChecker.h"
 #include <string>
-#include "../graphics/gl_defs.h"
+#include "gui/graphics/Point.h"
 
 class guiGate;
 

@@ -49,7 +49,7 @@ public:
 	// Keeps a sorted list of intersections with other segments
 	//		For horizontal segments the key is the x value (since all y's are the same)
 	//		vice versa for vertical segments, holds the id of the intersected seg
-	map < GLfloat, vector < long > > intersects;
+	map < float, vector < long > > intersects;
 
 	// ID for this seg in its parent map
 	long id;

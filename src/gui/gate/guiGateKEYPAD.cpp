@@ -2,7 +2,8 @@
 #include "guiGateKEYPAD.h"
 #include <sstream>
 #include <iomanip>
-#include "../message/Message.h"
+#include "gui/message/Message.h"
+#include "gui/graphics/gl_defs.h"
 
 
 using namespace std;
@@ -75,7 +76,7 @@ void guiGateKEYPAD::setLogicParam(const std::string &paramName, const std::strin
 }
 
 // Check the click boxes for the keypad and set appropriately:
-Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick(GLfloat x, GLfloat y) {
+Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick(float x, float y) {
 	auto gparamWalk = gparams.begin();
 	while (gparamWalk != gparams.end()) {
 		// Is this a keypad box param?

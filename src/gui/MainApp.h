@@ -22,7 +22,6 @@
 #include "wx/fs_zip.h"
 #include "common.h"
 #include "parse/GateLibrary.h"
-#include "graphics/gl_defs.h"
 
 class MainFrame;
 class threadLogic;

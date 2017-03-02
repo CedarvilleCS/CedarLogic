@@ -74,7 +74,7 @@ public:
 
 private:
 	// The text color:
-	GLfloat color[4];
+	float color[4];
 	
 	// X and Y scale factors:
 	GLdouble scale[2];

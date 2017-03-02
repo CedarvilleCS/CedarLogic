@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "../graphics/gl_defs.h"
+#include "gui/graphics/Point.h"
 
 class wxCommandProcessor;
 class gateHotspot;
@@ -60,7 +60,7 @@ public:
 	// called, if the coordinate passed to it is within
 	// this gate's bounding box in GL coordinates.
 	// Return true if this gate is selected.
-	bool clickSelect(GLfloat x, GLfloat y);
+	bool clickSelect(float x, float y);
 
 	// Insert a line in the line list.
 	void insertLine(float x1, float y1, float x2, float y2);
@@ -70,7 +70,7 @@ public:
 
 	// Check if any of the hotspots of this gate are within the delta
 	// of the world coordinates sX and sY. delta is in gl coords.
-	std::string checkHotspots(GLfloat x, GLfloat y, GLfloat delta);
+	std::string checkHotspots(float x, float y, float delta);
 
 	// Return the coordinates of the hotspot in GL world-space coords.
 	void getHotspotCoords(std::string hsName, float &x, float &y);
@@ -120,7 +120,7 @@ public:
 
 	virtual std::string getLogicParam(const std::string &paramName);
 
-	virtual Message_SET_GATE_PARAM* checkClick(GLfloat x, GLfloat y);
+	virtual Message_SET_GATE_PARAM* checkClick(float x, float y);
 
 	virtual void calcBBox();
 
@@ -140,7 +140,7 @@ protected:
 
 	std::string libGateName;
 
-	GLdouble mModel[16];
+	double mModel[16];
 
 	long gateID;
 
@@ -148,7 +148,7 @@ protected:
 
 	std::string guiGateType;
 
-	GLfloat myX, myY;
+	float myX, myY;
 
 	bool selected; // Is this gate selected or not?
 

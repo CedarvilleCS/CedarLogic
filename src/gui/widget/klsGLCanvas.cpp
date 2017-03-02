@@ -716,12 +716,12 @@ void klsGLCanvas::OnMouseWheel(long numOfLines) {
 }
 
 Point klsGLCanvas::getSnappedPoint(Point c) {
-	GLfloat x = horizSpacing * floor(c.x / horizSpacing + 0.5);
-	GLfloat y = vertSpacing * floor(c.y / vertSpacing + 0.5);
+	float x = horizSpacing * floor(c.x / horizSpacing + 0.5);
+	float y = vertSpacing * floor(c.y / vertSpacing + 0.5);
 	return Point(x, y);
 }
 
-void klsGLCanvas::setHorizGrid(GLfloat hSpacing) {
+void klsGLCanvas::setHorizGrid(float hSpacing) {
 	horizOn = true;
 	if (hSpacing != 0.0) horizSpacing = hSpacing;
 }
@@ -730,7 +730,7 @@ void klsGLCanvas::disableHorizGrid() {
 	horizOn = false;
 }
 
-void klsGLCanvas::setVertGrid(GLfloat vSpacing) {
+void klsGLCanvas::setVertGrid(float vSpacing) {
 	vertOn = true;
 	if (vSpacing != 0.0) vertSpacing = vSpacing;
 }

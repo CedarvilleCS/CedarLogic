@@ -11,9 +11,9 @@
 #include "guiWire.h"
 #include <cmath>
 #include <stack>
-#include "../gate/guiGate.h"
-#include "../parse/XMLParser.h"
-#include "../graphics/gl_defs.h"
+#include "gui/gate/guiGate.h"
+#include "gui/parse/XMLParser.h"
+#include "gui/graphics/gl_defs.h"
 
 #include "../MainApp.h"
 DECLARE_APP(MainApp)
@@ -155,7 +155,7 @@ void guiWire::removeConnection(guiGate* iGate, string connection) {
 	while (segMap[segID].connections.size() == 0 && segMap[segID].intersects.size() == 1) {
 		long oldSegID = segID;
 		segID = (segMap[oldSegID].intersects.begin()->second)[0];
-		GLfloat mapKey = (segMap[segID].isVertical() ? segMap[oldSegID].begin.y : segMap[oldSegID].begin.x);
+		float mapKey = (segMap[segID].isVertical() ? segMap[oldSegID].begin.y : segMap[oldSegID].begin.x);
 		for (unsigned int i = 0; i < segMap[segID].intersects[mapKey].size(); i++) {
 			if (segMap[segID].intersects[mapKey][i] == oldSegID) segMap[segID].intersects[mapKey].erase(segMap[segID].intersects[mapKey].begin() + i);
 		}
@@ -178,14 +178,14 @@ vector < wireConnection > guiWire::getConnections() {
 void guiWire::draw(bool color) {
 	if (connectPoints.size() < 2) return;
 
-	GLint oldStipple = 0; // The old line stipple pattern, if needed.
-	GLint oldRepeat = 0;  // The old line stipple repeat pattern, if needed.
-	GLboolean lineStipple = false; // The old line stipple enable flag, if needed.
+	int oldStipple = 0; // The old line stipple pattern, if needed.
+	int oldRepeat = 0;  // The old line stipple repeat pattern, if needed.
+	bool lineStipple = false; // The old line stipple enable flag, if needed.
 	float degInRad;
 
 	if (this->selected && color) {
 		// Store the old line stipple pattern:
-		lineStipple = glIsEnabled(GL_LINE_STIPPLE);
+		lineStipple = glIsEnabled(GL_LINE_STIPPLE) != 0;
 		glGetIntegerv(GL_LINE_STIPPLE_PATTERN, &oldStipple);
 		glGetIntegerv(GL_LINE_STIPPLE_REPEAT, &oldRepeat);
 
@@ -394,7 +394,7 @@ bool guiWire::refreshIntersections(bool removeBadSegs) {
 	// Update the intersection maps for the new locations
 	auto segWalk = segMap.begin();
 	while (segWalk != segMap.end()) {
-		map < GLfloat, vector < long > > refreshMap;
+		map < float, vector < long > > refreshMap;
 		auto isectWalk = (segWalk->second).intersects.begin();
 		while (isectWalk != (segWalk->second).intersects.end()) {
 			for (unsigned int j = 0; j < (isectWalk->second).size(); j++) {
@@ -749,7 +749,7 @@ void guiWire::updateSegDrag(klsCollisionObject* mouse) {
 				}
 				auto wsLeft = ws->intersects.begin();
 				float isectLeft = (wsLeft != ws->intersects.end() ? wsLeft->first : FLT_MAX);
-				map < GLfloat, vector < long > >::reverse_iterator wsRight = ws->intersects.rbegin();
+				map < float, vector < long > >::reverse_iterator wsRight = ws->intersects.rbegin();
 				float isectRight = (wsRight != ws->intersects.rend() ? wsRight->first : -FLT_MAX);
 				ws->begin.x = min(segMap[currentDragSegment].begin.x, hsMin);
 				ws->begin.x = min(ws->begin.x, isectLeft);
@@ -767,7 +767,7 @@ void guiWire::updateSegDrag(klsCollisionObject* mouse) {
 				}
 				auto wsBottom = ws->intersects.begin();
 				float isectBottom = (wsBottom != ws->intersects.end() ? wsBottom->first : FLT_MAX);
-				map < GLfloat, vector < long > >::reverse_iterator wsTop = ws->intersects.rbegin();
+				map < float, vector < long > >::reverse_iterator wsTop = ws->intersects.rbegin();
 				float isectTop = (wsTop != ws->intersects.rend() ? wsTop->first : -FLT_MAX);
 				ws->begin.y = min(segMap[currentDragSegment].begin.y, hsMin);
 				ws->begin.y = min(ws->begin.y, isectBottom);
@@ -855,7 +855,7 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 		Point hsPoint;
 		auto wsLeft = segMap[currentDragSegment].intersects.begin();
 		float isectLeft = (wsLeft != segMap[currentDragSegment].intersects.end() ? wsLeft->first : FLT_MAX);
-		map < GLfloat, vector < long > >::reverse_iterator wsRight = segMap[currentDragSegment].intersects.rbegin();
+		map < float, vector < long > >::reverse_iterator wsRight = segMap[currentDragSegment].intersects.rbegin();
 		float isectRight = (wsRight != segMap[currentDragSegment].intersects.rend() ? wsRight->first : -FLT_MAX);
 		origin.addPoint(Point(0, segMap[currentDragSegment].begin.y));
 		mouseCoords = origin;
@@ -898,7 +898,7 @@ void guiWire::updateConnectionPos(unsigned long gid, string connection) {
 		Point hsPoint;
 		auto wsBottom = segMap[currentDragSegment].intersects.begin();
 		float isectBottom = (wsBottom != segMap[currentDragSegment].intersects.end() ? wsBottom->first : FLT_MAX);
-		map < GLfloat, vector < long > >::reverse_iterator wsTop = segMap[currentDragSegment].intersects.rbegin();
+		map < float, vector < long > >::reverse_iterator wsTop = segMap[currentDragSegment].intersects.rbegin();
 		float isectTop = (wsTop != segMap[currentDragSegment].intersects.rend() ? wsTop->first : -FLT_MAX);
 		origin.addPoint(Point(segMap[currentDragSegment].begin.x, 0));
 		mouseCoords = origin;

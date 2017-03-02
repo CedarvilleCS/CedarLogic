@@ -1,6 +1,7 @@
 
 #pragma once
 #include "guiGate.h"
+#include "gui/graphics/LineSegment.h"
 
 class guiGateLED : public guiGate {
 public:

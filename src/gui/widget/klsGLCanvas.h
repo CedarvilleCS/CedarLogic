@@ -19,7 +19,7 @@
 #include <string>
 #include <deque>
 #include "wx/glcanvas.h"
-#include "../graphics/gl_defs.h"
+#include "gui/graphics/gl_defs.h"
 
 class klsMiniMap;
 
@@ -149,17 +149,17 @@ public:
 	// Grid background:
 	// (Can turn grid back on without changing the past
 	// setting by calling it with no params.)
-	void setHorizGrid(GLfloat hSpacing = 0.0);
+	void setHorizGrid(float hSpacing = 0.0);
 	void disableHorizGrid(void);
 
-	void setVertGrid(GLfloat vSpacing = 0.0);
+	void setVertGrid(float vSpacing = 0.0);
 	void disableVertGrid(void);
 
 	bool horizOn = true; // Horizontal grid lines on/off.
-	GLfloat horizSpacing; // Horizontal grid spacing.
+	float horizSpacing; // Horizontal grid spacing.
 
 	bool vertOn = true;  // Vertical grid lines on/off.
-	GLfloat vertSpacing; // Vertical grid spacing.
+	float vertSpacing; // Vertical grid spacing.
 
 	// OpenGL handling routines:
 	// Setup the GL matrices for this canvas:

@@ -1,7 +1,7 @@
 
 #include "gateHotspot.h"
 
-static const GLfloat GATE_HOTSPOT_THICKNESS = 0.05f / 2.0f;
+static const float GATE_HOTSPOT_THICKNESS = 0.05f / 2.0f;
 
 gateHotspot::gateHotspot() : gateHotspot("") { }
 

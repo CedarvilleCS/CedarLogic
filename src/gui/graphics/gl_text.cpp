@@ -50,7 +50,7 @@ gl_text::gl_text() {
 void gl_text::draw( void ) {
 
 	// Store the old color to restore after we've drawn:
-	GLfloat oldColor[4];
+	float oldColor[4];
 	glGetFloatv( GL_CURRENT_COLOR, oldColor );
 	glColor4f( color[0], color[1], color[2], color[3] );
 

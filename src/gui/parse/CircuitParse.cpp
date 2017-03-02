@@ -391,7 +391,7 @@ void CircuitParse::parseWireToSend(void) {
 					else if (temp == "intersection") {
 						// intersections have intersection point and id
 						istringstream iss(mParse->readTagValue("intersection"));
-						GLfloat isectPoint; long isectSegID;
+						float isectPoint; long isectSegID;
 						iss >> isectPoint >> isectSegID;
 						newSeg.intersects[isectPoint].push_back(isectSegID);
 						mParse->readCloseTag();
