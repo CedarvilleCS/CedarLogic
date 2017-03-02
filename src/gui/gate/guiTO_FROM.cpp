@@ -1,5 +1,6 @@
 
 #include "guiTO_FROM.h"
+#include "gui/graphics/gl_defs.h"
 
 const static GLdouble SELECTED_LABEL_INTENSITY = 0.50;
 const static GLdouble TO_FROM_TEXT_HEIGHT = 1.5;

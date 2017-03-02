@@ -13,7 +13,6 @@
 
 #include "../MainApp.h"
 #include "../widget/PaletteCanvas.h"
-#include "../widget/gateImage.h"
 #include <vector>
 
 using namespace std;

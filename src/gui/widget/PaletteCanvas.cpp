@@ -10,6 +10,7 @@
 
 #include "PaletteCanvas.h"
 #include "common.h"
+#include "gateImage.h"
 
 using namespace std;
 
@@ -51,7 +52,7 @@ void PaletteCanvas::OnPaint(wxPaintEvent &event) {
 				lineSizer = new wxBoxSizer(wxHORIZONTAL);
 				gateSizer->Add(lineSizer, wxSizerFlags(0).Border(wxALL, 1));
 			}
-			gateImage* newGate = new gateImage((gateWalk->first), this, wxID_ANY, wxDefaultPosition, wxSize(IMAGESIZE, IMAGESIZE));
+			gateImage* newGate = new gateImage((gateWalk->first), this);
 			gates.push_back(newGate);
 			lineSizer->Add(newGate, wxSizerFlags(0).Border(wxALL, 1));
 			counter++;

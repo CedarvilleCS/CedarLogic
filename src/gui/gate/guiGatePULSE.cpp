@@ -23,10 +23,10 @@ Message_SET_GATE_PARAM* guiGatePULSE::checkClick(float x, float y) {
 	// Get the size of the CLICK square from the parameters:
 	string clickBox = getGUIParam("CLICK_BOX");
 	istringstream iss(clickBox);
-	GLdouble minx = -0.5;
-	GLdouble miny = -0.5;
-	GLdouble maxx = 0.5;
-	GLdouble maxy = 0.5;
+	double minx = -0.5;
+	double miny = -0.5;
+	double maxx = 0.5;
+	double maxy = 0.5;
 	char dump;
 	iss >> minx >> dump >> miny >> dump >> maxx >> dump >> maxy;
 

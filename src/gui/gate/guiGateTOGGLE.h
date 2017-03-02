@@ -2,6 +2,7 @@
 
 #pragma once
 #include "guiGate.h"
+#include "gui/graphics/LineSegment.h"
 
 class guiGateTOGGLE : public guiGate {
 public:

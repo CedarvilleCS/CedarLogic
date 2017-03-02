@@ -12,8 +12,9 @@
 #define PALETTECANVAS_H
 
 #include "../MainApp.h"
-#include "gateImage.h"
 #include <vector>
+
+class gateImage;
 
 using namespace std;
 
