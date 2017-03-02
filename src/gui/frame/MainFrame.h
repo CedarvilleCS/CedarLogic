@@ -37,6 +37,7 @@ enum
 	View_Oscope,
 	View_Gridline,
 	View_WireConn,
+	View_Colors,
 	
     TIMER_ID,
     IDLETIMER_ID,
@@ -95,6 +96,7 @@ public:
 	void OnNewTab(wxCommandEvent& event);
 	void OnDeleteTab(wxAuiNotebookEvent& event);
 	void OnBlackBox(wxCommandEvent& event);
+	void OnEditColors(wxCommandEvent& event);
 	void OnReportABug(wxCommandEvent& event);
 	void OnRequestAFeature(wxCommandEvent& event);
 	void OnDownloadLatestVersion(wxCommandEvent& event);

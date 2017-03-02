@@ -47,6 +47,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(View_Oscope, MainFrame::OnOscope)
     EVT_MENU(View_Gridline, MainFrame::OnViewGridline)
     EVT_MENU(View_WireConn, MainFrame::OnViewWireConn)
+	EVT_MENU(View_Colors, MainFrame::OnEditColors)
     
 	EVT_TOOL(Tool_Pause, MainFrame::OnPause)
 	EVT_TOOL(Tool_Step, MainFrame::OnStep)
@@ -1057,6 +1058,10 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 }
 
 void MainFrame::OnBlackBox(wxCommandEvent& event) {
+}
+
+void MainFrame::OnEditColors(wxCommandEvent& event) {
+
 }
 
 void MainFrame::OnReportABug(wxCommandEvent& event) {
