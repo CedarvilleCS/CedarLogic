@@ -1,19 +1,8 @@
-/*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
 
-   MainApp: Main application object
-*****************************************************************************/
-
-#ifndef MAINAPP_H_
-#define MAINAPP_H_
+#pragma once
 
 #include <deque>
 #include <string>
-#include <fstream>
 #include "wx/wx.h"
 #include "wx/thread.h"
 #include "wx/image.h"
@@ -90,8 +79,6 @@ public:
 	threadLogic* logicThread;
 	autoSaveThread* saveThread;
 	
-	ofstream logfile;
-	
 	//this pointer is added so that pop-ups can
 	//resume simulation
 	MainFrame* mainframe;
@@ -108,8 +95,6 @@ public:
 private:
 	void loadSettings();
 
-	// Load colors if they exist, or write a colors file for future use.
+	// Load colors if they exist, or write a default colors file for future use.
 	void loadColors();
 };
-
-#endif /*MAINAPP_H_*/

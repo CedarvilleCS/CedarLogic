@@ -286,7 +286,7 @@ bool GateLibrary::parseShapeObject(string type, LibraryGate* newGate, double off
 		float degStep = 360.0 / (float)numSegs;
 		for (float i = degStep; i <= 360; i += degStep)
 		{
-			float degInRad = i*DEG2RAD;
+			float degInRad = i * 3.1416f / 180.0f;
 			theX = sin(degInRad)*radius + x1;
 			theY = cos(degInRad)*radius + y1;
 			newGate->shape.push_back(LibraryGateLine(lastX, lastY, theX, theY));

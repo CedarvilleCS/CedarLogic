@@ -10,7 +10,6 @@
 
 #include "MainApp.h"
 #include "frame/MainFrame.h"
-#include "wx/cmdline.h"
 #include "../version.h"
 
 #include "thread/threadLogic.h"
@@ -23,12 +22,6 @@
 
 IMPLEMENT_APP(MainApp)
 
-static const wxCmdLineEntryDesc g_cmdLineDesc[] =
-{
-	{ wxCMD_LINE_PARAM, NULL, NULL, "input file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-	{ wxCMD_LINE_NONE }
-};
-
 MainApp::MainApp()
      : m_semAllDone(), simulate(), readyToSend()
 {
@@ -40,42 +33,17 @@ MainApp::MainApp()
 
 bool MainApp::OnInit()
 {
-#ifndef _PRODUCTION_
-    logfile.open( "guilog.log" );
-#endif
 	loadSettings();
 	loadColors();
 	
     wxFileSystem::AddHandler( new wxZipFSHandler );
 	helpController = new wxHelpController;
 	helpController->Initialize(appSettings.helpFile);
-
-
-	//*****************************************
-	//Edit by Joshua Lansford 2/15/07
-	//wxCmdLineParser is all fine and great,
-	//but it is over kill.  Besides if you say
-	//to windows to open a cdl file with cedarls,
-	//it isn't going to prefix the file with anything
-	//unless you do some special options which are
-	//not necisary.  Therefore the argv can be used
-	//directly without passing it into a cmdLineParser
-	//
-	//wxString cmdFilename;
-	//wxCmdLineParser cmdParser(g_cmdLineDesc, argc, argv);
-	//if (cmdParser.GetParamCount() > 0) {
-	//	cmdFilename = cmdParser.GetParam(0);
-	//	wxFileName fName(cmdFilename);
-	//	fName.Normalize(wxPATH_NORM_LONG|wxPATH_NORM_DOTS|wxPATH_NORM_TILDE|wxPATH_NORM_ABSOLUTE);
-	//	cmdFilename = fName.GetFullPath();
-    //}	
+	
     string cmdFilename;
 	if( argc >= 2 ){
 		cmdFilename = argv[1].ToStdString();
-//		logfile << "cmdFilename = " << cmdFilename << endl;
 	}
-	//End of edit
-	//**********************************
 	
 
     // create the main application window

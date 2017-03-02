@@ -399,7 +399,7 @@ bool guiWire::refreshIntersections(bool removeBadSegs) {
 		while (isectWalk != (segWalk->second).intersects.end()) {
 			for (unsigned int j = 0; j < (isectWalk->second).size(); j++) {
 				// Simply set value at new location...
-				if (removeBadSegs && segMap.find((isectWalk->second)[j]) == segMap.end()) { /*wxGetApp().logfile << "returning true" << endl;*/ retVal = true; continue; }
+				if (removeBadSegs && segMap.find((isectWalk->second)[j]) == segMap.end()) { retVal = true; continue; }
 				if ((segWalk->second).isVertical()) refreshMap[segMap[(isectWalk->second)[j]].begin.y].push_back((isectWalk->second)[j]);
 				else refreshMap[segMap[(isectWalk->second)[j]].begin.x].push_back((isectWalk->second)[j]);
 			}

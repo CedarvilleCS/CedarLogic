@@ -718,7 +718,6 @@ void GUICanvas::OnMouseEnter(wxMouseEvent& event) {
 		newDragGate = gCircuit->createGate(wxGetApp().newGateToDrag, -1);
 		if (newDragGate == NULL) { wxGetApp().newGateToDrag = ""; return; }
 		newDragGate->setGLcoords(m.x, m.y);
-		//wxGetApp().logfile << m.x << " " << (panY-(y*viewZoom)) << endl << flush;
 		currentDragState = DRAG_NEWGATE;
 		wxGetApp().newGateToDrag = "";
 		beginDrag(BUTTON_LEFT);
@@ -1254,25 +1253,6 @@ void GUICanvas::zoomOut() {
 	//Only zoom when not dragging
 	if (currentDragState == DRAG_NONE) {
 		setZoom(getZoom() / ZOOM_STEP);
-	}
-}
-
-// print page contents
-void GUICanvas::printLists() {
-	wxGetApp().logfile << "printing page lists" << endl << flush;
-	auto thisGate = gateList.begin();
-	while (thisGate != gateList.end()) {
-		float x, y;
-		(thisGate->second)->getGLcoords(x, y);
-		wxGetApp().logfile << " gate " << thisGate->first << " type " << (thisGate->second)->getLibraryGateName() << " at " << x << "," << y << endl << flush;
-		thisGate++;
-	}
-	auto thisWire = wireList.begin();
-	while (thisWire != wireList.end()) {
-		if (thisWire->second != nullptr) {
-			wxGetApp().logfile << " wire " << thisWire->first << endl << flush;
-		}
-		thisWire++;
 	}
 }
 

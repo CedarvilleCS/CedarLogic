@@ -159,8 +159,6 @@ public:
 	void zoomIn();
 	void zoomOut();
 
-	void printLists();
-
 	// Update the collision checker and refresh
 	void Update();
 
