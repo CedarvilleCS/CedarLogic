@@ -29,7 +29,7 @@ public:
 
 private:
 
-	void setColor(Color color, wxColour newColor);
+	void setColor(Color &color, wxColour newColor);
 
 	DECLARE_EVENT_TABLE()
 };
