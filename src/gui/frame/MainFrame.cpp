@@ -25,6 +25,7 @@
 #include "../commands.h"
 #include "../thread/autoSaveThread.h"
 #include "../../version.h"
+#include "gui\dialog\ColorSettingsDialog.h"
 
 DECLARE_APP(MainApp)
 
@@ -110,6 +111,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     wxMenu *settingsMenu = new wxMenu;
     settingsMenu->AppendCheckItem(View_Gridline, "Display Gridlines", "Toggle gridline display");
     settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
+	settingsMenu->Append(View_Colors, "Color Settings", "Color Settings");
     viewMenu->AppendSeparator();
     viewMenu->AppendSubMenu(settingsMenu, "Settings");
     
@@ -1061,7 +1063,8 @@ void MainFrame::OnBlackBox(wxCommandEvent& event) {
 }
 
 void MainFrame::OnEditColors(wxCommandEvent& event) {
-
+	ColorSettingsDialog dialog(this);
+	dialog.ShowModal();
 }
 
 void MainFrame::OnReportABug(wxCommandEvent& event) {

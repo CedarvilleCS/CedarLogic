@@ -19,24 +19,46 @@ BEGIN_EVENT_TABLE(ColorSettingsDialog,wxDialog)
 	EVT_BUTTON(SelectionBoxFill, ColorSettingsDialog::OnEditColor)
 	EVT_BUTTON(SelectionBoxBorder, ColorSettingsDialog::OnEditColor)
 
+	EVT_BUTTON(SaveColors, ColorSettingsDialog::saveColors)
+	EVT_BUTTON(LoadColors, ColorSettingsDialog::loadColors)
+	EVT_BUTTON(DefaultColors, ColorSettingsDialog::setDefault)
+	EVT_BUTTON(DarkColors, ColorSettingsDialog::setDark)
+
 END_EVENT_TABLE()
 
 ColorSettingsDialog::ColorSettingsDialog(wxFrame* parent)
 	: wxDialog(parent,wxID_ANY,"Color Settings", wxDefaultPosition, wxDefaultSize, wxCLOSE_BOX | wxSTAY_ON_TOP | wxCAPTION)
 {
-	wxPanel* panel = new wxPanel(this, wxID_ANY);
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+	wxStaticBoxSizer* colorSizer = new wxStaticBoxSizer(wxVERTICAL, this, "Colors");
+	wxBoxSizer* controlSizer = new wxBoxSizer(wxHORIZONTAL);
+	
+	colorSizer->Add(new wxButton(this, SchematicBackground, "Background"));
+	colorSizer->Add(new wxButton(this, SchematicGrid, "Grid"));
+	colorSizer->Add(new wxButton(this, GateShape, "Gate"));
+	colorSizer->Add(new wxButton(this, GateHotspot, "Hotspot"));
+	colorSizer->Add(new wxButton(this, GateOverlap, "Overlap"));
+	colorSizer->Add(new wxButton(this, WireHigh, "High"));
+	colorSizer->Add(new wxButton(this, WireLow, "Low"));
+	colorSizer->Add(new wxButton(this, WireHiZ, "Hi Z"));
+	colorSizer->Add(new wxButton(this, WireUnknown, "Unknown"));
+	colorSizer->Add(new wxButton(this, WireConflict, "Conflict"));
+	colorSizer->Add(new wxButton(this, KeypadSelection, "Keypad Selection"));
+	colorSizer->Add(new wxButton(this, Text, "Text"));
+	colorSizer->Add(new wxButton(this, TextSelected, "Selected Text"));
+	colorSizer->Add(new wxButton(this, SelectionBoxFill, "Mouse Selection Fill"));
+	colorSizer->Add(new wxButton(this, SelectionBoxBorder, "Mouse Selection Border"));
 
-	wxString labels[] = { "Background", "Grid", "Gate", "Hotspot", "Overlap", "High Value", "Low Value", "High Z Value", "Unknown Value", "Conflict Value", "Keypad Selection", "Text", "Selected Text", "Mouse Selection Fill", "Mouse Selection Border" };
+	controlSizer->Add(new wxButton(this, DefaultColors, "Set Default Colors"));
+	controlSizer->Add(new wxButton(this, DarkColors, "Set Dark Colors"));
+	controlSizer->Add(new wxButton(this, SaveColors, "Save Colors"));
+	controlSizer->Add(new wxButton(this, LoadColors, "Load Colors"));
+	controlSizer->Add(new wxButton(this, wxID_CLOSE, "Close"));
 
-	for (auto i = 0; i < 15; i++)
-	{
-		wxButton* button = new wxButton(panel, i + wxID_HIGHEST + 1, labels[i]);
-	}
+	mainSizer->Add(colorSizer);
+	mainSizer->Add(controlSizer);
 
-	wxButton* default = new wxButton(panel, wxID_ANY, "Set Default Colors");
-	wxButton* dark = new wxButton(panel, wxID_ANY, "Set Dark Colors");
-	wxButton* save = new wxButton(panel, wxID_ANY, "Save Colors");
-	wxButton* load = new wxButton(panel, wxID_ANY, "Load Colors");
+	this->SetSizer(mainSizer);
 }
 
 void ColorSettingsDialog::OnEditColor(wxCommandEvent& event) {
@@ -80,8 +102,24 @@ void ColorSettingsDialog::OnEditColor(wxCommandEvent& event) {
 }
 
 void ColorSettingsDialog::setColor(Color &color, wxColor newColor) {
-	color.r = (newColor.Red() / 255);
-	color.g = (newColor.Green() / 255);
-	color.b = (newColor.Blue() / 255);
-	color.a = (newColor.Alpha() / 255);
+	color.r = (newColor.Red() / 255.0f);
+	color.g = (newColor.Green() / 255.0f);
+	color.b = (newColor.Blue() / 255.0f);
+	color.a = (newColor.Alpha() / 255.0f);
+}
+
+void ColorSettingsDialog::saveColors(wxCommandEvent& event) {
+
+}
+
+void ColorSettingsDialog::loadColors(wxCommandEvent& event) {
+
+}
+
+void ColorSettingsDialog::setDefault(wxCommandEvent& event) {
+
+}
+
+void ColorSettingsDialog::setDark(wxCommandEvent& event) {
+
 }
