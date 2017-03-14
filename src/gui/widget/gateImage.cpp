@@ -9,7 +9,7 @@
 #include "gui/gate/guiGate.h"
 #include "gui/GUICircuit.h"
 
-wxBEGIN_EVENT_TABLE(gateImage, wxWindow)
+wxBEGIN_EVENT_TABLE(gateImage, wxGLCanvas)
 EVT_PAINT(gateImage::OnPaint)
 EVT_ENTER_WINDOW(gateImage::OnEnterWindow)
 EVT_LEAVE_WINDOW(gateImage::OnLeaveWindow)
@@ -25,26 +25,26 @@ gateImage::gateImage(const string &gateName, wxWindow *parent) :
 	wxGLCanvas(parent, wxID_ANY, nullptr, wxDefaultPosition, wxSize(IMAGESIZE, IMAGESIZE), wxFULL_REPAINT_ON_RESIZE, "") {
 
 	if (count == 0) {
+		
 		glContext = new wxGLContext(this);
-		count++;
+		glContext->SetCurrent(*this);
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+		// Load the font texture
+		gl_text::loadFont(wxGetApp().appSettings.textFontFile);
 	}
+
+
+	count++;
 
 	mouseHover = false;
 
-	guiGate *m_gate = GUICircuit().createGate(gateName, 0, true);
-
-	if (m_gate == NULL)
-		return;
-
-	m_gate->setGLcoords(0, 0);
-	m_gate->calcBBox();
-
 	this->gateName = gateName;
 
-	//setViewport(m_gate);
-	//generateImage(m_gate);
-
-	delete m_gate;
 	this->SetToolTip(wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption);
 }
 
@@ -60,16 +60,27 @@ void gateImage::OnPaint(wxPaintEvent &event) {
 
 	glContext->SetCurrent(*this);
 
+	// Clear the background.
 	if (mouseHover) {
 		ColorPalette::setClearColor(ColorPalette::GateHotspot);
 	}
 	else {
 		ColorPalette::setClearColor(ColorPalette::SchematicBackground);
 	}
-
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	// Create and destroy an entire circuit just to make a gate.
+	guiGate *m_gate = GUICircuit().createGate(gateName, 0, true);
 
+	// Set drawing bounds based on gate.
+	m_gate->setGLcoords(0, 0);
+	m_gate->calcBBox();
+	setViewport(m_gate);
+	
+	// Draw the gate and destory it.
+	ColorPalette::setColor(ColorPalette::GateShape);
+	m_gate->draw();
+	delete m_gate;
 
 	SwapBuffers();
 }
@@ -102,7 +113,10 @@ void gateImage::OnEraseBackground(wxEraseEvent& event) {
 	// Do nothing, so that the palette doesn't flicker!
 }
 
+
+
 void gateImage::setViewport(guiGate *m_gate) {
+
 	// Set the projection matrix:	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -149,98 +163,9 @@ void gateImage::setViewport(guiGate *m_gate) {
 	// Set the model matrix:
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-}
 
-// Print the canvas contents to a bitmap:
-void gateImage::generateImage(guiGate *m_gate) {
-	//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
-	// DIB Section OpenGL rendering.
-
-	wxSize sz = GetClientSize();
-
-	// Create a DIB section.
-	// (The Windows wxBitmap implementation will create a DIB section for a bitmap if you set
-	// a color depth of 24 or greater.)
-	wxBitmap theBM(GATEIMAGESIZE, GATEIMAGESIZE, 32);
-
-	// Get a memory hardware device context for writing to the bitmap DIB Section:
-	wxMemoryDC myDC;
-	myDC.SelectObject(theBM);
-	WXHDC theHDC = myDC.GetHDC();
-
-	// The basics of setting up OpenGL to render to the bitmap are found at:
-	// http://www.nullterminator.net/opengl32.html
-	// http://www.codeguru.com/cpp/g-m/opengl/article.php/c5587/
-
-	PIXELFORMATDESCRIPTOR pfd;
-	int iFormat;
-
-	// set the pixel format for the DC
-	::ZeroMemory(&pfd, sizeof(pfd));
-	pfd.nSize = sizeof(pfd);
-	pfd.nVersion = 1;
-	pfd.dwFlags = PFD_DRAW_TO_BITMAP | PFD_SUPPORT_OPENGL | PFD_SUPPORT_GDI;
-	pfd.iPixelType = PFD_TYPE_RGBA;
-	pfd.cColorBits = 32;
-	pfd.cDepthBits = 16;
-	pfd.iLayerType = PFD_MAIN_PLANE;
-	iFormat = ::ChoosePixelFormat((HDC)theHDC, &pfd);
-	::SetPixelFormat((HDC)theHDC, iFormat, &pfd);
-
-	// create and enable the render context (RC)
-	HGLRC hRC = ::wglCreateContext((HDC)theHDC);
-	HGLRC oldhRC = ::wglGetCurrentContext();
-	HDC oldDC = ::wglGetCurrentDC();
-	::wglMakeCurrent((HDC)theHDC, hRC);
-
-	// Setup the viewport for rendering:
-	setViewport(m_gate);
 	// Reset the glViewport to the size of the bitmap:
 	glViewport(0, 0, GATEIMAGESIZE, GATEIMAGESIZE);
-
-	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
-	ColorPalette::setColor(ColorPalette::GateShape);
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-	//TODO: Check if alpha is hardware supported, and
-	// don't enable it if not!
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	//*********************************
-	//Edit by Joshua Lansford 4/09/07
-	//anti-alis ing is nice
-	//glEnable( GL_LINE_SMOOTH );
-	//End of edit
-
-	// Load the font texture
-	gl_text::loadFont(wxGetApp().appSettings.textFontFile);
-
-	// Do the rendering here.
-	renderMap(m_gate);
-
-	// Flush the OpenGL buffer to make sure the rendering has happened:	
-	glFlush();
-
-	// Destroy the OpenGL rendering context, release the memDC, and
-	// convert the DIB Section into a wxImage to return to the caller:
-	::wglMakeCurrent(oldDC, oldhRC);
-	//::wglMakeCurrent( NULL, NULL );
-	::wglDeleteContext(hRC);
-	myDC.SelectObject(wxNullBitmap);
-	// relevant, but compiler error gImage = theBM.ConvertToImage();
-}
-
-void gateImage::renderMap(guiGate *m_gate) {
-	//clear window
-	glClear(GL_COLOR_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	if (m_gate != NULL) m_gate->draw();
 }
 
 wxGLContext *gateImage::glContext = nullptr;

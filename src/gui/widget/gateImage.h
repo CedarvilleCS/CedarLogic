@@ -34,10 +34,6 @@ private:
 
 	void setViewport(guiGate *m_gate);
 
-	void generateImage(guiGate *m_gate);
-
-	void renderMap(guiGate *m_gate);
-	
 
 
 	std::string gateName;
@@ -48,5 +44,7 @@ private:
 
 	// GLContext shared for all gateImage's.
 	static wxGLContext *glContext;
+
+	// gateImage counter so wxGLContext can be destroyed eventually.
 	static int count;
 };
