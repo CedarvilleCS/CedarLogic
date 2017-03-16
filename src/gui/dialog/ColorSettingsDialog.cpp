@@ -3,6 +3,8 @@
 
 BEGIN_EVENT_TABLE(ColorSettingsDialog,wxDialog)
 
+	EVT_BUTTON(wxID_EXIT, ColorSettingsDialog::OnClose)
+
 	EVT_BUTTON(SchematicBackground, ColorSettingsDialog::OnEditColor)
 	EVT_BUTTON(SchematicGrid, ColorSettingsDialog::OnEditColor)
 	EVT_BUTTON(GateShape, ColorSettingsDialog::OnEditColor)
@@ -27,36 +29,66 @@ BEGIN_EVENT_TABLE(ColorSettingsDialog,wxDialog)
 END_EVENT_TABLE()
 
 ColorSettingsDialog::ColorSettingsDialog(wxFrame* parent)
-	: wxDialog(parent,wxID_ANY,"Color Settings", wxDefaultPosition, wxSize(200, 720), wxCLOSE_BOX | wxSTAY_ON_TOP | wxCAPTION)
+	: wxDialog(parent,wxID_ANY,"Color Settings", wxDefaultPosition, wxSize(400, 400), wxCLOSE_BOX | wxCAPTION)
 {
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-	wxStaticBoxSizer* colorSizer = new wxStaticBoxSizer(wxVERTICAL, this, "Colors");
-	wxStaticBoxSizer* controlSizer = new wxStaticBoxSizer(wxVERTICAL, this, "Settings");
 	
-	colorSizer->Add(new wxButton(this, SchematicBackground, "Background"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, SchematicGrid, "Grid"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, GateShape, "Gate"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, GateHotspot, "Hotspot"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, GateOverlap, "Overlap"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, WireHigh, "High"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, WireLow, "Low"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, WireHiZ, "Hi Z"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, WireUnknown, "Unknown"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, WireConflict, "Conflict"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, KeypadSelection, "Keypad Selection"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, Text, "Text"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, TextSelected, "Selected Text"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, SelectionBoxFill, "Mouse Selection Fill"), 0, wxCENTRE | wxALL, 2);
-	colorSizer->Add(new wxButton(this, SelectionBoxBorder, "Mouse Selection Border"), 0, wxCENTRE | wxALL, 2);
+	wxGridSizer* colorGrid = new wxGridSizer(4, 5, 5);
+	wxGridSizer* settingsGrid = new wxGridSizer(2, 5, 5);
 
-	controlSizer->Add(new wxButton(this, SaveColors, "Save Colors"), 0, wxCENTRE | wxALL, 2);
-	controlSizer->Add(new wxButton(this, LoadColors, "Load Colors"), 0, wxCENTRE | wxALL, 2);
-	controlSizer->Add(new wxButton(this, DefaultColors, "Set Default Colors"), 0, wxCENTRE | wxALL, 2);
-	controlSizer->Add(new wxButton(this, DarkColors, "Set Dark Colors"), 0, wxCENTRE | wxALL, 2);
-	
-	mainSizer->Add(colorSizer, 0, wxEXPAND | wxALL, 5);
-	mainSizer->Add(controlSizer, 0, wxEXPAND | wxALL, 5);
-	mainSizer->Add(new wxButton(this, wxID_CLOSE, "Close"), 0, wxEXPAND | wxALL, 2);
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Background"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(SchematicBackground,ColorPalette::SchematicBackground), 0, wxCENTER, 2);
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Grid"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(SchematicGrid, ColorPalette::SchematicGrid));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Gate"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(GateShape, ColorPalette::GateShape));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Hotspot"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(GateHotspot, ColorPalette::GateHotspot));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Overlap"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(GateOverlap, ColorPalette::GateOverlap));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "High"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(WireHigh, ColorPalette::WireHigh));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Low"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(WireLow, ColorPalette::WireLow));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "HI Z"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(WireHiZ, ColorPalette::WireHiZ));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Unknown"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(WireUnknown, ColorPalette::WireUnknown));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Conflict"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(WireConflict, ColorPalette::WireConflict));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Keypad Selection"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(KeypadSelection, ColorPalette::KeypadSelection));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Text"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(Text, ColorPalette::Text));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Selected Text"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(TextSelected, ColorPalette::TextSelected));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Selection"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(SelectionBoxFill, ColorPalette::SelectionBoxFill));
+
+	colorGrid->Add(new wxStaticText(this, wxID_ANY, "Selection Border"), wxALIGN_LEFT);
+	colorGrid->Add(makeButton(SelectionBoxBorder, ColorPalette::SelectionBoxBorder));
+
+	settingsGrid->Add(new wxButton(this, SaveColors, "Save Colors"), 0, wxCENTER | wxALL, 2);
+	settingsGrid->Add(new wxButton(this, DefaultColors, "Set Default Colors"), 0, wxCENTER | wxALL, 2);
+	settingsGrid->Add(new wxButton(this, LoadColors, "Load Colors"), 0, wxCENTER | wxALL, 2);
+	settingsGrid->Add(new wxButton(this, DarkColors, "Set Dark Colors"), 0, wxCENTER | wxALL, 2);
+
+	mainSizer->Add(colorGrid, 0, wxEXPAND | wxALL | wxCENTER, 5);
+	mainSizer->Add(settingsGrid, 0, wxEXPAND | wxALL | wxCENTER, 5);
+	mainSizer->Add(new wxButton(this, wxID_EXIT, "Close"), 0, wxALL | wxCENTER, 2);
 
 	this->SetSizer(mainSizer);
 }
@@ -98,7 +130,12 @@ void ColorSettingsDialog::OnEditColor(wxCommandEvent& event) {
 		case SelectionBoxBorder: setColor(ColorPalette::SelectionBoxBorder, color);
 			break;
 		}
+		this->GetWindowChild(event.GetId())->SetBackgroundColour(color);
 	}
+}
+
+void ColorSettingsDialog::OnClose(wxCommandEvent& event) {
+	this->Close();
 }
 
 void ColorSettingsDialog::setColor(Color &color, wxColor newColor) {
@@ -106,6 +143,16 @@ void ColorSettingsDialog::setColor(Color &color, wxColor newColor) {
 	color.g = (newColor.Green() / 255.0f);
 	color.b = (newColor.Blue() / 255.0f);
 	color.a = (newColor.Alpha() / 255.0f);
+}
+
+wxColor ColorSettingsDialog::getColor(const Color &color) {
+	return wxColor(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
+}
+
+wxButton* ColorSettingsDialog::makeButton(const unsigned long id, const Color &color) {
+	wxButton* button = new wxButton(this, id, "", wxDefaultPosition, wxSize(25, 25));
+	button->SetBackgroundColour(getColor(color));
+	return button;
 }
 
 void ColorSettingsDialog::saveColors(wxCommandEvent& event) {
