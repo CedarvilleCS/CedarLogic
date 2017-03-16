@@ -27,36 +27,36 @@ BEGIN_EVENT_TABLE(ColorSettingsDialog,wxDialog)
 END_EVENT_TABLE()
 
 ColorSettingsDialog::ColorSettingsDialog(wxFrame* parent)
-	: wxDialog(parent,wxID_ANY,"Color Settings", wxDefaultPosition, wxDefaultSize, wxCLOSE_BOX | wxSTAY_ON_TOP | wxCAPTION)
+	: wxDialog(parent,wxID_ANY,"Color Settings", wxDefaultPosition, wxSize(200, 720), wxCLOSE_BOX | wxSTAY_ON_TOP | wxCAPTION)
 {
 	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 	wxStaticBoxSizer* colorSizer = new wxStaticBoxSizer(wxVERTICAL, this, "Colors");
-	wxBoxSizer* controlSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticBoxSizer* controlSizer = new wxStaticBoxSizer(wxVERTICAL, this, "Settings");
 	
-	colorSizer->Add(new wxButton(this, SchematicBackground, "Background"));
-	colorSizer->Add(new wxButton(this, SchematicGrid, "Grid"));
-	colorSizer->Add(new wxButton(this, GateShape, "Gate"));
-	colorSizer->Add(new wxButton(this, GateHotspot, "Hotspot"));
-	colorSizer->Add(new wxButton(this, GateOverlap, "Overlap"));
-	colorSizer->Add(new wxButton(this, WireHigh, "High"));
-	colorSizer->Add(new wxButton(this, WireLow, "Low"));
-	colorSizer->Add(new wxButton(this, WireHiZ, "Hi Z"));
-	colorSizer->Add(new wxButton(this, WireUnknown, "Unknown"));
-	colorSizer->Add(new wxButton(this, WireConflict, "Conflict"));
-	colorSizer->Add(new wxButton(this, KeypadSelection, "Keypad Selection"));
-	colorSizer->Add(new wxButton(this, Text, "Text"));
-	colorSizer->Add(new wxButton(this, TextSelected, "Selected Text"));
-	colorSizer->Add(new wxButton(this, SelectionBoxFill, "Mouse Selection Fill"));
-	colorSizer->Add(new wxButton(this, SelectionBoxBorder, "Mouse Selection Border"));
+	colorSizer->Add(new wxButton(this, SchematicBackground, "Background"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, SchematicGrid, "Grid"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, GateShape, "Gate"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, GateHotspot, "Hotspot"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, GateOverlap, "Overlap"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, WireHigh, "High"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, WireLow, "Low"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, WireHiZ, "Hi Z"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, WireUnknown, "Unknown"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, WireConflict, "Conflict"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, KeypadSelection, "Keypad Selection"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, Text, "Text"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, TextSelected, "Selected Text"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, SelectionBoxFill, "Mouse Selection Fill"), 0, wxCENTRE | wxALL, 2);
+	colorSizer->Add(new wxButton(this, SelectionBoxBorder, "Mouse Selection Border"), 0, wxCENTRE | wxALL, 2);
 
-	controlSizer->Add(new wxButton(this, DefaultColors, "Set Default Colors"));
-	controlSizer->Add(new wxButton(this, DarkColors, "Set Dark Colors"));
-	controlSizer->Add(new wxButton(this, SaveColors, "Save Colors"));
-	controlSizer->Add(new wxButton(this, LoadColors, "Load Colors"));
-	controlSizer->Add(new wxButton(this, wxID_CLOSE, "Close"));
-
-	mainSizer->Add(colorSizer);
-	mainSizer->Add(controlSizer);
+	controlSizer->Add(new wxButton(this, SaveColors, "Save Colors"), 0, wxCENTRE | wxALL, 2);
+	controlSizer->Add(new wxButton(this, LoadColors, "Load Colors"), 0, wxCENTRE | wxALL, 2);
+	controlSizer->Add(new wxButton(this, DefaultColors, "Set Default Colors"), 0, wxCENTRE | wxALL, 2);
+	controlSizer->Add(new wxButton(this, DarkColors, "Set Dark Colors"), 0, wxCENTRE | wxALL, 2);
+	
+	mainSizer->Add(colorSizer, 0, wxEXPAND | wxALL, 5);
+	mainSizer->Add(controlSizer, 0, wxEXPAND | wxALL, 5);
+	mainSizer->Add(new wxButton(this, wxID_CLOSE, "Close"), 0, wxEXPAND | wxALL, 2);
 
 	this->SetSizer(mainSizer);
 }
