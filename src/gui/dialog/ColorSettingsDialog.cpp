@@ -1,5 +1,7 @@
 #include "ColorSettingsDialog.h"
+#include "gui\MainApp.h"
 
+DECLARE_APP(MainApp)
 
 BEGIN_EVENT_TABLE(ColorSettingsDialog,wxDialog)
 
@@ -155,18 +157,63 @@ wxButton* ColorSettingsDialog::makeButton(const unsigned long id, const Color &c
 	return button;
 }
 
-void ColorSettingsDialog::saveColors(wxCommandEvent& event) {
+void ColorSettingsDialog::updateColorButtons() {
+	GetWindowChild(SchematicBackground)->SetBackgroundColour(getColor(ColorPalette::SchematicBackground));
+	GetWindowChild(SchematicGrid)->SetBackgroundColour(getColor(ColorPalette::SchematicGrid));
+	GetWindowChild(GateShape)->SetBackgroundColour(getColor(ColorPalette::GateShape));
+	GetWindowChild(GateHotspot)->SetBackgroundColour(getColor(ColorPalette::GateHotspot));
+	GetWindowChild(GateOverlap)->SetBackgroundColour(getColor(ColorPalette::GateOverlap));
+	GetWindowChild(WireHigh)->SetBackgroundColour(getColor(ColorPalette::WireHigh));
+	GetWindowChild(WireLow)->SetBackgroundColour(getColor(ColorPalette::WireLow));
+	GetWindowChild(WireHiZ)->SetBackgroundColour(getColor(ColorPalette::WireHiZ));
+	GetWindowChild(WireUnknown)->SetBackgroundColour(getColor(ColorPalette::WireUnknown));
+	GetWindowChild(WireConflict)->SetBackgroundColour(getColor(ColorPalette::WireConflict));
+	GetWindowChild(KeypadSelection)->SetBackgroundColour(getColor(ColorPalette::KeypadSelection));
+	GetWindowChild(Text)->SetBackgroundColour(getColor(ColorPalette::Text));
+	GetWindowChild(TextSelected)->SetBackgroundColour(getColor(ColorPalette::TextSelected));
+	GetWindowChild(SelectionBoxFill)->SetBackgroundColour(getColor(ColorPalette::SelectionBoxFill));
+	GetWindowChild(SelectionBoxBorder)->SetBackgroundColour(getColor(ColorPalette::SelectionBoxBorder));
+}
 
+void ColorSettingsDialog::saveColors(wxCommandEvent& event) {
+	wxString caption = "Save Palette";
+	wxString wildcard = "Palette Document (*.clp)|*.clp";
+	wxString defaultFilename = "palette";
+	wxFileDialog saveDialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	saveDialog.SetDirectory(wxGetApp().pathToExe + "/res");
+	if (saveDialog.ShowModal() == wxID_OK) {
+		wxString path = saveDialog.GetPath();
+
+		std::fstream colorFile = std::fstream(path.ToStdString(), std::ios::out);
+		ColorPalette::save(colorFile);
+	}
 }
 
 void ColorSettingsDialog::loadColors(wxCommandEvent& event) {
+	wxString caption = "Load Palette";
+	wxString wildcard = "Palette Document (*.clp)|*.clp";
+	wxString defaultFilename = "";
+	wxFileDialog loadDialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	loadDialog.SetDirectory(wxGetApp().pathToExe + "res");
+	if (loadDialog.ShowModal() == wxID_OK) {
+		wxString path = loadDialog.GetPath();
 
+		std::fstream colorFile = std::fstream(path.ToStdString(), std::ios::in);
+		ColorPalette::load(colorFile);
+	}
+	updateColorButtons();
 }
 
 void ColorSettingsDialog::setDefault(wxCommandEvent& event) {
-
+	std::string path = wxGetApp().pathToExe + "res/standard-colors.clp";
+	std::fstream colorFile = std::fstream(path, std::ios::in);
+	ColorPalette::load(colorFile);
+	updateColorButtons();
 }
 
 void ColorSettingsDialog::setDark(wxCommandEvent& event) {
-
+	std::string path = wxGetApp().pathToExe + "res/dark-colors.clp";
+	std::fstream colorFile = std::fstream(path, std::ios::in);
+	ColorPalette::load(colorFile);
+	updateColorButtons();
 }

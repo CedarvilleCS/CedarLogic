@@ -226,7 +226,7 @@ void MainApp::loadSettings() {
 
 void MainApp::loadColors() {
 
-	std::string colorsFilename = pathToExe + "res/colors.txt";
+	std::string colorsFilename = pathToExe + "res/standard-colors.clp";
 	std::fstream colorsFile(colorsFilename, std::ios::in);
 
 	if (colorsFile) {

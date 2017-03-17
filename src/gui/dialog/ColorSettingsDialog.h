@@ -40,6 +40,7 @@ private:
 	void setColor(Color &color, wxColour newColor);
 	wxColor getColor(const Color &color);
 	wxButton* makeButton(const unsigned long id, const Color &color);
+	void updateColorButtons();
 	
 	void saveColors(wxCommandEvent& event);
 	void loadColors(wxCommandEvent& event);
