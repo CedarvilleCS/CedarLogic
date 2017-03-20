@@ -140,15 +140,15 @@ void ColorSettingsDialog::OnClose(wxCommandEvent& event) {
 	this->Close();
 }
 
-void ColorSettingsDialog::setColor(Color &color, wxColor newColor) {
+void ColorSettingsDialog::setColor(Color &color, wxColour newColor) {
 	color.r = (newColor.Red() / 255.0f);
 	color.g = (newColor.Green() / 255.0f);
 	color.b = (newColor.Blue() / 255.0f);
 	color.a = (newColor.Alpha() / 255.0f);
 }
 
-wxColor ColorSettingsDialog::getColor(const Color &color) {
-	return wxColor(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
+wxColour ColorSettingsDialog::getColor(const Color &color) {
+	return wxColour(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
 }
 
 wxButton* ColorSettingsDialog::makeButton(const unsigned long id, const Color &color) {
