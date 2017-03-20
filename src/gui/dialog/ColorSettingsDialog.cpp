@@ -147,32 +147,28 @@ void ColorSettingsDialog::setColor(Color &color, wxColour newColor) {
 	color.a = (newColor.Alpha() / 255.0f);
 }
 
-wxColour ColorSettingsDialog::getColor(const Color &color) {
-	return wxColour(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
-}
-
 wxButton* ColorSettingsDialog::makeButton(const unsigned long id, const Color &color) {
 	wxButton* button = new wxButton(this, id, "", wxDefaultPosition, wxSize(25, 25));
-	button->SetBackgroundColour(getColor(color));
+	button->SetBackgroundColour(color);
 	return button;
 }
 
 void ColorSettingsDialog::updateColorButtons() {
-	GetWindowChild(SchematicBackground)->SetBackgroundColour(getColor(ColorPalette::SchematicBackground));
-	GetWindowChild(SchematicGrid)->SetBackgroundColour(getColor(ColorPalette::SchematicGrid));
-	GetWindowChild(GateShape)->SetBackgroundColour(getColor(ColorPalette::GateShape));
-	GetWindowChild(GateHotspot)->SetBackgroundColour(getColor(ColorPalette::GateHotspot));
-	GetWindowChild(GateOverlap)->SetBackgroundColour(getColor(ColorPalette::GateOverlap));
-	GetWindowChild(WireHigh)->SetBackgroundColour(getColor(ColorPalette::WireHigh));
-	GetWindowChild(WireLow)->SetBackgroundColour(getColor(ColorPalette::WireLow));
-	GetWindowChild(WireHiZ)->SetBackgroundColour(getColor(ColorPalette::WireHiZ));
-	GetWindowChild(WireUnknown)->SetBackgroundColour(getColor(ColorPalette::WireUnknown));
-	GetWindowChild(WireConflict)->SetBackgroundColour(getColor(ColorPalette::WireConflict));
-	GetWindowChild(KeypadSelection)->SetBackgroundColour(getColor(ColorPalette::KeypadSelection));
-	GetWindowChild(Text)->SetBackgroundColour(getColor(ColorPalette::Text));
-	GetWindowChild(TextSelected)->SetBackgroundColour(getColor(ColorPalette::TextSelected));
-	GetWindowChild(SelectionBoxFill)->SetBackgroundColour(getColor(ColorPalette::SelectionBoxFill));
-	GetWindowChild(SelectionBoxBorder)->SetBackgroundColour(getColor(ColorPalette::SelectionBoxBorder));
+	GetWindowChild(SchematicBackground)->SetBackgroundColour(ColorPalette::SchematicBackground);
+	GetWindowChild(SchematicGrid)->SetBackgroundColour(ColorPalette::SchematicGrid);
+	GetWindowChild(GateShape)->SetBackgroundColour(ColorPalette::GateShape);
+	GetWindowChild(GateHotspot)->SetBackgroundColour(ColorPalette::GateHotspot);
+	GetWindowChild(GateOverlap)->SetBackgroundColour(ColorPalette::GateOverlap);
+	GetWindowChild(WireHigh)->SetBackgroundColour(ColorPalette::WireHigh);
+	GetWindowChild(WireLow)->SetBackgroundColour(ColorPalette::WireLow);
+	GetWindowChild(WireHiZ)->SetBackgroundColour(ColorPalette::WireHiZ);
+	GetWindowChild(WireUnknown)->SetBackgroundColour(ColorPalette::WireUnknown);
+	GetWindowChild(WireConflict)->SetBackgroundColour(ColorPalette::WireConflict);
+	GetWindowChild(KeypadSelection)->SetBackgroundColour(ColorPalette::KeypadSelection);
+	GetWindowChild(Text)->SetBackgroundColour(ColorPalette::Text);
+	GetWindowChild(TextSelected)->SetBackgroundColour(ColorPalette::TextSelected);
+	GetWindowChild(SelectionBoxFill)->SetBackgroundColour(ColorPalette::SelectionBoxFill);
+	GetWindowChild(SelectionBoxBorder)->SetBackgroundColour(ColorPalette::SelectionBoxBorder);
 }
 
 void ColorSettingsDialog::saveColors(wxCommandEvent& event) {

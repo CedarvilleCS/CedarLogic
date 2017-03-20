@@ -38,7 +38,6 @@ public:
 private:
 
 	void setColor(Color &color, wxColour newColor);
-	wxColour getColor(const Color &color);
 	wxButton* makeButton(const unsigned long id, const Color &color);
 	void updateColorButtons();
 	
