@@ -26,13 +26,15 @@
 #include "../thread/autoSaveThread.h"
 #include "../thread/threadLogic.h"
 
-
 class OscopeFrame;
 
 enum
 {
 	File_Export = 5901, // out of range of wxWidgets constants
 	File_ClipCopy,
+	File_Apply,
+	File_ApplyAll,
+	File_Cancel,
 	
 	View_Oscope,
 	View_Gridline,
@@ -52,6 +54,7 @@ enum
 	Tool_NewTab,
 	Tool_DeleteTab,
 	Tool_BlackBox,
+	Tool_AutoIncrement,
 
 	Help_ReportABug,
 	Help_RequestAFeature,
@@ -61,7 +64,7 @@ enum
 class MainFrame : public wxFrame {
 public:
     // ctor(s)
-    MainFrame(const wxString& title, string cmdFilename = "");
+	MainFrame(const wxString& title, string cmdFilename = "", MainFrame* parent = nullptr, wxSize size = wxSize(900, 600));
 	virtual ~MainFrame();
 	
     // event handlers (these functions should _not_ be virtual)
@@ -73,6 +76,9 @@ public:
     void OnOpen(wxCommandEvent& event);
     void OnSave(wxCommandEvent& event);
     void OnSaveAs(wxCommandEvent& event);
+	void OnApply(wxCommandEvent& event);
+	void OnApplyAll(wxCommandEvent& event);
+	void OnCancel(wxCommandEvent& event);
 	void OnExportBitmap(wxCommandEvent& event);
 	void OnCopyToClipboard(wxCommandEvent& event);
 	void OnTimer(wxTimerEvent& event);
@@ -83,10 +89,12 @@ public:
 	void OnUndo(wxCommandEvent& event);
 	void OnRedo(wxCommandEvent& event);
 	void OnCopy(wxCommandEvent& event);
-	void OnPaste(wxCommandEvent& event);	
+	void OnPaste(wxCommandEvent& event);
+	void OnCut(wxCommandEvent& event);
 	void OnOscope(wxCommandEvent& event);
 	void OnViewGridline(wxCommandEvent& event);
 	void OnViewWireConn(wxCommandEvent& event);
+	void OnAutoIncrement(wxCommandEvent& event);
 	void OnPause(wxCommandEvent& event);
 	void OnStep(wxCommandEvent& event);
 	void OnZoomIn(wxCommandEvent& event);
@@ -101,6 +109,12 @@ public:
 	void OnRequestAFeature(wxCommandEvent& event);
 	void OnDownloadLatestVersion(wxCommandEvent& event);
 	
+	wxMenu* buildFileMenu();
+	wxMenu* buildEditMenu();
+	wxMenu* buildViewMenu();
+	wxMenu* buildHelpMenu();
+	wxToolBar* buildToolBar();
+
 	void saveSettings( void );
 	
 	void ResumeExecution ( void );
@@ -129,10 +143,15 @@ public:
 	wxBitmap getBitmap(bool withGrid);
 	
 private:
+
+	bool isBlackBox;
+	MainFrame* child;
+
     // helper function - creates a new thread (but doesn't run it)
 	threadLogic *CreateThread();
 	autoSaveThread *CreateSaveThread(); //Julian
-	
+
+	void updateMenuOptions();
 
 	vector< GUICanvas* > canvases;
 	GUICircuit* gCircuit;
@@ -143,6 +162,7 @@ private:
 
 	wxPanel* mainPanel;
 	wxToolBar* toolBar;
+	wxMenuBar* menuBar;
 
 	//Julian: Re-added timers to fix refresh error
 	wxTimer* simTimer;
@@ -156,7 +176,6 @@ private:
 	bool doOpenFile;
 	wxString lastDirectory;
 	wxString openedFilename;
-	unsigned int currentTempNum;
 
 	bool handlingEvent; //Julian: Prevents autosaving from occuring during an open/new/saveas/etc...
 	const string CRASH_FILENAME = "crashfile.temp"; //Julian: Filename to check.
@@ -167,6 +186,8 @@ private:
 	
 	wxBoxSizer* mainSizer;
 	
+	threadLogic* logicThread;
+
     // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()
 };

@@ -24,6 +24,7 @@ GUICircuit::GUICircuit() {
 	waitToSendMessage = true;
 	panic = false;
 	pausing = false;
+	logicThread = nullptr;
 	commandProcessor = nullptr;
 }
 
@@ -32,6 +33,14 @@ GUICircuit::~GUICircuit() {
 	if (commandProcessor != nullptr) {
 		delete commandProcessor;
 	}
+}
+
+void GUICircuit::setLogicThread(threadLogic *logic) {
+	logicThread = logic;
+}
+
+threadLogic* GUICircuit::getLogicThread() {
+	return logicThread;
 }
 
 void GUICircuit::reInitializeLogicCircuit() {
@@ -242,19 +251,17 @@ IDType GUICircuit::getNextAvailableWireID() {
 
 void GUICircuit::sendMessageToCore(Message *message) {
 
-	wxMutexLocker lock(wxGetApp().mexMessages);
-
 	if (waitToSendMessage) {
 
 		if (simulate) {
-			wxGetApp().dGUItoLOGIC.push_back(message);
+			logicThread->pushMessageToLogic(message);
 		}
 		else {
 			messageQueue.push_back(message);
 		}
 	}
 	else {
-		wxGetApp().dGUItoLOGIC.push_back(message);
+		logicThread->pushMessageToLogic(message);
 	}
 }
 
@@ -324,6 +331,8 @@ void GUICircuit::parseMessage(Message *message) {
 	default:
 		break;
 	}
+
+	delete message;
 }
 
 void GUICircuit::setSimulate(bool state) {

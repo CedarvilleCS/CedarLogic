@@ -15,6 +15,7 @@
 #include "wx/wxprec.h"
 #include "wx/wx.h"
 #include "wx/thread.h"
+#include <deque>
 #include "common.h"
 #include "../message/Message.h"
 
@@ -30,19 +31,36 @@ public:
     // thread execution starts here
     virtual void *Entry();
 
-	void checkMessages();
+	void processAllLogicMessages();
 
     // called when the thread exits - whether it terminates normally or is
     // stopped with Delete() (but not when it is Kill()ed!)
     virtual void OnExit();
     
-    bool parseMessage(Message *input);
+    bool processLogicMessage(Message *input);
 
-    void sendMessage(Message *message);
-    
+	void pushMessageToLogic(Message* message);
+	void pushMessageToGui(Message* message);
+
+	Message* popLogicMessage();
+	Message* popGuiMessage();
+
+	bool hasLogicMessage();
+	bool hasGuiMessage();
+
+	void clearMessagesToLogic();
+	void clearMessagesToGui();
+	void clearAllMessages();
+
 private:
+	wxMutex messageLogicMutex;
+	wxMutex messageGuiMutex;
+
 	Circuit* cir;
 	map < IDType, IDType >* logicIDs;
+
+	deque< Message *> guiToLogic;
+	deque< Message *> logicToGui;
 };
 
 #endif /*THREADLOGIC_H_*/
