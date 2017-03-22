@@ -17,6 +17,10 @@ Color Color::interpolate(const Color &other, float ratio) const {
 		a + ratio * (other.a - a));
 }
 
+Color::operator wxColour () const {
+	return wxColour(r * 255, g * 255, b * 255, a * 255);
+}
+
 std::istream & operator >> (std::istream &in, Color &c) {
 	in >> c.r >> c.g >> c.b >> c.a;
 	return in;

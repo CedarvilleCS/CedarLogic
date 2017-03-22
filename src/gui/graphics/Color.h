@@ -14,6 +14,8 @@ struct Color {
 	// 'ratio' is the amount of the other color.
 	Color interpolate(const Color &other, float ratio) const;
 
+	operator wxColour () const;
+
 	friend std::istream & operator >> (std::istream &in, Color &c);
 
 	friend std::ostream & operator << (std::ostream &out, const Color &c);

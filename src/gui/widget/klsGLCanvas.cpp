@@ -268,6 +268,8 @@ void klsGLCanvas::klsGLCanvasRender(bool noColor) {
 	int w, h;
 	GetClientSize(&w, &h);
 
+	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+
 	//clear window
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
