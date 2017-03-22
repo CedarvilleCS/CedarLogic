@@ -273,7 +273,7 @@ wxMenu* MainFrame::buildFileMenu() {
 	if (!isBlackBox) {
 		fileMenu->Append(wxID_EXIT, "E&xit\tAlt+X", "Quit this program");
 	} else {
-		fileMenu->Append(wxID_CLOSE_FRAME, "&Close", "Close black box editor");
+		fileMenu->Append(wxID_EXIT, "&Close", "Close black box editor");
 	}
 
 	return fileMenu;
@@ -305,6 +305,8 @@ wxMenu* MainFrame::buildViewMenu() {
 	wxMenu *settingsMenu = new wxMenu;
 	settingsMenu->AppendCheckItem(View_Gridline, "Display Gridlines", "Toggle gridline display");
 	settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
+	settingsMenu->AppendSeparator();
+	settingsMenu->Append(View_Colors, "Color Settings", "Color Settings");
 	viewMenu->AppendSeparator();
 	viewMenu->AppendSubMenu(settingsMenu, "Settings");
 	return viewMenu;
