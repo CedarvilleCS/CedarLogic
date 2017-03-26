@@ -119,6 +119,7 @@
   </ImportGroup>
   <ItemGroup>
     <ClCompile Include="src\gui\dialog\ColorSettingsDialog.cpp" />
+    <ClCompile Include="src\gui\gate\guiGateBlackBox.cpp" />
     <ClCompile Include="src\gui\gate\gateHotspot.cpp" />
     <ClCompile Include="src\gui\gate\guiGate.cpp" />
     <ClCompile Include="src\gui\gate\guiGateADC.cpp" />
@@ -192,6 +193,7 @@
   <ItemGroup>
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\gui\dialog\ColorSettingsDialog.h" />
+    <ClInclude Include="src\gui\gate\guiGateBlackBox.h" />
     <ClInclude Include="src\gui\gate\gateHotspot.h" />
     <ClInclude Include="src\gui\gate\guiGate.h" />
     <ClInclude Include="src\gui\gate\guiGateADC.h" />

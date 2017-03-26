@@ -22,102 +22,38 @@ klsCommand * klsClipboard::pasteBlock(GUICircuit *gCircuit, GUICanvas *gCanvas) 
 		wxTheClipboard->Close();
 		return NULL;
 	}
-	wxTextDataObject text;
-	vector < klsCommand* > cmdList;
-	if (wxTheClipboard->GetData(text)) {
-		string pasteText = text.GetText();
-		if (pasteText.find('\n', 0) == string::npos) return NULL;
-		istringstream iss(pasteText);
-		string temp;
 
-		TranslationMap gateids;
-		TranslationMap wireids;
-		while (getline(iss, temp, '\n')) {
-			klsCommand* cg = NULL;
-			if (temp.substr(0, 10) == "creategate") cg = new cmdCreateGate(temp);
-			else if (temp.substr(0, 9) == "setparams") {
+	wxTextDataObject wxText;
+	if (wxTheClipboard->GetData(wxText)) {
 
-				/* EDIT by Colin Broberg, 10/6/16
-				   logic to increment number on end of TO/FROM tag */
-				bool enabled = wxGetApp().appSettings.autoIncrement;
-				// If we are copying more than one thing, don't increment them -- that would be annoying
-				if (enabled && pasteText.find("creategate", pasteText.find("creategate") + 1) == std::string::npos) {
-					increment(temp, pasteText);
-				}
-				cg = new cmdSetParams(temp);
-			}
-			else if (temp.substr(0, 10) == "createwire") cg = new cmdCreateWire(temp);
-			else if (temp.substr(0, 11) == "connectwire") cg = new cmdConnectWire(temp);
-			else if (temp.substr(0, 8) == "movewire") cg = new cmdMoveWire(temp);
-			else break;
-			cmdList.push_back(cg);
-			cg->setPointers(gCircuit, gCanvas, gateids, wireids);
-			cg->Do();
-			if (iss.str().find('\n', 0) == string::npos) return NULL;
-		}
-		gCanvas->unselectAllGates();
-		gCanvas->unselectAllWires();
-		auto gateWalk = gateids.begin();
-		while (gateWalk != gateids.end()) {
-			(*(gCircuit->getGates()))[gateWalk->second]->select();
-			gateWalk++;
-		}
-		auto wireWalk = wireids.begin();
-		while (wireWalk != wireids.end()) {
-			guiWire *wire = (*(gCircuit->getWires()))[wireWalk->second];
-			if (wire != nullptr) {
-				wire->select();
-			}
-			wireWalk++;
-		}
-		gCircuit->getOscope()->UpdateMenu();
+		std::string copyText = wxText.GetText();
+		klsCommand *result = new cmdPasteBlock(copyText);
+
+		// auto-incrementing can cause the copy text to change.
+		wxTheClipboard->AddData(new wxTextDataObject(copyText));
+
+		return result;
 	}
 
-	if (cmdList.size() > 0) return new cmdPasteBlock(cmdList);
-	return NULL;
-}
-
-void klsClipboard::increment(string &temp, const string &pasteText) {
-
-	string numEnd = "";	// String of numbers on end that we will build
-
-	// Loop from end of temp to beginning, gathering up numbers to build unto numEnd
-	// Starts at temp.length() - 2 so that it starts at the end minus one because 
-	// temp always ends with a /t
-	for (int i = temp.length() - 2; i > 0; i--) {
-		if (isdigit(temp[i])) {
-			numEnd = temp[i] + numEnd;
-		}
-		else {
-			break;
-		}
-	}
-
-	// If we have numbers to add and we are naming a junction_id
-	if (numEnd != "" && temp.find("JUNCTION_ID") != std::string::npos) {
-		string *newPasteText = new string();
-		*newPasteText = pasteText; // This string will be modified and rewritten to the clipboard so that subsequent pastes continue to increment
-
-		temp.erase(temp.length() - 1 - numEnd.length(), numEnd.length() + 1); // Erase number at end of tag, add 1 to erase the \t also
-		newPasteText->erase(newPasteText->length() - 2 - numEnd.length(), numEnd.length() + 2);  // Modify clipboard data similarly, but +2 so it erases the \n also
-
-		int holder = stoi(numEnd);
-		holder++; // The whole point of this -- increment number at end of tag by 1
-		string s = to_string(holder) + "\t";
-
-		temp += s; // Add it back to temp string
-		*newPasteText += s + "\n";
-
-		wxTheClipboard->AddData(new wxTextDataObject((wxChar*)newPasteText->c_str())); // Update clipboard data so subsequent pastes carry 
-																					   /* END OF EDIT */
-	}
+	return nullptr;
 }
 
 void klsClipboard::copyBlock(GUICircuit* gCircuit, GUICanvas* gCanvas,
 	const vector<IDType> &gates, const vector<IDType> &wires) {
 
+	std::string copyText = getCopyText(gCircuit, gCanvas, gates, wires);
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->AddData(new wxTextDataObject(copyText));
+		wxTheClipboard->Close();
+	}
+}
+
+std::string klsClipboard::getCopyText(GUICircuit* gCircuit, GUICanvas* gCanvas,
+	const vector<IDType> &gates, const vector<IDType> &wires) {
+
 	if (gates.empty()) {
-		return;
+		return "";
 	}
 
 	ostringstream oss;
@@ -172,7 +108,7 @@ void klsClipboard::copyBlock(GUICircuit* gCircuit, GUICanvas* gCanvas,
 			bool found = false;
 			for (unsigned int j = 0; j < gates.size() && !found; j++) if (gates[j] == wireConns[i].gid) found = true;
 			if (found) continue; // we found this connection; don't trim it
-			// get rid of it
+								 // get rid of it
 			wire->removeConnection(wireConns[i].cGate, wireConns[i].connection);
 		}
 		// Wire should now have a completely valid shape to copy, shove it on the vector
@@ -205,8 +141,5 @@ void klsClipboard::copyBlock(GUICircuit* gCircuit, GUICanvas* gCanvas,
 		delete copyWires[i];
 	}
 
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->AddData(new wxTextDataObject(oss.str()));
-		wxTheClipboard->Close();
-	}
+	return oss.str();
 }

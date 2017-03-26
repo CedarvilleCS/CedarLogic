@@ -16,13 +16,9 @@ guiGate::guiGate() : klsCollisionObject(COLL_GATE) {
 }
 
 guiGate::~guiGate() {
-	// Destry the hotspots:
-
-	auto hs = hotspots.begin();
-	while (hs != hotspots.end()) {
-		// delete (hs->second);
-		hotspots.erase(hs);
-		hs = hotspots.begin();
+	
+	for (auto &p : hotspots) {
+		//delete p.second;
 	}
 }
 
