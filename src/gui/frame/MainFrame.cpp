@@ -131,6 +131,39 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *paren
 
 	if (!isBlackBox) {
 		GateLibrary newLib(libPath);
+
+		newLib.defineBlackBox(R"====(creategate 2 DA_FROM 30 -15
+setparams 2 1,1 angle 0.0	JUNCTION_ID $IN1	
+creategate 4 AA_AND2 37 -16
+setparams 4 1,1 angle 0.0	INPUT_BITS 2	
+creategate 5 AA_AND2 37 -21
+setparams 5 1,1 angle 0.0	INPUT_BITS 2	
+creategate 6 AA_AND2 45 -18.5
+setparams 6 1,1 angle 0.0	INPUT_BITS 2	
+creategate 7 DA_FROM 30 -17
+setparams 7 1,1 angle 0.0	JUNCTION_ID BAD	
+creategate 8 DA_FROM 30 -20
+setparams 8 1,1 angle 0.0	JUNCTION_ID $IN2	
+creategate 9 DA_FROM 30 -22
+setparams 9 1,1 angle 0.0	JUNCTION_ID $IN3	
+creategate 11 DE_TO 51 -18.5
+setparams 11 1,1 angle 0.0	JUNCTION_ID $OUT1	
+createwire 1 connectwire 1 4 OUT connectwire 1 6 IN_0
+movewire 1 vsegment 0 41,-17.5,41,-16 isect -17.5 1 isect -16 2 hsegment 1 41,-17.5,42,-17.5 connection 6 IN_0 isect 41 0 hsegment 2 40,-16,41,-16 connection 4 OUT isect 41 0  done 
+createwire 2 connectwire 2 6 IN_1 connectwire 2 5 OUT
+movewire 2 vsegment 0 41,-21,41,-19.5 isect -21 1 isect -19.5 2 hsegment 1 40,-21,41,-21 connection 5 OUT isect 41 0 hsegment 2 41,-19.5,42,-19.5 connection 6 IN_1 isect 41 0  done 
+createwire 3 connectwire 3 2 IN_0 connectwire 3 4 IN_0
+connectwire 3 4 IN_1
+connectwire 3 7 IN_0
+movewire 3 hsegment 1 32,-15,34,-15 connection 4 IN_0 connection 2 IN_0 isect 33 8 vsegment 8 33,-17,33,-15 isect -17 10 isect -15 1 hsegment 10 32,-17,34,-17 connection 4 IN_1 connection 7 IN_0 isect 33 8  done 
+createwire 5 connectwire 5 8 IN_0 connectwire 5 5 IN_0
+movewire 5 hsegment 1 32,-20,34,-20 connection 5 IN_0 connection 8 IN_0  done 
+createwire 6 connectwire 6 9 IN_0 connectwire 6 5 IN_1
+movewire 6 hsegment 1 32,-22,34,-22 connection 5 IN_1 connection 9 IN_0  done 
+createwire 7 connectwire 7 6 OUT connectwire 7 11 IN_0
+movewire 7 hsegment 1 48,-18.5,49,-18.5 connection 6 OUT connection 11 IN_0  done 
+)====");
+
 		wxGetApp().libParser = newLib;
 	}
 	
@@ -1180,10 +1213,13 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 }
 
 void MainFrame::OnBlackBox(wxCommandEvent& event) {
+
+	/*
 	child = new MainFrame("Black Box Editor", "", this);
 	child->Show(true);
 	wxGetApp().SetTopWindow(child);
 	this->Disable();
+	*/
 }
 
 void MainFrame::OnApply(wxCommandEvent& event) {

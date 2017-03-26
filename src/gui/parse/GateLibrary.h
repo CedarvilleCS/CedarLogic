@@ -8,8 +8,7 @@
    GateLibrary: Uses XMLParser to parse library files
 *****************************************************************************/
 
-#ifndef LIBRARYPARSE_H_
-#define LIBRARYPARSE_H_
+#pragma once
 
 #include "XMLParser.h"
 #include <vector>
@@ -129,9 +128,6 @@ public:
 	
 	void parseFile();
 
-	// Added by Colin Broberg 11/16/16 -- need to make this a public function so that I can use it for dynamic gates
-	void addGate(std::string libName, LibraryGate newGate);
-
 	// Parse the shape object from the mParse file, adding an offset if needed:
 	bool parseShapeObject(std::string type, LibraryGate* newGate, double offX = 0.0, double offY = 0.0 );
 	
@@ -149,13 +145,16 @@ public:
 	
 	std::map < std::string, std::map < std::string, LibraryGate > >* getGateDefs() { return &gates; };
 
+	// Take the string normally copied to the clipboard in a copy command,
+	// and use it to define a BlackBox gate.
+	void defineBlackBox(const std::string &copyText);
+
 private:
 	XMLParser* mParse;
 	std::string fileName;
 	std::string libName;
+	int numDefinedBlackBoxes;
 	
 	// Maps library name to a map of gates, which maps to the librarygate struct
 	std::map < std::string, std::map < std::string, LibraryGate > > gates;
 };
-
-#endif /*LIBRARYPARSE_H_*/

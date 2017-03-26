@@ -151,3 +151,12 @@ void cmdSetParams::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas,
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
 }
+
+
+const ParameterMap & cmdSetParams::getGuiParameterMap() const {
+	return newGUIParamList;
+}
+
+const ParameterMap & cmdSetParams::getLogicParameterMap() const {
+	return newLogicParamList;
+}
