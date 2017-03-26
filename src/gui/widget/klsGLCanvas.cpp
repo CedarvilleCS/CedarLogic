@@ -382,8 +382,10 @@ void klsGLCanvas::wxOnEraseBackground(wxEraseEvent& WXUNUSED(event))
 
 void klsGLCanvas::wxOnSize(wxSizeEvent& event)
 {
-	SetCurrent(*glcontext);
-	Refresh();
+	if (this->HasFocus()) {
+		SetCurrent(*glcontext);
+		Refresh();
+	}
 }
 
 

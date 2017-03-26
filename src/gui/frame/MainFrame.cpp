@@ -855,8 +855,9 @@ void MainFrame::OnNotebookPage(wxAuiNotebookEvent& event) {
 	currentCanvas = canvases[canvasID];
 	gCircuit->setCurrentCanvas(currentCanvas);
 	currentCanvas->setMinimap(miniMap);
-	currentCanvas->SetFocus();
+	currentCanvas->SwapBuffers(); //Reduce flashing when using different background colors
 	currentCanvas->Update();
+	currentCanvas->SetFocus();
 }
 
 void MainFrame::OnUndo(wxCommandEvent& event) {
