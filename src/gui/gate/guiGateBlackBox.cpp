@@ -1,10 +1,19 @@
 
 #include "guiGateBlackBox.h"
-#include "gui/command/cmdPasteBlock.h"
+#include "gui/commands.h"
 
+guiGateBlackBox::guiGateBlackBox(GUICircuit *circuit) : circuit(circuit) { }
 
 guiGateBlackBox::~guiGateBlackBox() {
-	// destroy internal wires and gates.
+	
+	for (IDType id : gateIds) {
+		cmdDeleteGate deleter(circuit, nullptr, id);
+		deleter.Do();
+	}
+	for (IDType id : wireIds) {
+		cmdDeleteWire deleter(circuit, nullptr, id);
+		deleter.Do();
+	}
 }
 
 void guiGateBlackBox::setGUIParam(const std::string &paramName,
@@ -21,6 +30,9 @@ void guiGateBlackBox::createInternals(const std::string &internals) {
 
 	// TODO:
 
+	// Refactor cmdPasteBlock, cmdCreateGate, cmdSetParams, cmdCreateWire, cmdConnectWire, cmdMoveWire.
+	//     to allow access to necessary parameters, to take as parameters the current canvas and whether increment is enabled.
+	// 
 	// set current canvas to null.
 	// disable increment-copy.
 	std::string internalsCopy = internals;
@@ -29,8 +41,7 @@ void guiGateBlackBox::createInternals(const std::string &internals) {
 	// reset current canvas.
 	// reset increment-copy.
 
-	// erase to-/from- junctions, replace with logic params.
+	// prefix junction ids with an otherwise illegal character and a counter to ensure uniqueness.
 	
 	// hold all gate- and wire- ids.
-	// destroy with self.
 }

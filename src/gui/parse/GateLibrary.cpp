@@ -339,9 +339,8 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 			cmdSetParams cmd(lineText);
 			for (const auto &p : cmd.getLogicParameterMap()) {
 
-				if (p.first == "JUNCTION_ID" && p.second[0] == '$') {
-
-					pinNames.push_back(p.second.substr(1));
+				if (p.first == "JUNCTION_ID") {
+					pinNames.push_back(p.second);
 				}
 			}
 		}
