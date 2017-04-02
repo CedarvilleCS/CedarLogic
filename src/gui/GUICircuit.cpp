@@ -118,7 +118,7 @@ guiGate * GUICircuit::createGate(const std::string &gateName, IDType id, bool no
 		newGate = new guiGateADC();
 	}
 	else if (ggt == "BlackBox") {
-		newGate = new guiGateBlackBox();
+		newGate = new guiGateBlackBox(this);
 	}
 	else {
 		newGate = new guiGate();

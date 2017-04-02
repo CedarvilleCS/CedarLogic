@@ -217,6 +217,9 @@ IDType Circuit::newGate(const string &type, IDType gateID) {
 		else if (type == "BUS_END") {
 			gateList[thisGateID] = GATE_PTR(new Gate_BUS_END(this));
 		}
+		else if (type == "BLACK_BOX") {
+			gateList[thisGateID] = GATE_PTR(new Gate_BLACK_BOX(this));
+		}
 		else if (type == "CLOCK") {
 			gateList[thisGateID] = GATE_PTR(new Gate_CLOCK);
 			// This is a polled gate, so insert it into the polled gates queue!

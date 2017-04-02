@@ -325,7 +325,7 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 	numDefinedBlackBoxes++;
 	blackBox.caption = blackBox.gateName;
 	blackBox.guiType = "BlackBox";
-	blackBox.logicType = "BlackBox";
+	blackBox.logicType = "BLACK_BOX";
 	blackBox.guiParams.insert({ "internals", copyText });
 
 	// Get names for pins.

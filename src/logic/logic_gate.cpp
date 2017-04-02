@@ -2783,6 +2783,96 @@ string Gate_BUS_END::getParameter(string paramName) {
 
 
 
+Gate_BLACK_BOX::Gate_BLACK_BOX(Circuit *circuit) : circuit(circuit) { }
+
+Gate_BLACK_BOX::~Gate_BLACK_BOX() {
+	for (auto &p : junctionIDs) {
+		circuit->deleteJunction(p.second);
+	}
+}
+
+void Gate_BLACK_BOX::gateProcess() { }
+
+void Gate_BLACK_BOX::connectInput(string inputID, IDType wireID) {
+
+	Gate::connectInput(inputID, wireID);
+
+	// Fail if the input doesn't exist.
+	assert(junctionIDs.count(inputID) == 1);
+
+	// Connect the wire to the junction in the Circuit:
+	circuit->connectJunction(junctionIDs[inputID], wireID);
+}
+
+IDType Gate_BLACK_BOX::disconnectInput(string inputID) {
+
+	IDType wireID = ID_NONE;
+
+	// Call the gate's method:
+	wireID = Gate::disconnectInput(inputID);
+	
+	if (wireID != ID_NONE) {
+
+		// Fail if the input doesn't exist.
+		assert(junctionIDs.count(inputID) == 1);
+
+		// Unhook the wire from the Junction in the Circuit:
+		circuit->disconnectJunction(junctionIDs[inputID], wireID);
+	}
+
+	return wireID;
+}
+
+bool Gate_BLACK_BOX::setParameter(string paramName, string value) {
+
+	if (paramName.size() > 4 && paramName.substr(0, 4) == "pin:") {
+
+		std::string inputName = paramName.substr(4);
+		IDType wireId = atoi(value.c_str());
+
+		// Create junction, hold its id, connect it to the given wire, and enable it.
+		IDType junctionId = circuit->newJunction();
+		junctionIDs.insert({ inputName, junctionId });
+		circuit->connectJunction(junctionId, wireId);
+		circuit->setJunctionState(junctionId, true);
+
+		// Oh, also record the param for later extraction.
+		params[paramName] = value;
+
+		// Create an input for the input!
+		declareInput(inputName, false);
+
+		return true;
+	}
+	else {
+		return Gate::setParameter(paramName, value);
+	}
+}
+
+string Gate_BLACK_BOX::getParameter(string paramName) {
+
+	if (paramName.size() > 4 && paramName.substr(0, 4) == "pin:") {
+		return params[paramName];
+	}
+	else {
+		return Gate::getParameter(paramName);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ******************************** ADC GATE ***********************************
 
 //to change the number of ADC bits, the gate file must be edited as well

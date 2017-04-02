@@ -1,6 +1,8 @@
 
 #pragma once
 #include "guiGate.h"
+#include <vector>
+#include "common.h"
 
 class guiGateBlackBox : public guiGate {
 public:

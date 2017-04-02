@@ -7,7 +7,7 @@ class cmdPasteBlock : public klsCommand {
 public:
 
 	// right now, creating the command runs it.
-	cmdPasteBlock(std::string &copyText);
+	cmdPasteBlock(std::string &copyText, bool allowAutoIncrement);
 
 	bool Do();
 

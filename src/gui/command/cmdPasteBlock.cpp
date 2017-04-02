@@ -48,7 +48,7 @@ namespace {
 	}
 }
 
-cmdPasteBlock::cmdPasteBlock(std::string &pasteText) :
+cmdPasteBlock::cmdPasteBlock(std::string &pasteText, bool allowAutoIncrement) :
 	klsCommand(true, "Paste") {
 
 	if (pasteText.empty()) {
@@ -69,7 +69,7 @@ cmdPasteBlock::cmdPasteBlock(std::string &pasteText) :
 
 			/* EDIT by Colin Broberg, 10/6/16
 			logic to increment number on end of TO/FROM tag */
-			bool enabled = wxGetApp().appSettings.autoIncrement;
+			bool enabled = wxGetApp().appSettings.autoIncrement && allowAutoIncrement;
 			// If we are copying more than one thing, don't increment them -- that would be annoying
 			if (enabled && pasteText.find("creategate", pasteText.find("creategate") + 1) == std::string::npos) {
 				increment(temp, pasteText);
