@@ -7,7 +7,7 @@
 class guiGateBlackBox : public guiGate {
 public:
 
-	guiGateBlackBox(GUICircuit *circuit);
+	guiGateBlackBox(GUICircuit *circuit, bool purelyVisual);
 
 	~guiGateBlackBox();
 
@@ -21,6 +21,7 @@ private:
 	GUICircuit *circuit;
 	std::vector<IDType> gateIds;
 	std::vector<IDType> wireIds;
+	bool purelyVisual;
 
 	static int bBoxCount;
 };

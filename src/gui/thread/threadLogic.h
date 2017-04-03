@@ -53,6 +53,7 @@ public:
 	void clearAllMessages();
 
 private:
+	
 	wxMutex messageLogicMutex;
 	wxMutex messageGuiMutex;
 

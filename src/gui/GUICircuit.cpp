@@ -26,6 +26,7 @@ GUICircuit::GUICircuit() {
 	pausing = false;
 	logicThread = nullptr;
 	commandProcessor = nullptr;
+	myOscope = nullptr;
 }
 
 GUICircuit::~GUICircuit() {
@@ -118,7 +119,8 @@ guiGate * GUICircuit::createGate(const std::string &gateName, IDType id, bool no
 		newGate = new guiGateADC();
 	}
 	else if (ggt == "BlackBox") {
-		newGate = new guiGateBlackBox(this);
+		// If there is no logic thread, the circuit is strictly visual.
+		newGate = new guiGateBlackBox(this, logicThread == nullptr);
 	}
 	else {
 		newGate = new guiGate();
@@ -254,17 +256,19 @@ IDType GUICircuit::getNextAvailableWireID() {
 
 void GUICircuit::sendMessageToCore(Message *message) {
 
-	if (waitToSendMessage) {
+	if (logicThread != nullptr) {
+		if (waitToSendMessage) {
 
-		if (simulate) {
-			logicThread->pushMessageToLogic(message);
+			if (simulate) {
+				logicThread->pushMessageToLogic(message);
+			}
+			else {
+				messageQueue.push_back(message);
+			}
 		}
 		else {
-			messageQueue.push_back(message);
+			logicThread->pushMessageToLogic(message);
 		}
-	}
-	else {
-		logicThread->pushMessageToLogic(message);
 	}
 }
 

@@ -30,7 +30,10 @@ bool cmdCreateGate::Do() {
 	if (wxGetApp().libraries.size() == 0) return false; // No library loaded, so can't create gate
 
 	gCircuit->createGate(gateType, gid, fromString);
-	gCanvas->insertGate(gid, (*(gCircuit->getGates()))[gid], x, y);
+
+	if (gCanvas != nullptr) {
+		gCanvas->insertGate(gid, (*(gCircuit->getGates()))[gid], x, y);
+	}
 
 	string logicType = wxGetApp().libParser.getGateLogicType(gateType);
 	if (logicType.size() > 0) {
@@ -84,7 +87,11 @@ bool cmdCreateGate::Undo() {
 	for (unsigned int i = 0; i < proxconnects.size(); i++) {
 		proxconnects[i]->Undo();
 	}
-	gCanvas->removeGate(gid);
+
+	if (gCanvas != nullptr) {
+		gCanvas->removeGate(gid);
+	}
+
 	gCircuit->deleteGate(gid);
 	string logicType = wxGetApp().libParser.getGateLogicType(gateType);
 	if (logicType.size() > 0) {

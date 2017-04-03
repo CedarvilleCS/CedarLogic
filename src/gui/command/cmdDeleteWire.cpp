@@ -42,7 +42,9 @@ bool cmdDeleteWire::Do() {
 		cmdList.push(disconn);
 		disconn->Do();
 	}
-	gCanvas->removeWire(wireIds[0]);
+	if (gCanvas != nullptr) {
+		gCanvas->removeWire(wireIds[0]);
+	}
 	gCircuit->deleteWire(wireIds[0]);
 
 	for (IDType id : wireIds) {
@@ -66,7 +68,9 @@ bool cmdDeleteWire::Undo() {
 		cmdList.pop();
 	}
 
-	gCanvas->insertWire(gWire);
+	if (gCanvas != nullptr) {
+		gCanvas->insertWire(gWire);
+	}
 
 	return true;
 }

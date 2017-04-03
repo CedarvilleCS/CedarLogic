@@ -3,7 +3,8 @@
 #include "gui/commands.h"
 #include "gui/GUICircuit.h"
 
-guiGateBlackBox::guiGateBlackBox(GUICircuit *circuit) : circuit(circuit) { }
+guiGateBlackBox::guiGateBlackBox(GUICircuit *circuit, bool purelyVisual) :
+	circuit(circuit), purelyVisual(purelyVisual) { }
 
 guiGateBlackBox::~guiGateBlackBox() {
 	
@@ -21,17 +22,15 @@ void guiGateBlackBox::setGUIParam(const std::string &paramName,
 	const std::string &value) {
 
 	if (paramName == "internals") {
-		createInternals(value);
+		if (!purelyVisual) {
+			createInternals(value);
+		}
 	}
 
 	guiGate::setGUIParam(paramName, value);
 }
 
 void guiGateBlackBox::createInternals(const std::string &internals) {
-
-	// TODO:
-
-	// 1. Refactor all commands to not necessarily need a gui canvas.
 	
 	std::string internalsCopy = internals;
 

@@ -50,7 +50,10 @@ cmdCreateWire::~cmdCreateWire() {
 bool cmdCreateWire::Do() {
 
 	guiWire *wire = gCircuit->createWire(wireIds);
-	gCanvas->insertWire(wire);
+
+	if (gCanvas != nullptr) {
+		gCanvas->insertWire(wire);
+	}
 
 	for (IDType wireId : wireIds) {
 		gCircuit->sendMessageToCore(
@@ -73,7 +76,9 @@ bool cmdCreateWire::Undo() {
 			new Message_DELETE_WIRE(wireId));
 	}
 
-	gCanvas->removeWire(wireIds[0]);
+	if (gCanvas != nullptr) {
+		gCanvas->removeWire(wireIds[0]);
+	}
 	gCircuit->deleteWire(wireIds[0]);
 
 	return true;

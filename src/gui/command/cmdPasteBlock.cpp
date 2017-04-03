@@ -99,22 +99,28 @@ bool cmdPasteBlock::Do() {
 		cmdList[i]->Do();
 	}
 
-	gCanvas->unselectAllGates();
-	gCanvas->unselectAllWires();
-	auto gateWalk = gateids.begin();
-	while (gateWalk != gateids.end()) {
-		(*(gCircuit->getGates()))[gateWalk->second]->select();
-		gateWalk++;
-	}
-	auto wireWalk = wireids.begin();
-	while (wireWalk != wireids.end()) {
-		guiWire *wire = (*(gCircuit->getWires()))[wireWalk->second];
-		if (wire != nullptr) {
-			wire->select();
+	if (gCanvas != nullptr) {
+		gCanvas->unselectAllGates();
+		gCanvas->unselectAllWires();
+		auto gateWalk = gateids.begin();
+		while (gateWalk != gateids.end()) {
+			(*(gCircuit->getGates()))[gateWalk->second]->select();
+			gateWalk++;
 		}
-		wireWalk++;
+		auto wireWalk = wireids.begin();
+		while (wireWalk != wireids.end()) {
+			guiWire *wire = (*(gCircuit->getWires()))[wireWalk->second];
+			if (wire != nullptr) {
+				wire->select();
+			}
+			wireWalk++;
+		}
 	}
-	gCircuit->getOscope()->UpdateMenu();
+
+	auto *scope = gCircuit->getOscope();
+	if (scope != nullptr) {
+		scope->UpdateMenu();
+	}
 
 	return true;
 }
