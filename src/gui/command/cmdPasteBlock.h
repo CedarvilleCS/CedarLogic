@@ -18,6 +18,14 @@ public:
 
 	const std::vector<klsCommand *> & getCommands() const { return cmdList; }
 
+	// Get ids for gates created by pasting.
+	// The second value in each pair is the valid id.
+	const TranslationMap & getGateIds() const;
+
+	// Get ids for wires created by pasting.
+	// The second value in each pair is the valid id.
+	const TranslationMap & getWireIds() const;
+
 private:
 	std::vector<klsCommand *> cmdList;
 

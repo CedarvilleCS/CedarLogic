@@ -2785,12 +2785,6 @@ string Gate_BUS_END::getParameter(string paramName) {
 
 Gate_BLACK_BOX::Gate_BLACK_BOX(Circuit *circuit) : circuit(circuit) { }
 
-Gate_BLACK_BOX::~Gate_BLACK_BOX() {
-	for (auto &p : junctionIDs) {
-		circuit->deleteJunction(p.second);
-	}
-}
-
 void Gate_BLACK_BOX::gateProcess() { }
 
 void Gate_BLACK_BOX::connectInput(string inputID, IDType wireID) {
@@ -2828,13 +2822,10 @@ bool Gate_BLACK_BOX::setParameter(string paramName, string value) {
 	if (paramName.size() > 4 && paramName.substr(0, 4) == "pin:") {
 
 		std::string inputName = paramName.substr(4);
-		IDType wireId = atoi(value.c_str());
 
-		// Create junction, hold its id, connect it to the given wire, and enable it.
-		IDType junctionId = circuit->newJunction();
+		// Connect to junction with the given name.
+		IDType junctionId = circuit->getJunctionIDs()->at(value);
 		junctionIDs.insert({ inputName, junctionId });
-		circuit->connectJunction(junctionId, wireId);
-		circuit->setJunctionState(junctionId, true);
 
 		// Oh, also record the param for later extraction.
 		params[paramName] = value;

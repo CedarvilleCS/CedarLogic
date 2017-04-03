@@ -129,3 +129,11 @@ bool cmdPasteBlock::Undo() {
 
 	return true;
 }
+
+const TranslationMap & cmdPasteBlock::getGateIds() const {
+	return gateids;
+}
+
+const TranslationMap & cmdPasteBlock::getWireIds() const {
+	return wireids;
+}

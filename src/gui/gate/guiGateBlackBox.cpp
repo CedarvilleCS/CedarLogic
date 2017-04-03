@@ -1,6 +1,7 @@
 
 #include "guiGateBlackBox.h"
 #include "gui/commands.h"
+#include "gui/GUICircuit.h"
 
 guiGateBlackBox::guiGateBlackBox(GUICircuit *circuit) : circuit(circuit) { }
 
@@ -35,27 +36,36 @@ void guiGateBlackBox::createInternals(const std::string &internals) {
 	std::string internalsCopy = internals;
 
 	cmdPasteBlock paste(internalsCopy, false, circuit, nullptr);
-	
-	// Send pin:pinname's to logic gate.
 
-	// Prefix junctions.
+	// Prefix junctions and connect them to the Gate_BLACK_BOX.
 	for (auto *command : paste.getCommands()) {
+
 		if (command->GetName() == "Set Parameter") {
+
 			cmdSetParams *paramSetter = static_cast<cmdSetParams *>(command);
 			
 			for (auto &p : paramSetter->getLogicParameterMap()) {
+
 				if (p.first == "JUNCTION_ID") {
-					p.second = "bbox#" + std::to_string(bBoxCount) + "." + p.second;
+					std::string newJunctionName = "bbox#" + std::to_string(bBoxCount) + "." + p.second;
+					setLogicParam("pin:" + p.second, newJunctionName);
+					p.second = newJunctionName;
 				}
 			}
 		}
 	}
 	bBoxCount++;
 
+	// Actually create internals.
 	paste.Do();
 
-	// 3. Refactor cmdPasteBlock, cmdCreateGate, cmdSetParams, cmdCreateWire, cmdConnectWire, cmdMoveWire.
-	//     to allow access to created gate and wire ids.
+	// Record id's of internal elements.
+	for (const auto &p : paste.getGateIds()) {
+		gateIds.push_back(p.second);
+	}
+	for (const auto &p : paste.getWireIds()) {
+		wireIds.push_back(p.second);
+	}
 }
 
 int guiGateBlackBox::bBoxCount = 0;

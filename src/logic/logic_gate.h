@@ -772,15 +772,13 @@ private:
 
 
 // ******************* BLACK_BOX Gate *********************
-// This gate is basically a bunch of junctions.
-// It's used as a transition between gui buses and logic wires.
-// This guy differs from BUS_END because each input gets a useful name.
+// This gate is a way to connect existing wires to existing junctions.
+// This guy differs from BUS_END because each input gets a useful name,
+// and there are no new junctions created.
 class Gate_BLACK_BOX : public Gate
 {
 public:
 	Gate_BLACK_BOX(Circuit *circuit);
-
-	virtual ~Gate_BLACK_BOX() override;
 
 	virtual void gateProcess() override;
 
