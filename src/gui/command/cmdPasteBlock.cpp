@@ -48,20 +48,21 @@ namespace {
 	}
 }
 
-cmdPasteBlock::cmdPasteBlock(std::string &pasteText, bool allowAutoIncrement) :
+cmdPasteBlock::cmdPasteBlock(std::string &pasteText, bool allowAutoIncrement,
+	GUICircuit *gCircuit, GUICanvas *gCanvas) :
 	klsCommand(true, "Paste") {
+
+	this->gCircuit = gCircuit;
+	this->gCanvas = gCanvas;
+	this->alreadyDone = false;
 
 	if (pasteText.empty()) {
 		return;
 	}
 
-	m_init = false;
-
 	istringstream iss(pasteText);
 	string temp;
 
-	TranslationMap gateids;
-	TranslationMap wireids;
 	while (getline(iss, temp, '\n')) {
 		klsCommand* cg = NULL;
 		if (temp.substr(0, 10) == "creategate") cg = new cmdCreateGate(temp);
@@ -82,8 +83,22 @@ cmdPasteBlock::cmdPasteBlock(std::string &pasteText, bool allowAutoIncrement) :
 		else break;
 		cmdList.push_back(cg);
 		cg->setPointers(gCircuit, gCanvas, gateids, wireids);
-		cg->Do();
 	}
+}
+
+bool cmdPasteBlock::Do() {
+
+	if (alreadyDone) {
+		return true;
+	}
+	else {
+		alreadyDone = true;
+	}
+
+	for (unsigned int i = 0; i < cmdList.size(); i++) {
+		cmdList[i]->Do();
+	}
+
 	gCanvas->unselectAllGates();
 	gCanvas->unselectAllWires();
 	auto gateWalk = gateids.begin();
@@ -100,21 +115,13 @@ cmdPasteBlock::cmdPasteBlock(std::string &pasteText, bool allowAutoIncrement) :
 		wireWalk++;
 	}
 	gCircuit->getOscope()->UpdateMenu();
-}
-
-bool cmdPasteBlock::Do() {
-
-	if (!m_init) {
-		m_init = true;
-		return true;
-	}
-
-	for (unsigned int i = 0; i < cmdList.size(); i++) cmdList[i]->Do();
 
 	return true;
 }
 
 bool cmdPasteBlock::Undo() {
+
+	alreadyDone = false;
 
 	for (int i = cmdList.size() - 1; i >= 0; i--) {
 		cmdList[i]->Undo();

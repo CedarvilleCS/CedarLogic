@@ -30,9 +30,9 @@ public:
 	virtual void setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas,
 		TranslationMap &gateids, TranslationMap &wireids) override;
 
-	const ParameterMap & getGuiParameterMap() const;
+	ParameterMap & getGuiParameterMap();
 
-	const ParameterMap & getLogicParameterMap() const;
+	ParameterMap & getLogicParameterMap();
 
 protected:
 	unsigned long gid;

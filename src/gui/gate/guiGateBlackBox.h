@@ -21,4 +21,6 @@ private:
 	GUICircuit *circuit;
 	std::vector<IDType> gateIds;
 	std::vector<IDType> wireIds;
+
+	static int bBoxCount;
 };

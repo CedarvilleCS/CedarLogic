@@ -34,13 +34,28 @@ void guiGateBlackBox::createInternals(const std::string &internals) {
 	
 	std::string internalsCopy = internals;
 
-	// 1.5. Refactor cmdPasteBlock to not run immediately.
+	cmdPasteBlock paste(internalsCopy, false, circuit, nullptr);
+	
+	// Send pin:pinname's to logic gate.
 
-	// 2. Refactor cmdSetParams to allow prefixing of the 'JUNCTION_ID' attribute.
+	// Prefix junctions.
+	for (auto *command : paste.getCommands()) {
+		if (command->GetName() == "Set Parameter") {
+			cmdSetParams *paramSetter = static_cast<cmdSetParams *>(command);
+			
+			for (auto &p : paramSetter->getLogicParameterMap()) {
+				if (p.first == "JUNCTION_ID") {
+					p.second = "bbox#" + std::to_string(bBoxCount) + "." + p.second;
+				}
+			}
+		}
+	}
+	bBoxCount++;
 
-	cmdPasteBlock paste(internalsCopy, false);
 	paste.Do();
 
 	// 3. Refactor cmdPasteBlock, cmdCreateGate, cmdSetParams, cmdCreateWire, cmdConnectWire, cmdMoveWire.
 	//     to allow access to created gate and wire ids.
 }
+
+int guiGateBlackBox::bBoxCount = 0;

@@ -153,10 +153,10 @@ void cmdSetParams::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas,
 }
 
 
-const ParameterMap & cmdSetParams::getGuiParameterMap() const {
+ParameterMap & cmdSetParams::getGuiParameterMap() {
 	return newGUIParamList;
 }
 
-const ParameterMap & cmdSetParams::getLogicParameterMap() const {
+ParameterMap & cmdSetParams::getLogicParameterMap() {
 	return newLogicParamList;
 }

@@ -7,7 +7,8 @@ class cmdPasteBlock : public klsCommand {
 public:
 
 	// right now, creating the command runs it.
-	cmdPasteBlock(std::string &copyText, bool allowAutoIncrement);
+	cmdPasteBlock(std::string &copyText, bool allowAutoIncrement, GUICircuit *gCircuit,
+		GUICanvas *gCanvas);
 
 	bool Do();
 
@@ -19,5 +20,9 @@ public:
 
 private:
 	std::vector<klsCommand *> cmdList;
-	bool m_init;
+
+	TranslationMap gateids;
+	TranslationMap wireids;
+
+	bool alreadyDone;
 };
