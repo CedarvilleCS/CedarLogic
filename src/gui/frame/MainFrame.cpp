@@ -255,16 +255,27 @@ movewire 7 hsegment 1 48,-18.5,49,-18.5 connection 6 OUT connection 11 IN_0  don
 		doOpenFile = (cmdFilename.size() > 0);
 		this->openedFilename = cmdFilename;
 
-		if (ifstream(CRASH_FILENAME)) {
-			wxMessageDialog dialog(this, "Oops! It seems like there may have been a crash.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+		if (ifstream((string)openedFilename+".temp")) {
+			wxMessageDialog dialog(this, "It seems there might have been a crash associated with this file.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+			if (dialog.ShowModal() == wxID_YES)
+			{
+				doOpenFile = false;
+				openedFilename = "Recovered File";
+				load((string)openedFilename + ".temp");
+				this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
+			}
+			removeTempFile();
+		}
+		else if (ifstream(CRASH_FILENAME)) {
+			wxMessageDialog dialog(this, "It seems like there may have been a crash.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 			if (dialog.ShowModal() == wxID_YES)
 			{
 				doOpenFile = false;
 				openedFilename = "Recovered File";
 				load(CRASH_FILENAME);
-				this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
+				this->SetTitle(VERSION_TITLE() + " - " + "Recovered File");
 			}
-			removeTempFile();
+			remove(CRASH_FILENAME.c_str());
 		}
 
 		autoSaveThread *autoThread = CreateSaveThread();
@@ -650,7 +661,21 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		lastDirectory = dialog.GetDirectory();
-		loadCircuitFile(dialog.GetPath().ToStdString());
+		if (!(ifstream((string)openedFilename + ".temp"))) {
+			loadCircuitFile(dialog.GetPath().ToStdString());
+		}
+		else {
+			wxMessageDialog crashDialog(this, "It seems there might have been a crash associated with this file.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
+			if (crashDialog.ShowModal() == wxID_YES) {
+				string oldFilename = openedFilename;
+				loadCircuitFile(dialog.GetPath().ToStdString() + ".temp");
+				openedFilename = oldFilename;
+			}
+			else {
+				loadCircuitFile(dialog.GetPath().ToStdString());
+			}
+		}
+		
 	}
 	
     currentCanvas->Update(); // Render();
@@ -1096,7 +1121,13 @@ void MainFrame::resumeTimers(int at) {
 //Julian: All of the following functions were added to support autosave functionality.
 
 void MainFrame::autosave() {
-	save(CRASH_FILENAME);
+	if (openedFilename == "") {
+		save(CRASH_FILENAME);
+	}
+	else {
+		save((string)openedFilename + ".temp");
+	}
+	
 }
 
 void MainFrame::save(string filename) {
@@ -1126,7 +1157,13 @@ bool MainFrame::fileIsDirty() {
 }
 
 void MainFrame::removeTempFile() {
-	remove(CRASH_FILENAME.c_str());
+	if (openedFilename == "") {
+		string tempFilename = (openedFilename + ".temp");
+		remove(tempFilename.c_str());
+	}
+	else {
+		remove(CRASH_FILENAME.c_str());
+	}
 }
 
 bool MainFrame::isHandlingEvent() {
