@@ -260,7 +260,6 @@ movewire 7 hsegment 1 48,-18.5,49,-18.5 connection 6 OUT connection 11 IN_0  don
 			if (dialog.ShowModal() == wxID_YES)
 			{
 				doOpenFile = false;
-				openedFilename = "Recovered File";
 				load((string)openedFilename + ".temp");
 				this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
 			}
