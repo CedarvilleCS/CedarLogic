@@ -115,6 +115,10 @@ void guiGate::insertLine(float x1, float y1, float x2, float y2) {
 	vertices.push_back(Point(x2, y2));
 }
 
+void guiGate::insertLabel(const gl_text &label) {
+	labels.push_back(label);
+}
+
 // Insert a hotspot in the hotspot list.
 void guiGate::insertHotspot(float x1, float y1, string connection, int busLines) {
 	if (hotspots.find(connection) != hotspots.end()) return; // error: hotspot already exists
@@ -362,6 +366,9 @@ void guiGate::draw(bool color) {
 		glVertex2f(vertices[i].x, vertices[i].y);
 	}
 	glEnd();
+	for (auto &t : labels) {
+		t.draw();
+	}
 
 	// Reset the stipple parameters:
 	if (selected && color) {

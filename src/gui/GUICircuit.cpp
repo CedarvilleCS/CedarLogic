@@ -132,6 +132,9 @@ guiGate * GUICircuit::createGate(const std::string &gateName, IDType id, bool no
 		LibraryGateLine tempLine = gateDef.shape[i];
 		newGate->insertLine(tempLine.x1, tempLine.y1, tempLine.x2, tempLine.y2);
 	}
+	for (auto &t : gateDef.labels) {
+		newGate->insertLabel(t);
+	}
 	for (unsigned int i = 0; i < gateDef.hotspots.size(); i++) {
 		LibraryGateHotspot tempHS = gateDef.hotspots[i];
 		newGate->insertHotspot(tempHS.x, tempHS.y, tempHS.name, tempHS.busLines);

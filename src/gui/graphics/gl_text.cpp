@@ -41,6 +41,8 @@ gl_text::gl_text() {
 
 	// The text string to be displayed:	
 	textString = "Text";
+
+	rotation = 0.0f;
 }
 
 
@@ -61,6 +63,7 @@ void gl_text::draw( void ) {
 		// Set the translation and scaling:
 		glTranslatef( translate[0], translate[1], 0.0 );
 		glScalef(scale[0], scale[1], 1);
+		glRotatef(rotation, 0.0f, 0.0f, 1.0f);
 
 		// Draw the text:
 		glEnable(GL_TEXTURE_2D);

@@ -374,6 +374,14 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 		hotspots.push_back(h);
 	}
 
+	// Temporary test label.
+	gl_text label;
+	label.setText("hello");
+	label.setRotation(0.0f);
+	label.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+	label.setSize(0.85f);
+	blackBox.labels.push_back(label);
+
 	// Drop into library.
 	gates["11 - Black Boxes"][blackBox.gateName] = blackBox;
 

@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include "gui/graphics/Point.h"
+#include "gui/graphics/gl_text.h"
 
 class wxCommandProcessor;
 class gateHotspot;
@@ -64,6 +65,9 @@ public:
 
 	// Insert a line in the line list.
 	void insertLine(float x1, float y1, float x2, float y2);
+
+	// Add a label to the gate.
+	void insertLabel(const gl_text &label);
 
 	// Insert a hotspot in the hotspot list.
 	void insertHotspot(float x1, float y1, std::string connection, int busLines);
@@ -156,6 +160,8 @@ protected:
 	klsBBox modelBBox;
 
 	std::vector<Point> vertices;
+
+	std::vector<gl_text> labels;
 
 	// map i/o name to hotspot coord
 	std::map< std::string, gateHotspot* > hotspots;
