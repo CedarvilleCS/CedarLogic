@@ -136,6 +136,7 @@
     <ClCompile Include="src\gui\graphics\ColorPalette.cpp" />
     <ClCompile Include="src\gui\graphics\Point.cpp" />
     <ClCompile Include="src\gui\GUICircuit.cpp" />
+    <ClCompile Include="src\gui\Settings.cpp" />
     <ClCompile Include="src\gui\wire\guiWire.cpp" />
     <ClCompile Include="src\gui\wire\wireSegment.cpp" />
     <ClCompile Include="src\gui\command\cmdAddTab.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="src\z80\Z_80Registers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CedarLogicException.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\gui\dialog\ColorSettingsDialog.h" />
     <ClInclude Include="src\gui\gate\guiGateBlackBox.h" />
@@ -212,6 +214,7 @@
     <ClInclude Include="src\gui\graphics\Point.h" />
     <ClInclude Include="src\gui\GUICircuit.h" />
     <ClInclude Include="src\gui\guiGates.h" />
+    <ClInclude Include="src\gui\Settings.h" />
     <ClInclude Include="src\gui\wire\guiWire.h" />
     <ClInclude Include="src\gui\wire\wireSegment.h" />
     <ClInclude Include="src\gui\commands.h" />
