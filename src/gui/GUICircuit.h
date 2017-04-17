@@ -23,6 +23,7 @@ class OscopeFrame;
 class guiGate;
 class guiWire;
 class Message;
+class threadLogic;
 
 using guiGateMap = std::unordered_map<IDType, guiGate *>;
 using guiWireMap = std::unordered_map<IDType, guiWire *>;
@@ -33,6 +34,11 @@ public:
 
 	virtual ~GUICircuit();
 
+	//threadLogic functions
+	void setLogicThread(threadLogic *logic);
+	threadLogic* getLogicThread();
+
+	// Reinit circuit
 	void reInitializeLogicCircuit();
 
 	// Create a gate and add it to the circuit.
@@ -91,6 +97,7 @@ public:
 	int lastTime;
 	
 private:
+	threadLogic *logicThread;
 	guiGateMap gateList;
 	guiWireMap wireList;
 

@@ -11,6 +11,7 @@
 #include "GateLibrary.h"
 #include "wx/msgdlg.h"
 #include "../MainApp.h"
+#include "gui/command/cmdSetParams.h"
 
 // Included for sin and cos in <circle> tags:
 #include <cmath>
@@ -36,6 +37,7 @@ GateLibrary::GateLibrary(string fileName) {
 	this->fileName = fileName;
 	parseFile();
 	delete mParse;
+	numDefinedBlackBoxes = 0;
 }
 
 GateLibrary::GateLibrary() {
@@ -44,11 +46,6 @@ GateLibrary::GateLibrary() {
 
 GateLibrary::~GateLibrary() {
 	//delete mParse;
-}
-
-// Added by Colin Broberg 11/16/16 -- need to make this a public function so that I can use it for dynamic gates
-void GateLibrary::addGate(string libName, LibraryGate newGate) {
-	gates[libName][newGate.gateName] = newGate;
 }
 
 void GateLibrary::parseFile() {
@@ -248,7 +245,6 @@ void GateLibrary::parseFile() {
 	} while (true); // end file
 }
 
-// Parse the shape object from the mParse file, adding an offset if needed:
 bool GateLibrary::parseShapeObject(string type, LibraryGate* newGate, double offX, double offY) {
 	float x1, y1, x2, y2;
 	char dump;
@@ -307,7 +303,6 @@ bool GateLibrary::getGate(string gateName, LibraryGate &lgGate) {
 	return (findVal != gates[findGate->second].end());
 }
 
-// Return the logic type of a particular gate:
 string GateLibrary::getGateLogicType(string gateName) {
 	auto findGate = wxGetApp().gateNameToLibrary.find(gateName);
 	if (findGate == wxGetApp().gateNameToLibrary.end()) return "";
@@ -315,10 +310,74 @@ string GateLibrary::getGateLogicType(string gateName) {
 	return gates[findGate->second][gateName].logicType;
 }
 
-// Return the gui type of a particular gate type:
 string GateLibrary::getGateGUIType(string gateName) {
 	auto findGate = wxGetApp().gateNameToLibrary.find(gateName);
 	if (findGate == wxGetApp().gateNameToLibrary.end()) return "";
 	if (gates[findGate->second].find(gateName) == gates[findGate->second].end()) return "";
 	return gates[findGate->second][gateName].guiType;
+}
+
+void GateLibrary::defineBlackBox(const std::string &copyText) {
+
+	LibraryGate blackBox;
+
+	blackBox.gateName = "BlackBox#" + std::to_string(numDefinedBlackBoxes);
+	numDefinedBlackBoxes++;
+	blackBox.caption = blackBox.gateName;
+	blackBox.guiType = "BlackBox";
+	blackBox.logicType = "BLACK_BOX";
+	blackBox.guiParams.insert({ "internals", copyText });
+
+	// Get names for pins.
+	std::vector<std::string> pinNames;
+	std::istringstream copyStream(copyText);
+	std::string lineText;
+	while (std::getline(copyStream, lineText, '\n')) {
+
+		if (lineText.substr(0, 9) == "setparams") {
+
+			cmdSetParams cmd(lineText);
+			for (const auto &p : cmd.getLogicParameterMap()) {
+
+				if (p.first == "JUNCTION_ID") {
+					pinNames.push_back(p.second);
+				}
+			}
+		}
+	}
+
+	// Make shape.
+	auto &lines = blackBox.shape;
+	float halfSide = (pinNames.size() + 1) / 2.0f;
+	lines.push_back({ -halfSide, halfSide, halfSide, halfSide });
+	lines.push_back({ -halfSide, -halfSide, halfSide, -halfSide });
+	lines.push_back({ -halfSide, halfSide, -halfSide, -halfSide });
+	lines.push_back({ halfSide, halfSide, halfSide, -halfSide });
+	for (int i = 0; i < (int)pinNames.size(); i++) {
+
+		lines.push_back({ -halfSide - 1, halfSide - 1 - i, -halfSide, halfSide - 1 - i });
+	}
+
+	// Add hotspots.
+	auto &hotspots = blackBox.hotspots;
+	for (int i = 0; i < (int)pinNames.size(); i++) {
+
+		LibraryGateHotspot h;
+		h.busLines = 1;
+		h.isInput = true;
+		h.isInverted = false;
+		h.logicEInput = "";
+		h.name = pinNames[i];
+		h.x = -halfSide - 1;
+		h.y = halfSide - 1 - i;
+
+		hotspots.push_back(h);
+	}
+
+	// Drop into library.
+	gates["11 - Black Boxes"][blackBox.gateName] = blackBox;
+
+	// TODO: i hate that we have to do this.
+	wxGetApp().gateNameToLibrary[blackBox.gateName] = "11 - Black Boxes";
+	wxGetApp().libraries["11 - Black Boxes"][blackBox.gateName] = blackBox;
 }

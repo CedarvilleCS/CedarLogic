@@ -17,3 +17,4 @@
 #include "gate/guiGateRAM.h"
 #include "gate/guiGateZ80.h"
 #include "gate/guiGateADC.h"
+#include "gate/guiGateBlackBox.h"

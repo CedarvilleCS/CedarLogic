@@ -34,24 +34,18 @@ void *threadLogic::Entry() {
 
 	cir = new Circuit();
 	while (!TestDestroy()) {
-		checkMessages();
+		processAllLogicMessages();
 		wxThread::Sleep(1);
 	}
 
 	return NULL;
 }
 
-void threadLogic::checkMessages() {
-	wxCriticalSectionLocker locker(wxGetApp().m_critsect);
-	while (wxGetApp().mexMessages.TryLock() == wxMUTEX_BUSY) wxYield();
-	while (wxGetApp().dGUItoLOGIC.size() > 0) {
-		Message *message = wxGetApp().dGUItoLOGIC.front();
-		wxGetApp().dGUItoLOGIC.pop_front();
-		parseMessage(message);
-		delete message;
+void threadLogic::processAllLogicMessages() {
+	while (hasLogicMessage()) {
+		processLogicMessage(popLogicMessage());
 	}
-	wxGetApp().mexMessages.Unlock();
-}
+}	
 
 void threadLogic::OnExit() {
 	wxCriticalSectionLocker locker(wxGetApp().m_critsect);
@@ -61,7 +55,7 @@ void threadLogic::OnExit() {
 	wxGetApp().m_semAllDone.Post();
 }
 
-bool threadLogic::parseMessage(Message *input) {
+bool threadLogic::processLogicMessage(Message *input) {
 
 	string temp, type, pinID;
 	long id, wireID;
@@ -205,7 +199,7 @@ bool threadLogic::parseMessage(Message *input) {
 			cir->step(&changedWires);
 			auto cw = changedWires.begin();
 			while (cw != changedWires.end()) {
-				sendMessage(new Message_SET_WIRE_STATE(*cw, (int)cir->getWireState(*cw)));
+				pushMessageToGui(new Message_SET_WIRE_STATE(*cw, (int) cir->getWireState(*cw)));
 				cw++;
 			}
 
@@ -213,10 +207,10 @@ bool threadLogic::parseMessage(Message *input) {
 			vector < changedParam > changedParams = cir->getParamUpdateList(); // Get the parameters that changed during this time step.
 			cir->clearParamUpdateList(); // Let the circuit know that we are handling the updates!
 			string paramVal;
-			for (unsigned int i = 0; i < changedParams.size(); i++) {
-				paramVal = cir->getGateParameter(changedParams[i].gateID, changedParams[i].paramName);
-				if (paramVal.size() > 0) {
-					sendMessage(new Message_SET_GATE_PARAM(changedParams[i].gateID, changedParams[i].paramName, paramVal));
+			for( unsigned int i = 0; i < changedParams.size(); i++ ) {
+				paramVal = cir->getGateParameter( changedParams[i].gateID, changedParams[i].paramName );
+				if( paramVal.size() > 0 ) {
+					pushMessageToGui(new Message_SET_GATE_PARAM(changedParams[i].gateID, changedParams[i].paramName, paramVal));
 				}
 
 				//************************************************************
@@ -242,9 +236,9 @@ bool threadLogic::parseMessage(Message *input) {
 				//End of Edit************************************************
 			}
 			// send interim done step message
-			sendMessage(new Message_COMPLETE_INTERIM_STEP());
+			pushMessageToGui(new Message_COMPLETE_INTERIM_STEP());
 		}
-		sendMessage(new Message_DONESTEP(simTime.Time()));
+		pushMessageToGui(new Message_DONESTEP(simTime.Time()));
 		break;
 	}
 	case MessageType::UPDATE_GATES: {
@@ -256,10 +250,10 @@ bool threadLogic::parseMessage(Message *input) {
 		vector < changedParam > changedParams = cir->getParamUpdateList(); // Get the parameters that changed
 		cir->clearParamUpdateList(); // Let the circuit know that we are handling the updates!
 		string paramVal;
-		for (unsigned int i = 0; i < changedParams.size(); i++) {
-			paramVal = cir->getGateParameter(changedParams[i].gateID, changedParams[i].paramName);
-			if (paramVal.size() > 0) {
-				sendMessage(new Message_SET_GATE_PARAM(changedParams[i].gateID, changedParams[i].paramName, paramVal));
+		for( unsigned int i = 0; i < changedParams.size(); i++ ) {
+			paramVal = cir->getGateParameter( changedParams[i].gateID, changedParams[i].paramName );
+			if( paramVal.size() > 0 ) {
+				pushMessageToGui(new Message_SET_GATE_PARAM(changedParams[i].gateID, changedParams[i].paramName, paramVal));
 			}
 
 		}
@@ -269,11 +263,62 @@ bool threadLogic::parseMessage(Message *input) {
 		break;
 	}
 	//End of edit**********************************
+	delete input;
 
 	return false;
 }
 
-void threadLogic::sendMessage(Message *message) {
-	wxMutexLocker lock(wxGetApp().mexMessages);
-	wxGetApp().dLOGICtoGUI.push_back(message);
+void threadLogic::pushMessageToLogic(Message *message) {
+	wxMutexLocker lock(messageLogicMutex);
+	guiToLogic.push_back(message);
+}
+
+void threadLogic::pushMessageToGui(Message *message) {
+	wxMutexLocker lock(messageGuiMutex);
+	logicToGui.push_back(message);
+}
+
+Message* threadLogic::popLogicMessage() {
+	wxMutexLocker lock(messageLogicMutex);
+	Message *m = guiToLogic.front();
+	guiToLogic.pop_front();
+	return m;
+}
+
+Message* threadLogic::popGuiMessage() {
+	wxMutexLocker lock(messageGuiMutex);
+	Message *m = logicToGui.front();
+	logicToGui.pop_front();
+	return m;
+}
+
+bool threadLogic::hasLogicMessage() {
+	wxMutexLocker lock(messageLogicMutex);
+	return (guiToLogic.size() > 0);
+}
+
+bool threadLogic::hasGuiMessage() {
+	wxMutexLocker lock(messageGuiMutex);
+	return (logicToGui.size() > 0);
+}
+
+void threadLogic::clearMessagesToLogic() {
+	wxMutexLocker lock(messageLogicMutex);
+	for (auto m : guiToLogic) {
+		delete m;
+	}
+	guiToLogic.clear();
+}
+
+void threadLogic::clearMessagesToGui() {
+	wxMutexLocker lock(messageGuiMutex);
+	for (auto m : logicToGui) {
+		delete m;
+	}
+	logicToGui.clear();
+}
+
+void threadLogic::clearAllMessages() {
+	clearMessagesToLogic();
+	clearMessagesToGui();
 }

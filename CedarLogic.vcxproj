@@ -118,6 +118,8 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
+    <ClCompile Include="src\gui\dialog\ColorSettingsDialog.cpp" />
+    <ClCompile Include="src\gui\gate\guiGateBlackBox.cpp" />
     <ClCompile Include="src\gui\gate\gateHotspot.cpp" />
     <ClCompile Include="src\gui\gate\guiGate.cpp" />
     <ClCompile Include="src\gui\gate\guiGateADC.cpp" />
@@ -157,7 +159,6 @@
     <ClCompile Include="src\gui\dialog\paramDialog.cpp" />
     <ClCompile Include="src\gui\dialog\RamPopupDialog.cpp" />
     <ClCompile Include="src\gui\dialog\Z80PopupDialog.cpp" />
-    <ClCompile Include="src\gui\DynamicGate.cpp" />
     <ClCompile Include="src\gui\GLFont\glfont2.cpp" />
     <ClCompile Include="src\gui\graphics\gl_defs.cpp" />
     <ClCompile Include="src\gui\graphics\gl_text.cpp" />
@@ -191,6 +192,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\gui\dialog\ColorSettingsDialog.h" />
+    <ClInclude Include="src\gui\gate\guiGateBlackBox.h" />
     <ClInclude Include="src\gui\gate\gateHotspot.h" />
     <ClInclude Include="src\gui\gate\guiGate.h" />
     <ClInclude Include="src\gui\gate\guiGateADC.h" />
@@ -233,7 +236,6 @@
     <ClInclude Include="src\gui\dialog\paramDialog.h" />
     <ClInclude Include="src\gui\dialog\RamPopupDialog.h" />
     <ClInclude Include="src\gui\dialog\Z80PopupDialog.h" />
-    <ClInclude Include="src\gui\DynamicGate.h" />
     <ClInclude Include="src\gui\GLFont\glfont2.h" />
     <ClInclude Include="src\gui\graphics\gl_defs.h" />
     <ClInclude Include="src\gui\graphics\gl_text.h" />

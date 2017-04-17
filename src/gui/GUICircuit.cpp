@@ -24,7 +24,9 @@ GUICircuit::GUICircuit() {
 	waitToSendMessage = true;
 	panic = false;
 	pausing = false;
+	logicThread = nullptr;
 	commandProcessor = nullptr;
+	myOscope = nullptr;
 }
 
 GUICircuit::~GUICircuit() {
@@ -32,6 +34,14 @@ GUICircuit::~GUICircuit() {
 	if (commandProcessor != nullptr) {
 		delete commandProcessor;
 	}
+}
+
+void GUICircuit::setLogicThread(threadLogic *logic) {
+	logicThread = logic;
+}
+
+threadLogic* GUICircuit::getLogicThread() {
+	return logicThread;
 }
 
 void GUICircuit::reInitializeLogicCircuit() {
@@ -107,6 +117,10 @@ guiGate * GUICircuit::createGate(const std::string &gateName, IDType id, bool no
 	}
 	else if (ggt == "ADC") {
 		newGate = new guiGateADC();
+	}
+	else if (ggt == "BlackBox") {
+		// If there is no logic thread, the circuit is strictly visual.
+		newGate = new guiGateBlackBox(this, logicThread == nullptr);
 	}
 	else {
 		newGate = new guiGate();
@@ -242,19 +256,19 @@ IDType GUICircuit::getNextAvailableWireID() {
 
 void GUICircuit::sendMessageToCore(Message *message) {
 
-	wxMutexLocker lock(wxGetApp().mexMessages);
+	if (logicThread != nullptr) {
+		if (waitToSendMessage) {
 
-	if (waitToSendMessage) {
-
-		if (simulate) {
-			wxGetApp().dGUItoLOGIC.push_back(message);
+			if (simulate) {
+				logicThread->pushMessageToLogic(message);
+			}
+			else {
+				messageQueue.push_back(message);
+			}
 		}
 		else {
-			messageQueue.push_back(message);
+			logicThread->pushMessageToLogic(message);
 		}
-	}
-	else {
-		wxGetApp().dGUItoLOGIC.push_back(message);
 	}
 }
 
@@ -324,6 +338,8 @@ void GUICircuit::parseMessage(Message *message) {
 	default:
 		break;
 	}
+
+	delete message;
 }
 
 void GUICircuit::setSimulate(bool state) {

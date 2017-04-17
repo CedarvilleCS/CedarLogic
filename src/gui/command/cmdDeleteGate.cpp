@@ -109,7 +109,9 @@ bool cmdDeleteGate::Do() {
 
 	gateType = (*(gCircuit->getGates()))[gateId]->getLibraryGateName();
 
-	gCanvas->removeGate(gateId);
+	if (gCanvas != nullptr) {
+		gCanvas->removeGate(gateId);
+	}
 	gCircuit->deleteGate(gateId, true);
 	std::string logicType = wxGetApp().libParser.getGateLogicType(gateType);
 	if (logicType.size() > 0) {
@@ -125,7 +127,9 @@ bool cmdDeleteGate::Undo() {
 	if (logicType.size() > 0) {
 		gCircuit->sendMessageToCore(new Message_CREATE_GATE(logicType, gateId));
 	}
-	gCanvas->insertGate(gateId, (*(gCircuit->getGates()))[gateId], 0, 0);
+	if (gCanvas != nullptr) {
+		gCanvas->insertGate(gateId, (*(gCircuit->getGates()))[gateId], 0, 0);
+	}
 
 	while (!(cmdList.empty())) {
 		cmdList.top()->Undo();

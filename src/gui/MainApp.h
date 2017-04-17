@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <deque>
 #include <string>
 #include "wx/wx.h"
 #include "wx/thread.h"
@@ -33,6 +32,7 @@ struct ApplicationSettings {
     float wireConnRadius;
     bool wireConnVisible;
 	bool gridlineVisible;
+	bool autoIncrement;
 };
 
 class MainApp : public wxApp {
@@ -40,7 +40,6 @@ public:
 	MainApp();
 	virtual bool OnInit();
 
-public:
     // crit section protects access to all of the arrays below
     wxCriticalSection m_critsect;
 
@@ -49,9 +48,8 @@ public:
 	wxSemaphore simulate;
 	wxSemaphore readyToSend;
 
-	wxMutex mexMessages;
-	deque< Message *> dGUItoLOGIC;
-	deque< Message *> dLOGICtoGUI;
+	
+
 	// Use a stopwatch for timing between step calls
 	wxStopWatch appSystemTime;
 	unsigned long timeStepMod;
@@ -75,8 +73,7 @@ public:
 	string newGateToDrag;
 	
 	ApplicationSettings appSettings;
-	
-	threadLogic* logicThread;
+
 	autoSaveThread* saveThread;
 	
 	//this pointer is added so that pop-ups can
