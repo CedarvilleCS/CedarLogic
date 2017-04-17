@@ -57,7 +57,7 @@ heading% :
 # This is the ordering of the steps in the makefile.
 .DEFAULT : all
 .PHONY : all
-all : toDir resToRes objToMeta cppToObj objToExe 
+all : toDir resToRes objToVim cppToObj objToExe 
 
 # Step. Generate output directories.
 .PHONY : toDir
@@ -67,9 +67,9 @@ toDir : headingDIR $(genDir)
 .PHONY : resToRes
 resToRes : headingRES $(genRes)
 
-# Step. Generate ide-ish files.
-.PHONY : objToMeta
-objToMeta : headingMETA .syntastic_cpp_config
+# Step. Generate vim-ide files.
+.PHONY : objToVim
+objToVim : headingVIM .syntastic_cpp_config
 
 # Step. Compile cpp code into obj files. Also make submakefiles.
 .PHONY : cppToObj
