@@ -196,6 +196,8 @@ wxImage klsGLCanvas::renderToImage(unsigned long width, unsigned long height, un
 	return theBM.ConvertToImage();
 	
 	*/
+
+	return wxImage();
 }
 
 

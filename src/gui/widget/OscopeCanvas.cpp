@@ -370,73 +370,6 @@ void OscopeCanvas::UpdateMenu()
 	}
 
 	parentFrame->updatePossableFeeds(&namesOfPossableFeeds);
-
-	/*
-
-	//Sets variables
-	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
-auto theGate = gateList->begin();
-
-	//Sets size
-	//unsigned int size = (parentFrame->comboBoxVector).size();
-	unsigned int size = parentFrame->numberOfFeeds();
-
-	for(unsigned int x = 0; x < size; x++)
-	{
-		//wxString oldVal = (parentFrame->comboBoxVector[x])->GetValue();
-		string oldVal = parentFrame->getFeedName( x );
-		//Update Combo Box Data
-		(parentFrame->comboBoxVector[x])->Clear();
-
-		//starts new array of strings
-		wxArrayString strings;
-
-		theGate = gateList->begin();
-
-		//Adds names to dialog box
-		while (theGate != gateList->end())
-		{
-			//Tests Gate ID
-			if((theGate->second)->getGUIType() == "TO" )
-			{
-				//Gets gate ID
-				string junctionName = (theGate->second)->getLogicParam("JUNCTION_ID");
-
-				(parentFrame->comboBoxVector[x])->Append(junctionName.c_str());
-			}
-
-			theGate++;
-		}
-		(parentFrame->comboBoxVector[x])->Append("[None]");
-		(parentFrame->comboBoxVector[x])->Append("[Remove]");
-
-		// *******************************************
-		//Edit by Joshua Lansford 2/22/07
-		//FindString is insensitive.  Therefore just
-		//because it finds something doesn't mean that
-		//our old value  is still valid.  Therefore
-		//we must search manually
-
-		//if ((parentFrame->comboBoxVector[x])->FindString(oldVal) != -1 ) {
-
-		bool foundIt = false;
-		for( int search = 0;
-			 search < (parentFrame->comboBoxVector[x])->GetCount() && !foundIt;
-			 ++search ){
-			if( oldVal == (parentFrame->comboBoxVector[x])->GetString( search ) ){
-				foundIt = true;
-			}
-		}
-		if( foundIt ){
-		//End of Edit************************************************
-
-
-			(parentFrame->comboBoxVector[x])->SetValue(oldVal);
-		} else {
-			(parentFrame->comboBoxVector[x])->SetValue("[None]");
-		}
-	}
-	*/
 }
 
 // Print the canvas contents to a bitmap:
@@ -520,4 +453,6 @@ wxImage OscopeCanvas::generateImage() {
 	myDC.SelectObject(wxNullBitmap);
 	return theBM.ConvertToImage();
 	*/
+
+	return wxImage();
 }
