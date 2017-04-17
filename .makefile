@@ -1,5 +1,5 @@
-# Makefile by tylerdrake.
-# Use freely
+### .makefile by Tyler J. Drake
+### Feel free to use and modify
 
 ### [ Source & Output Files ] =======================================
 
@@ -14,11 +14,11 @@ genDir := $(sort $(dir $(genObj)) $(dir $(genRes)))
 
 
 
-### [ Link-Time-Optimization(LTO) additional flags ] ================
+### [ Release mode, additional flags ] ================
 
-LTO ?= 0
-ifeq ($(LTO), 0)
-	cflags += -g
+RELEASE ?= 0
+ifeq ($(RELEASE), 0)
+	cflags += -g -pg
 else
 	cflags += -O2 -flto
 endif
@@ -27,7 +27,7 @@ endif
 
 ### [ Compiler selection ] ==========================================
 
-COMPILER ?= 0
+COMPILER ?= 1
 ifeq ($(COMPILER), 0)
 	cppcomp = g++
 endif
@@ -52,12 +52,12 @@ print   = @echo -e '    ' $(item)$(1)$(default)
 # Prerequisite that prints as heading. headingBob prints 'Bob'.
 .PHONY : heading%
 heading% :
-	@echo $(heading)[ $* ]$(default)
+	@echo -e $(heading)[ $* ]$(default)
 
 # This is the ordering of the steps in the makefile.
 .DEFAULT : all
 .PHONY : all
-all : toDir resToRes cppToObj objToExe
+all : toDir resToRes objToMeta cppToObj objToExe 
 
 # Step. Generate output directories.
 .PHONY : toDir
@@ -66,6 +66,10 @@ toDir : headingDIR $(genDir)
 # Step. Copy resources into build directory.
 .PHONY : resToRes
 resToRes : headingRES $(genRes)
+
+# Step. Generate ide-ish files.
+.PHONY : objToMeta
+objToMeta : headingMETA .syntastic_cpp_config
 
 # Step. Compile cpp code into obj files. Also make submakefiles.
 .PHONY : cppToObj
@@ -88,7 +92,14 @@ $(genDir) :
 $(genDirRes)% : $(srcDirRes)%
 	$(call print,$@)
 	@cp $< $@
-	
+
+# Generate syntastic and clang_complete information.
+.syntastic_cpp_config : Makefile
+	$(call print,$@)
+	@echo $(cflags) | sed 's/ -/\n-/g' > $@
+	$(call print,.clang_complete)
+	@cp $@ .clang_complete
+
 # Make objects from cpp source. Also make submakefiles
 # NOTE: Submakefiles always list the *.cpp as the first dependency.
 $(genObj) :
@@ -102,6 +113,7 @@ $(genApp) : $(genObj)
 	@$(cppcomp) $(genObj) $(cflags) $(lflags) -o $@
 
 
+
 ### [ Other rules & recipes ] =======================================
 
 # Create doxygen documentation.
@@ -113,12 +125,23 @@ doc : all headingDOC
 # Remove generated files.
 .PHONY : clean
 clean : headingCLEAN
-	@rm $(genDirRoot) -f -r
+	@rm -rf $(genDirRoot)
+	@rm -f .syntastic_cpp_config
+	@rm -f .clang_complete
 
 # Build and run.
 .PHONY : run
 run : all headingRUN
 	@(cd $(genDirRoot) && exec ./$(appName))
+
+# Show profile data.
+.PHONY : profile
+profile :
+	@gprof -Q $(genApp) $(genDirRoot)gmon.out | awk '$$1 > 0' > profile.txt
+	@gprof -Q -b $(genApp) $(genDirRoot)gmon.out | \
+		awk '$$1 > 0 || $$1 == "" || $$1 == "%"' | \
+		sed 's/(.*)/()/' > \
+		$(genDirRoot)profile.txt
 
 
 

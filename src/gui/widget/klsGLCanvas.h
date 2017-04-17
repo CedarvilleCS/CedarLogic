@@ -18,6 +18,7 @@
 #include <sstream>
 #include <string>
 #include <deque>
+#include <wx/timer.h>
 #include "wx/glcanvas.h"
 #include "gui/graphics/gl_defs.h"
 

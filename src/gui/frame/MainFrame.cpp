@@ -25,7 +25,7 @@
 #include "../commands.h"
 #include "../thread/autoSaveThread.h"
 #include "../../version.h"
-#include "gui\dialog\ColorSettingsDialog.h"
+#include "gui/dialog/ColorSettingsDialog.h"
 
 DECLARE_APP(MainApp)
 

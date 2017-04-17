@@ -101,6 +101,11 @@ void klsMiniMap::setViewport() {
 
 // Print the canvas contents to a bitmap:
 void klsMiniMap::generateImage() {
+	
+	// TODO LINUX PORT
+	
+	/*
+	
 	//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
 	// DIB Section OpenGL rendering.
 
@@ -154,7 +159,7 @@ void klsMiniMap::generateImage() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 
-	//*********************************
+	//
 	//Edit by Joshua Lansford 4/08/07
 	//The minimap could use some anti
 	//aleasing
@@ -177,6 +182,8 @@ void klsMiniMap::generateImage() {
 	::wglDeleteContext(hRC);
 	myDC.SelectObject(wxNullBitmap);
 	mapImage = theBM.ConvertToImage();
+	
+	*/
 }
 
 void klsMiniMap::renderMap() {

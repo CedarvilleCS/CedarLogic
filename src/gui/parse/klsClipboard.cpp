@@ -26,7 +26,7 @@ klsCommand * klsClipboard::pasteBlock(GUICircuit *gCircuit, GUICanvas *gCanvas) 
 	wxTextDataObject wxText;
 	if (wxTheClipboard->GetData(wxText)) {
 
-		std::string copyText = wxText.GetText();
+		std::string copyText = wxText.GetText().ToStdString();
 		klsCommand *result = new cmdPasteBlock(copyText, true, gCircuit, gCanvas);
 		result->Do();
 

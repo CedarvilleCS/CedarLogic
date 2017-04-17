@@ -1,5 +1,6 @@
 
 #pragma once
+#include <vector>
 #include "klsCommand.h"
 
 // cmdCreateGate - creates a gate on a given canvas at position (x,y)
@@ -10,9 +11,9 @@ public:
 
 	cmdCreateGate(std::string def);
 
-	bool Do();
+	bool Do() override;
 
-	bool Undo();
+	bool Undo() override;
 
 	virtual std::string toString() const override;
 

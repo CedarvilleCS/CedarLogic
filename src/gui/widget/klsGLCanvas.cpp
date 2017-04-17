@@ -107,6 +107,11 @@ void klsGLCanvas::updateMiniMap() {
 
 // Print the canvas contents to a bitmap:
 wxImage klsGLCanvas::renderToImage(unsigned long width, unsigned long height, unsigned long colorDepth, bool noColor) {
+	
+	// TODO LINUX PORT
+	
+	/*
+	
 	//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
 	// DIB Section OpenGL rendering.
 
@@ -161,7 +166,7 @@ wxImage klsGLCanvas::renderToImage(unsigned long width, unsigned long height, un
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 
-	//*********************************
+	//
 	//Edit by Joshua Lansford 4/05/07
 	//I placed this in here to hopefully
 	//anti-alis the the text font.
@@ -189,6 +194,8 @@ wxImage klsGLCanvas::renderToImage(unsigned long width, unsigned long height, un
 	SetCurrent(*glcontext);
 
 	return theBM.ConvertToImage();
+	
+	*/
 }
 
 

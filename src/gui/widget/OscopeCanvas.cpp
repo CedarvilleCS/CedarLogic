@@ -441,6 +441,11 @@ auto theGate = gateList->begin();
 
 // Print the canvas contents to a bitmap:
 wxImage OscopeCanvas::generateImage() {
+	
+	// TODO LINUX PORT
+	
+	/*
+	 * 
 	//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
 	// DIB Section OpenGL rendering.
 
@@ -495,7 +500,7 @@ wxImage OscopeCanvas::generateImage() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 
-	//*********************************
+	//
 	//Edit by Joshua Lansford 4/09/07
 	//anti-alis ing is nice
 	glEnable(GL_LINE_SMOOTH);
@@ -514,4 +519,5 @@ wxImage OscopeCanvas::generateImage() {
 	::wglDeleteContext(hRC);
 	myDC.SelectObject(wxNullBitmap);
 	return theBM.ConvertToImage();
+	*/
 }
