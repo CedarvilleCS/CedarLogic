@@ -177,7 +177,6 @@ movewire 7 hsegment 1 48,-18.5,49,-18.5 connection 6 OUT connection 11 IN_0  don
 
 	mainSizer = new wxBoxSizer( wxHORIZONTAL );
 	wxBoxSizer* leftPaneSizer = new wxBoxSizer( wxVERTICAL );
-	wxSize sz = this->GetClientSize();
 	
 	// now a gate palette for the library
 	gatePalette = new PaletteFrame(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);

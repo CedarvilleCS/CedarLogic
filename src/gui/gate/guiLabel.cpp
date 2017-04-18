@@ -5,8 +5,6 @@
 
 using namespace std;
 
-static GLdouble SELECTED_LABEL_INTENSITY = 0.50;
-
 guiLabel::guiLabel() {
 	guiGate();
 	// Set default parameters:

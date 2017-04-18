@@ -23,7 +23,7 @@ genApp     :=$(genDirRoot)$(appName)
 ### [ Compiler Flags ] ==============================================
 
 cflags += -std=c++11
-#cflags += -Wall
+cflags += -Wall
 cflags += -I $(srcDirCpp)
 cflags += $(shell wx-config --cxxflags)
 cflags += -Wno-potentially-evaluated-expression

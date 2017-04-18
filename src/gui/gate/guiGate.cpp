@@ -17,9 +17,10 @@ guiGate::guiGate() : klsCollisionObject(COLL_GATE) {
 
 guiGate::~guiGate() {
 	
-	for (auto &p : hotspots) {
+	//double-delete bug going on here.
+	//for (auto &p : hotspots) {
 		//delete p.second;
-	}
+	//}
 }
 
 void guiGate::setID(long nid) {

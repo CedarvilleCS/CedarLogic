@@ -227,7 +227,6 @@ void OscopeFrame::OnComboUpdate(wxCommandEvent& event) {
 }
 
 void OscopeFrame::OnExport(wxCommandEvent& event) {
-	wxSize imageSize = theCanvas->GetClientSize();
 	wxImage circuitImage = theCanvas->generateImage();
 	wxBitmap circuitBitmap(circuitImage);
 
