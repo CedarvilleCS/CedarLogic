@@ -20,3 +20,19 @@ void defineGLLists() {
 	glEndList();
 	
 }
+
+void createGLContext() {
+	
+}
+
+wxGLContext * getGLContext() {
+	
+}
+
+void startRenderToWxBitmap() {
+	
+}
+
+wxBitmap finishRenderToWxBitmap() {
+	
+}
