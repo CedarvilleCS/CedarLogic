@@ -1,9 +1,9 @@
 
+#include "gui/graphics/gl_defs.h"
 #include "guiGateLED.h"
 #include <sstream>
 #include "common.h"
 #include "gui/wire/guiWire.h"
-#include "gui/graphics/gl_defs.h"
 
 using namespace std;
 

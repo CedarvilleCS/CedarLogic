@@ -1,4 +1,5 @@
 
+#include "gui/graphics/OpenGL.h"
 #include "klsClipboard.h"
 #include "../frame/OscopeFrame.h"
 #include <fstream>

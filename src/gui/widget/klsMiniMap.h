@@ -11,13 +11,13 @@
 #ifndef KLSMINIMAP_H_
 #define KLSMINIMAP_H_
 
+#include "gui/graphics/gl_defs.h"
 #include <unordered_map>
 #include <wx/glcanvas.h>
 #include <wx/image.h>
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
 #include <wx/panel.h>
-#include "gui/graphics/gl_defs.h"
 using namespace std;
 
 class guiWire;

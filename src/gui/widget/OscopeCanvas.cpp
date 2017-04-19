@@ -8,6 +8,7 @@
    OscopeCanvas: renders the waveform for the oscope
 *****************************************************************************/
 
+#include "gui/graphics/OpenGL.h"
 #include "OscopeCanvas.h"
 #include "../MainApp.h"
 #include "GUICanvas.h"

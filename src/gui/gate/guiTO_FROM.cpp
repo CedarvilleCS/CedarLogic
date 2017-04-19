@@ -1,6 +1,6 @@
 
-#include "guiTO_FROM.h"
 #include "gui/graphics/gl_defs.h"
+#include "guiTO_FROM.h"
 
 const static GLdouble TO_FROM_TEXT_HEIGHT = 1.5;
 const static GLdouble TO_BUFFER = 0.4;

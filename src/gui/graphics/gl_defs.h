@@ -27,7 +27,7 @@ wxGLContext * getGLContext();
 
 // This creates a framebuffer and sets it as active.
 // glBegin() still needs to be called.
-void startRenderToWxBitmap();
+void startRenderToWxBitmap(int width, int height);
 
 // This creates a wxBitmap and copies data from the framebuffer into it.
 // It then sets the framebuffer back to the default.

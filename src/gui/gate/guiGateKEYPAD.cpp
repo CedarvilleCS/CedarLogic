@@ -1,9 +1,9 @@
 
+#include "gui/graphics/gl_defs.h"
 #include "guiGateKEYPAD.h"
 #include <sstream>
 #include <iomanip>
 #include "gui/message/Message.h"
-#include "gui/graphics/gl_defs.h"
 
 
 using namespace std;

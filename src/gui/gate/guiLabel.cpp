@@ -1,7 +1,7 @@
 
+#include "gui/graphics/gl_defs.h"
 #include "guiLabel.h"
 #include <sstream>
-#include "gui/graphics/gl_defs.h"
 
 using namespace std;
 

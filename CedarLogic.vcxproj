@@ -75,7 +75,7 @@
       <AdditionalIncludeDirectories>$(IntDir); $(WXWIN)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;winmm.lib;wsock32.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;rpcrt4.lib;winmm.lib;wsock32.lib;opengl32.lib;glu32.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(WXWIN)/lib/vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -271,9 +271,14 @@
     <ClInclude Include="src\z80\Z_80LogicGate.h" />
     <ClInclude Include="src\z80\Z_80Registers.h" />
   </ItemGroup>
-  <!-- Set variable if environment variable is not set (good for computers without admin access). -->
+  <!-- Set variables if environment variable is not set (good for computers without admin access). -->
   <PropertyGroup>
     <WXWIN Condition="'$(WXWIN)' == ''">c:\wxWidgets-3.1.0</WXWIN>
+    <GLEWWIN Condition="'$(GLEWWIN)' == ''">c:\glew-2.0.0</GLEWWIN>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(GLEWWIN)\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(GLEWWIN)\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <!-- Copy resources to output directory. -->
   <ItemGroup>

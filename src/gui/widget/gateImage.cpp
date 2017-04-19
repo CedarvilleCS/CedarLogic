@@ -1,10 +1,10 @@
 
+#include "gui/graphics/gl_defs.h"
 #include "gateImage.h"
 #include "wx/image.h"
 #include "wx/wx.h"
 #include "klsGLCanvas.h"
 #include "../graphics/gl_text.h"
-#include "gui/graphics/gl_defs.h"
 #include <fstream>
 #include "gui/gate/guiGate.h"
 #include "gui/GUICircuit.h"

@@ -1,10 +1,11 @@
 
+
+#include "gui/graphics/gl_defs.h"
 #include "guiGate.h"
 
 #include "gui/MainApp.h"
 #include "gui/dialog/paramDialog.h"
 #include "gui/wire/guiWire.h"
-#include "gui/graphics/gl_defs.h"
 #include "gateHotspot.h"
 DECLARE_APP(MainApp)
 
