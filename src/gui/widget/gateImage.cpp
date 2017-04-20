@@ -24,22 +24,7 @@ using namespace std;
 gateImage::gateImage(const string &gateName, wxWindow *parent) :
 	wxGLCanvas(parent, wxID_ANY, nullptr, wxDefaultPosition, wxSize(IMAGESIZE, IMAGESIZE), wxFULL_REPAINT_ON_RESIZE, "") {
 
-	if (count == 0) {
-		
-		glContext = new wxGLContext(this);
-		glContext->SetCurrent(*this);
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_BLEND);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-		// Load the font texture
-		gl_text::loadFont(wxGetApp().appSettings.textFontFile);
-	}
-
-
-	count++;
+	createGLContext(*this);
 
 	mouseHover = false;
 
@@ -48,17 +33,9 @@ gateImage::gateImage(const string &gateName, wxWindow *parent) :
 	this->SetToolTip(wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption);
 }
 
-gateImage::~gateImage() {
-
-	count--;
-	if (count == 0) {
-		delete glContext;
-	}
-}
-
 void gateImage::OnPaint(wxPaintEvent &event) {
 
-	glContext->SetCurrent(*this);
+	makeGLCanvasCurrent(*this);
 
 	// Clear the background.
 	if (mouseHover) {
@@ -167,6 +144,3 @@ void gateImage::setViewport(guiGate *m_gate) {
 	// Reset the glViewport to the size of the bitmap:
 	glViewport(0, 0, GATEIMAGESIZE, GATEIMAGESIZE);
 }
-
-wxGLContext *gateImage::glContext = nullptr;
-int gateImage::count = 0;

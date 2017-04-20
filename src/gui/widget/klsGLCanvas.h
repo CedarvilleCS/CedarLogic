@@ -184,8 +184,6 @@ protected:
 	// The minimap associated with this canvas
 	klsMiniMap* minimap;
 
-	wxGLContext* glcontext;
-
 private:
 	wxPoint mouseScreenCoords;
 	wxPoint getMouseScreenCoords(void) { return mouseScreenCoords;  }

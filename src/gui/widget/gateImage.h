@@ -18,8 +18,6 @@ class gateImage : public wxGLCanvas {
 public:
     gateImage(const std::string &gateName, wxWindow *parent);
 
-	virtual ~gateImage();
-
     void OnPaint(wxPaintEvent& event);
 
     void OnMouseEvent(wxMouseEvent& event);
@@ -39,12 +37,4 @@ private:
 	std::string gateName;
 
 	bool mouseHover;
-
-
-
-	// GLContext shared for all gateImage's.
-	static wxGLContext *glContext;
-
-	// gateImage counter so wxGLContext can be destroyed eventually.
-	static int count;
 };

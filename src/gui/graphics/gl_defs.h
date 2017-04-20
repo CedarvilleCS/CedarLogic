@@ -18,18 +18,19 @@ void defineGLLists();
 
 
 // Create an opengl context to be used with wxGLCanvases.
-// This should only be called one time.
-void createGLContext();
+// This can be called repeatedly.
+// This does not make the given canvas current.
+void createGLContext(wxGLCanvas &canvas);
 
 // Get the context created by createGLContext.
 // To start drawing to a glCanvas, use context->setCurrent(canvas).
-wxGLContext * getGLContext();
+void makeGLCanvasCurrent(const wxGLCanvas &canvas);
 
 // This creates a framebuffer and sets it as active.
 // glBegin() still needs to be called.
-void startRenderToWxBitmap(int width, int height);
+void startRenderToWxImage(int width, int height);
 
-// This creates a wxBitmap and copies data from the framebuffer into it.
+// This creates a wxImage and copies data from the framebuffer into it.
 // It then sets the framebuffer back to the default.
 // glEnd() still needs to be called before this.
-wxBitmap finishRenderToWxBitmap();
+wxImage finishRenderToWxImage();

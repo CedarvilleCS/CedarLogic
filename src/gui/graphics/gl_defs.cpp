@@ -1,7 +1,9 @@
 
 #include "gl_defs.h"
+#include "gl_text.h"
 #include <cmath>
 #include <memory>
+#include <wx/rawbmp.h>
 
 #include "../MainApp.h"
 DECLARE_APP(MainApp)
@@ -39,21 +41,33 @@ namespace {
 	int rbHeight;  // Render area height
 }
 
-void createGLContext() {
+void createGLContext(wxGLCanvas &canvas) {
 	
-	if (context != nullptr) {
+	if (context == nullptr) {
 
-		glewInit();
-		wxGLCanvas temp(nullptr);
-		context = std::make_unique<wxGLContext>(&temp);
+		context = std::make_unique<wxGLContext>(&canvas);
+		makeGLCanvasCurrent(canvas);
+
+		glewExperimental = GL_TRUE;
+		GLenum status = glewInit();
+		if (status != GLEW_OK) {
+			;
+		}
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+		// Load the font texture
+		gl_text::loadFont(wxGetApp().appSettings.textFontFile);
 	}
 }
 
-wxGLContext * getGLContext() {
-	return context.get();
+void makeGLCanvasCurrent(const wxGLCanvas &canvas) {
+	context->SetCurrent(canvas);
 }
 
-void startRenderToWxBitmap(int width, int height) {
+void startRenderToWxImage(int width, int height) {
 	
 	rbWidth = width;
 	rbHeight = height;
@@ -73,11 +87,11 @@ void startRenderToWxBitmap(int width, int height) {
 	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rb);
 }
 
-wxBitmap finishRenderToWxBitmap() {
+wxImage finishRenderToWxImage() {
 
 	// Make room for data about to be read from the render buffer.
 	// The '3' is for RGB where each channel is 1 byte.
-	std::vector<char> pixels(rbWidth * rbHeight * 3);
+	std::vector<unsigned char> pixels(rbWidth * rbHeight * 3);
 
 	// Make sure the correct render buffer is being read from.
 	// (in startRenderToWxBitmap, we attach rb to fb through color attachment 0)
@@ -93,5 +107,17 @@ wxBitmap finishRenderToWxBitmap() {
 	glDeleteFramebuffers(1, &fb);
 	glDeleteRenderbuffers(1, &rb);
 
-	return wxBitmap(pixels.data(), rbWidth, rbHeight);
+	wxImage result;
+	result.Create(pixels.data(), wxBitmapType::wxBITMAP_TYPE_ANY, rbWidth, rbHeight);
+
+	
+
+
+	for (int row = 0; row < rbHeight; row++) {
+		for (int col = 0; col < rbWidth; col++) {
+			result.GetData()[row * rbWidth + col] = pixels[row *rbWidth + col];
+		}
+	}
+
+	return result;
 }

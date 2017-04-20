@@ -33,7 +33,8 @@ OscopeCanvas::OscopeCanvas(wxWindow *parent, GUICircuit* gCircuit, wxWindowID id
 	const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 	: wxGLCanvas(parent, id, nullptr, pos, size, style | wxFULL_REPAINT_ON_RESIZE | wxSUNKEN_BORDER) {
 
-	this->glcontext = new wxGLContext(this);
+	createGLContext(*this);
+
 	this->gCircuit = gCircuit;
 	m_init = false;
 	parentFrame = (OscopeFrame*)parent;
@@ -183,9 +184,9 @@ void OscopeCanvas::OnRender() {
 
 void OscopeCanvas::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
+	
+	makeGLCanvasCurrent(*this);
 
-
-	SetCurrent(*glcontext);
 	// Init OpenGL once, but after SetCurrent
 	if (!m_init)
 	{
@@ -214,7 +215,7 @@ void OscopeCanvas::OnPaint(wxPaintEvent& event) {
 
 void OscopeCanvas::OnSize(wxSizeEvent& event)
 {
-	SetCurrent(*glcontext);
+	makeGLCanvasCurrent(*this);
 	Refresh();
 }
 

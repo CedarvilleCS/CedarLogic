@@ -45,7 +45,7 @@ klsGLCanvas::klsGLCanvas(wxWindow *parent, const wxString& name, wxWindowID id,
 	const wxPoint& pos, const wxSize& size, long style) :
 	wxGLCanvas(parent, id, nullptr, pos, size, style | wxFULL_REPAINT_ON_RESIZE | wxWANTS_CHARS, name) {
 
-	glcontext = new wxGLContext(this);
+	createGLContext(*this);
 
 	// Zoom and OpenGL coordinate of upper-left corner of this canvas:
 	viewZoom = DEFAULT_ZOOM;
@@ -342,7 +342,8 @@ void klsGLCanvas::klsGLCanvasRender(bool noColor) {
 void klsGLCanvas::wxOnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
 
-	SetCurrent(*glcontext);
+	makeGLCanvasCurrent(*this);
+
 	// Init OpenGL once, but after SetCurrent
 	if (!glInitialized)
 	{
@@ -392,7 +393,7 @@ void klsGLCanvas::wxOnEraseBackground(wxEraseEvent& WXUNUSED(event))
 void klsGLCanvas::wxOnSize(wxSizeEvent& event)
 {
 	if (this->HasFocus()) {
-		SetCurrent(*glcontext);
+		makeGLCanvasCurrent(*this);
 		Refresh();
 	}
 }
