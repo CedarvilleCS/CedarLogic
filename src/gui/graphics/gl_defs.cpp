@@ -91,14 +91,15 @@ wxImage finishRenderToWxImage() {
 
 	// Make room for data about to be read from the render buffer.
 	// The '3' is for RGB where each channel is 1 byte.
-	std::vector<unsigned char> pixels(rbWidth * rbHeight * 3);
+	// malloc is used because that's what wxImage wants.
+	unsigned char *pixels = (unsigned char *)malloc(rbWidth * rbHeight * 3);
 
 	// Make sure the correct render buffer is being read from.
 	// (in startRenderToWxBitmap, we attach rb to fb through color attachment 0)
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 
 	// Copy row-major, bottom-to-top, rgb, 24bit, pixels into the data vector.
-	glReadPixels(0, 0, rbWidth, rbHeight, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
+	glReadPixels(0, 0, rbWidth, rbHeight, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
 	// Return to the normal framebuffer for this context.
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -107,17 +108,19 @@ wxImage finishRenderToWxImage() {
 	glDeleteFramebuffers(1, &fb);
 	glDeleteRenderbuffers(1, &rb);
 
-	wxImage result;
-	result.Create(pixels.data(), wxBitmapType::wxBITMAP_TYPE_ANY, rbWidth, rbHeight);
+	// Flip rows so the image is not upside down.
+	for (int row = 0; row < rbHeight / 2; row++) {
 
-	
+		unsigned char *ra = pixels + row * rbWidth * 3;
+		unsigned char *rb = pixels + (rbHeight - row - 1) * rbWidth * 3;
 
+		for (int col = 0; col < rbWidth * 3; col++) {
 
-	for (int row = 0; row < rbHeight; row++) {
-		for (int col = 0; col < rbWidth; col++) {
-			result.GetData()[row * rbWidth + col] = pixels[row *rbWidth + col];
+			std::swap(ra, rb);
+			ra++;
+			rb++;
 		}
 	}
 
-	return result;
+	return wxImage(/*rbWidth, rbHeight, pixels*/);
 }
