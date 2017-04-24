@@ -27,6 +27,8 @@
 #include "../../version.h"
 #include "gui\dialog\ColorSettingsDialog.h"
 
+#define TEMP_FILE (string)openedFilename+".temp"
+
 DECLARE_APP(MainApp)
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
@@ -255,26 +257,30 @@ movewire 7 hsegment 1 48,-18.5,49,-18.5 connection 6 OUT connection 11 IN_0  don
 		doOpenFile = (cmdFilename.size() > 0);
 		this->openedFilename = cmdFilename;
 
-		if (ifstream((string)openedFilename+".temp")) {
+		if (ifstream(TEMP_FILE)) {
 			wxMessageDialog dialog(this, "It seems there might have been a crash associated with this file.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 			if (dialog.ShowModal() == wxID_YES)
 			{
 				doOpenFile = false;
-				load((string)openedFilename + ".temp");
-				this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
+				load(TEMP_FILE);
 			}
-			removeTempFile();
+			else {
+				doOpenFile = false;
+				load(TEMP_FILE);
+			}
+			this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
+			removeFile(TEMP_FILE);
 		}
-		else if (ifstream(CRASH_FILENAME)) {
+		else if (ifstream(UNNAMED_FILE)) {
 			wxMessageDialog dialog(this, "It seems like there may have been a crash.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 			if (dialog.ShowModal() == wxID_YES)
 			{
 				doOpenFile = false;
-				openedFilename = "Recovered File";
-				load(CRASH_FILENAME);
+				openedFilename = "";
+				load(UNNAMED_FILE);
 				this->SetTitle(VERSION_TITLE() + " - " + "Recovered File");
 			}
-			remove(CRASH_FILENAME.c_str());
+			removeFile(UNNAMED_FILE);
 		}
 
 		autoSaveThread *autoThread = CreateSaveThread();
@@ -555,7 +561,8 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	resumeTimers(20);
 
 	if (destroy && !isBlackBox) {
-		removeTempFile();
+		removeFile(TEMP_FILE);
+		removeFile(UNNAMED_FILE);
 	}
 	else {
 		handlingEvent = false;
@@ -623,7 +630,7 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	currentCanvas = canvases[0];
 	currentCanvas->Update(); // Render();
 	this->SetTitle(VERSION_TITLE()); // KAS
-	removeTempFile();
+	removeFile(TEMP_FILE);
     openedFilename = "";
 
 	resumeTimers(20);
@@ -651,6 +658,9 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	
 	pauseTimers();
 
+	removeFile(TEMP_FILE);
+	removeFile(UNNAMED_FILE);
+
 	wxString caption = "Open a circuit";
 	wxString wildcard = "Circuit files (*.cdl)|*.cdl";
 	wxString defaultFilename = "";
@@ -660,7 +670,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		lastDirectory = dialog.GetDirectory();
-		if (!(ifstream((string)openedFilename + ".temp"))) {
+		if (!(ifstream(dialog.GetPath().ToStdString() + ".temp"))) {
 			loadCircuitFile(dialog.GetPath().ToStdString());
 		}
 		else {
@@ -674,7 +684,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 				loadCircuitFile(dialog.GetPath().ToStdString());
 			}
 		}
-		
+		this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
 	}
 	
     currentCanvas->Update(); // Render();
@@ -694,6 +704,9 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 void MainFrame::loadCircuitFile( string fileName ){
 	wxString path = fileName;
 	
+	removeFile(TEMP_FILE);
+	removeFile(UNNAMED_FILE);
+
 	openedFilename = path;
 	this->SetTitle(VERSION_TITLE() + " - " + path );
 	
@@ -736,8 +749,6 @@ void MainFrame::loadCircuitFile( string fileName ){
 	currentCanvas->setMinimap(miniMap);
 	mainSizer->Show(canvasBook);
 	currentCanvas->SetFocus();*/
-
-	removeTempFile();
 }
 
 void MainFrame::OnSave(wxCommandEvent& event) {
@@ -757,7 +768,8 @@ void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	dialog.SetDirectory(lastDirectory);
 	if (dialog.ShowModal() == wxID_OK) {
-		removeTempFile();
+		removeFile(TEMP_FILE);
+		removeFile(UNNAMED_FILE);
 		wxString path = dialog.GetPath();
 		openedFilename = path;
 		this->SetTitle(VERSION_TITLE() + " - " + path );
@@ -1121,10 +1133,10 @@ void MainFrame::resumeTimers(int at) {
 
 void MainFrame::autosave() {
 	if (openedFilename == "") {
-		save(CRASH_FILENAME);
+		save(UNNAMED_FILE);
 	}
 	else {
-		save((string)openedFilename + ".temp");
+		save(TEMP_FILE);
 	}
 	
 }
@@ -1155,14 +1167,8 @@ bool MainFrame::fileIsDirty() {
 	return commandProcessor->IsDirty();
 }
 
-void MainFrame::removeTempFile() {
-	if (openedFilename == "") {
-		string tempFilename = (openedFilename + ".temp");
-		remove(tempFilename.c_str());
-	}
-	else {
-		remove(CRASH_FILENAME.c_str());
-	}
+void MainFrame::removeFile(const string &filename) {
+	remove(filename.c_str());
 }
 
 bool MainFrame::isHandlingEvent() {

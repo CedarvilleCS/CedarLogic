@@ -132,7 +132,7 @@ public:
 	//Julian: Added functions to help with auto save functionality
 	void autosave();
 	bool fileIsDirty();
-	void removeTempFile();
+	void removeFile(const string &filename);
 	bool isHandlingEvent();
 	void lock();
 	void unlock();
@@ -178,7 +178,7 @@ private:
 	wxString openedFilename;
 
 	bool handlingEvent; //Julian: Prevents autosaving from occuring during an open/new/saveas/etc...
-	const string CRASH_FILENAME = "crashfile.temp"; //Julian: Filename to check.
+	const string UNNAMED_FILE = "circuit.cdl.temp"; //Julian: Filename to check.
 	
 	wxSlider* timeStepModSlider;
 	wxStaticText* timeStepModVal;
