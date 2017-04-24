@@ -19,6 +19,7 @@
 
 #include "common.h"
 #include "float.h"
+#include "gui/graphics/gl_text.h"
 
 // Plain-Old-Data for gate hotspot information.
 // Some of the data is for the simulator, some is for the gui, some is for both.
@@ -107,6 +108,9 @@ struct LibraryGate {
 
 	// All gate line segments.
 	std::vector<LibraryGateLine> shape;
+
+	// Text to draw on gates.
+	std::vector<gl_text> labels;
 
 	// The parameters to be listed in the "settings dialog".
 	std::vector<LibraryGateDialogParamter> dlgParams;

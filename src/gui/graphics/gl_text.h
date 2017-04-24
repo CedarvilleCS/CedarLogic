@@ -67,6 +67,10 @@ public:
 	// Set the scale factor by setting a text height and aspect ratio (w / h).
 	// NOTE: You can't get these values back from this class, or any direct scale info.
 	void setSize( GLdouble textHeight, GLdouble aspect = 1.0 );
+
+	void setRotation(float rotation) {
+		this->rotation = rotation;
+	}
 	
 	// Get and set the text string.
 	string getText( void ) { return textString; };
@@ -84,6 +88,9 @@ private:
 
 	// The text string to be displayed:	
 	string textString;
+
+	// Text rotation.
+	float rotation;
 	
 	// The font loading initialization flag:
 	static bool fontIsLoaded;
