@@ -263,13 +263,9 @@ movewire 7 hsegment 1 48,-18.5,49,-18.5 connection 6 OUT connection 11 IN_0  don
 			{
 				doOpenFile = false;
 				load(TEMP_FILE);
+				this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
+				removeFile(TEMP_FILE);
 			}
-			else {
-				doOpenFile = false;
-				load(TEMP_FILE);
-			}
-			this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
-			removeFile(TEMP_FILE);
 		}
 		else if (ifstream(UNNAMED_FILE)) {
 			wxMessageDialog dialog(this, "It seems like there may have been a crash.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
@@ -670,14 +666,15 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		lastDirectory = dialog.GetDirectory();
-		if (!(ifstream(dialog.GetPath().ToStdString() + ".temp"))) {
+		openedFilename = dialog.GetPath().ToStdString();
+		if (!(ifstream(TEMP_FILE))) {
 			loadCircuitFile(dialog.GetPath().ToStdString());
 		}
 		else {
 			wxMessageDialog crashDialog(this, "It seems there might have been a crash associated with this file.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 			if (crashDialog.ShowModal() == wxID_YES) {
 				string oldFilename = openedFilename;
-				loadCircuitFile(dialog.GetPath().ToStdString() + ".temp");
+				loadCircuitFile(TEMP_FILE);
 				openedFilename = oldFilename;
 			}
 			else {
@@ -706,9 +703,6 @@ void MainFrame::loadCircuitFile( string fileName ){
 	
 	removeFile(TEMP_FILE);
 	removeFile(UNNAMED_FILE);
-
-	openedFilename = path;
-	this->SetTitle(VERSION_TITLE() + " - " + path );
 	
 	logicThread->clearAllMessages();
 	
