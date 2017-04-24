@@ -98,6 +98,9 @@ wxImage finishRenderToWxImage() {
 	// (in startRenderToWxBitmap, we attach rb to fb through color attachment 0)
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 
+	// Pack pixels read from GPU.
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
 	// Copy row-major, bottom-to-top, rgb, 24bit, pixels into the data vector.
 	glReadPixels(0, 0, rbWidth, rbHeight, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
@@ -116,11 +119,11 @@ wxImage finishRenderToWxImage() {
 
 		for (int col = 0; col < rbWidth * 3; col++) {
 
-			std::swap(ra, rb);
+			std::swap(*ra, *rb);
 			ra++;
 			rb++;
 		}
 	}
 
-	return wxImage(/*rbWidth, rbHeight, pixels*/);
+	return wxImage(rbWidth, rbHeight, pixels);
 }

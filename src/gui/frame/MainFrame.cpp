@@ -952,7 +952,7 @@ wxBitmap MainFrame::getBitmap(bool withGrid) {
 
 	// render the image
 	wxSize imageSize = currentCanvas->GetClientSize();
-	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth() * 2, imageSize.GetHeight() * 2, 32);
+	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth(), imageSize.GetHeight(), 32);
 	wxBitmap circuitBitmap(circuitImage);
 
 	// restore grid display setting

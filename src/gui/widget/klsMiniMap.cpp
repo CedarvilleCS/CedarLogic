@@ -99,11 +99,8 @@ void klsMiniMap::setViewport() {
 	glLoadIdentity();
 }
 
-// Print the canvas contents to a bitmap:
 void klsMiniMap::generateImage() {
 	
-	
-
 	wxSize sz = GetClientSize();
 
 	// Start drawing off-screen.
@@ -116,22 +113,11 @@ void klsMiniMap::generateImage() {
 	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
 	ColorPalette::setColor(ColorPalette::GateShape);
 
-	/*
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-	glEnable(GL_LINE_SMOOTH);
-
-	// Load the font texture
-	gl_text::loadFont(wxGetApp().appSettings.textFontFile);
-	*/
-
 	// Do the rendering here.
 	renderMap();
 
 	// Finish drawing offscreen.
 	mapImage = finishRenderToWxImage();
-
-	
 }
 
 void klsMiniMap::renderMap() {
