@@ -1251,12 +1251,11 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 
 void MainFrame::OnBlackBox(wxCommandEvent& event) {
 
-	/*
 	child = new MainFrame("Black Box Editor", "", this);
 	child->Show(true);
 	wxGetApp().SetTopWindow(child);
 	this->Disable();
-	*/
+
 }
 
 void MainFrame::OnApply(wxCommandEvent& event) {
