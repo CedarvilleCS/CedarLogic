@@ -91,7 +91,7 @@ void MainApp::loadSettings() {
 	if (!iniFile) {
 		// set defaults
 		appSettings.gateLibFile = pathToExe + "res/cl_gatedefs.xml";
-		appSettings.helpFile = pathToExe + "res/KLS_Logic.chm";
+		appSettings.helpFile = pathToExe + "res/CedarLogic_Help.chm";
 		appSettings.textFontFile = pathToExe + "res/arial.glf";
 		appSettings.mainFrameWidth = appSettings.mainFrameHeight = 600;
 		appSettings.mainFrameLeft = appSettings.mainFrameTop = 20;
