@@ -25,7 +25,7 @@
 #include "../commands.h"
 #include "../thread/autoSaveThread.h"
 #include "../../version.h"
-#include "gui\dialog\ColorSettingsDialog.h"
+#include "gui/dialog/ColorSettingsDialog.h"
 
 #define TEMP_FILE (string)openedFilename+".temp"
 
@@ -179,7 +179,6 @@ movewire 7 hsegment 1 48,-18.5,49,-18.5 connection 6 OUT connection 11 IN_0  don
 
 	mainSizer = new wxBoxSizer( wxHORIZONTAL );
 	wxBoxSizer* leftPaneSizer = new wxBoxSizer( wxVERTICAL );
-	wxSize sz = this->GetClientSize();
 	
 	// now a gate palette for the library
 	gatePalette = new PaletteFrame(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
@@ -983,7 +982,7 @@ wxBitmap MainFrame::getBitmap(bool withGrid) {
 
 	// render the image
 	wxSize imageSize = currentCanvas->GetClientSize();
-	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth() * 2, imageSize.GetHeight() * 2, 32);
+	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth(), imageSize.GetHeight(), 32);
 	wxBitmap circuitBitmap(circuitImage);
 
 	// restore grid display setting

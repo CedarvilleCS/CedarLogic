@@ -145,7 +145,6 @@ public:
 private:
 
 	bool isBlackBox;
-	MainFrame* child;
 
     // helper function - creates a new thread (but doesn't run it)
 	threadLogic *CreateThread();
@@ -160,7 +159,6 @@ private:
 	
 	wxCommandProcessor* commandProcessor;
 
-	wxPanel* mainPanel;
 	wxToolBar* toolBar;
 	wxMenuBar* menuBar;
 

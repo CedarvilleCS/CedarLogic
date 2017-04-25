@@ -12,6 +12,9 @@
 #include "wx/msgdlg.h"
 #include "../MainApp.h"
 #include "gui/command/cmdSetParams.h"
+#include "gui/command/cmdPasteBlock.h"
+#include "quoted.h"
+#include "gui/GUICircuit.h"
 
 // Included for sin and cos in <circle> tags:
 #include <cmath>
@@ -319,6 +322,11 @@ string GateLibrary::getGateGUIType(string gateName) {
 
 void GateLibrary::defineBlackBox(const std::string &copyText) {
 
+	// Store text as an escaped, quoted, string.
+	std::ostringstream escapedTextStream;
+	escapedTextStream << parse::quoted(copyText);
+	std::string escapedText = escapedTextStream.str();
+
 	LibraryGate blackBox;
 
 	blackBox.gateName = "BlackBox#" + std::to_string(numDefinedBlackBoxes);
@@ -326,48 +334,61 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 	blackBox.caption = blackBox.gateName;
 	blackBox.guiType = "BlackBox";
 	blackBox.logicType = "BLACK_BOX";
-	blackBox.guiParams.insert({ "internals", copyText });
+	blackBox.guiParams.insert({ "internals", escapedText });
 
 	// Get names for pins.
-	std::vector<std::string> pinNames;
-	std::istringstream copyStream(copyText);
-	std::string lineText;
-	while (std::getline(copyStream, lineText, '\n')) {
+	std::vector<std::pair<double, std::string>> pinNamesAndRotation;
+	std::string tempText = copyText;
+	GUICircuit tempCircuit;
+	cmdPasteBlock paste(tempText, false, &tempCircuit, nullptr);  // don't actually use this command.
+	for (auto *command : paste.getCommands()) {
 
-		if (lineText.substr(0, 9) == "setparams") {
+		if (command->GetName() == "Set Parameter") {
 
-			cmdSetParams cmd(lineText);
-			for (const auto &p : cmd.getLogicParameterMap()) {
+			cmdSetParams *paramSetter = static_cast<cmdSetParams *>(command);
+
+			double rotation = 0.0;
+			for (auto &p : paramSetter->getGuiParameterMap()) {
+				if (p.first == "ANGLE") {
+					rotation = atof(p.second.c_str());
+				}
+			}
+			for (auto &p : paramSetter->getLogicParameterMap()) {
 
 				if (p.first == "JUNCTION_ID") {
-					pinNames.push_back(p.second);
+					pinNamesAndRotation.push_back({ rotation, p.second });
 				}
 			}
 		}
 	}
 
+	// TODO:
+	// subroutine takes lefts, rights, tops, bottoms.
+	// returns gate size, hotspot positions.
+	// hotspots get added.
+
 	// Make shape.
 	auto &lines = blackBox.shape;
-	float halfSide = (pinNames.size() + 1) / 2.0f;
+	float halfSide = (pinNamesAndRotation.size() + 1) / 2.0f;
 	lines.push_back({ -halfSide, halfSide, halfSide, halfSide });
 	lines.push_back({ -halfSide, -halfSide, halfSide, -halfSide });
 	lines.push_back({ -halfSide, halfSide, -halfSide, -halfSide });
 	lines.push_back({ halfSide, halfSide, halfSide, -halfSide });
-	for (int i = 0; i < (int)pinNames.size(); i++) {
+	for (int i = 0; i < (int)pinNamesAndRotation.size(); i++) {
 
 		lines.push_back({ -halfSide - 1, halfSide - 1 - i, -halfSide, halfSide - 1 - i });
 	}
 
 	// Add hotspots.
 	auto &hotspots = blackBox.hotspots;
-	for (int i = 0; i < (int)pinNames.size(); i++) {
+	for (int i = 0; i < (int)pinNamesAndRotation.size(); i++) {
 
 		LibraryGateHotspot h;
 		h.busLines = 1;
 		h.isInput = true;
 		h.isInverted = false;
 		h.logicEInput = "";
-		h.name = pinNames[i];
+		h.name = pinNamesAndRotation[i].second;
 		h.x = -halfSide - 1;
 		h.y = halfSide - 1 - i;
 

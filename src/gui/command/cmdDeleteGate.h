@@ -10,9 +10,9 @@ public:
 
 	virtual ~cmdDeleteGate();
 
-	bool Do();
+	bool Do() override;
 
-	bool Undo();
+	bool Undo() override;
 
 private:
 		IDType gateId;
