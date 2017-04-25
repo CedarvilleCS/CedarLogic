@@ -12,6 +12,9 @@
 #include "wx/msgdlg.h"
 #include "../MainApp.h"
 #include "gui/command/cmdSetParams.h"
+#include "gui/command/cmdPasteBlock.h"
+#include "quoted.h"
+#include "gui/GUICircuit.h"
 
 // Included for sin and cos in <circle> tags:
 #include <cmath>
@@ -319,6 +322,11 @@ string GateLibrary::getGateGUIType(string gateName) {
 
 void GateLibrary::defineBlackBox(const std::string &copyText) {
 
+	// Store text as an escaped, quoted, string.
+	std::ostringstream escapedTextStream;
+	escapedTextStream << parse::quoted(copyText);
+	std::string escapedText = escapedTextStream.str();
+
 	LibraryGate blackBox;
 
 	blackBox.gateName = "BlackBox#" + std::to_string(numDefinedBlackBoxes);
@@ -326,18 +334,20 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 	blackBox.caption = blackBox.gateName;
 	blackBox.guiType = "BlackBox";
 	blackBox.logicType = "BLACK_BOX";
-	blackBox.guiParams.insert({ "internals", copyText });
+	blackBox.guiParams.insert({ "internals", escapedText });
 
 	// Get names for pins.
 	std::vector<std::string> pinNames;
-	std::istringstream copyStream(copyText);
-	std::string lineText;
-	while (std::getline(copyStream, lineText, '\n')) {
+	std::string tempText = copyText;
+	GUICircuit tempCircuit;
+	cmdPasteBlock paste(tempText, false, &tempCircuit, nullptr);  // don't actually use this command.
+	for (auto *command : paste.getCommands()) {
 
-		if (lineText.substr(0, 9) == "setparams") {
+		if (command->GetName() == "Set Parameter") {
 
-			cmdSetParams cmd(lineText);
-			for (const auto &p : cmd.getLogicParameterMap()) {
+			cmdSetParams *paramSetter = static_cast<cmdSetParams *>(command);
+
+			for (auto &p : paramSetter->getLogicParameterMap()) {
 
 				if (p.first == "JUNCTION_ID") {
 					pinNames.push_back(p.second);
