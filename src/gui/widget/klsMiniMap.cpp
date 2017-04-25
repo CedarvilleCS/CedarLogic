@@ -102,22 +102,27 @@ void klsMiniMap::setViewport() {
 void klsMiniMap::generateImage() {
 	
 	wxSize sz = GetClientSize();
+    
+    if (isGLContextGood()) {
+        // Start drawing off-screen.
+        startRenderToWxImage(sz.x, sz.y);
 
-	// Start drawing off-screen.
-	startRenderToWxImage(sz.x, sz.y);
+        setViewport();
 
-	setViewport();
+        glViewport(0, 0, sz.GetWidth(), sz.GetHeight());
 
-	glViewport(0, 0, sz.GetWidth(), sz.GetHeight());
+        ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+        ColorPalette::setColor(ColorPalette::GateShape);
 
-	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
-	ColorPalette::setColor(ColorPalette::GateShape);
+        // Do the rendering here.
+        renderMap();
 
-	// Do the rendering here.
-	renderMap();
-
-	// Finish drawing offscreen.
-	mapImage = finishRenderToWxImage();
+        // Finish drawing offscreen.
+        mapImage = finishRenderToWxImage();
+    }
+    else {
+        mapImage = wxImage(sz.x, sz.y);
+    }
 }
 
 void klsMiniMap::renderMap() {

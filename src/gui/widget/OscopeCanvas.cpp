@@ -33,8 +33,6 @@ OscopeCanvas::OscopeCanvas(wxWindow *parent, GUICircuit* gCircuit, wxWindowID id
 	const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 	: wxGLCanvas(parent, id, nullptr, pos, size, style | wxFULL_REPAINT_ON_RESIZE | wxSUNKEN_BORDER) {
 
-	createGLContext(*this);
-
 	this->gCircuit = gCircuit;
 	m_init = false;
 	parentFrame = (OscopeFrame*)parent;
@@ -378,18 +376,23 @@ void OscopeCanvas::UpdateMenu()
 wxImage OscopeCanvas::generateImage() {
 	
 	wxSize sz = GetClientSize();
+    
+    if (isGLContextGood()) {
+        startRenderToWxImage(sz.GetWidth(), sz.GetHeight());
 
-	startRenderToWxImage(sz.GetWidth(), sz.GetHeight());
+        // Set the bitmap clear color:
+        ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+        ColorPalette::setColor(ColorPalette::GateShape);
 
-	// Set the bitmap clear color:
-	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
-	ColorPalette::setColor(ColorPalette::GateShape);
+        // Do the rendering here.
+        OnRender();
 
-	// Do the rendering here.
-	OnRender();
+        // Flush the OpenGL buffer to make sure the rendering has happened:	
+        glFlush();
 
-	// Flush the OpenGL buffer to make sure the rendering has happened:	
-	glFlush();
-	
-	return finishRenderToWxImage();
+        return finishRenderToWxImage();
+    }
+    else {
+        return wxImage(sz.GetWidth(), sz.GetHeight());
+    }
 }

@@ -17,14 +17,13 @@ void defineGLLists();
 
 
 
+bool isGLContextGood();
+
 // Create an opengl context to be used with wxGLCanvases.
 // This can be called repeatedly.
-// This does not make the given canvas current.
 void createGLContext(wxGLCanvas &canvas);
 
-// Get the context created by createGLContext.
-// To start drawing to a glCanvas, use context->setCurrent(canvas).
-void makeGLCanvasCurrent(const wxGLCanvas &canvas);
+void makeGLCanvasCurrent(wxGLCanvas &canvas);
 
 // This creates a framebuffer and sets it as active.
 // glBegin() still needs to be called.

@@ -24,8 +24,6 @@ using namespace std;
 gateImage::gateImage(const string &gateName, wxWindow *parent) :
 	wxGLCanvas(parent, wxID_ANY, nullptr, wxDefaultPosition, wxSize(IMAGESIZE, IMAGESIZE), wxFULL_REPAINT_ON_RESIZE, "") {
 
-	createGLContext(*this);
-
 	mouseHover = false;
 
 	this->gateName = gateName;

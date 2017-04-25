@@ -45,8 +45,6 @@ klsGLCanvas::klsGLCanvas(wxWindow *parent, const wxString& name, wxWindowID id,
 	const wxPoint& pos, const wxSize& size, long style) :
 	wxGLCanvas(parent, id, nullptr, pos, size, style | wxFULL_REPAINT_ON_RESIZE | wxWANTS_CHARS, name) {
 
-	createGLContext(*this);
-
 	// Zoom and OpenGL coordinate of upper-left corner of this canvas:
 	viewZoom = DEFAULT_ZOOM;
 	panX = panY = 0.0;
@@ -107,22 +105,27 @@ void klsGLCanvas::updateMiniMap() {
 
 // Print the canvas contents to a bitmap:
 wxImage klsGLCanvas::renderToImage(unsigned long width, unsigned long height, unsigned long colorDepth, bool noColor) {
+    
+    if (isGLContextGood()) {
+        startRenderToWxImage(width, height);
 
-	startRenderToWxImage(width, height);
+        // Setup the viewport for rendering:
+        reclaimViewport();
 
-	// Setup the viewport for rendering:
-	reclaimViewport();
+        // Reset the glViewport to the size of the bitmap:
+        glViewport(0, 0, (GLint)width, (GLint)height);
 
-	// Reset the glViewport to the size of the bitmap:
-	glViewport(0, 0, (GLint)width, (GLint)height);
+        ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+        ColorPalette::setColor(ColorPalette::GateShape);
 
-	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
-	ColorPalette::setColor(ColorPalette::GateShape);
-	
-	// Do the rendering here.
-	klsGLCanvasRender(noColor);
+        // Do the rendering here.
+        klsGLCanvasRender(noColor);
 
-	return finishRenderToWxImage();
+        return finishRenderToWxImage();
+    }
+    else {
+        return wxImage(width, height);
+    }
 }
 
 

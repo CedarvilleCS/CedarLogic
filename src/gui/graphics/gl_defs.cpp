@@ -41,6 +41,10 @@ namespace {
 	int rbHeight;  // Render area height
 }
 
+bool isGLContextGood() {
+    return context != nullptr;
+}
+
 void createGLContext(wxGLCanvas &canvas) {
 	
 	if (context == nullptr) {
@@ -63,7 +67,8 @@ void createGLContext(wxGLCanvas &canvas) {
 	}
 }
 
-void makeGLCanvasCurrent(const wxGLCanvas &canvas) {
+void makeGLCanvasCurrent(wxGLCanvas &canvas) {
+    createGLContext(canvas);
 	context->SetCurrent(canvas);
 }
 
