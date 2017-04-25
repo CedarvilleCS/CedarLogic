@@ -291,4 +291,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\CedarLogic_Help.chm" />
+  </ItemGroup>
 </Project>
