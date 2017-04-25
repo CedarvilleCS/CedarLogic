@@ -141,10 +141,14 @@ public:
 
 	//Julian: Added to simplify exporting and copying to clipboard
 	wxBitmap getBitmap(bool withGrid);
+
+	string getTempFileName();
+	string getUnnamedFile();
 	
 private:
 
 	bool isBlackBox;
+	MainFrame* child;
 
     // helper function - creates a new thread (but doesn't run it)
 	threadLogic *CreateThread();
@@ -174,6 +178,7 @@ private:
 	bool doOpenFile;
 	wxString lastDirectory;
 	wxString openedFilename;
+	string currentUnnamedFile;
 
 	bool handlingEvent; //Julian: Prevents autosaving from occuring during an open/new/saveas/etc...
 	const string UNNAMED_FILE = "circuit.cdl.temp"; //Julian: Filename to check.

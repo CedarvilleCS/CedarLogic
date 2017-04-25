@@ -27,8 +27,6 @@
 #include "../../version.h"
 #include "gui/dialog/ColorSettingsDialog.h"
 
-#define TEMP_FILE (string)openedFilename+".temp"
-
 DECLARE_APP(MainApp)
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
@@ -91,6 +89,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *paren
     // set the frame icon
     //SetIcon(wxICON(sample));
 	currentCanvas = nullptr;
+	child = nullptr;
 	isBlackBox = (parent != nullptr);
 
 	// Set default locations
@@ -256,27 +255,18 @@ movewire 7 hsegment 1 48,-18.5,49,-18.5 connection 6 OUT connection 11 IN_0  don
 		doOpenFile = (cmdFilename.size() > 0);
 		this->openedFilename = cmdFilename;
 
-		if (ifstream(TEMP_FILE)) {
+		if (ifstream(getTempFileName())) {
 			wxMessageDialog dialog(this, "It seems there might have been a crash associated with this file.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 			if (dialog.ShowModal() == wxID_YES)
 			{
 				doOpenFile = false;
-				load(TEMP_FILE);
+				load(getTempFileName());
 				this->SetTitle(VERSION_TITLE() + " - " + openedFilename);
-				removeFile(TEMP_FILE);
+				removeFile(getTempFileName());
 			}
 		}
-		else if (ifstream(UNNAMED_FILE)) {
-			wxMessageDialog dialog(this, "It seems like there may have been a crash.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
-			if (dialog.ShowModal() == wxID_YES)
-			{
-				doOpenFile = false;
-				openedFilename = "";
-				load(UNNAMED_FILE);
-				this->SetTitle(VERSION_TITLE() + " - " + "Recovered File");
-			}
-			removeFile(UNNAMED_FILE);
-		}
+
+		currentUnnamedFile = wxGetUserHome().ToStdString() + "/" + std::to_string(time(nullptr)) + ".cdl.temp"; //Set unnamed filename for autosaving
 
 		autoSaveThread *autoThread = CreateSaveThread();
 		if (autoThread->Run() != wxTHREAD_NO_ERROR)
@@ -556,8 +546,8 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	resumeTimers(20);
 
 	if (destroy && !isBlackBox) {
-		removeFile(TEMP_FILE);
-		removeFile(UNNAMED_FILE);
+		removeFile(getTempFileName());
+		removeFile(getUnnamedFile());
 	}
 	else {
 		handlingEvent = false;
@@ -625,8 +615,10 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 	currentCanvas = canvases[0];
 	currentCanvas->Update(); // Render();
 	this->SetTitle(VERSION_TITLE()); // KAS
-	removeFile(TEMP_FILE);
+	removeFile(getTempFileName());
+	removeFile(getUnnamedFile());
     openedFilename = "";
+	currentUnnamedFile = wxGetUserHome().ToStdString() + "/" + std::to_string(time(nullptr)) + ".cdl.temp";
 
 	resumeTimers(20);
 
@@ -653,8 +645,8 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	
 	pauseTimers();
 
-	removeFile(TEMP_FILE);
-	removeFile(UNNAMED_FILE);
+	removeFile(getTempFileName());
+	removeFile(getUnnamedFile());
 
 	wxString caption = "Open a circuit";
 	wxString wildcard = "Circuit files (*.cdl)|*.cdl";
@@ -666,14 +658,14 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	if (dialog.ShowModal() == wxID_OK) {
 		lastDirectory = dialog.GetDirectory();
 		openedFilename = dialog.GetPath().ToStdString();
-		if (!(ifstream(TEMP_FILE))) {
+		if (!(ifstream(getTempFileName()))) {
 			loadCircuitFile(dialog.GetPath().ToStdString());
 		}
 		else {
 			wxMessageDialog crashDialog(this, "It seems there might have been a crash associated with this file.\nWould you like to try to recover your work?", "Recover File", wxYES_DEFAULT | wxYES_NO | wxICON_QUESTION);
 			if (crashDialog.ShowModal() == wxID_YES) {
 				string oldFilename = openedFilename;
-				loadCircuitFile(TEMP_FILE);
+				loadCircuitFile(getTempFileName());
 				openedFilename = oldFilename;
 			}
 			else {
@@ -700,8 +692,8 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 void MainFrame::loadCircuitFile( string fileName ){
 	wxString path = fileName;
 	
-	removeFile(TEMP_FILE);
-	removeFile(UNNAMED_FILE);
+	removeFile(getTempFileName());
+	removeFile(getUnnamedFile());
 	
 	logicThread->clearAllMessages();
 	
@@ -761,8 +753,8 @@ void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	dialog.SetDirectory(lastDirectory);
 	if (dialog.ShowModal() == wxID_OK) {
-		removeFile(TEMP_FILE);
-		removeFile(UNNAMED_FILE);
+		removeFile(getTempFileName());
+		removeFile(getUnnamedFile());
 		wxString path = dialog.GetPath();
 		openedFilename = path;
 		this->SetTitle(VERSION_TITLE() + " - " + path );
@@ -992,6 +984,14 @@ wxBitmap MainFrame::getBitmap(bool withGrid) {
 	return circuitBitmap;
 }
 
+string MainFrame::getTempFileName() {
+	return (string)openedFilename + ".temp";
+}
+
+string MainFrame::getUnnamedFile() {
+	return currentUnnamedFile;
+}
+
 void MainFrame::updateMenuOptions()
 {
 	menuBar->Check(View_Gridline, wxGetApp().appSettings.gridlineVisible);
@@ -1126,10 +1126,10 @@ void MainFrame::resumeTimers(int at) {
 
 void MainFrame::autosave() {
 	if (openedFilename == "") {
-		save(UNNAMED_FILE);
+		save(getUnnamedFile());
 	}
 	else {
-		save(TEMP_FILE);
+		save(getTempFileName());
 	}
 	
 }
