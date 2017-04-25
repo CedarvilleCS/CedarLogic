@@ -11,6 +11,7 @@
 #ifndef KLS_GL_CANVAS_H_
 #define KLS_GL_CANVAS_H_
 
+#include "gui/graphics/gl_defs.h"
 #include <cmath>
 #include <map>
 #include <vector>
@@ -18,8 +19,8 @@
 #include <sstream>
 #include <string>
 #include <deque>
+#include <wx/timer.h>
 #include "wx/glcanvas.h"
-#include "gui/graphics/gl_defs.h"
 
 class klsMiniMap;
 
@@ -182,8 +183,6 @@ public:
 protected:
 	// The minimap associated with this canvas
 	klsMiniMap* minimap;
-
-	wxGLContext* glcontext;
 
 private:
 	wxPoint mouseScreenCoords;

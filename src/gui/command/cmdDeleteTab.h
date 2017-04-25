@@ -2,6 +2,7 @@
 #pragma once
 #include "klsCommand.h"
 #include <stack>
+#include <vector>
 
 class wxAuiNotebook;
 
@@ -13,9 +14,9 @@ public:
 
 	virtual ~cmdDeleteTab();
 
-	bool Do();
+	bool Do() override;
 
-	bool Undo();
+	bool Undo() override;
 
 protected:
 	std::vector < unsigned long > gates;

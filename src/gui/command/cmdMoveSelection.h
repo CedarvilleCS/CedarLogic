@@ -16,9 +16,9 @@ public:
 		vector<WireState> &preMoveWire, float startX, float startY,
 		float endX, float endY);
 
-	bool Do();
+	bool Do() override;
 
-	bool Undo();
+	bool Undo() override;
 
 	vector<klsCommand *> * getConnections();
 

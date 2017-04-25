@@ -8,9 +8,9 @@ public:
 	cmdMoveGate(GUICircuit* gCircuit, unsigned long gid, float startX,
 		float startY, float endX, float endY, bool uW = false);
 
-	bool Do();
+	bool Do() override;
 
-	bool Undo();
+	bool Undo() override;
 
 	virtual std::string toString() const override;
 

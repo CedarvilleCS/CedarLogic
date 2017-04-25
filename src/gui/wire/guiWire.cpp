@@ -8,12 +8,12 @@
    guiWire: GUI representation of wire objects
 *****************************************************************************/
 
+#include "gui/graphics/gl_defs.h"
 #include "guiWire.h"
 #include <cmath>
 #include <stack>
 #include "gui/gate/guiGate.h"
 #include "gui/parse/XMLParser.h"
-#include "gui/graphics/gl_defs.h"
 
 #include "../MainApp.h"
 DECLARE_APP(MainApp)

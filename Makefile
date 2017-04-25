@@ -1,7 +1,7 @@
 
 ### [ App Name ] ====================================================
 
-appName := moose
+appName := CedarLogic
 
 
 
@@ -22,15 +22,15 @@ genApp     :=$(genDirRoot)$(appName)
 
 ### [ Compiler Flags ] ==============================================
 
-cflags += -std=c++11
-#cflags += -Wall
-cflags += -I $(srcDirCpp) -I $(srcDirCpp)tool/
-cflags += $(shell wx-config --cxxflags --libs all)
-
+cflags += -std=c++14
+cflags += -Wall
+cflags += -I $(srcDirCpp)
+cflags += $(shell wx-config --cxxflags)
+cflags += -Wno-potentially-evaluated-expression
 
 ### [ Linker Flags ] ================================================
 
-lflags += -lGL -lGLEW -lGLU
+lflags += -lGL -lGLEW -lGLU $(shell wx-config --libs all)
 
 
 

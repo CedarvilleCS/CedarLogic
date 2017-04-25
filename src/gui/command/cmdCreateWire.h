@@ -1,5 +1,6 @@
 
 #pragma once
+#include <vector>
 #include "klsCommand.h"
 
 class cmdConnectWire;
@@ -15,9 +16,9 @@ public:
 
 	virtual ~cmdCreateWire();
 
-	bool Do();
+	bool Do() override;
 
-	bool Undo();
+	bool Undo() override;
 
 	bool validateBusLines() const;
 

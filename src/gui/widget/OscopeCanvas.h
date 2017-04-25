@@ -60,8 +60,6 @@ public:
 	GUICircuit* gCircuit;
 
 private:
-	wxGLContext *glcontext;
-
 	// Stored values of wire states:
 	map< string, deque< StateType > > stateValues;
 	
