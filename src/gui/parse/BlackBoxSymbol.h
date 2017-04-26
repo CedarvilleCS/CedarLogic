@@ -22,8 +22,17 @@ struct InputData {
 	// Top-left corner of text (before rotation).
 	Point textPosition;
 
+	// Position of junction in schematic.
+	Point originalPosition;
+
 	bool operator<(const InputData &other) const {
-		return name > other.name;
+
+		if (rotation == 0.0) {
+			return originalPosition.y < other.originalPosition.y;
+		}
+		else {
+			return originalPosition.x < other.originalPosition.x;
+		}
 	}
 };
 

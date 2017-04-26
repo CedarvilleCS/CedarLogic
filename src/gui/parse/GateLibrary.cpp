@@ -20,6 +20,7 @@
 // Included for sin and cos in <circle> tags:
 #include <cmath>
 #include <algorithm>
+#include "gui/command/cmdCreateGate.h"
 
 DECLARE_APP(MainApp)
 
@@ -338,27 +339,45 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 	blackBox.logicType = "BLACK_BOX";
 	blackBox.guiParams.insert({ "internals", escapedText });
 
-	// Get names for pins.
-	std::vector<std::pair<double, std::string>> pinNamesAndRotation;
+	// Get pins.
+
+	struct JunctionData {
+		double rotation;
+		std::string name;
+		Point position;
+	};
+
+	// I'm sorry for this paragraph, but I own it. -Tyler J. Drake.
+	// (Written the night before final presentation).
+	std::vector<JunctionData> junctionDatas;
 	std::string tempText = copyText;
 	GUICircuit tempCircuit;
 	cmdPasteBlock paste(tempText, false, &tempCircuit, nullptr);  // don't actually use this command.
+	Point coord;
+	std::string junctionType;
 	for (auto *command : paste.getCommands()) {
 
-		if (command->GetName() == "Set Parameter") {
+		if (command->GetName() == "Create Gate") {
+
+			cmdCreateGate *paramCreater = static_cast<cmdCreateGate *>(command);
+
+			coord = paramCreater->getPosition();
+			junctionType = paramCreater->getGateType();
+		}
+		else if (command->GetName() == "Set Parameter") {
 
 			cmdSetParams *paramSetter = static_cast<cmdSetParams *>(command);
 
 			double rotation = 0.0;
 			for (auto &p : paramSetter->getGuiParameterMap()) {
-				if (p.first == "ANGLE") {
+				if (p.first == "angle") {
 					rotation = atof(p.second.c_str());
 				}
 			}
 			for (auto &p : paramSetter->getLogicParameterMap()) {
 
 				if (p.first == "JUNCTION_ID") {
-					pinNamesAndRotation.push_back({ rotation, p.second });
+					junctionDatas.push_back({ double(((int)rotation + (junctionType == "DE_TO" ? 180 : 0)) % 360), p.second, coord });
 				}
 			}
 		}
@@ -366,19 +385,19 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 
 	// break into sub-vectors based on orientation.
 	InVector left, top, bottom, right;
-	for (auto &p : pinNamesAndRotation) {
+	for (auto &p : junctionDatas) {
 
 		InputData *d;
-		if (p.first == 0.0) {
+		if (p.rotation == 0.0) {
 			left.push_back({});
 			d = &left.back();
 		}
-		else if (p.first == 90.0) {
+		else if (p.rotation == 90.0) {
 			top.push_back({});
 			d = &top.back();
 			d->rotation = 90.0f;
 		}
-		else if (p.first == 180.0) {
+		else if (p.rotation == 180.0) {
 			right.push_back({});
 			d = &right.back();
 		}
@@ -387,7 +406,8 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 			d = &bottom.back();
 			d->rotation = 90.0f;
 		}
-		d->name = p.second;
+		d->name = p.name;
+		d->originalPosition = p.position;
 	}
 
 	// sort alphabetically.

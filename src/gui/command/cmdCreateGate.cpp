@@ -125,3 +125,12 @@ void cmdCreateGate::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas,
 std::vector<klsCommand *> * cmdCreateGate::getConnections() {
 	return &proxconnects;
 }
+
+Point cmdCreateGate::getPosition() const {
+	return { x, y };
+}
+
+
+std::string cmdCreateGate::getGateType() const {
+	return gateType;
+}
