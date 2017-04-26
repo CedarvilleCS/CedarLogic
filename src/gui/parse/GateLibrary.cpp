@@ -15,6 +15,7 @@
 #include "gui/command/cmdPasteBlock.h"
 #include "quoted.h"
 #include "gui/GUICircuit.h"
+#include "BlackBoxSymbol.h"
 
 // Included for sin and cos in <circle> tags:
 #include <cmath>
@@ -410,3 +411,4 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 	wxGetApp().gateNameToLibrary[blackBox.gateName] = "11 - Black Boxes";
 	wxGetApp().libraries["11 - Black Boxes"][blackBox.gateName] = blackBox;
 }
+
