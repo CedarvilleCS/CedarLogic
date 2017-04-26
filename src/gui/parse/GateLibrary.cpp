@@ -19,6 +19,7 @@
 
 // Included for sin and cos in <circle> tags:
 #include <cmath>
+#include <algorithm>
 
 DECLARE_APP(MainApp)
 
@@ -363,46 +364,88 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 		}
 	}
 
-	// TODO:
-	// subroutine takes lefts, rights, tops, bottoms.
-	// returns gate size, hotspot positions.
-	// hotspots get added.
+	// break into sub-vectors based on orientation.
+	InVector left, top, bottom, right;
+	for (auto &p : pinNamesAndRotation) {
 
-	// Make shape.
-	auto &lines = blackBox.shape;
-	float halfSide = (pinNamesAndRotation.size() + 1) / 2.0f;
-	lines.push_back({ -halfSide, halfSide, halfSide, halfSide });
-	lines.push_back({ -halfSide, -halfSide, halfSide, -halfSide });
-	lines.push_back({ -halfSide, halfSide, -halfSide, -halfSide });
-	lines.push_back({ halfSide, halfSide, halfSide, -halfSide });
-	for (int i = 0; i < (int)pinNamesAndRotation.size(); i++) {
-
-		lines.push_back({ -halfSide - 1, halfSide - 1 - i, -halfSide, halfSide - 1 - i });
+		InputData *d;
+		if (p.first == 0.0) {
+			left.push_back({});
+			d = &left.back();
+		}
+		else if (p.first == 90.0) {
+			top.push_back({});
+			d = &top.back();
+			d->rotation = 90.0f;
+		}
+		else if (p.first == 180.0) {
+			right.push_back({});
+			d = &right.back();
+		}
+		else {
+			bottom.push_back({});
+			d = &bottom.back();
+			d->rotation = 90.0f;
+		}
+		d->name = p.second;
 	}
 
-	// Add hotspots.
-	auto &hotspots = blackBox.hotspots;
-	for (int i = 0; i < (int)pinNamesAndRotation.size(); i++) {
+	// sort alphabetically.
+	std::sort(left.begin(), left.end());
+	std::sort(top.begin(), top.end());
+	std::sort(bottom.begin(), bottom.end());
+	std::sort(right.begin(), right.end());
+	
+	// Get shape data.
+	auto size = generateShapeRectangle(left, top, bottom, right);
+	generateShapePins(size, left, top, bottom, right);
+	generateShapeTextPosition(left, top, bottom, right);
+
+	// gen rect.
+	blackBox.shape.push_back(LibraryGateLine(-size.x / 2, -size.y / 2, size.x / 2, -size.y / 2));
+	blackBox.shape.push_back(LibraryGateLine(-size.x / 2, -size.y / 2, -size.x / 2, size.y / 2));
+	blackBox.shape.push_back(LibraryGateLine(size.x / 2, size.y / 2, size.x / 2, -size.y / 2));
+	blackBox.shape.push_back(LibraryGateLine(size.x / 2, size.y / 2, -size.x / 2, size.y / 2));
+
+	// concat groups.
+	InVector all;
+	all.insert(all.begin(), left.begin(), left.end());
+	all.insert(all.begin(), top.begin(), top.end());
+	all.insert(all.begin(), bottom.begin(), bottom.end());
+	all.insert(all.begin(), right.begin(), right.end());
+
+	// gen pins.
+	for (auto &in : all) {
+		blackBox.shape.push_back(LibraryGateLine(in.hotspot.x, in.hotspot.y,
+			in.hotspotTail.x, in.hotspotTail.y));
+	}
+
+	// gen text.
+	for (auto &in : all) {
+
+		gl_text label;
+		label.setText(in.name);
+		label.setRotation(in.rotation);
+		label.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+		label.setSize(0.85f);
+		label.setPosition(in.textPosition.x, in.textPosition.y);
+		blackBox.labels.push_back(label);
+	}
+
+	// set hotspots.
+	for (auto &in : all) {
 
 		LibraryGateHotspot h;
 		h.busLines = 1;
 		h.isInput = true;
 		h.isInverted = false;
 		h.logicEInput = "";
-		h.name = pinNamesAndRotation[i].second;
-		h.x = -halfSide - 1;
-		h.y = halfSide - 1 - i;
+		h.name = in.name;
+		h.x = in.hotspot.x;
+		h.y = in.hotspot.y;
 
-		hotspots.push_back(h);
+		blackBox.hotspots.push_back(h);
 	}
-
-	// Temporary test label.
-	gl_text label;
-	label.setText("hello");
-	label.setRotation(0.0f);
-	label.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-	label.setSize(0.85f);
-	blackBox.labels.push_back(label);
 
 	// Drop into library.
 	gates["11 - Black Boxes"][blackBox.gateName] = blackBox;

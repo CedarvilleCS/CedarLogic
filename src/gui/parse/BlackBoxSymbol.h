@@ -21,6 +21,10 @@ struct InputData {
 
 	// Top-left corner of text (before rotation).
 	Point textPosition;
+
+	bool operator<(const InputData &other) const {
+		return name > other.name;
+	}
 };
 
 using InVector = std::vector<InputData>;
