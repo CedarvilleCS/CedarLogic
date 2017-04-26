@@ -1320,11 +1320,14 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 
 void MainFrame::OnBlackBox(wxCommandEvent& event) {
 
-	child = new MainFrame("Black Box Editor", "", this);
-	child->Show(true);
-	wxGetApp().SetTopWindow(child);
-	this->Disable();
+	//child = new MainFrame("Black Box Editor", "", this);
+	//child->Show(true);
+	//wxGetApp().SetTopWindow(child);
+	//this->Disable();
 
+	std::string blackBoxString = currentCanvas->getBlackBoxString();
+	GateLibrary newLib(wxGetApp().appSettings.gateLibFile);
+	newLib.defineBlackBox(blackBoxString);
 }
 
 void MainFrame::OnApply(wxCommandEvent& event) {

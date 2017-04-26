@@ -48,13 +48,13 @@ void generateShapePins(Point size, InVector &left, InVector &top, InVector &bott
 	// Do left and right pins
 	float middleY = 0;
 	// Left
-	float startLeft = middleY - (left.size() / 2);
+	int startLeft = middleY - (left.size() / 2);
 	for (int i = 0; i < (int)left.size(); i++) {
 		left[i].hotspotTail = Point(-width / 2, startLeft + i);
 		left[i].hotspot = Point((-width / 2) - 1, startLeft + i);
 	}
 	// Right
-	float startRight = middleY - (right.size() / 2);
+	int startRight = middleY - (right.size() / 2);
 	for (int i = 0; i < (int)right.size(); i++) {
 		right[i].hotspotTail = Point(width / 2, startRight + i);
 		right[i].hotspot = Point((width / 2) + 1, startRight + i);
@@ -63,13 +63,13 @@ void generateShapePins(Point size, InVector &left, InVector &top, InVector &bott
 	// Do top and bottom pins
 	float middleX = 0;
 	// Top
-	float startTop = middleX - (top.size() / 2);
+	int startTop = middleX - (top.size() / 2);
 	for (int i = 0; i < (int)top.size(); i++) {
 		top[i].hotspotTail = Point(startTop + i, height / 2);
 		top[i].hotspot = Point(startTop + i, (height / 2) + 1);
 	}
 	// Bottom
-	float startBottom = middleX - (bottom.size() / 2);
+	int startBottom = middleX - (bottom.size() / 2);
 	for (int i = 0; i < (int)bottom.size(); i++) {
 		bottom[i].hotspotTail = Point(startBottom + i, -height / 2);
 		bottom[i].hotspot = Point(startBottom + i, (-height / 2) - 1);
