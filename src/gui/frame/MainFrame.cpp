@@ -61,7 +61,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_SCROLL(MainFrame::OnTimeStepModSlider)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
 	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
-	EVT_TOOL(Tool_BlackBox, MainFrame::OnBlackBox)
+	//EVT_TOOL(Tool_BlackBox, MainFrame::OnBlackBox)
 	EVT_MENU(Tool_AutoIncrement, MainFrame::OnAutoIncrement)
 
 	EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
@@ -132,109 +132,6 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename, MainFrame *paren
 
 	if (!isBlackBox) {
 		GateLibrary newLib(libPath);
-
-		newLib.defineBlackBox(R"====(creategate 132 DE_TO -17 -74.5
-setparams 132 1,1 angle 180	JUNCTION_ID B Bit 1	
-creategate 136 DE_TO -17 -65
-setparams 136 1,1 angle 180	JUNCTION_ID B Bit 5	
-creategate 138 DE_TO -17 -60.5
-setparams 138 1,1 angle 180	JUNCTION_ID B Bit 7	
-creategate 142 DE_TO -17 -51
-setparams 142 1,1 angle 180	JUNCTION_ID B Bit 11	
-creategate 144 DE_TO -17 -46.5
-setparams 144 1,1 angle 180	JUNCTION_ID B Bit 13	
-creategate 146 DE_TO -17 -42.5
-setparams 146 1,1 angle 180	JUNCTION_ID B Bit 15	
-creategate 102 DE_TO -17.5 -34.5
-setparams 102 1,1 angle 180	JUNCTION_ID A Bit 0	
-creategate 103 DE_TO -17.5 -32.5
-setparams 103 1,1 angle 180	JUNCTION_ID A Bit 1	
-creategate 104 DE_TO -17.5 -30
-setparams 104 1,1 angle 180	JUNCTION_ID A Bit 2	
-creategate 105 DE_TO -17.5 -27.5
-setparams 105 1,1 angle 180	JUNCTION_ID A Bit 3	
-creategate 106 DE_TO -17.5 -25.5
-setparams 106 1,1 angle 180	JUNCTION_ID A Bit 4	
-creategate 107 DE_TO -17.5 -23
-setparams 107 1,1 angle 180	JUNCTION_ID A Bit 5	
-creategate 108 DE_TO -17.5 -21
-setparams 108 1,1 angle 180	JUNCTION_ID A Bit 6	
-creategate 109 DE_TO -17.5 -18.5
-setparams 109 1,1 angle 180	JUNCTION_ID A Bit 7	
-creategate 110 DE_TO -17.5 -16
-setparams 110 1,1 angle 180	JUNCTION_ID A Bit 8	
-creategate 111 DE_TO -17.5 -13.5
-setparams 111 1,1 angle 180	JUNCTION_ID A Bit 9	
-creategate 112 DE_TO -17.5 -11.5
-setparams 112 1,1 angle 180	JUNCTION_ID A Bit 10	
-creategate 113 DE_TO -17.5 -9
-setparams 113 1,1 angle 180	JUNCTION_ID A Bit 11	
-creategate 114 DE_TO -17.5 -6.5
-setparams 114 1,1 angle 180	JUNCTION_ID A Bit 12	
-creategate 115 DE_TO -17.5 -4.5
-setparams 115 1,1 angle 180	JUNCTION_ID A Bit 13	
-creategate 116 DE_TO -17.5 -2.5
-setparams 116 1,1 angle 180	JUNCTION_ID A Bit 14	
-creategate 117 DE_TO -17.5 -0.5
-setparams 117 1,1 angle 180	JUNCTION_ID A Bit 15	
-creategate 131 DE_TO -17 -76.5
-setparams 131 1,1 angle 180	JUNCTION_ID B Bit 0	
-creategate 133 DE_TO -17 -72
-setparams 133 1,1 angle 180	JUNCTION_ID B Bit 2	
-creategate 134 DE_TO -17 -69.5
-setparams 134 1,1 angle 180	JUNCTION_ID B Bit 3	
-creategate 135 DE_TO -17 -67.5
-setparams 135 1,1 angle 180	JUNCTION_ID B Bit 4	
-creategate 137 DE_TO -17 -63
-setparams 137 1,1 angle 180	JUNCTION_ID B Bit 6	
-creategate 139 DE_TO -17 -58
-setparams 139 1,1 angle 180	JUNCTION_ID B Bit 8	
-creategate 140 DE_TO -17 -55.5
-setparams 140 1,1 angle 180	JUNCTION_ID B Bit 9	
-creategate 141 DE_TO -17 -53.5
-setparams 141 1,1 angle 180	JUNCTION_ID B Bit 10	
-creategate 143 DE_TO -17 -48.5
-setparams 143 1,1 angle 180	JUNCTION_ID B Bit 12	
-creategate 145 DE_TO -17 -44.5
-setparams 145 1,1 angle 180	JUNCTION_ID B Bit 14	
-creategate 162 DE_TO 141 -30
-setparams 162 1,1 angle 0.0	JUNCTION_ID Output 1	
-creategate 164 DE_TO 156 -31
-setparams 164 1,1 angle 0.0	JUNCTION_ID Output 0	
-creategate 165 DE_TO 156 -29
-setparams 165 1,1 angle 0.0	JUNCTION_ID Output 2	
-creategate 166 DE_TO 141 -28
-setparams 166 1,1 angle 0.0	JUNCTION_ID Output 3	
-creategate 167 DE_TO 156 -27
-setparams 167 1,1 angle 0.0	JUNCTION_ID Output 4	
-creategate 168 DE_TO 141 -26
-setparams 168 1,1 angle 0.0	JUNCTION_ID Output 5	
-creategate 169 DE_TO 156 -25
-setparams 169 1,1 angle 0.0	JUNCTION_ID Output 6	
-creategate 170 DE_TO 141 -24
-setparams 170 1,1 angle 0.0	JUNCTION_ID Output 7	
-creategate 171 DE_TO 156 -23
-setparams 171 1,1 angle 0.0	JUNCTION_ID Output 8	
-creategate 172 DE_TO 141 -22
-setparams 172 1,1 angle 0.0	JUNCTION_ID Output 9	
-creategate 173 DE_TO 156 -21
-setparams 173 1,1 angle 0.0	JUNCTION_ID Output 10	
-creategate 174 DE_TO 141 -20
-setparams 174 1,1 angle 0.0	JUNCTION_ID Output 11	
-creategate 175 DE_TO 156 -19
-setparams 175 1,1 angle 0.0	JUNCTION_ID Output 12	
-creategate 176 DE_TO 141 -18
-setparams 176 1,1 angle 0.0	JUNCTION_ID Output 13	
-creategate 177 DE_TO 156 -17
-setparams 177 1,1 angle 0.0	JUNCTION_ID Output 14	
-creategate 178 DE_TO 141 -16
-setparams 178 1,1 angle 0.0	JUNCTION_ID Output 15	
-creategate 216 DE_TO 45 23.5
-setparams 216 1,1 angle 90	JUNCTION_ID SUM	
-creategate 218 DE_TO 48 23.5
-setparams 218 1,1 angle 90	JUNCTION_ID EQUAL	
-)====");
-
 		wxGetApp().libParser = newLib;
 	}
 	
@@ -479,7 +376,7 @@ wxToolBar* MainFrame::buildToolBar() {
 	tools->AddSeparator();
 	tools->AddCheckTool(Tool_AutoIncrement, "Toggle auto increment", *bmp[20], wxNullBitmap, "Toggle auto increment");
 	if (!isBlackBox) {
-		tools->AddTool(Tool_BlackBox, "Black Box", *bmp[16], "Black Box");
+		//tools->AddTool(Tool_BlackBox, "Black Box", *bmp[16], "Black Box");
 	}
 	tools->AddSeparator();
 	tools->AddTool(wxID_ABOUT, "About", *bmp[9], "About");
@@ -1320,11 +1217,14 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 
 void MainFrame::OnBlackBox(wxCommandEvent& event) {
 
-	child = new MainFrame("Black Box Editor", "", this);
-	child->Show(true);
-	wxGetApp().SetTopWindow(child);
-	this->Disable();
+	//child = new MainFrame("Black Box Editor", "", this);
+	//child->Show(true);
+	//wxGetApp().SetTopWindow(child);
+	//this->Disable();
 
+	std::string blackBoxString = currentCanvas->getBlackBoxString();
+	GateLibrary newLib(wxGetApp().appSettings.gateLibFile);
+	newLib.defineBlackBox(blackBoxString);
 }
 
 void MainFrame::OnApply(wxCommandEvent& event) {
