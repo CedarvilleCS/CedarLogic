@@ -9,7 +9,39 @@ Z80+BugFixes:	2006-07		lansford
 Win7 Migration:	2010-11		riggleman
 VS15 Migration: 2015-16		prem
 
+Buses, Colors, Add Tabs,
+Autosaving, Zoom-to-mouse,
+Versioning, Feedback,
+new help menu, Installer,
+auto-increment, finish
+migration from mingw to
+visual studio, migrate from
+wxWidgets 2.8 to 3.1:		tyler drake	:buses,
+						 colors,
+						 versioning,
+						 feedback,
+						 unfinished blackboxes,
+						 unfinished linux support,
+						 migrate from mingw to visual studio,
+						 migrate from wxWidgets 2.8 to 3.1.
+
+				julian pernia	:autosaving,
+						 zoom-to-mouse,
+						 color gui,
+						 unfinished blackbox gui
+									x
+
+				james von eiff	:tabs, installer	x
+
+				colin broberg	:auto-increment,
+						 help menu		x
+
+KAS means Dr. Shomper
 
 
+NOTE: You can
 
-KAS->Dr. Shomper
+git checkout version-with-blackboxes
+
+to get the version of CedarLogic as it was at the design presentations at the end of 2017.
+The master branch of the repository is a patch of that version to remove unstable blackboxes and linux support.
