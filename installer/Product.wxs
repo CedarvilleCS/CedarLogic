@@ -65,19 +65,20 @@
       <Component Id="Resources" Guid="532fc841-bb67-453b-b60c-99f59b4fc9c7">
         <File Name="arial.glf" Source="../res/arial.glf" />
         <File Name="cl_gatedefs.xml" Source="../res/cl_gatedefs.xml" />
-        <File Name="dark-colors.txt" Source="../res/dark-colors.txt" />
-        <File Name="KLS_Logic.chm" Source="../res/KLS_Logic.chm" />
+        <File Name="dark-colors.clp" Source="../res/dark-colors.clp" />
+        <File Name="CedarLogic_Help.chm" Source="../res/CedarLogic_Help.chm" />
         <File Name="settings.ini" Source="../res/settings.ini" />
-        <File Name="standard-colors.txt" Source="../res/standard-colors.txt" />
+        <File Name="standard-colors.clp" Source="../res/standard-colors.clp" />
       </Component>
     </DirectoryRef>
     
     <DirectoryRef Id="BitmapsFolder">
       <Component Id="Bitmaps" Guid="61e26541-a54a-42de-a0ff-1add7f2f3828">
+        <File Name="apply.bmp" Source="../res/bitmaps/apply.bmp" />
         <File Name="applyall.bmp" Source="../res/bitmaps/applyall.bmp" />
+        <File Name="autoinc.bmp" Source="../res/bitmaps/autoinc.bmp" />
         <File Name="blackbox.bmp" Source="../res/bitmaps/blackbox.bmp" />
         <File Name="cancel.bmp" Source="../res/bitmaps/cancel.bmp" />
-        <File Name="confirm.bmp" Source="../res/bitmaps/confirm.bmp" />
         <File Name="copy.bmp" Source="../res/bitmaps/copy.bmp" />
         <File Name="cut.bmp" Source="../res/bitmaps/cut.bmp" />
         <File Name="help.bmp" Source="../res/bitmaps/help.bmp" />
