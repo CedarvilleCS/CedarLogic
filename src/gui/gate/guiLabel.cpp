@@ -1,9 +1,11 @@
 
-#include "gui/graphics/gl_defs.h"
 #include "guiLabel.h"
 #include <sstream>
+#include "gui/graphics/gl_defs.h"
 
 using namespace std;
+
+static GLdouble SELECTED_LABEL_INTENSITY = 0.50;
 
 guiLabel::guiLabel() {
 	guiGate();

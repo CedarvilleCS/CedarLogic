@@ -11,9 +11,9 @@ public:
 
 	virtual ~cmdDeleteSelection();
 
-	bool Do() override;
+	bool Do();
 
-	bool Undo() override;
+	bool Undo();
 
 private:
 	std::vector<unsigned long> gates;

@@ -1,5 +1,4 @@
 
-#include "gui/graphics/OpenGL.h"
 #include "klsClipboard.h"
 #include "../frame/OscopeFrame.h"
 #include <fstream>
@@ -27,7 +26,7 @@ klsCommand * klsClipboard::pasteBlock(GUICircuit *gCircuit, GUICanvas *gCanvas) 
 	wxTextDataObject wxText;
 	if (wxTheClipboard->GetData(wxText)) {
 
-		std::string copyText = wxText.GetText().ToStdString();
+		std::string copyText = wxText.GetText();
 		klsCommand *result = new cmdPasteBlock(copyText, true, gCircuit, gCanvas);
 		result->Do();
 

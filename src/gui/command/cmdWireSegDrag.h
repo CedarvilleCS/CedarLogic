@@ -9,9 +9,9 @@ class cmdWireSegDrag : public klsCommand {
 public:
 	cmdWireSegDrag(GUICircuit* gCircuit, GUICanvas* gCanvas, IDType wireID);
 
-	bool Do() override;
+	bool Do();
 
-	bool Undo() override;
+	bool Undo();
 
 private:
 	std::map<long, wireSegment> oldSegMap;

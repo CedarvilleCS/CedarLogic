@@ -1,11 +1,10 @@
 
-
-#include "gui/graphics/gl_defs.h"
 #include "guiGate.h"
 
 #include "gui/MainApp.h"
 #include "gui/dialog/paramDialog.h"
 #include "gui/wire/guiWire.h"
+#include "gui/graphics/gl_defs.h"
 #include "gateHotspot.h"
 DECLARE_APP(MainApp)
 
@@ -18,10 +17,9 @@ guiGate::guiGate() : klsCollisionObject(COLL_GATE) {
 
 guiGate::~guiGate() {
 	
-	//double-delete bug going on here.
-	//for (auto &p : hotspots) {
+	for (auto &p : hotspots) {
 		//delete p.second;
-	//}
+	}
 }
 
 void guiGate::setID(long nid) {

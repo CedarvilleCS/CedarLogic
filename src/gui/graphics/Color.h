@@ -1,7 +1,6 @@
 
 #pragma once
 #include <iosfwd>
-#include <wx/colour.h>
 
 struct Color {
 

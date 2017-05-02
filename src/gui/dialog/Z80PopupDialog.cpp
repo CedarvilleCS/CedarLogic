@@ -15,7 +15,7 @@
 #include "../gate/guiGateZ80.h"
 #include "../GUICircuit.h"
 #include "../frame/MainFrame.h"
-#include "../../z80/Z_80LogicGate.h"
+#include "../../Z80/Z_80LogicGate.h"
 #include <stdlib.h>
 
 using namespace std;
@@ -86,9 +86,9 @@ Z80PopupDialog::Z80PopupDialog( guiGateZ80* newM_guiGateZ80,
 	gUICircuit = newGUICircuit;
 	
 	//Bitmaps
-	wxBitmap bmpCont("res/bitmaps/play.bmp");
-	wxBitmap bmpIStep("res/bitmaps/step.bmp");
-	wxBitmap bmpTStep("res/bitmaps/step.bmp");
+	wxBitmap bmpCont(wxBITMAP(cont));
+	wxBitmap bmpIStep(wxBITMAP(step));
+	wxBitmap bmpTStep(wxBITMAP(step));
 	
 	
 	wxBoxSizer* topSizer = new wxBoxSizer( wxVERTICAL );

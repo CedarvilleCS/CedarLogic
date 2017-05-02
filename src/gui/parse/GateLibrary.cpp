@@ -12,15 +12,9 @@
 #include "wx/msgdlg.h"
 #include "../MainApp.h"
 #include "gui/command/cmdSetParams.h"
-#include "gui/command/cmdPasteBlock.h"
-#include "quoted.h"
-#include "gui/GUICircuit.h"
-#include "BlackBoxSymbol.h"
 
 // Included for sin and cos in <circle> tags:
 #include <cmath>
-#include <algorithm>
-#include "gui/command/cmdCreateGate.h"
 
 DECLARE_APP(MainApp)
 
@@ -325,11 +319,6 @@ string GateLibrary::getGateGUIType(string gateName) {
 
 void GateLibrary::defineBlackBox(const std::string &copyText) {
 
-	// Store text as an escaped, quoted, string.
-	std::ostringstream escapedTextStream;
-	escapedTextStream << parse::quoted(copyText);
-	std::string escapedText = escapedTextStream.str();
-
 	LibraryGate blackBox;
 
 	blackBox.gateName = "BlackBox#" + std::to_string(numDefinedBlackBoxes);
@@ -337,135 +326,61 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 	blackBox.caption = blackBox.gateName;
 	blackBox.guiType = "BlackBox";
 	blackBox.logicType = "BLACK_BOX";
-	blackBox.guiParams.insert({ "internals", escapedText });
+	blackBox.guiParams.insert({ "internals", copyText });
 
-	// Get pins.
+	// Get names for pins.
+	std::vector<std::string> pinNames;
+	std::istringstream copyStream(copyText);
+	std::string lineText;
+	while (std::getline(copyStream, lineText, '\n')) {
 
-	struct JunctionData {
-		double rotation;
-		std::string name;
-		Point position;
-	};
+		if (lineText.substr(0, 9) == "setparams") {
 
-	// I'm sorry for this paragraph, but I own it. -Tyler J. Drake.
-	// (Written the night before final presentation).
-	std::vector<JunctionData> junctionDatas;
-	std::string tempText = copyText;
-	GUICircuit tempCircuit;
-	cmdPasteBlock paste(tempText, false, &tempCircuit, nullptr);  // don't actually use this command.
-	Point coord;
-	std::string junctionType;
-	for (auto *command : paste.getCommands()) {
-
-		if (command->GetName() == "Create Gate") {
-
-			cmdCreateGate *paramCreater = static_cast<cmdCreateGate *>(command);
-
-			coord = paramCreater->getPosition();
-			junctionType = paramCreater->getGateType();
-		}
-		else if (command->GetName() == "Set Parameter") {
-
-			cmdSetParams *paramSetter = static_cast<cmdSetParams *>(command);
-
-			double rotation = 0.0;
-			for (auto &p : paramSetter->getGuiParameterMap()) {
-				if (p.first == "angle") {
-					rotation = atof(p.second.c_str());
-				}
-			}
-			for (auto &p : paramSetter->getLogicParameterMap()) {
+			cmdSetParams cmd(lineText);
+			for (const auto &p : cmd.getLogicParameterMap()) {
 
 				if (p.first == "JUNCTION_ID") {
-					junctionDatas.push_back({ double(((int)rotation + (junctionType == "DE_TO" ? 180 : 0)) % 360), p.second, coord });
+					pinNames.push_back(p.second);
 				}
 			}
 		}
 	}
 
-	// break into sub-vectors based on orientation.
-	InVector left, top, bottom, right;
-	for (auto &p : junctionDatas) {
+	// Make shape.
+	auto &lines = blackBox.shape;
+	float halfSide = (pinNames.size() + 1) / 2.0f;
+	lines.push_back({ -halfSide, halfSide, halfSide, halfSide });
+	lines.push_back({ -halfSide, -halfSide, halfSide, -halfSide });
+	lines.push_back({ -halfSide, halfSide, -halfSide, -halfSide });
+	lines.push_back({ halfSide, halfSide, halfSide, -halfSide });
+	for (int i = 0; i < (int)pinNames.size(); i++) {
 
-		InputData *d;
-		if (p.rotation == 0.0) {
-			left.push_back({});
-			d = &left.back();
-		}
-		else if (p.rotation == 90.0) {
-			top.push_back({});
-			d = &top.back();
-			d->rotation = 90.0f;
-		}
-		else if (p.rotation == 180.0) {
-			right.push_back({});
-			d = &right.back();
-		}
-		else {
-			bottom.push_back({});
-			d = &bottom.back();
-			d->rotation = 90.0f;
-		}
-		d->name = p.name;
-		d->originalPosition = p.position;
+		lines.push_back({ -halfSide - 1, halfSide - 1 - i, -halfSide, halfSide - 1 - i });
 	}
 
-	// sort alphabetically.
-	std::sort(left.begin(), left.end());
-	std::sort(top.begin(), top.end());
-	std::sort(bottom.begin(), bottom.end());
-	std::sort(right.begin(), right.end());
-	
-	// Get shape data.
-	auto size = generateShapeRectangle(left, top, bottom, right);
-	generateShapePins(size, left, top, bottom, right);
-	generateShapeTextPosition(left, top, bottom, right);
-
-	// gen rect.
-	blackBox.shape.push_back(LibraryGateLine(-size.x / 2, -size.y / 2, size.x / 2, -size.y / 2));
-	blackBox.shape.push_back(LibraryGateLine(-size.x / 2, -size.y / 2, -size.x / 2, size.y / 2));
-	blackBox.shape.push_back(LibraryGateLine(size.x / 2, size.y / 2, size.x / 2, -size.y / 2));
-	blackBox.shape.push_back(LibraryGateLine(size.x / 2, size.y / 2, -size.x / 2, size.y / 2));
-
-	// concat groups.
-	InVector all;
-	all.insert(all.begin(), left.begin(), left.end());
-	all.insert(all.begin(), top.begin(), top.end());
-	all.insert(all.begin(), bottom.begin(), bottom.end());
-	all.insert(all.begin(), right.begin(), right.end());
-
-	// gen pins.
-	for (auto &in : all) {
-		blackBox.shape.push_back(LibraryGateLine(in.hotspot.x, in.hotspot.y,
-			in.hotspotTail.x, in.hotspotTail.y));
-	}
-
-	// gen text.
-	for (auto &in : all) {
-
-		gl_text label;
-		label.setText(in.name);
-		label.setRotation(in.rotation);
-		label.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-		label.setSize(0.85f);
-		label.setPosition(in.textPosition.x, in.textPosition.y);
-		blackBox.labels.push_back(label);
-	}
-
-	// set hotspots.
-	for (auto &in : all) {
+	// Add hotspots.
+	auto &hotspots = blackBox.hotspots;
+	for (int i = 0; i < (int)pinNames.size(); i++) {
 
 		LibraryGateHotspot h;
 		h.busLines = 1;
 		h.isInput = true;
 		h.isInverted = false;
 		h.logicEInput = "";
-		h.name = in.name;
-		h.x = in.hotspot.x;
-		h.y = in.hotspot.y;
+		h.name = pinNames[i];
+		h.x = -halfSide - 1;
+		h.y = halfSide - 1 - i;
 
-		blackBox.hotspots.push_back(h);
+		hotspots.push_back(h);
 	}
+
+	// Temporary test label.
+	gl_text label;
+	label.setText("hello");
+	label.setRotation(0.0f);
+	label.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+	label.setSize(0.85f);
+	blackBox.labels.push_back(label);
 
 	// Drop into library.
 	gates["11 - Black Boxes"][blackBox.gateName] = blackBox;
@@ -474,4 +389,3 @@ void GateLibrary::defineBlackBox(const std::string &copyText) {
 	wxGetApp().gateNameToLibrary[blackBox.gateName] = "11 - Black Boxes";
 	wxGetApp().libraries["11 - Black Boxes"][blackBox.gateName] = blackBox;
 }
-

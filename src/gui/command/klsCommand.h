@@ -2,7 +2,6 @@
 #pragma once
 
 #include <string>
-#include <vector>  // should be included individually by subclasses.
 #include <unordered_map>
 #include "wx/cmdproc.h"
 #include "common.h"

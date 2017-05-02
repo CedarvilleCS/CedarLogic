@@ -8,9 +8,9 @@ public:
 	cmdDisconnectWire(GUICircuit* gCircuit, IDType wid, IDType gid,
 		const std::string &hotspot, bool noCalcShape = false);
 
-	bool Do() override;
+	bool Do();
 
-	bool Undo() override;
+	bool Undo();
 
 	virtual std::string toString() const override;
 

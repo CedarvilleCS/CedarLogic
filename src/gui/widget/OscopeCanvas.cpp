@@ -8,7 +8,6 @@
    OscopeCanvas: renders the waveform for the oscope
 *****************************************************************************/
 
-#include "gui/graphics/OpenGL.h"
 #include "OscopeCanvas.h"
 #include "../MainApp.h"
 #include "GUICanvas.h"
@@ -33,6 +32,7 @@ OscopeCanvas::OscopeCanvas(wxWindow *parent, GUICircuit* gCircuit, wxWindowID id
 	const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 	: wxGLCanvas(parent, id, nullptr, pos, size, style | wxFULL_REPAINT_ON_RESIZE | wxSUNKEN_BORDER) {
 
+	this->glcontext = new wxGLContext(this);
 	this->gCircuit = gCircuit;
 	m_init = false;
 	parentFrame = (OscopeFrame*)parent;
@@ -182,9 +182,9 @@ void OscopeCanvas::OnRender() {
 
 void OscopeCanvas::OnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
-	
-	makeGLCanvasCurrent(*this);
 
+
+	SetCurrent(*glcontext);
 	// Init OpenGL once, but after SetCurrent
 	if (!m_init)
 	{
@@ -213,7 +213,7 @@ void OscopeCanvas::OnPaint(wxPaintEvent& event) {
 
 void OscopeCanvas::OnSize(wxSizeEvent& event)
 {
-	makeGLCanvasCurrent(*this);
+	SetCurrent(*glcontext);
 	Refresh();
 }
 
@@ -370,29 +370,148 @@ void OscopeCanvas::UpdateMenu()
 	}
 
 	parentFrame->updatePossableFeeds(&namesOfPossableFeeds);
+
+	/*
+
+	//Sets variables
+	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
+auto theGate = gateList->begin();
+
+	//Sets size
+	//unsigned int size = (parentFrame->comboBoxVector).size();
+	unsigned int size = parentFrame->numberOfFeeds();
+
+	for(unsigned int x = 0; x < size; x++)
+	{
+		//wxString oldVal = (parentFrame->comboBoxVector[x])->GetValue();
+		string oldVal = parentFrame->getFeedName( x );
+		//Update Combo Box Data
+		(parentFrame->comboBoxVector[x])->Clear();
+
+		//starts new array of strings
+		wxArrayString strings;
+
+		theGate = gateList->begin();
+
+		//Adds names to dialog box
+		while (theGate != gateList->end())
+		{
+			//Tests Gate ID
+			if((theGate->second)->getGUIType() == "TO" )
+			{
+				//Gets gate ID
+				string junctionName = (theGate->second)->getLogicParam("JUNCTION_ID");
+
+				(parentFrame->comboBoxVector[x])->Append(junctionName.c_str());
+			}
+
+			theGate++;
+		}
+		(parentFrame->comboBoxVector[x])->Append("[None]");
+		(parentFrame->comboBoxVector[x])->Append("[Remove]");
+
+		// *******************************************
+		//Edit by Joshua Lansford 2/22/07
+		//FindString is insensitive.  Therefore just
+		//because it finds something doesn't mean that
+		//our old value  is still valid.  Therefore
+		//we must search manually
+
+		//if ((parentFrame->comboBoxVector[x])->FindString(oldVal) != -1 ) {
+
+		bool foundIt = false;
+		for( int search = 0;
+			 search < (parentFrame->comboBoxVector[x])->GetCount() && !foundIt;
+			 ++search ){
+			if( oldVal == (parentFrame->comboBoxVector[x])->GetString( search ) ){
+				foundIt = true;
+			}
+		}
+		if( foundIt ){
+		//End of Edit************************************************
+
+
+			(parentFrame->comboBoxVector[x])->SetValue(oldVal);
+		} else {
+			(parentFrame->comboBoxVector[x])->SetValue("[None]");
+		}
+	}
+	*/
 }
 
 // Print the canvas contents to a bitmap:
 wxImage OscopeCanvas::generateImage() {
-	
+	//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
+	// DIB Section OpenGL rendering.
+
 	wxSize sz = GetClientSize();
-    
-    if (isGLContextGood()) {
-        startRenderToWxImage(sz.GetWidth(), sz.GetHeight());
 
-        // Set the bitmap clear color:
-        ColorPalette::setClearColor(ColorPalette::SchematicBackground);
-        ColorPalette::setColor(ColorPalette::GateShape);
+	// Create a DIB section.
+	// (The Windows wxBitmap implementation will create a DIB section for a bitmap if you set
+	// a color depth of 24 or greater.)
+	wxBitmap theBM(sz.GetWidth(), sz.GetHeight(), 32);
 
-        // Do the rendering here.
-        OnRender();
+	// Get a memory hardware device context for writing to the bitmap DIB Section:
+	wxMemoryDC myDC;
+	myDC.SelectObject(theBM);
+	WXHDC theHDC = myDC.GetHDC();
 
-        // Flush the OpenGL buffer to make sure the rendering has happened:	
-        glFlush();
+	// The basics of setting up OpenGL to render to the bitmap are found at:
+	// http://www.nullterminator.net/opengl32.html
+	// http://www.codeguru.com/cpp/g-m/opengl/article.php/c5587/
 
-        return finishRenderToWxImage();
-    }
-    else {
-        return wxImage(sz.GetWidth(), sz.GetHeight());
-    }
+	PIXELFORMATDESCRIPTOR pfd;
+	int iFormat;
+
+	// set the pixel format for the DC
+	::ZeroMemory(&pfd, sizeof(pfd));
+	pfd.nSize = sizeof(pfd);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_BITMAP | PFD_SUPPORT_OPENGL | PFD_SUPPORT_GDI;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 32;
+	pfd.cDepthBits = 16;
+	pfd.iLayerType = PFD_MAIN_PLANE;
+	iFormat = ::ChoosePixelFormat((HDC)theHDC, &pfd);
+	::SetPixelFormat((HDC)theHDC, iFormat, &pfd);
+
+	// create and enable the render context (RC)
+	HGLRC hRC = ::wglCreateContext((HDC)theHDC);
+	HGLRC oldhRC = ::wglGetCurrentContext();
+	HDC oldDC = ::wglGetCurrentDC();
+	::wglMakeCurrent((HDC)theHDC, hRC);
+
+	// Setup the viewport for rendering:
+//	setViewport();
+	// Reset the glViewport to the size of the bitmap:
+//	glViewport(0, 0, (GLint) sz.GetWidth(), (GLint) sz.GetHeight());
+
+	// Set the bitmap clear color:
+	ColorPalette::setClearColor(ColorPalette::SchematicBackground);
+	ColorPalette::setColor(ColorPalette::GateShape);
+
+	//TODO: Check if alpha is hardware supported, and
+	// don't enable it if not!
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+
+	//*********************************
+	//Edit by Joshua Lansford 4/09/07
+	//anti-alis ing is nice
+	glEnable(GL_LINE_SMOOTH);
+	//End of edit
+
+	// Do the rendering here.
+	OnRender();
+
+	// Flush the OpenGL buffer to make sure the rendering has happened:	
+	glFlush();
+
+	// Destroy the OpenGL rendering context, release the memDC, and
+	// convert the DIB Section into a wxImage to return to the caller:
+	::wglMakeCurrent(oldDC, oldhRC);
+	//::wglMakeCurrent( NULL, NULL );
+	::wglDeleteContext(hRC);
+	myDC.SelectObject(wxNullBitmap);
+	return theBM.ConvertToImage();
 }

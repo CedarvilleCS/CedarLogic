@@ -29,7 +29,6 @@ public:
 	std::string name;
 
 protected:
-	Point modelLocation;
-	Point worldLocation;
 	int busLines;
+	Point modelLocation, worldLocation;
 };

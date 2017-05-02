@@ -10,9 +10,9 @@ public:
 	cmdAddTab(GUICircuit* gCircuit, wxAuiNotebook* book,
 		std::vector<GUICanvas *> *canvases);
 
-	bool Do() override;
+	bool Do();
 
-	bool Undo() override;
+	bool Undo();
 
 private:
 	wxAuiNotebook* canvasBook;

@@ -1,8 +1,7 @@
 
 #pragma once
-#include <vector>
-#include <stack>
 #include "klsCommand.h"
+#include <stack>
 
 // cmdDeleteWire - Deletes a wire
 class cmdDeleteWire : public klsCommand {
@@ -11,9 +10,9 @@ public:
 
 	virtual ~cmdDeleteWire();
 
-	bool Do() override;
+	bool Do();
 
-	bool Undo() override;
+	bool Undo();
 
 private:
 	std::vector<IDType> wireIds;

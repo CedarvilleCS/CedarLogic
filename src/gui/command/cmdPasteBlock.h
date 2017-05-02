@@ -10,9 +10,9 @@ public:
 	cmdPasteBlock(std::string &copyText, bool allowAutoIncrement, GUICircuit *gCircuit,
 		GUICanvas *gCanvas);
 
-	bool Do() override;
+	bool Do();
 
-	bool Undo() override;
+	bool Undo();
 
 	void addCommand(klsCommand* cmd) { cmdList.push_back(cmd); };
 

@@ -1082,10 +1082,6 @@ void GUICanvas::copyBlockToClipboard() {
 	klsClipboard::copyBlock(gCircuit, this, selectedGates, selectedWires);
 }
 
-std::string GUICanvas::getBlackBoxString() {
-	return klsClipboard::getCopyText(gCircuit, this, selectedGates, selectedWires);
-}
-
 void GUICanvas::pasteBlockFromClipboard() {
 	if (this->isLocked()) return;
 

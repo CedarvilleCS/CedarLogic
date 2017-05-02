@@ -8,7 +8,6 @@
    CircuitParse: uses XMLParser to load and save user circuit files.
 *****************************************************************************/
 
-#include "gui/graphics/OpenGL.h"
 #include "CircuitParse.h"
 #include "../frame/OscopeFrame.h"
 #include "../MainApp.h"

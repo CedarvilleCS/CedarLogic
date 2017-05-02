@@ -146,9 +146,6 @@ public:
 	void copyBlockToClipboard();
 	void pasteBlockFromClipboard();
 
-	// Get string in order to make a black box in the library
-	std::string GUICanvas::getBlackBoxString();
-
 	// Pointer to the main application graphic circuit
 	GUICircuit* getCircuit();
 

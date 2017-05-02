@@ -1,8 +1,8 @@
 
-#include "gui/graphics/gl_defs.h"
 #include "guiGateTOGGLE.h"
 #include <sstream>
 #include "gui/message/Message.h"
+#include "gui/graphics/gl_defs.h"
 
 using namespace std;
 

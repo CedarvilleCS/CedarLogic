@@ -2,7 +2,6 @@
 #include "guiGateBlackBox.h"
 #include "gui/commands.h"
 #include "gui/GUICircuit.h"
-#include "gui/parse/quoted.h"
 
 guiGateBlackBox::guiGateBlackBox(GUICircuit *circuit, bool purelyVisual) :
 	circuit(circuit), purelyVisual(purelyVisual) { }
@@ -33,9 +32,7 @@ void guiGateBlackBox::setGUIParam(const std::string &paramName,
 
 void guiGateBlackBox::createInternals(const std::string &internals) {
 	
-	std::istringstream unquoter(internals);
-	std::string internalsCopy;
-	unquoter >> parse::quoted(internalsCopy);
+	std::string internalsCopy = internals;
 
 	cmdPasteBlock paste(internalsCopy, false, circuit, nullptr);
 

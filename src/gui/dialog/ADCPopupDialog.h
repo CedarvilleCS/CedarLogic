@@ -1,9 +1,6 @@
 #ifndef ADCPOPUPDIALOG_H_
 #define ADCPOPUPDIALOG_H_
 
-#include <wx/dialog.h>
-#include <wx/slider.h>
-#include <wx/stattext.h>
 #include "../gate/guiGateADC.h"
 class GUICircuit;
 class guiGateADC;

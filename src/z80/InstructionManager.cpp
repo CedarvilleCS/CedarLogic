@@ -70,8 +70,7 @@ const int LD_A_INNI_BASE_OPP = 0x3A;
 const int LD_IBCDEI_A_BASE_OPP = 0x02;
 const unsigned int DE_MASK = 16;
 
-//unused.
-//const int LD_IDEI_A_BASE_OPP = 0x12;
+const int LD_IDEI_A_BASE_OPP = 0x12;
 
 //LD (nn),A
 const int LD_INNI_A_BASE_OPP = 0x32;
@@ -385,9 +384,7 @@ unsigned const int BITS_LENGTH = 3;
 //BIT b,r
 const int BIT_B_R_BASE_OPP = 0xCB40;
 const int BIT_B_R_R_LOCATION = 0;
-
-//unused.
-//const int BIT_B_R_B_LOCATION = 3;
+const int BIT_B_R_B_LOCATION = 3;
 
 //BIT b,(HL)
 const int BIT_B_IHLI_BASE_OPP = 0xCB46;

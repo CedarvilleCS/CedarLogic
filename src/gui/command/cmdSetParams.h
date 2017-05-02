@@ -21,9 +21,9 @@ public:
 
 	cmdSetParams(std::string def);
 
-	bool Do() override;
+	bool Do();
 
-	bool Undo() override;
+	bool Undo();
 
 	virtual std::string toString() const override;
 

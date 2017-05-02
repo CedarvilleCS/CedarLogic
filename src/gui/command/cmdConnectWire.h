@@ -10,9 +10,9 @@ public:
 
 	cmdConnectWire(const std::string &def);
 
-	bool Do() override;
+	bool Do();
 
-	bool Undo() override;
+	bool Undo();
 
 	bool validateBusLines() const;
 
