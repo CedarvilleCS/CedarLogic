@@ -9,10 +9,8 @@
 !README.md
 !LICENSE.txt
 !HISTORY.txt
-!Doxyfile
 !Makefile
 !.makefile
-!Structure.vsdx
 
 !installer/
 !installer/installer.wixproj
