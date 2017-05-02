@@ -21,21 +21,22 @@
            Cabinet="files.cab"
            EmbedCab="yes" />
     
-    
-    
+    <Icon Id="CedarLogic.ico" SourceFile="../res/installerRes/logo_icon32.ico" />
+
     <!--Directory Structure-->
     <Directory Id="TARGETDIR" Name="SourceDir">
       
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLDIR" Name="CedarLogic">
           <Directory Id="ResourceFolder" Name="res">
+            <Directory Id="InstallerResourceFolder" Name="installerRes" />
             <Directory Id="BitmapsFolder" Name="bitmaps" />
           </Directory>
         </Directory>
       </Directory>
       
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="MENUDIR" Name="CedarLogic" />
+        <Directory Id="MenuDir" Name="CedarLogic" />
       </Directory>
       
       <Directory Id="DesktopFolder" />
@@ -47,7 +48,16 @@
     <!--List components-->
     <DirectoryRef Id="INSTALLDIR">
       <Component Id="Executable" Guid="c231dd24-bbbd-4ea4-bcc6-204cdc02d744">
-        <File Name="CedarLogic.exe" Source="../$(var.Configuration)/CedarLogic.exe" />
+        <File Id="CedarLogicEXE" Name="CedarLogic.exe" Source="../$(var.Configuration)/CedarLogic.exe" KeyPath="yes"/>
+    
+        <!-- Creates file association -->
+        <ProgId Id='CedarLogic.cdlfile' Description='CedarLogic file' Icon='CedarLogicFile.ico'>
+          <Extension Id='cdl'>
+            <Verb Id="openCDL" Command="Open" TargetFile="CedarLogicEXE" Argument='"%1"'/>
+          </Extension>
+        </ProgId>
+
+        <File Name="CedarLogicFile.ico" Source="../res/installerRes/CedarLogicFile.ico" />
       </Component>
     </DirectoryRef>
 
@@ -55,13 +65,19 @@
       <Component Id="Resources" Guid="532fc841-bb67-453b-b60c-99f59b4fc9c7">
         <File Name="arial.glf" Source="../res/arial.glf" />
         <File Name="cl_gatedefs.xml" Source="../res/cl_gatedefs.xml" />
+        <File Name="dark-colors.txt" Source="../res/dark-colors.txt" />
         <File Name="KLS_Logic.chm" Source="../res/KLS_Logic.chm" />
+        <File Name="settings.ini" Source="../res/settings.ini" />
+        <File Name="standard-colors.txt" Source="../res/standard-colors.txt" />
       </Component>
     </DirectoryRef>
     
     <DirectoryRef Id="BitmapsFolder">
       <Component Id="Bitmaps" Guid="61e26541-a54a-42de-a0ff-1add7f2f3828">
+        <File Name="applyall.bmp" Source="../res/bitmaps/applyall.bmp" />
         <File Name="blackbox.bmp" Source="../res/bitmaps/blackbox.bmp" />
+        <File Name="cancel.bmp" Source="../res/bitmaps/cancel.bmp" />
+        <File Name="confirm.bmp" Source="../res/bitmaps/confirm.bmp" />
         <File Name="copy.bmp" Source="../res/bitmaps/copy.bmp" />
         <File Name="cut.bmp" Source="../res/bitmaps/cut.bmp" />
         <File Name="help.bmp" Source="../res/bitmaps/help.bmp" />
@@ -82,11 +98,11 @@
       </Component>
     </DirectoryRef>
 
-    <DirectoryRef Id="MENUDIR">
+    <DirectoryRef Id="MenuDir">
       <Component Id="StartFolder" Guid="ef60c6b6-9352-4da3-9460-7ae82a52681c">
         
         <!-- Shortcut to CedarLogic.exe. -->
-        <Shortcut Id="CedarLogicShortcut" Name="CedarLogic" Target="[INSTALLDIR]CedarLogic.exe" />
+        <Shortcut Id="CedarLogicShortcut" Name="CedarLogic" Target="[INSTALLDIR]CedarLogic.exe" WorkingDirectory="INSTALLDIR" Icon="CedarLogic.ico" />
         
         <!-- This folder needs to be explicitly removed on uninstall because it is not INSTALLDIR. -->
         <RemoveFolder Id="RemoveStartFolder" On="uninstall" />
@@ -98,19 +114,31 @@
                        Type="integer"
                        Value="1"
                        KeyPath="yes" />
-        
+    
       </Component>
     </DirectoryRef>
-    
-    
+
     <!--List features-->
-    <Feature Id="ExecutableAndResources">
+    <Feature Id="ExecutableAndResources" Title="CedarLogic" Description="This contains the executable and resources" Display="expand" Level="1" ConfigurableDirectory="INSTALLDIR" Absent="disallow" AllowAdvertise='no'>
       <ComponentRef Id="Executable" />
       <ComponentRef Id="Resources" />
       <ComponentRef Id="Bitmaps" />
       <ComponentRef Id="StartFolder" />
     </Feature>
-
+    <UI>
+      <UIRef Id="WixUI_Mondo" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+      <Publish Dialog="ExitDialog"
+      Control="Finish" 
+      Event="DoAction" 
+      Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+    </UI>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch CedarLogic" />
+    <Property Id="WixShellExecTarget" Value="[#CedarLogicEXE]" />
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+    <WixVariable Id="WixUILicenseRtf" Value="../res/installerRes/license.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="../res/installerRes/CedarLogicBanner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="../res/installerRes/CedarLogicDialog.bmp" />
   </Product>
   
 </Wix>
