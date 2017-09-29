@@ -9,9 +9,7 @@
 !README.md
 !LICENSE.txt
 !HISTORY.txt
-!Doxyfile
-!Makefile
-!.makefile
+!CMakeLists.txt
 
 # But do not exclude these directories...
 !src/
