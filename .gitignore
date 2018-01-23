@@ -1,22 +1,6 @@
 
-# Exclude everything by default.
-*
-
-# But do not exclude these files...
-!.gitignore
-!CedarLogic.sln
-!CedarLogic.vcxproj
-!README.md
-!LICENSE.txt
-!HISTORY.txt
-!CMakeLists.txt
-
-# But do not exclude these directories...
-!src/
-!src/**
-!res/
-!res/**
-
-# Okay, but really do exclude these files...
+build
+*Thumbs.db
+*.swp
 res/settings.ini
 res/KLS_Logic.chw

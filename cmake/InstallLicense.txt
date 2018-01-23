@@ -1,0 +1,9 @@
+License.txt
+
+This version of 'Dirt Game' is free to redistribute.
+
+Don't sell/misrepresent the source.
+
+Um... Don't use 'Dirt Game's assets in a commercial product without permission.
+
+It might break. No promises.
