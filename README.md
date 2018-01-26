@@ -38,3 +38,12 @@ CedarLogic is Cedarville University's digital logic simulator.
 6. Right click on the `Package` target to create a new installer in the `build` directory.
 
 7. There is now a CedarLogic installer executable in the `build` directory.
+
+# Version Summaries.
+
+Run `git tag` to view all the tagged versions of CedarLogic.
+
+v2.2017.01.16 - Buggy first release with busses.
+v2.2017.01.18 - Fixed bugs.
+v2.2017.05.02 - Borken version with lots of good, but enough bad to warrant abandonment.
+v2.2018.01.26 - Branch from v2.2017.01.18, stable bus support with an installer and file associations.
