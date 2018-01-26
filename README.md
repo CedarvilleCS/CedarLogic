@@ -23,6 +23,18 @@ CedarLogic is Cedarville University's digital logic simulator.
 		nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
 		nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
 
-8. Install Wix with its Visual Studio Extentions. [link](http://wixtoolset.org/releases/)
+# Compiling and creating an installer.
 
-9. Now you should be able to open CedarLogic in Visual Studio, build it in debug or release, and create an installer.
+1. Go to the root of the git repo.
+
+2. Run `mkdir build && cd build && cmake .. "Visual Studio 15 2017"`.
+
+3. There is now a visual studio solution in the `build` directory. Open the solution file.
+
+4. Right-click on the project titled `CedarLogic` and select `Set as Startup Project`.
+
+5. Select `Release` from the configuration menu.
+
+6. Right click on the `Package` target to create a new installer in the `build` directory.
+
+7. There is now a CedarLogic installer executable in the `build` directory.

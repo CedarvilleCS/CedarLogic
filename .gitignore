@@ -2,5 +2,6 @@
 build
 *Thumbs.db
 *.swp
+*.aps
 res/settings.ini
 res/KLS_Logic.chw

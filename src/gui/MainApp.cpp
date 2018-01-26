@@ -95,9 +95,14 @@ bool MainApp::OnInit()
 
 void MainApp::loadSettings() {
 
+	// Get app full path.
+	HMODULE hModule = GetModuleHandle(NULL);
+	CHAR path[MAX_PATH];
+	GetModuleFileName(hModule, path, MAX_PATH);
+
 	// Find path to exe so that files can be loaded relative to it
 	// even when the program is run from somewhere else.
-	pathToExe = (char)argv[0];
+	pathToExe = path;
 	while (!pathToExe.empty()) {
 		if (pathToExe.back() != '/' && pathToExe.back() != '\\') {
 			pathToExe.pop_back();
@@ -105,6 +110,10 @@ void MainApp::loadSettings() {
 		else {
 			break;
 		}
+	}
+
+	if (pathToExe.find("Debug") != string::npos || pathToExe.find("Release") != string::npos) {
+		pathToExe = "";
 	}
 	
 	string settingsIni = pathToExe + "res/settings.ini";

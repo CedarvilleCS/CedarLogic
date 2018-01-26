@@ -55,8 +55,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
 	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
 
-	EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
-	EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
+	//EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
+	//EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
 	EVT_MENU(Help_DownloadLatestVersion, MainFrame::OnDownloadLatestVersion)
 	
     //EVT_SIZE(MainFrame::OnSize)
@@ -113,8 +113,8 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     wxMenu *helpMenu = new wxMenu; // HELP MENU
     helpMenu->Append(wxID_HELP_CONTENTS, "&Contents...\tF1", "Show Help system");
 	helpMenu->AppendSeparator();
-	helpMenu->Append(Help_ReportABug, "Report a bug...");
-	helpMenu->Append(Help_RequestAFeature, "Request a feature...");
+	//helpMenu->Append(Help_ReportABug, "Report a bug...");
+	//helpMenu->Append(Help_RequestAFeature, "Request a feature...");
 	helpMenu->Append(Help_DownloadLatestVersion, "Download latest version...");
 	helpMenu->AppendSeparator();
     helpMenu->Append(wxID_ABOUT, "&About...", "Show about dialog");
@@ -166,7 +166,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	wxBitmap *bmp[15];
 
 	for (int  i = 0; i < 15; i++) {
-		bitmaps[i] = "res/bitmaps/" + bitmaps[i] + ".bmp";
+		bitmaps[i] = wxGetApp().pathToExe + "res/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
 	}
@@ -1040,13 +1040,21 @@ void MainFrame::OnDeleteTab(wxAuiNotebookEvent& event) {
 }
 
 void MainFrame::OnReportABug(wxCommandEvent& event) {
-	wxLaunchDefaultBrowser("https://cedar.to/XoQJpX", 0);
+	// Tyler Drake can remap the url using cedar.to/create
+	// Don't change the url here!
+	//wxLaunchDefaultBrowser("https://cedar.to/XoQJpX", 0);
+	wxMessageBox("Feature temporarily unavailable!");
 }
 
 void MainFrame::OnRequestAFeature(wxCommandEvent& event) {
-	wxLaunchDefaultBrowser("https://cedar.to/6IlP8c", 0);
+	// Tyler Drake can remap the url using cedar.to/create
+	// Don't change the url here!
+	//wxLaunchDefaultBrowser("https://cedar.to/6IlP8c", 0);
+	wxMessageBox("Feature temporarily unavailable!");
 }
 
 void MainFrame::OnDownloadLatestVersion(wxCommandEvent& event) {
+	// Tyler Drake can remap the url using cedar.to/create
+	// Don't change the url here!
 	wxLaunchDefaultBrowser("https://cedar.to/vjyQw7", 0);
 }

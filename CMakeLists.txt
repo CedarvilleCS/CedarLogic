@@ -7,6 +7,7 @@ project(CedarLogic)
 ### *.cpp and *.h files
 ### 
 set(Sources
+	icon.rc
 	src/version.cpp
 	src/version.h
 	src/gui/autoSaveThread.cpp
@@ -212,15 +213,27 @@ install(TARGETS CedarLogic RUNTIME DESTINATION ".")
 install_resources(res)
 
 set(CPACK_PACKAGE_NAME "CedarLogic")
-set(CPACK_PACKAGE_EXECUTABLES ..\\\\CedarLogic "CedarLogic")
+# This exceptionally weird line is hard to understand even with the documentation.
+# CMake thinks my executable is in the 'bin' subdirectory of the installation folder.
+# I don't like to put it there, so I need to manually tell it my programs are up one level.
+# Also, the combination of CMAKE and NSIS requires quadruple backslashes sometimes :(
+# UPDATE: You can change 'bin' to '.' by setting  CPACK_NSIS_EXECUTABLES_DIRECTORY.
+set(CPACK_PACKAGE_EXECUTABLES ..\\\\CedarLogic "CedarLogic" ..\\\\Uninstall "Uninstall CedarLogic")
 set(CPACK_PACKAGE_VENDOR "Cedarville University")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "3")
 set(CPACK_PACKAGE_VERSION_PATCH "3")
 set(CPACK_PACKAGE_ICON ${CMAKE_SOURCE_DIR}/cmake\\\\InstallSmall.bmp)
-set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE.txt)
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/res/LICENSE.txt)
 set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/cmake\\\\icon.ico)
 set(CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP ${CMAKE_SOURCE_DIR}/cmake\\\\InstallLarge.bmp)
 set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+    "!include \\\"${CMAKE_SOURCE_DIR}/cmake/cpack\\\\FileAssociation.nsh\\\"
+    \\\${registerExtension} \\\"$INSTDIR\\\\CedarLogic.exe\\\" \\\".cdl\\\" \\\"CedarLogic Project\\\""
+)
+set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS
+    "\\\${unregisterExtension} \\\".cdl\\\" \\\"CedarLogic Project\\\""
+)
 
 include(CPack)

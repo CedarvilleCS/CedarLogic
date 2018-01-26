@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.9)
 
 # 
 # This module defines:
-# - add_source_groups(...)
+# - vs_source_groups(...)
 # 
 
 
