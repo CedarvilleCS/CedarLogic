@@ -32,8 +32,6 @@ class guiWire;
 #include "wx/docview.h"
 
 #include "RamPopupDialog.h"
-#include "Z80PopupDialog.h"
-#include "ADCPopupDialog.h"
 
 using namespace std;
 
@@ -455,64 +453,7 @@ private:
 	long lastRead;
 };
 //End of edit
-//*************************************************
-// ************************ z80 gate ****************************
 
-//*************************************************
-//Edit by us 1/26/06
-//I am creating a guiGate for the z80 so that
-//the ram can have its own special pop-up window
-class guiGateZ80 : public guiGate {
-public:
-	guiGateZ80();
-	
-	// Function to show the gate's parameters dialog, takes the command
-	//	processor object to assign the setparameters command to.  gc is
-	//	a GUICircuit pointer
-	virtual void doParamsDialog( void* gc, wxCommandProcessor* wxcmd );
-	
-	//Destructor for cleaning up private vars
-	virtual ~guiGateZ80();
-	
-	//Because the z80 gui will be passed lots of data
-	//from the z80 logic, we don't want it all going
-	//into the default hash of changed paramiters.
-	//Thus we catch it here
-	virtual void setLogicParam( string paramName, string value );
-
-private:
-	//The pop-up dialog
-	Z80PopupDialog* z80PopupDialog;
-};
-//End of edit
-//*************************************************
-
-// ************************ ADC gate ****************************
-
-//*************************************************
-//Edit by Joshua Lansford 05/10/2007
-//I am creating a guiGate for the ADC so that
-//the ADC can have its own special pop-up window
-class guiGateADC : public guiGate {
-public:
-	guiGateADC();
-	
-	//Destructor for cleaning up private vars
-	virtual ~guiGateADC();
-	
-	// Function to show the gate's parameters dialog, takes the command
-	//	processor object to assign the setparameters command to.  gc is
-	//	a GUICircuit pointer
-	virtual void doParamsDialog( void* gc, wxCommandProcessor* wxcmd );
-	
-	//this is so we can update the pop-up about the current value
-	virtual void setLogicParam( string paramName, string value );
-
-private:
-	//The pop-up dialog
-	ADCPopupDialog* aDCPopupDialog;
-};
-//End of edit
 //*************************************************
 
 #endif /*GUIGATE_H_*/

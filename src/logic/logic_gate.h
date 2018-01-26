@@ -781,38 +781,6 @@ private:
 	int busWidth;
 };
 
-
-
-//********************************
-//Edit by Joshua Lansford 5/10/07
-//The following is a faked ADC.
-//It is fake because there is no
-//analog input to the chip.
-//The input is provided by a slider
-//in a popup
-//********************************
-class Gate_ADC : public Gate
-{
-public:
-	// Initialize the adc:
-	Gate_ADC();
-
-	// Handle gate events:
-	void gateProcess( void );
-
-	// Set the parameters:
-	bool setParameter( string paramName, string value );
-
-	// Get the parameters:
-	string getParameter( string paramName );
-
-protected:
-	unsigned long analogValue;
-	unsigned long digitalValue;
-	int countDown;
-	bool interuptIsFlaged;
-};
-
 //***************************************************************
 //Edit by Joshua Lansford 6/5/2007
 //This edit is to create a new gate called the pauseulator.

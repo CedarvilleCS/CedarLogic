@@ -16,8 +16,6 @@
 #include <stack>
 #include <iterator>
 
-#include "../Z80/Z_80LogicGate.h"
-
 #ifndef _PRODUCTION_
 ofstream* logiclog;
 #endif
@@ -236,10 +234,6 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_NODE( this ) );
 		} else if( type == "EQUIVALENCE" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_EQUIVALENCE );
-		} else if( type == "Z80" ){
-			gateList[thisGateID] = GATE_PTR( new Z_80LogicGate() );
-		} else if( type == "ADC" ){
-			gateList[thisGateID] = GATE_PTR( new Gate_ADC() );
 		} else if( type == "Pauseulator" ){
 			gateList[thisGateID] = GATE_PTR( new Gate_pauseulator() );
 		} else {

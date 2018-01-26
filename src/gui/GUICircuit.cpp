@@ -80,38 +80,9 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 		newGate = (guiGate*)(new guiGateKEYPAD());
 	else if (ggt == "PULSE")
 		newGate = (guiGate*)(new guiGatePULSE());
-		
-//*************************************************
-//Edit by Joshua Lansford 12/25/2006
-//I am creating a guiGate for the RAM so that
-//the ram can have its own special pop-up window
 	else if (ggt == "RAM"){
 		newGate = (guiGate*)(new guiGateRAM());
 	}
-
-//End of edit
-//*************************************************
-
-//*************************************************
-//Edit by Nathan Harro 01/13/2007
-//This will recognize the Z80 type
-//and call the correct guiGate method
-	else if (ggt == "Z80"){
-		newGate = (guiGate*)(new guiGateZ80());
-	}
-
-//End of edit
-//*************************************************
-
-//*******************************************
-//Edit by Joshua Lansford 05/10/2007
-//This is for the ADC as you might have guessed
-	else if (ggt == "ADC"){
-		newGate = (guiGate*)(new guiGateADC());
-	}
-//End of edit
-//******************************************
-
 	else
 		newGate = new guiGate();
 

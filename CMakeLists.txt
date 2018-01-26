@@ -4,6 +4,115 @@ project(CedarLogic)
 
 
 ### 
+### *.cpp and *.h files
+### 
+set(Sources
+	src/version.cpp
+	src/version.h
+	src/gui/autoSaveThread.cpp
+	src/gui/autoSaveThread.h
+	src/gui/CircuitParse.cpp
+	src/gui/CircuitParse.h
+	src/gui/commands.h
+	src/gui/gateImage.cpp
+	src/gui/gateImage.h
+	src/gui/gl_defs.cpp
+	src/gui/gl_defs.h
+	src/gui/gl_wrapper.h
+	src/gui/GUICanvas.cpp
+	src/gui/GUICanvas.h
+	src/gui/GUICircuit.cpp
+	src/gui/GUICircuit.h
+	src/gui/guiGate.cpp
+	src/gui/guiGate.h
+	src/gui/guiText.cpp
+	src/gui/guiText.h
+	src/gui/guiWire.cpp
+	src/gui/guiWire.h
+	src/gui/klsBBox.h
+	src/gui/klsClipboard.cpp
+	src/gui/klsClipboard.h
+	src/gui/klsCollisionChecker.cpp
+	src/gui/klsCollisionChecker.h
+	src/gui/klsGLCanvas.cpp
+	src/gui/klsGLCanvas.h
+	src/gui/klsMessage.h
+	src/gui/klsMiniMap.cpp
+	src/gui/klsMiniMap.h
+	src/gui/LibraryParse.cpp
+	src/gui/LibraryParse.h
+	src/gui/MainApp.cpp
+	src/gui/MainApp.h
+	src/gui/MainFrame.cpp
+	src/gui/MainFrame.h
+	src/gui/OscopeCanvas.cpp
+	src/gui/OscopeCanvas.h
+	src/gui/OscopeFrame.cpp
+	src/gui/OscopeFrame.h
+	src/gui/PaletteCanvas.cpp
+	src/gui/PaletteCanvas.h
+	src/gui/PaletteFrame.cpp
+	src/gui/PaletteFrame.h
+	src/gui/paramDialog.cpp
+	src/gui/paramDialog.h
+	src/gui/RamPopupDialog.cpp
+	src/gui/RamPopupDialog.h
+	src/gui/threadLogic.cpp
+	src/gui/threadLogic.h
+	src/gui/wireSegment.cpp
+	src/gui/wireSegment.h
+	src/gui/XMLParser.cpp
+	src/gui/XMLParser.h
+	src/gui/command/cmdAddTab.cpp
+	src/gui/command/cmdAddTab.h
+	src/gui/command/cmdConnectWire.cpp
+	src/gui/command/cmdConnectWire.h
+	src/gui/command/cmdCreateGate.cpp
+	src/gui/command/cmdCreateGate.h
+	src/gui/command/cmdCreateWire.cpp
+	src/gui/command/cmdCreateWire.h
+	src/gui/command/cmdDeleteGate.cpp
+	src/gui/command/cmdDeleteGate.h
+	src/gui/command/cmdDeleteSelection.cpp
+	src/gui/command/cmdDeleteSelection.h
+	src/gui/command/cmdDeleteTab.cpp
+	src/gui/command/cmdDeleteTab.h
+	src/gui/command/cmdDeleteWire.cpp
+	src/gui/command/cmdDeleteWire.h
+	src/gui/command/cmdDisconnectWire.cpp
+	src/gui/command/cmdDisconnectWire.h
+	src/gui/command/cmdMoveGate.cpp
+	src/gui/command/cmdMoveGate.h
+	src/gui/command/cmdMoveSelection.cpp
+	src/gui/command/cmdMoveSelection.h
+	src/gui/command/cmdMoveWire.cpp
+	src/gui/command/cmdMoveWire.h
+	src/gui/command/cmdPasteBlock.cpp
+	src/gui/command/cmdPasteBlock.h
+	src/gui/command/cmdSetParams.cpp
+	src/gui/command/cmdSetParams.h
+	src/gui/command/cmdWireSegDrag.cpp
+	src/gui/command/cmdWireSegDrag.h
+	src/gui/command/klsCommand.cpp
+	src/gui/command/klsCommand.h
+	src/gui/GLFont/glfont2.cpp
+	src/gui/GLFont/glfont2.h
+	src/logic/logic_circuit.cpp
+	src/logic/logic_circuit.h
+	src/logic/logic_defaults.h
+	src/logic/logic_event.cpp
+	src/logic/logic_event.h
+	src/logic/logic_gate.cpp
+	src/logic/logic_gate.h
+	src/logic/logic_junction.cpp
+	src/logic/logic_junction.h
+	src/logic/logic_values.h
+	src/logic/logic_wire.cpp
+	src/logic/logic_wire.h
+)
+
+
+### 
 ### Modules.
 ### 
 
@@ -50,8 +159,6 @@ import_libraries(${Libraries})
 ###
 ### Build Config.
 ###
-
-file(GLOB_RECURSE Sources "src/*.cpp" "src/*.h")
 
 link_directories("${wxwin}/lib/vc_lib")
 
