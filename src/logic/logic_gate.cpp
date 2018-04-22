@@ -839,9 +839,13 @@ Gate_REGISTER::Gate_REGISTER() : Gate_PASS() {
 // Also, when doing a load operation, un-resolvable inputs are defaulted to 0's.
 
 	// Set the default settings:
-	syncSet = syncClear = syncLoad = true;
-	disableHold = unknownOutputs = false;
-	currentValue = maxCount = 0;
+	syncSet = true;
+	syncClear = true;
+	syncLoad = true;
+	disableHold = false;
+    unknownOutputs = false;
+	currentValue = 0;
+	maxCount = 0;
 
 	// An initialization value, to make REGISTERs initialize more
 	// nicely when loading them or making new ones:
@@ -867,20 +871,20 @@ void Gate_REGISTER::gateProcess( void ) {
 
 	// Update outBus and currentValue based on the input states.
 	if( getInputState("clear") == ONE ) {
-		if( (syncClear && isRisingEdge("clock")) || !syncClear || getInputState("clock_enable") == ZERO) {
+		if(hasClockEdge()) {
 			// Clear.
 			currentValue = 0;
 			outBus = ulong_to_bus( currentValue, inBits );
 		}
 	} else if( getInputState("set") == ONE ) {
-		if( (syncSet && isRisingEdge("clock")) || !syncSet || getInputState("clock_enable") == ZERO) {
+		if(hasClockEdge()) {
 			// Set.
 			vector< StateType > allOnes( inBits, ONE );
 			outBus = allOnes;
 			currentValue = bus_to_ulong( outBus );
 		}
 	} else if( getInputState("load") == ONE ) {
-		if( (syncLoad && isRisingEdge("clock")) || !syncLoad || getInputState("clock_enable") == ZERO){
+		if(hasClockEdge()){
 			// Load.
 			vector< StateType > inputBus = getInputBusState("IN");
 			for( unsigned long i = 0; i < inputBus.size(); i++ ) {
@@ -971,7 +975,7 @@ void Gate_REGISTER::gateProcess( void ) {
 
 		if( disableHold ) {
 		// Otherwise, load in what is on the input pins:
-			if((syncLoad && isRisingEdge("clock")) || !syncLoad || getInputState("clock_enable") == ZERO){
+			if(hasClockEdge()){
 				// Load.
 				vector< StateType > inputBus = getInputBusState("IN");
 				for( unsigned long i = 0; i < inputBus.size(); i++ ) {
@@ -1122,6 +1126,9 @@ string Gate_REGISTER::getParameter( string paramName ) {
 	}
 }
 
+bool Gate_REGISTER::hasClockEdge() {
+	return isRisingEdge("clock") && getInputState("clock_enable") != ZERO || !syncLoad;
+}
 
 // **************************** END Register GATE ***********************************
 

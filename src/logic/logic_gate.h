@@ -386,6 +386,10 @@ protected:
 	// An initialization value, to make REGISTERs initialize more
 	// nicely when loading them or making new ones:
 	bool firstGateProcess;
+
+	// The clock pin had a triggering edge and clocking is enabled,
+	// or the register isn't synched to a clock.
+	bool hasClockEdge();
 };
 
 

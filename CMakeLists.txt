@@ -182,6 +182,7 @@ target_compile_options(CedarLogic
     PRIVATE
         /FI"${wxwin}/include/msvc/wx/setup.h"
         /FI"${wxwin}/include/wx/wxprec.h"
+        /MP
 )
 
 target_compile_definitions(CedarLogic
@@ -222,7 +223,7 @@ set(CPACK_PACKAGE_EXECUTABLES ..\\\\CedarLogic "CedarLogic" ..\\\\Uninstall "Uni
 set(CPACK_PACKAGE_VENDOR "Cedarville University")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "3")
-set(CPACK_PACKAGE_VERSION_PATCH "3")
+set(CPACK_PACKAGE_VERSION_PATCH "4")
 set(CPACK_PACKAGE_ICON ${CMAKE_SOURCE_DIR}/cmake\\\\InstallSmall.bmp)
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/res/LICENSE.txt)
 set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/cmake\\\\icon.ico)

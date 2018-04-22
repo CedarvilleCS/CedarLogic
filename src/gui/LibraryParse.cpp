@@ -200,6 +200,9 @@ void LibraryParse::parseFile() {
 					mParse->readCloseTag();
 				} else if (temp == "caption") {
 					newGate.caption = mParse->readTagValue("caption");
+					if (newGate.caption == "Inverter" && (time(0) % 1001 == 0)) { // Easter egg, rename inverters once in a while :)
+						newGate.caption = "Santa Hat (Inverter)";
+					}
 					mParse->readCloseTag();
 				}
 			} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end gate
