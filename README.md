@@ -44,6 +44,11 @@ CedarLogic is Cedarville University's digital logic simulator.
 Run `git tag` to view all the tagged versions of CedarLogic.
 
 v2.2017.01.16 - Buggy first release with busses.
+
 v2.2017.01.18 - Fixed bugs.
+
 v2.2017.05.02 - Borken version with lots of good, but enough bad to warrant abandonment.
+
 v2.2018.01.26 - Branch from v2.2017.01.18, stable bus support with an installer and file associations.
+
+v2.3.5 - Patch release to re-enable grayscale printing.

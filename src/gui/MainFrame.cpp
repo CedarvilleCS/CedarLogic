@@ -733,6 +733,7 @@ void MainFrame::OnPaste(wxCommandEvent& event) {
 }
 
 void MainFrame::OnExportBitmap(wxCommandEvent& event) {
+
 	bool showGrid = false;
 	wxMessageDialog gridDialog(this, "Export with Grid?", "Export", wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
 	switch (gridDialog.ShowModal()) {
@@ -743,7 +744,20 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 		return;
 	}
 
+	bool showColor = false;
+	wxMessageDialog colorDialog(this, "Export with Color?", "Export", wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
+	switch (colorDialog.ShowModal()) {
+	case wxID_YES:
+		showColor = true;
+		break;
+	case wxID_CANCEL:
+		return;
+	}
+
 	wxBitmap bitmap = getBitmap(showGrid);
+	if (!showColor) {
+		bitmap = wxBitmap(bitmap.ConvertToImage().ConvertToGreyscale());
+	}
 
 	wxString caption = "Export Circuit";
 	wxString wildcard = "PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|Bitmap (*.bmp)|*.bmp";
