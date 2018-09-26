@@ -25,19 +25,21 @@ CedarLogic is Cedarville University's digital logic simulator.
 
 # Compiling and creating an installer.
 
-1. Go to the root of the git repo.
+1. First, you need to install NSIS.
 
-2. Run `mkdir build && cd build && cmake .. "Visual Studio 15 2017"`.
+2. Next, go to the root of the git repo.
 
-3. There is now a visual studio solution in the `build` directory. Open the solution file.
+3. Run `mkdir build && cd build && cmake .. "Visual Studio 15 2017"`.
 
-4. Right-click on the project titled `CedarLogic` and select `Set as Startup Project`.
+4. There is now a visual studio solution in the `build` directory. Open the solution file.
 
-5. Select `Release` from the configuration menu.
+5. Right-click on the project titled `CedarLogic` and select `Set as Startup Project`.
 
-6. Right click on the `Package` target to create a new installer in the `build` directory.
+6. Select `Release` from the configuration menu.
 
-7. There is now a CedarLogic installer executable in the `build` directory.
+7. Right click on the `Package` target to create a new installer in the `build` directory.
+
+8. There is now a CedarLogic installer executable in the `build` directory.
 
 # Version Summaries.
 
