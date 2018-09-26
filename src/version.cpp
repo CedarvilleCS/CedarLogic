@@ -4,8 +4,9 @@
 using namespace std;
 
 namespace {
-	const int VERSION_MAJOR = 2;
-	const int VERSION_MINOR = 3;
+	const int VERSION_MAJOR = CEDARLOGIC_MAJOR;
+	const int VERSION_MINOR = CEDARLOGIC_MINOR;
+	const int VERSION_PATCH = CEDARLOGIC_PATCH;
 }
 
 string VERSION_NUMBER_STRING() {
@@ -40,7 +41,8 @@ string VERSION_NUMBER_STRING() {
 
 	// Version in format: "MAJOR.MINOR|YYYY-MM-DD HH:MM:SS"
 	return std::to_string(VERSION_MAJOR) + "." +
-		std::to_string(VERSION_MINOR) + " | " +
+		std::to_string(VERSION_MINOR) + "." +
+		std::to_string(VERSION_PATCH) + " | " +
 		year + "-" + month + "-" + day + " " + hms;
 }
 
@@ -55,6 +57,7 @@ string VERSION_ABOUT_TEXT() {
 		R"===(
 Copyright (c) 2007, Cedarville University, Benjamin Sprague, Matthew Lewellyn, David Knierim, Joshua Lansford, Nathan Harro.
 Copyright (c) 2017, Cedarville University, Tyler Drake, Julian Pernia, Jackson Vaugn, Colin Broberg.
+Copyright (c) 2018, Cedarville University, Tyler Drake.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
