@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: 'AREA: Title'
-labels: ''
+labels: 'bug'
 assignees: ''
 
 ---
@@ -26,6 +26,9 @@ If applicable, add screenshots to help explain your problem.
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
  - Version [e.g. 1911]
+
+**Product Version in Use**
+ - v2.3.5
 
 **Additional context**
 Add any other context about the problem here. (attach files here)
