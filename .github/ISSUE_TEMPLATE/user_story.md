@@ -1,8 +1,8 @@
 ---
 name: User Story
 about: Task to be done.
-title: ''
-labels: ''
+title: 'USER STORY: Title'
+labels: 'user story'
 assignees: ''
 
 ---
