@@ -1,7 +1,16 @@
 
 # CedarLogic
+## About
+CedarLogic is a digital logic simulator often used in university classroom instruction. It includes all the basic gates, buses, JK and D flip flops, muxes, decoders, and a Z80 processor. At [Cedarville University](https://www.cedarville.edu/) it has been used by Computer Architecture 1 students to build and simulate a full [mano-machine](https://en.wikipedia.org/wiki/Mano_machine). 
 
-CedarLogic is Cedarville University's digital logic simulator.
+It has recently been open sourced and is being actively maintained by @joe-sonrichard. Please feel free to contribute tickets and pull requests.
+
+## History
+CedarLogic was developed by [Cedarville University](https://www.cedarville.edu/) professors for classroom instruction. It was released on [Source Forge](https://sourceforge.net/projects/cedarlogic/) in 2006 where  it's enjoyed long-lived popularity, over 20,000 downloads in 2019 alone.
+
+The latest version availible on Source Forge was released in 2011/12 and has been the public face of CedarLogic. Internally, senior design teams took a couple shots at improving it with added features, unfortunately accompanied by added bugs.
+
+In February 2020 Cedarville Unversity agreed to open source the project with @joe-sonrichard heading up  the project. As of this writing, the chief objective is to fix any known bugs and stabalize the product before considering further improvements.
 
 # Getting Ready to Compile
 
