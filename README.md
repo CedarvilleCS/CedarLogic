@@ -1,7 +1,6 @@
 
-# CedarLogic
-## About
-CedarLogic is a digital logic simulator often used in university classroom instruction. It includes all the basic gates, buses, JK and D flip flops, muxes, decoders, and a Z80 processor. At [Cedarville University](https://www.cedarville.edu/) it has been used by Computer Architecture 1 students to build and simulate a full [mano-machine](https://en.wikipedia.org/wiki/Mano_machine). 
+# About CedarLogic
+CedarLogic is a digital logic simulator often used in university classroom instruction. It includes all the basic gates, buses, JK and D flip flops, muxes, decoders, and a [Z80 micro-processor](https://en.wikipedia.org/wiki/Zilog_Z80). At [Cedarville University](https://www.cedarville.edu/) it has been used by Computer Architecture 1 students to build and simulate a full [mano-machine](https://en.wikipedia.org/wiki/Mano_machine). 
 
 It has recently been open sourced and is being actively maintained by @joe-sonrichard. Please feel free to contribute tickets and pull requests.
 
@@ -12,7 +11,16 @@ The latest version availible on Source Forge was released in 2011/12 and has bee
 
 In February 2020 Cedarville Unversity agreed to open source the project with @joe-sonrichard heading up  the project. As of this writing, the chief objective is to fix any known bugs and stabalize the product before considering further improvements.
 
-# Getting Ready to Compile
+### Original Developers
+ - [Dr. Keith Shomper](https://www.cedarville.edu/Academic-Schools-and-Departments/Engineering-and-Computer-Science/Faculty/Faculty/Shomper-Keith.aspx) 
+ - [Matt Lewellyn](https://sourceforge.net/u/mattosaur/profile/)
+ - [Benjamin Sprague](https://sourceforge.net/u/realmadsci/profile/)
+ - [Dr. Clint Kohl](https://www.cedarville.edu/Academic-Schools-and-Departments/Engineering-and-Computer-Science/Faculty/Faculty/Kohl-Clinton.aspx)
+ 
+ 
+# Build Instructions
+## Getting Ready to Compile
+**TODO:** Automate build process so this is antiquated (infrastructure as code)
 
 1. Install `Visual Studio 2015` or newer.
 
@@ -32,7 +40,7 @@ In February 2020 Cedarville Unversity agreed to open source the project with @jo
 		nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
 		nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
 
-# Compiling and creating an installer.
+## Compiling and creating an installer.
 
 1. First, you need to install NSIS.
 
@@ -54,7 +62,7 @@ In February 2020 Cedarville Unversity agreed to open source the project with @jo
 
 Run `git tag` to view all the tagged versions of CedarLogic.
 
-**NOTE:** Old versions of this project are availible on [source forge](https://sourceforge.net/projects/cedarlogic/)
+**NOTE:** Old versions of this project are availible on [source forge](https://sourceforge.net/projects/cedarlogic/). The latest version on source forge is notable as it was stable though missing some later features.
 
 v2.2017.01.16 - Buggy first release with busses.
 
