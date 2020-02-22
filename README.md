@@ -45,6 +45,8 @@ CedarLogic is Cedarville University's digital logic simulator.
 
 Run `git tag` to view all the tagged versions of CedarLogic.
 
+**NOTE:** Old versions of this project are availible on [source forge](https://sourceforge.net/projects/cedarlogic/)
+
 v2.2017.01.16 - Buggy first release with busses.
 
 v2.2017.01.18 - Fixed bugs.
