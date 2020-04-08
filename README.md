@@ -13,7 +13,7 @@ In February 2020 Cedarville Unversity agreed to open source the project with @jo
 
 ### Original Developers
  - [Dr. Keith Shomper](https://www.cedarville.edu/Academic-Schools-and-Departments/Engineering-and-Computer-Science/Faculty/Faculty/Shomper-Keith.aspx) 
- - @guruofgentoo)
+ - [Matt Lewellyn](https://github.com/guruofgentoo)
  - [Benjamin Sprague](https://sourceforge.net/u/realmadsci/profile/)
  - [Dr. Clint Kohl](https://www.cedarville.edu/Academic-Schools-and-Departments/Engineering-and-Computer-Science/Faculty/Faculty/Kohl-Clinton.aspx)
  
