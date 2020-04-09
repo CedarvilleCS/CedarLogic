@@ -24,9 +24,9 @@ In February 2020 Cedarville Unversity agreed to open source the project with @jo
 
 1. Install `Visual Studio 2015` or newer.
 
-2. Download `wxWidgets 2.8.12` source for windows. [link](http://www.wxwidgets.org/downloads/)
+2. Download [wxWidgets 2.8.12](https://github.com/wxWidgets/wxWidgets/releases/download/v2.8.12/wxMSW-2.8.12-Setup.exe) source for windows.
 
-3. Run wxWidgets source installer or extract zip.
+3. Run wxWidgets source installer.
 
 4. Set windows environment variable `WXWIN` to point to your wxWidgets directory.
 
