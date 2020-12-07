@@ -30,12 +30,21 @@ class OscopeFrame;
 
 enum
 {
-	File_Export = 5901, // out of range of wxWidgets constants
-	File_ClipCopy,
+	File_Export = 5901, // out of range of wxWidgets constants	
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	//File_ClipCopy,
+	Copy_Color,
+	Copy_Greyscale,
+	Copy_Monochrome,
 	
 	View_Oscope,
 	View_Gridline,
 	View_WireConn,
+	View_ComponentColl,
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	View_componentCollisions,
 	
     TIMER_ID,
     IDLETIMER_ID,
@@ -71,7 +80,9 @@ public:
     void OnSave(wxCommandEvent& event);
     void OnSaveAs(wxCommandEvent& event);
 	void OnExportBitmap(wxCommandEvent& event);
-	void OnCopyToClipboard(wxCommandEvent& event);
+	// Pedro Casanova (casanova@ujaen.es) 2020705
+	// Moved to edit menu
+	//void OnCopyToClipboard(wxCommandEvent& event);
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxTimerEvent& event);
 	void OnSize(wxSizeEvent& event);
@@ -80,15 +91,25 @@ public:
 	void OnUndo(wxCommandEvent& event);
 	void OnRedo(wxCommandEvent& event);
 	void OnCopy(wxCommandEvent& event);
-	void OnPaste(wxCommandEvent& event);	
+	void OnPaste(wxCommandEvent& event);
+	// Pedro Casanova(casanova@ujaen.es) 2020/04-10
+	// Separate options to copy bitmap to clipboard
+	void OnCopyColor(wxCommandEvent& event);
+	void OnCopyGreyscale(wxCommandEvent& event);
+	void OnCopyMonochrome(wxCommandEvent& event);
 	void OnOscope(wxCommandEvent& event);
 	void OnViewGridline(wxCommandEvent& event);
 	void OnViewWireConn(wxCommandEvent& event);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// To show/hide components collisions
+	void OnViewComponentCollisions(wxCommandEvent& event);
 	void OnPause(wxCommandEvent& event);
 	void OnStep(wxCommandEvent& event);
 	void OnZoomIn(wxCommandEvent& event);
 	void OnZoomOut(wxCommandEvent& event);
-	void OnTimeStepModSlider(wxScrollEvent& event);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Any Slider scroll
+	void OnSlider(wxScrollEvent& event);
 	void OnLock(wxCommandEvent& event);
 	void OnNewTab(wxCommandEvent& event);
 	void OnDeleteTab(wxAuiNotebookEvent& event);
@@ -96,7 +117,11 @@ public:
 	void OnRequestAFeature(wxCommandEvent& event);
 	void OnDownloadLatestVersion(wxCommandEvent& event);
 	
-	void saveSettings( void );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Settings now in windows register
+	void saveSettingsFile(void);
+	void saveSettingsReg(void);
+	void saveSettings(bool Reg);
 	
 	void ResumeExecution ( void );
 	
@@ -121,7 +146,8 @@ public:
 	void load(string filename);
 
 	//Julian: Added to simplify exporting and copying to clipboard
-	wxBitmap getBitmap(bool withGrid);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10		Added noColor
+	wxBitmap getBitmap(bool withGrid, bool noColor = false);
 	
 private:
     // helper function - creates a new thread (but doesn't run it)
@@ -138,6 +164,8 @@ private:
 
 	wxPanel* mainPanel;
 	wxToolBar* toolBar;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	wxMenuBar* menuBar;
 
 	//Julian: Re-added timers to fix refresh error
 	wxTimer* simTimer;
@@ -158,9 +186,17 @@ private:
 	
 	wxSlider* timeStepModSlider;
 	wxStaticText* timeStepModVal;
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Slider to select wireConnRadius
+	wxSlider* wireConnRadiusSlider;
+	wxStaticText* wireConnRadiusVal;
+
 	PaletteFrame* gatePalette;
 	
 	wxBoxSizer* mainSizer;
+
+	bool cancelSave;
 	
     // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()

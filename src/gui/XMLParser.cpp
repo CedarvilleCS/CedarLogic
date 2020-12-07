@@ -23,7 +23,16 @@ XMLParser::XMLParser(fstream* strIO, bool writing)
 	string temp;
 	while (!mStream->eof()) {
 	    getline(*mStream, temp, '\n');
-	    lines.push_back(temp + '\n');
+
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Now permit LF (UNIX) and CRLF (WINDOWS)
+		if (temp.c_str()[strlen(temp.c_str()) - 1] == '\r')
+		{
+			temp[strlen(temp.c_str()) - 1] = '\n';
+			lines.push_back(temp);
+		}
+		else
+			lines.push_back(temp + '\n');
 	}
   	lineIdx = 0;
   	linePtr = -1;

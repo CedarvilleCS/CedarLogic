@@ -100,6 +100,49 @@ bool GLFont::Create (const std::string &file_name, int tex)
 	return Create(file_name.c_str(), tex);
 }
 //*******************************************************************
+bool GLFont::Create(void* fontData, int tex)
+{
+	int num_chars, num_tex_bytes;
+	char *tex_bytes;
+	//Destroy the old font if there was one, just to be safe
+	Destroy();
+
+	//Read the header
+	memcpy_s((void*)&header, sizeof(header), fontData, sizeof(header));
+	header.tex = tex;
+
+	//Allocate space for character array
+	num_chars = header.end_char - header.start_char + 1;
+	if ((header.chars = new GLFontChar[num_chars]) == NULL)
+		return false;
+
+	char* pIni =  (char*)fontData + sizeof(header);
+	memcpy_s((void*)header.chars, sizeof(GLFontChar)*num_chars, pIni, sizeof(GLFontChar)*num_chars);
+
+	//Read texture pixel data
+	num_tex_bytes = header.tex_width * header.tex_height * 2;
+	tex_bytes = new char[num_tex_bytes];
+	pIni = (char*)fontData + sizeof(header) + sizeof(GLFontChar)*num_chars;
+	memcpy_s(tex_bytes, num_tex_bytes, pIni, num_tex_bytes);
+
+	//Create OpenGL texture
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexImage2D(GL_TEXTURE_2D, 0, 2, header.tex_width,
+		header.tex_height, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
+		(void *)tex_bytes);
+
+	//Free texture pixels memory
+	delete[] tex_bytes;
+
+	//Return successfully
+	return true;
+}
+//*******************************************************************
 void GLFont::Destroy (void)
 {
 	//Delete the character array if necessary

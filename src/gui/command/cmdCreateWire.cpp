@@ -18,7 +18,6 @@ cmdCreateWire::cmdCreateWire(GUICanvas* gCanvas, GUICircuit* gCircuit,
 
 cmdCreateWire::cmdCreateWire(const std::string &def) :
 		klsCommand(true, "Create Wire") {
-
 	std::istringstream iss(def);
 	std::string dump;
 	iss >> dump;

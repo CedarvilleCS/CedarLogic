@@ -387,12 +387,11 @@ int OscopeFrame::getFeedYPos( int i ){
 //This will cause the OscopeFrame
 //to update the list of
 void OscopeFrame::updatePossableFeeds( vector< string >* newPossabilities ){ 
-
 	//refresh the combo boxes and set their values to [None] if they
 	//are not valid anymore.
 	for( unsigned int i = 0; i < numberOfFeeds(); ++i ){
 		//clear dumps the current value also
-		string currentFeedName = getFeedName( i );
+		string currentFeedName = getFeedName( i );		
 		
 		comboBoxes[i]->Clear();
 		
@@ -408,7 +407,7 @@ void OscopeFrame::updatePossableFeeds( vector< string >* newPossabilities ){
 			}
 		}
 		
-		comboBoxes[i]->Append((const wxChar *)encodeFeedName(NONE_STR).c_str()); // KAS
+		comboBoxes[i]->Append((const wxChar *)encodeFeedName(NONE_STR).c_str()); // KAS		
 		if( numberOfFeeds() > 1 ){
 			comboBoxes[i]->Append((const wxChar *)encodeFeedName(RMOVE_STR).c_str()); // KAS
 		}

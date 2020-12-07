@@ -125,14 +125,7 @@ public:
 	//	a GUICircuit pointer
 	virtual void doParamsDialog( void* gc, wxCommandProcessor* wxcmd );
 	// Set and get param virtual functions, simply assigns a string
-	virtual void setGUIParam( string paramName, string value ) {
-		gparams[paramName] = value;
-		if( paramName == "angle" ) {
-			// Update the matrices and bounding box:
-			updateConnectionMerges();
-			updateBBoxes();
-		}
-	};
+	virtual void setGUIParam(string paramName, string value);
 	virtual string getGUIParam( string paramName ) { return gparams[paramName]; };
 	map < string, string >* getAllGUIParams() { return &gparams; };
 	virtual void setLogicParam( string paramName, string value ) {
@@ -166,7 +159,7 @@ public:
 	bool clickSelect( GLfloat x, GLfloat y );
 
 	// Insert a line in the line list.
-	void insertLine( float x1, float y1, float x2, float y2 );
+	void insertLine( float x1, float y1, float x2, float y2, int w = 1 );
 
 	// Recalculate the bounding box, based on the lines that are included alredy:
 	virtual void calcBBox( void );
@@ -259,7 +252,11 @@ protected:
 	// Model space bounding box:
 	klsBBox modelBBox;
 	
-	vector<GLPoint2f> vertices;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Now use vector line instead of vertices to contain w
+	//vector<GLPoint2f> vertices;
+	vector<lgLine> lines;
+
 	// map i/o name to hotspot coord
 	map< string, gateHotspot* > hotspots;
 	// map i/o name to wire id
@@ -315,6 +312,7 @@ protected:
 	bool renderInfo_drawBlue;
 	int renderInfo_numDigitsToShow;
 	string renderInfo_currentValue;
+	bool disp_BCD;	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
 };
 
 class guiGatePULSE : public guiGate {
@@ -373,13 +371,9 @@ private:
 };
 
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Modified to permit variable labes size.
 // ************************ TO/FROM gate *************************
-#define TO_FROM_TEXT_HEIGHT 1.5
-#define TO_BUFFER 0.4
-#define FROM_BUFFER 0.0
-#define FROM_FIX_SHIFT 0.0
-#define FLIPPED_OFFSET 0.5
-
 class guiTO_FROM : public guiGate {
 public:
 	guiTO_FROM();
@@ -388,11 +382,23 @@ public:
 
 	// Recalculate the gate's bounding box:
 	void calcBBox( void );
+
+	// A convenience function that translates
+	// TEXT_HEIGHT parameter into a GLdouble:
+	GLdouble getTextHeight(void) {
+		istringstream iss(gparams["TEXT_HEIGHT"]);
+		GLdouble textHeight = 1.0;
+		iss >> textHeight;
+		
+		return textHeight;
+	};
 	
 	// A custom setParam function is required because
 	// the object must resize it's bounding box 
 	// each time the JUNCTION_ID parameter is set.
 	void setLogicParam( string paramName, string value );
+
+	void setGUIParam(string paramName, string value);
 
 private:
 	guiText theText;
@@ -402,6 +408,8 @@ private:
 // ************************ RAM gate ****************************
 
 //*************************************************
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Modified to limit data size values.
 //Edit by Joshua Lansford 12/25/2006
 //I am creating a guiGate for the RAM so that
 //the ram can have its own special pop-up window
@@ -446,6 +454,8 @@ private:
 	unsigned long dataBits;
 	unsigned long addressBits;
 	map< unsigned long, unsigned long > memory;
+
+
 	
 	//used for highlighting the last read and
 	//written in the pop-up

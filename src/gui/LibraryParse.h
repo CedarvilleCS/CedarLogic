@@ -24,18 +24,25 @@
 using namespace std;
 
 struct lgHotspot {
-	lgHotspot( string nName = "", bool nIsInput = true, float nX = 0, float nY = 0, bool nIsInverted = false, string nEInput = "", int busLines = 1) : name(nName), isInput(nIsInput), x(nX), y(nY), isInverted(nIsInverted), logicEInput(nEInput), busLines(busLines) {};
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// To permit pull-up and pull-down inputs
+	lgHotspot(string nName = "", bool nIsInput = true, float nX = 0, float nY = 0, bool nIsInverted = false, bool nIsPullUp = false, bool nIsPullDown = false, string nEInput = "", int busLines = 1) : name(nName), isInput(nIsInput), x(nX), y(nY), isInverted(nIsInverted), isPullUp(nIsPullUp), isPullDown(nIsPullDown), logicEInput(nEInput), busLines(busLines) {};
 	string name;
 	bool isInput;
 	float x, y;
 	bool isInverted;
+	bool isPullUp;
+	bool isPullDown;
 	string logicEInput;
 	int busLines;
 };
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// parameter w added for linewidth (default=1)
 struct lgLine {
-	lgLine( float nX1 = 0, float nY1 = 0, float nX2 = 0, float nY2 = 0 ) : x1(nX1), x2(nX2), y1(nY1), y2(nY2) {}
+	lgLine(float nX1 = 0, float nY1 = 0, float nX2 = 0, float nY2 = 0, int nW = 1) : x1(nX1), x2(nX2), y1(nY1), y2(nY2), w(nW) {}
 	float x1, x2, y1, y2;
+	int w;
 };
 
 struct lgDlgParam {

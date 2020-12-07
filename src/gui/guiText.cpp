@@ -106,5 +106,18 @@ void guiText::setSize( GLdouble textHeight, GLdouble aspect ) {
 
 // loadFont - call this for each context after initialization
 void guiText::loadFont(string fontpath) {
-	fontFace.Create(fontpath.c_str(), FONT_TEXTURE_ID);	
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	if (fontpath == "res")
+	{
+		// Font in Resources
+		HANDLE hResource = FindResource(NULL, "ARIAL.GLF", "BIN");
+		DWORD nLen = SizeofResource(NULL, (HRSRC)hResource);
+		hResource = LoadResource(NULL, (HRSRC)hResource);
+		void* lpResData = LockResource(hResource);
+		fontFace.Create(lpResData, FONT_TEXTURE_ID);
+	}
+	else
+	{
+		fontFace.Create(fontpath.c_str(), FONT_TEXTURE_ID);
+	}
 }

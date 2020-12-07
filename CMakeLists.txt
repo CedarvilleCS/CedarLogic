@@ -4,8 +4,8 @@ project(CedarLogic)
 
 
 set(CEDARLOGIC_MAJOR 2)
-set(CEDARLOGIC_MINOR 3)
-set(CEDARLOGIC_PATCH 5)
+set(CEDARLOGIC_MINOR 4)
+set(CEDARLOGIC_PATCH 0)
 
 add_definitions(
 	-DCEDARLOGIC_MAJOR=${CEDARLOGIC_MAJOR}
@@ -18,9 +18,10 @@ add_definitions(
 ### *.cpp and *.h files
 ### 
 set(Sources
-	icon.rc
+	resources.rc
 	src/version.cpp
 	src/version.h
+	src/dbgmsg.h
 	src/gui/autoSaveThread.cpp
 	src/gui/autoSaveThread.h
 	src/gui/CircuitParse.cpp
@@ -93,6 +94,8 @@ set(Sources
 	src/gui/command/cmdDeleteWire.h
 	src/gui/command/cmdDisconnectWire.cpp
 	src/gui/command/cmdDisconnectWire.h
+	src/gui/command/cmdMergeWire.cpp
+	src/gui/command/cmdMergeWire.h
 	src/gui/command/cmdMoveGate.cpp
 	src/gui/command/cmdMoveGate.h
 	src/gui/command/cmdMoveSelection.cpp

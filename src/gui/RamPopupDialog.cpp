@@ -23,8 +23,10 @@ using namespace std;
 
 DECLARE_APP(MainApp)
 
-RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM, 
-        unsigned long bitsInAddress, GUICircuit* newGUICircuit )
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// bitsInAddress eliminated, got it from paramaeters
+
+RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM, GUICircuit* newGUICircuit )
 	: wxDialog( wxGetApp().GetTopWindow(), -1, RAM_TITLE, 
 	    wxPoint(RAM_X_POS, RAM_Y_POS), 
 	    wxSize(RAM_WIDTH, RAM_HEIGHT),
@@ -35,39 +37,44 @@ RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM,
 	
 	
 	int bitsInData;
+	int bitsInAddress;
 
-	istringstream iss(m_guiGateRAM->getLogicParam("DATA_BITS"));
-	iss >> bitsInData;
-	
-	
-	int dataSize = bitsInData / 4; //convert to nibbles
-	int addressSize = bitsInAddress / 4;
+	istringstream datass(m_guiGateRAM->getLogicParam("DATA_BITS"));
+	datass >> bitsInData;
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// bitsInAddress from parameters
+	istringstream adrss(m_guiGateRAM->getLogicParam("ADDRESS_BITS"));
+	adrss >> bitsInAddress;
 
 	wxBoxSizer* topSizer = new wxBoxSizer( wxVERTICAL );
 	wxBoxSizer* buttonSizer = new wxBoxSizer( wxHORIZONTAL );
 	
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Added Clear Button
+	clearBtn = new wxButton( this, wxID_CLEAR);	
 	closeBtn = new wxButton( this, wxID_CLOSE );
 	loadBtn = new wxButton( this, wxID_OPEN );
-	saveBtn = new wxButton( this, wxID_SAVE );
+	saveBtn = new wxButton( this, wxID_SAVE );	
 	
 	hexOrDecCB = new wxCheckBox(this, ID_CHECKBOX, (const wxChar *)"Show Decimal"); // KAS
 	
-	wxGridTableBase* gridTable = new virtualGrid(addressSize, dataSize, m_guiGateRAM, gUICircuit ,hexOrDecCB); 
+	wxGridTableBase* gridTable = new virtualGrid(bitsInAddress, bitsInData, m_guiGateRAM, gUICircuit, hexOrDecCB);
 	memContents = new wxGrid(this, ID_MEMCONTENTS);
 	memContents->SetTable(gridTable , true);
 		
 	topSizer->Add( hexOrDecCB, wxSizerFlags(0).Align(0).Border(wxALL, 5 ));
 	
 	topSizer->Add( memContents, wxSizerFlags(1).Align(0).Expand().Border(wxALL, 5 ));
-	
+
+	buttonSizer->Add( clearBtn, wxSizerFlags(0).Align(wxALIGN_RIGHT).Border(wxALL, 5));
 	buttonSizer->Add( loadBtn, wxSizerFlags(0).Align(wxALIGN_LEFT).Border(wxALL, 5 ));
 	buttonSizer->Add( saveBtn, wxSizerFlags(0).Align(wxALIGN_LEFT).Border(wxALL, 5 ));
-	buttonSizer->Add( closeBtn,wxSizerFlags(0).Align(wxALIGN_RIGHT).Border(wxALL, 5 ));
+	buttonSizer->Add( closeBtn,wxSizerFlags(0).Align(wxALIGN_RIGHT).Border(wxALL, 5 ));	
 	
 	topSizer->Add( buttonSizer,wxSizerFlags(0).Align(0).Border(wxALL, 5 ));
 	
 	SetSizer( topSizer );
-	topSizer->SetSizeHints( this );
 
 	notifyAllChanged();
 	memContents->AutoSizeColumns(true);
@@ -105,6 +112,13 @@ void RamPopupDialog::OnBtnSave( wxCommandEvent& event ){
 	}
 }
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Added Clear Button
+void RamPopupDialog::OnBtnClear(wxCommandEvent& event) {
+	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "CLEAR_MEMORY", NULL)));
+	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_UPDATE_GATES));
+}
+
 void RamPopupDialog::OnChkBox ( wxCommandEvent &event) {
 	notifyAllChanged();
 }
@@ -114,9 +128,10 @@ void RamPopupDialog::OnSize(){
 }
 
 BEGIN_EVENT_TABLE(RamPopupDialog, wxDialog)
+	EVT_BUTTON(wxID_CLEAR, RamPopupDialog::OnBtnClear)
 	EVT_BUTTON(wxID_CLOSE, RamPopupDialog::OnBtnClose)
 	EVT_BUTTON(wxID_OPEN, RamPopupDialog::OnBtnLoad)
-	EVT_BUTTON(wxID_SAVE, RamPopupDialog::OnBtnSave)
+	EVT_BUTTON(wxID_SAVE, RamPopupDialog::OnBtnSave)	
 	EVT_CHECKBOX(ID_CHECKBOX, RamPopupDialog::OnChkBox)
 END_EVENT_TABLE()
 
@@ -151,13 +166,22 @@ virtualGrid::virtualGrid (int addrSize, int dSize, guiGateRAM* newM_ramGuiGate, 
 	gUICircuit = newGUICircuit;
 }
 
-
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Calcualte to permit from 1 bit
 int virtualGrid::GetNumberRows () {
-	return (int)pow((float)2,(int)addressSize*4)/16;
+	if (addressSize < 4)
+		return 1;
+	else
+		return (int)pow((float)2, (int)addressSize) / 16;
 }
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Calcualte to permit from 1 bit
 int virtualGrid::GetNumberCols () {
-	return 16;
+	if (addressSize < 4)
+		return (int)pow((float)2, (int)addressSize);
+	else
+		return 16;
 }
 
 bool virtualGrid::IsEmptyCell (int row, int col) {
@@ -168,17 +192,22 @@ wxString virtualGrid::GetValue (int row, int col) {
 	ostringstream stream;
 		
 	unsigned long data = m_guiGateRAM->getValueAt( row*16 + col );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Adjust to data size
+	data = data & ((int)pow((float)2, (int)dataSize) - 1);
 	if (hexOrDecCB->IsChecked()) {
 		stream << dec << data;
 	} else {
-		stream << hex << uppercase << setw ( dataSize ) << setfill ( '0' ) << data;
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Adjust to data size
+		stream << hex << uppercase << setw ( (dataSize + 3) / 4 ) << setfill ( '0' ) << data;
 	}
 	return (const wxChar *)stream.str().c_str(); // KAS
 }
 
 void virtualGrid::SetValue (int row, int col, const wxString& value) {
 
-	int newValue = 0;
+	unsigned long newValue = 0;
 	istringstream istream( (string)((const char *)value.c_str()) ); // double cast KAS
 	
 	//determine if we should interperate it as hex or decimal
@@ -187,6 +216,8 @@ void virtualGrid::SetValue (int row, int col, const wxString& value) {
 	}else{
 		istream >> hex >> newValue;
 	}
+
+	newValue = newValue & ((int)pow((float)2, (int)dataSize) - 1);
 	
 	//calculate the target address
 	int address = row*16+col;
@@ -235,7 +266,9 @@ void virtualGrid::SetAttr(wxGridCellAttr* attr, int row, int col) {
 wxString virtualGrid::GetRowLabelValue(int row) {
 	//set row titles
 	ostringstream stream;
-	stream << "0x" << hex << uppercase << setw( addressSize - 1 ) << setfill( '0' ) << row << 'X';
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Adjust to address size
+	stream << "0x" << hex << uppercase << setw( addressSize / 4 - 1 ) << setfill( '0' ) << row << 'X';
 	return (const wxChar *)stream.str().c_str(); // KAS
 }
 

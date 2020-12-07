@@ -55,7 +55,7 @@ Circuit::~Circuit()
 void Circuit::stepOnlyGates(){
 	// Update the gates that have been connected or disconnected or had a 
 	// parameter change within the last call to step() so that they can
-	// recalculate correctly:
+	// recalculate correctly:	
 	ID_SET< IDType >::iterator updateGate = gateUpdateList.begin();
 	while( updateGate != gateUpdateList.end() ) {
 		gateList[*updateGate]->updateGate( *updateGate, this );
@@ -80,7 +80,7 @@ void Circuit::step(ID_SET< IDType > *changedWires)
 
 	int processedEvents = 0;
 	Event myEvent;
-	if (!eventQueue.empty()) myEvent = eventQueue.top();
+	if (!eventQueue.empty()) myEvent = eventQueue.top();	
 	while (!eventQueue.empty() && (myEvent.eventTime <= systemTime)) {
 		// Pop the event off of the event queue:
 		eventQueue.pop();
@@ -204,8 +204,8 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_DECODER );
 		} else if (type == "PRI_ENCODER") {
 			gateList[thisGateID] = GATE_PTR( new Gate_PRI_ENCODER );
-		} else if (type == "BUS_END") {
-			gateList[thisGateID] = GATE_PTR( new Gate_BUS_END(this) );
+		} else if (type == "BUSEND") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-10	Changed from BUS_END
+			gateList[thisGateID] = GATE_PTR( new Gate_BUSEND(this) );
 		} else if( type == "CLOCK" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_CLOCK );
 			// This is a polled gate, so insert it into the polled gates queue!
@@ -220,13 +220,15 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_ADDER );
 		} else if( type == "COMPARE" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_COMPARE );
-		} else if( type == "JKFF" ) {
-			gateList[thisGateID] = GATE_PTR( new Gate_JKFF );
+		} else if (type == "JKFF") {
+			gateList[thisGateID] = GATE_PTR(new Gate_JKFF);
+		} else if (type == "TFF") {
+			gateList[thisGateID] = GATE_PTR( new Gate_TFF );
 		} else if( type == "RAM" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_RAM );
 		} else if( type == "REGISTER" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_REGISTER );
-		} else if( ( type == "FROM" ) || ( type == "TO" ) ) {
+		} else if( ( type == "TO" ) || ( type == "FROM" ) || (type == "LINK") ) {	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
 			gateList[thisGateID] = GATE_PTR( new Gate_JUNCTION( this ) );
 		} else if( type == "TGATE" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_T( this ) );
@@ -403,32 +405,30 @@ void Circuit::deleteJunction( IDType theJunc ) {
 	juncList.erase( theJunc );
 }
 
-IDType Circuit::connectGateInput( IDType gateID, const string &gateInputID, IDType wireID ) {
-	IDType returnWireID = 0;
-	
+IDType Circuit::connectGateInput( IDType gateID, const string &gateInputID, IDType wireID ) {	
+	IDType returnWireID = 0;	
 	// First of all, create the wire if it doesn't already exist:
 	if( wireList.find(wireID) == wireList.end() ) {
 		returnWireID = newWire(wireID);
 	}
-
 	// Hook the gate input to the wireID:
 	(gateList[gateID])->connectInput( gateInputID, wireID );
 	
 	// Hook the wire output to the gateID:
 	(wireList[wireID])->connectOutput( gateID, gateInputID );
-	
+
+
 	//TODO: Should trigger some kind of event since the wire now is connected to this here gate,
 	// and therefore the gate's input has changed!
 			// Gate needs to update its state and pass along events if outputs changed.
 			// We basically just need to force it into the update list.
 	gateUpdateList.insert( gateID );
-	
+
 	return returnWireID;
 }
 
 IDType Circuit::connectGateOutput( IDType gateID, const string &gateOutputID, IDType wireID) {
 	IDType returnWireID = 0;
-	
 	// First of all, create the wire if it doesn't already exist:
 	if( wireList.find(wireID) == wireList.end() ) {
 		returnWireID = newWire(wireID);
@@ -443,6 +443,26 @@ IDType Circuit::connectGateOutput( IDType gateID, const string &gateOutputID, ID
 	
 	// Send an event putting the output's value on the wire.
 	(gateList[gateID])->resendLastEvent( gateID, gateOutputID, this );
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// To manage bidirectional outputs in RAM and REGISTER
+	if ((gateList[gateID])->getParameter("BIDIRECTIONAL_DATA") == "true") {
+		if ((gateList[gateID])->getParameter("DATA_BITS") != "") {								// Gate_RAM
+			for (int i = 0; i < stoi((gateList[gateID])->getParameter("DATA_BITS")); i++)				
+				if (gateOutputID.c_str() == "DATA_OUT_" + to_string(i))
+				{
+					connectGateInput(gateID, "DATA_IN_" + to_string(i),wireID);
+					break;
+				}
+		} else if ((gateList[gateID])->getParameter("INPUT_BITS") != "") {						// Gate_REGISTER
+			for (int i = 0; i < stoi((gateList[gateID])->getParameter("INPUT_BITS")); i++)				
+				if (gateOutputID.c_str() == "OUT_" + to_string(i))
+				{
+					connectGateInput(gateID, "IN_" + to_string(i), wireID);
+					break;
+				}
+		}
+	}
 	
 	return returnWireID;
 }
@@ -580,6 +600,7 @@ void Circuit::createEvent( TimeType eventTime, IDType wireID, IDType gateID, con
 
 	// Push the event onto the event queue:
 	eventQueue.push(myEvent);
+	
 }
 
 TimeType Circuit::createDelayedEvent( TimeType delay, IDType wireID, IDType gateID, const string &gateOutputID, StateType newState ) {

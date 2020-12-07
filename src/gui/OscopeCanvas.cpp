@@ -243,7 +243,10 @@ void OscopeCanvas::UpdateData(void){
 		// Set up a list of TO gates so I only search the whole gate list once.
 		theGate = gateList->begin();
 		while (theGate != gateList->end()) {
-			if ((theGate->second)->getGUIType() == "TO") toGates.push_back(theGate->second);
+			// Pedro Casanova (casanova@ujaen.es 2020/04-10
+			// TO, FROM and LINK are valid signal to Oscope
+			if (((theGate->second)->getGUIType() == "TO") || ((theGate->second)->getGUIType() == "FROM") || ((theGate->second)->getGUIType() == "LINK"))
+				toGates.push_back(theGate->second);
 			theGate++;
 		}
 	}
@@ -267,14 +270,6 @@ void OscopeCanvas::UpdateData(void){
 				stateValues[junctionName] = temp;
 			}
 			
-			// Get the first input in the TO's library description:
-			// (It only has one input, and that's its only connection.)
-			// Return the map of hotspot names to their coordinates:
-/*			theGate = gateList->begin();
-			while (theGate != gateList->end()) {
-				if ((theGate->second)->getGUIType() == "TO" && (theGate->second)->getLogicParam("JUNCTION_ID") == junctionName) break;
-				theGate++;
-			} */
 			// Search through our prebuilt TO gate list for this gate.
 			//	From UpdateMenu, the gate should exist.
 			guiGate* currentGate = NULL;
@@ -359,93 +354,30 @@ void OscopeCanvas::UpdateMenu()
 	
 	//iterate over all gates
 	for( unordered_map< unsigned long, guiGate* >::iterator 
-	       gateIterator = gateList->begin(); 
-	       gateIterator != gateList->end(); 
-	       gateIterator++ ){
-	   guiGate* aGate = gateIterator->second;
-	   //select out the gates which are TOs
-	   if( aGate->getGUIType() == "TO" ){
-	   		string feedName;        
+		gateIterator = gateList->begin(); 
+	    gateIterator != gateList->end(); 
+	    gateIterator++ ){
+		guiGate* aGate = gateIterator->second;
+		// Pedro Casanova (casanova@ujaen.es 2020/04-10
+		// TO, FROM and LINK are valid signal to Oscope
+		//select out the gates which are TOs
+		if ((aGate->getGUIType() == "TO") || (aGate->getGUIType() == "FROM") || (aGate->getGUIType() == "LINK"))
+		{
+	   		string feedName;
 	   		feedName = aGate->getLogicParam("JUNCTION_ID");
-	   		
-	   		//check if it has already been added
-	   		if( alreadyAdded.find( feedName ) == alreadyAdded.end() ){
-	   			
-	   			//add name to list
-	   			namesOfPossableFeeds.push_back( feedName );
-	   			alreadyAdded[ feedName ] = true;
+	   		if (feedName!="") {
+	   			//check if it has already been added
+				if (alreadyAdded.find(feedName) == alreadyAdded.end()) {
+					//add name to list
+					namesOfPossableFeeds.push_back(feedName);
+					alreadyAdded[feedName] = true;
+				}
 	   		}
-	   }
+		}
 	}
 	
 	parentFrame->updatePossableFeeds( &namesOfPossableFeeds );
-	
-	/*
-	
-	//Sets variables
-	unordered_map< unsigned long, guiGate* >* gateList = gCircuit->getGates();
-	unordered_map< unsigned long, guiGate* >::iterator theGate = gateList->begin();
-	
-	//Sets size
-	//unsigned int size = (parentFrame->comboBoxVector).size();
-	unsigned int size = parentFrame->numberOfFeeds();
-	
-	for(unsigned int x = 0; x < size; x++)
-	{
-		//wxString oldVal = (parentFrame->comboBoxVector[x])->GetValue();
-		string oldVal = parentFrame->getFeedName( x );
-		//Update Combo Box Data
-		(parentFrame->comboBoxVector[x])->Clear();
-	
-		//starts new array of strings
-		wxArrayString strings;
 
-		theGate = gateList->begin();
-
-		//Adds names to dialog box
-		while (theGate != gateList->end())
-		{	
-			//Tests Gate ID
-			if((theGate->second)->getGUIType() == "TO" )
-			{
-				//Gets gate ID
-				string junctionName = (theGate->second)->getLogicParam("JUNCTION_ID");
-			
-				(parentFrame->comboBoxVector[x])->Append(junctionName.c_str());
-			}
-		
-			theGate++;
-		}
-		(parentFrame->comboBoxVector[x])->Append("[None]");
-		(parentFrame->comboBoxVector[x])->Append("[Remove]");
-		
-		// *******************************************
-		//Edit by Joshua Lansford 2/22/07
-		//FindString is insensitive.  Therefore just
-		//because it finds something doesn't mean that
-		//our old value  is still valid.  Therefore
-		//we must search manually
-		
-		//if ((parentFrame->comboBoxVector[x])->FindString(oldVal) != -1 ) {
-		
-		bool foundIt = false;
-		for( int search = 0; 
-		     search < (parentFrame->comboBoxVector[x])->GetCount() && !foundIt;
-		     ++search ){
-			if( oldVal == (parentFrame->comboBoxVector[x])->GetString( search ) ){
-				foundIt = true;
-			}
-		}
-		if( foundIt ){
-		//End of Edit************************************************
-		
-		
-			(parentFrame->comboBoxVector[x])->SetValue(oldVal);
-		} else {
-			(parentFrame->comboBoxVector[x])->SetValue("[None]");
-		}
-	}
-	*/
 }
 
 // Print the canvas contents to a bitmap:

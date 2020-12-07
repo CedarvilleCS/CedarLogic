@@ -55,18 +55,29 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 
 	string firstTag = mParse->readTag();
 
-	// Cedar Logic 2.0 and up has version information to keep old versions
-	// of Cedar Logic from opening new, incompatable files.
+	// CedarLogic 2.0 and up has version information to keep old versions
+	// of CedarLogic from opening new, incompatable files.
 	if (firstTag == "version") {
 		std::string versionNumber = mParse->readTagValue("version");
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Compare version number only "x.y.z"
+		// originally it was: "x.y.z | DATE - TIME"
+		if (versionNumber.find(" ") >= 0)
+			versionNumber = versionNumber.substr(0, versionNumber.find(" "));
 		if (versionNumber > VERSION_NUMBER_STRING()) {
 
 			//show error message!!! And quit.
-			wxMessageBox("This file was made with a newer version of Cedar Logic. "
-				"Go to 'Help\\Download Latest Version...' to open this file."
-				"Close CedarLogic without saving to avoid overwriting your work!!!", "Version Error!");
+			wxMessageBox("This file was made with a newer version of CedarLogic.\n\n"
+				//"Go to 'Help\\Download Latest Version...' to open this file. "
+				//"Close CedarLogic without saving to avoid overwriting your work!!!"
+				"If this circuit operates correctily you can save it with actual version number.\n\n"
+				"If this circuit does not operate correctily close CedarLogic without saving."				
+				, "Version Error!");
 
-			return gCanvases;
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Can continue if no incompatibility (don't quit)
+			//return gCanvases;
 		}
 		mParse->readCloseTag();
 		firstTag = mParse->readTag();
@@ -119,11 +130,10 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 				parameter* pParam;
 				do { // get full gate structure
 					temp = mParse->readTag(); // get tag
-					if (temp == "ID") { // get ID
+					if (temp == "ID") { // get ID						
 						ID = mParse->readTagValue(temp);
 					} else if (temp == "type") { // get type
-						type = mParse->readTagValue(temp);
-						
+						type = mParse->readTagValue(temp);					
 						//***********************************
 						//Edit by Joshua Lansford 4/4/07
 						//We have eliminated a couple of gate
@@ -142,26 +152,40 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 							//before we converted all the gates.
 							//Thus no warning needs to be given.
 							type = "AM_RAM_16x16";
-						}else if( type == "AA_DFF" ){
+						}
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+						// Some names are changed for alfabetic order
+						if (type == "CA_SMALL_TGATE") type = "TA_SMALL_TGATE";
+						if (type == "AI_INVERTER_4BIT") type = "BI_INVERTER_4BIT";
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+						// Not necesary to deprecate, components are now in library
+						/* else if (type == "AA_DFF") {
 							wxMessageBox("The High Active Reset D flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "AE_DFF_LOW";
-						}else if( type == "BA_JKFF" ){
+						}
+						else if (type == "BA_JKFF") {
 							wxMessageBox("The High Active Reset JK flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "BE_JKFF_LOW";
-						}else if( type == "BA_JKFF_NT" ){
+						}
+						else if (type == "BA_JKFF_NT") {
 							wxMessageBox("The High Active Reset negitive triggered JK flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "BE_JKFF_LOW_NT";
-						}
+						}*/
+
 						//**********************************
-						
 					} else if (temp == "position") { // get position
 						position = mParse->readTagValue(temp);
 					} else if (temp == "input") { // get input
 						temp = mParse->readTag(); // get input ID
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
+						// pedro casanova (casasanova@ujaen.es) 2020/04-10
+						// Convert to uppercase and rename
+						for (unsigned long cnt = 0; cnt < gc->connectionID.length(); cnt++)
+							gc->connectionID[cnt] = toupper(gc->connectionID[cnt]);
+						if (gc->connectionID == "ENABLE_0")
+							gc->connectionID = "OUTPUT_ENABLE";
 						mParse->readCloseTag();
-
 						istringstream iss(mParse->readTagValue("input"));
 						IDType tempId;
 						while (iss >> tempId) {
@@ -176,7 +200,10 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
-
+						// pedro casanova (casasanova@ujaen.es) 2020/04-10
+						// Convert to uppercase
+						for (unsigned long cnt = 0; cnt < gc->connectionID.length(); cnt++)
+							gc->connectionID[cnt] = toupper(gc->connectionID[cnt]);
 						istringstream iss(mParse->readTagValue("output"));
 						IDType tempId;
 						while (iss >> tempId) {
@@ -237,7 +264,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	issb >> id;
 	
 	string logicType = wxGetApp().libParser.getGateLogicType( type );
-	if ( logicType.size() > 0 )
+	if (logicType.size() > 0)
 		gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_GATE, new klsMessage::Message_CREATE_GATE(wxGetApp().libraries[wxGetApp().gateNameToLibrary[type]][type].logicType, id)));
 	// Create gate for GUI
 	istringstream issa(position.substr(0,position.find(",")+1));
@@ -268,11 +295,27 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 				}
 			}
 
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Send the isPullUp message:
+			if (libGate.hotspots[i].isPullUp) {
+				if (libGate.hotspots[i].isInput) {
+					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "PULL_UP", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Send the isPullDown message:
+			if (libGate.hotspots[i].isPullDown) {
+				if (libGate.hotspots[i].isInput) {
+					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "PULL_DOWN", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Nedeed only for outputs
 			// Send the logicEInput message:
 			if( libGate.hotspots[i].logicEInput != "" ) {
-				if ( libGate.hotspots[i].isInput ) {
-					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
-				} else {
+				if ( !libGate.hotspots[i].isInput ) {
 					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT_PARAM, new klsMessage::Message_SET_GATE_OUTPUT_PARAM(id, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
 				}
 			}
@@ -362,6 +405,12 @@ void CircuitParse::parseWireToSend( void ) {
 								mParse->readCloseTag();
 							} else if (temp == "name") {
 								hsName = mParse->readTagValue("name");
+								// pedro casanova (casasanova@ujaen.es) 2020/04-10
+								// Convert to uppercase and rename
+								for (unsigned long cnt = 0; cnt < hsName.length(); cnt++)
+									hsName[cnt] = toupper(hsName[cnt]);
+								if (hsName == "ENABLE_0")
+									hsName = "OUTPUT_ENABLE";
 								mParse->readCloseTag();
 							}
 						}
@@ -396,12 +445,12 @@ void CircuitParse::parseWireToSend( void ) {
 void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsigned int currPage) {
 	ostringstream* ossCircuit = new ostringstream();
 
-	// This is a sentinal circuit definition that is ignored by Cedar Logic 2.0 and newer.
-	// Older versions of Cedar Logic will read this instead of the actual Circuit data.
+	// This is a sentinal circuit definition that is ignored by CedarLogic 2.0 and newer.
+	// Older versions of CedarLogic will read this instead of the actual Circuit data.
 	// This circuit decribes two labels with error messages.
-	// The second label has a link to the download for the latest version of Cedar Logic.
+	// The second label has a link to the download for the latest version of CedarLogic.
 	// I acknowledge that this is a hack...
-	// Versions of Cedar Logic 2.0 and newer have a <version> tag.
+	// Versions of CedarLogic 2.0 and newer have a <version> tag.
 	*ossCircuit << R"===(
 <circuit>
 <CurrentPage>0</CurrentPage>
@@ -418,7 +467,7 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 <ID>3</ID>
 <type>AA_LABEL</type>
 <position>14.5,-9.5</position>
-<gparam>LABEL_TEXT Error: This file was made with a newer version of Cedar Logic!</gparam>
+<gparam>LABEL_TEXT Error: This file was made with a newer version of CedarLogic!</gparam>
 <gparam>TEXT_HEIGHT 2</gparam>
 <gparam>angle 0.0</gparam></gate></page 0>
 </circuit>

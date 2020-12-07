@@ -135,11 +135,17 @@ private:
 	void removeZeroLengthSegments();  // TODO
 
 	// Take existing segments and merge concurrent segments
-	void mergeSegments();
-	void generateRenderInfo();  // TODO
+	void mergeSegments ();
 
+	void generateRenderInfo();
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// To check if a point is in intersectPoints list
+	bool guiWire::checkPointInList(float x, float y);
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Round 0.1 precission
+	float guiWire::Round(float v);
 
 	// Store the tree in a non-pointered way for easy copy
 	map < long, wireSegment > segMap;

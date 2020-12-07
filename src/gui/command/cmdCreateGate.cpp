@@ -58,12 +58,27 @@ bool cmdCreateGate::Do() {
 				}
 			}
 
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Send the isPullUp message:
+			if (libGate.hotspots[i].isPullUp) {
+				if (libGate.hotspots[i].isInput) {
+					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "PULL_UP", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Send the isPullDown message:
+			if (libGate.hotspots[i].isPullDown) {
+				if (libGate.hotspots[i].isInput) {
+					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "PULL_DOWN", "TRUE")));
+				}
+			}
+
 			// Send the logicEInput message:
 			if (libGate.hotspots[i].logicEInput != "") {
 				if (libGate.hotspots[i].isInput) {
 					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
-				}
-				else {
+				} else {
 					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT_PARAM, new klsMessage::Message_SET_GATE_OUTPUT_PARAM(gid, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
 				}
 			}

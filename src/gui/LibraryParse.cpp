@@ -18,18 +18,26 @@
 DECLARE_APP(MainApp)
 
 LibraryParse::LibraryParse(string fileName) {
-	fstream x(fileName.c_str(), ios::in);
-	if (!x) {
-		// Error loading file, don't bother trying to parse.
-		wxString msg;
-		ostringstream ossError;
-		ossError << "The library file " << fileName << " does not exist.";
-		msg.Printf((const wxChar *)ossError.str().c_str());  // remove  macro; added cast KAS
-		wxMessageBox(msg, "Error - Missing File", wxOK | wxICON_ERROR, NULL);
-
-		return;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// cl_gatedefs.xml now is in resources
+	// You can add a new file (UserLib.xml as default name) with new componentes
+	HANDLE hResLib = FindResource(NULL, "CL_GATEDEFS.XML", "BIN");
+	DWORD nLenRes = SizeofResource(NULL, (HRSRC)hResLib);
+	hResLib = LoadResource(NULL, (HRSRC)hResLib);
+	char* ResData = (char*) LockResource(hResLib);
+	stringstream XMLLib;
+	XMLLib << ResData;
+	HANDLE hFileLib = CreateFile(fileName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFileLib != INVALID_HANDLE_VALUE)
+	{
+		DWORD nLenFile = GetFileSize(hFileLib, NULL);
+		DWORD nReaded;
+		char* FileData = new char[nLenFile];
+		ReadFile(hFileLib, FileData, nLenFile, &nReaded, NULL);
+		CloseHandle(hFileLib);
+		XMLLib << FileData;
 	}
-	mParse = new XMLParser(&x, false);
+	mParse = new XMLParser((fstream*)&XMLLib, false);
 	this->fileName = fileName;
 	parseFile();
 	delete mParse;
@@ -76,6 +84,10 @@ void LibraryParse::parseFile() {
 					hsName = "";
 					x1 = y1 = 0.0;
 					string isInverted = "false";
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+					// To permit pull-up and pull-down inputs
+					string isPullUp = "false";
+					string isPullDown = "false";
 					string logicEInput = "";
 					int busLines = 1;
 					
@@ -84,6 +96,12 @@ void LibraryParse::parseFile() {
 						if (temp == "") break;
 						if( temp == "name" ) {
 							hsName = mParse->readTagValue("name");
+							// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+							// Convert to uppercase
+							for (unsigned long cnt = 0; cnt < hsName.length(); cnt++)
+								hsName[cnt]=toupper(hsName[cnt]);
+							if (hsName == "ENABLE_0")
+								hsName = "OUTPUT_ENABLE";
 							mParse->readCloseTag();
 						} else if( temp == "point" ) {
 							temp = mParse->readTagValue("point");
@@ -92,6 +110,20 @@ void LibraryParse::parseFile() {
 							mParse->readCloseTag(); //point
 						} else if( temp == "inverted" ) {
 							isInverted = mParse->readTagValue("inverted");
+							mParse->readCloseTag();
+						} else if (temp == "pull_up") {
+							// Pedro casanova (casasanova@ujaen.es) 2020/04-10
+							// To permit pull-up inputs
+							if (hsType == "input") { // Only inputs can have <pull_up> tags.
+								isPullUp = mParse->readTagValue("pull_up");
+							}
+							mParse->readCloseTag();							
+						} 	else if (temp == "pull_down") {
+							// Pedro casanova (casasanova@ujaen.es) 2020/04-10
+							// To permit pull-down inputs
+							if (hsType == "input") { // Only inputs can have <pull_down> tags.
+								isPullDown = mParse->readTagValue("pull_down");
+							}
 							mParse->readCloseTag();
 						} else if( temp == "enable_input" ) {
 							if( hsType == "output" ) { // Only outputs can have <enable_input> tags.
@@ -106,7 +138,10 @@ void LibraryParse::parseFile() {
 
 					} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end input/output
 
-					newGate.hotspots.push_back( lgHotspot( hsName, (hsType == "input"), x1, y1, (isInverted == "true"), logicEInput, busLines));
+					// Pedro casanova (casasanova@ujaen.es) 2020/04-10
+					// To permit pull-up and pull-down inputs
+
+					newGate.hotspots.push_back(lgHotspot(hsName, (hsType == "input"), x1, y1, (isInverted == "true"), (isPullUp == "true"), (isPullDown == "true"), logicEInput, busLines));
 
 					mParse->readCloseTag(); //input or output
 
@@ -192,7 +227,7 @@ void LibraryParse::parseFile() {
 					iss >> paramName >> paramVal;
 					newGate.guiParams[paramName] = paramVal;
 					mParse->readCloseTag();
-				} else if (temp == "logic_param") {
+				} else if (temp == "logic_param") {					
 					string paramName, paramVal;
 					istringstream iss(mParse->readTagValue("logic_param"));
 					iss >> paramName >> paramVal;
@@ -200,9 +235,11 @@ void LibraryParse::parseFile() {
 					mParse->readCloseTag();
 				} else if (temp == "caption") {
 					newGate.caption = mParse->readTagValue("caption");
-					if (newGate.caption == "Inverter" && (time(0) % 1001 == 0)) { // Easter egg, rename inverters once in a while :)
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+					//## What's that?
+					/*if (newGate.caption == "Inverter" && (time(0) % 1001 == 0)) { // Easter egg, rename inverters once in a while :)
 						newGate.caption = "Santa Hat (Inverter)";
-					}
+					}*/
 					mParse->readCloseTag();
 				}
 			} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end gate
@@ -221,7 +258,7 @@ bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double o
 	char dump;
 	string temp;
 
-	if( type == "line" ) {
+	if (type == "line") {
 		temp = mParse->readTagValue("line");
 		mParse->readCloseTag();
 		istringstream iss(temp);
@@ -230,7 +267,20 @@ bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double o
 		// Apply the offset:
 		x1 += offX; x2 += offX;
 		y1 += offY; y2 += offY;
-		newGate->shape.push_back( lgLine( x1, y1, x2, y2) );
+		newGate->shape.push_back(lgLine(x1, y1, x2, y2));
+		return true;
+	} else if (type == "wideline") {
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Wide lines for BUSEND
+		temp = mParse->readTagValue("wideline");
+		mParse->readCloseTag();
+		istringstream iss(temp);
+		iss >> x1 >> dump >> y1 >> dump >> x2 >> dump >> y2;
+
+		// Apply the offset:
+		x1 += offX; x2 += offX;
+		y1 += offY; y2 += offY;
+		newGate->shape.push_back(lgLine(x1, y1, x2, y2, 4));
 		return true;
 	} else if( type == "circle" ) {
 		temp = mParse->readTagValue("circle");

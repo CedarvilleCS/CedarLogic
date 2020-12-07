@@ -27,8 +27,10 @@ using namespace std;
 struct GateInput {
 	IDType wireID;
 	bool inverted;
+	bool pullup;
+	bool pulldown;
 	
-	GateInput() : wireID(ID_NONE), inverted(false) {};
+	GateInput() : wireID(ID_NONE), inverted(false), pullup(false), pulldown(false) {};
 };
 
 struct GateOutput {
@@ -157,6 +159,29 @@ protected:
 		this->inputList[inputID].inverted = newInv;
 	};
 
+	// Set the input to be pull-up:
+	void  setInputPullUp(string inputID, bool newPU = true) {
+		if (inputList.find(inputID) == inputList.end()) {
+			WARNING("Gate::setInputState() - Invalid input name.");
+			assert(false);
+			return;
+		}
+
+		// Set the pullup state:
+		this->inputList[inputID].pullup = newPU;
+	};
+
+	// Set the input to be pull-down:
+	void  setInputPullDown(string inputID, bool newPD = true) {
+		if (inputList.find(inputID) == inputList.end()) {
+			WARNING("Gate::setInputState() - Invalid input name.");
+			assert(false);
+			return;
+		}
+
+		// Set the pulldown state:
+		this->inputList[inputID].pulldown = newPD;
+	};
 
 	// Set the output to be automatically inverted:
 	void  setOutputInverted( string outputID, bool newInv = true ) {
@@ -211,6 +236,11 @@ protected:
 	// Get the input states of a bus of inputs named "busName_0" through
 	// "busName_x" and return their states as a vector.
 	vector< StateType > getInputBusState( string busName );
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Get the wire states of a bus of output named "busName_0" through
+	// "busName_x" and return their states as a vector.
+	vector< StateType > Gate::getOutputBusWireState(string busName);
 
 	// Get the types of inputs that are represented.
 	vector< bool > groupInputStates( void );
@@ -330,7 +360,7 @@ class Gate_AND : public Gate_N_INPUT
 public:
 	// Initialize the gate's interface:
 	Gate_AND();
-	
+
 	// Handle gate events:
 	void gateProcess( void );
 };
@@ -389,7 +419,14 @@ protected:
 
 	// The clock pin had a triggering edge and clocking is enabled,
 	// or the register isn't synched to a clock.
-	bool hasClockEdge();
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// syncSignal added to permit set and clear
+	bool hasClockEdge(bool syncSignal);
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Bidirectional data lines
+	bool bidirectionalDATA;
+
 };
 
 
@@ -569,6 +606,30 @@ protected:
 	bool syncSet, syncClear;
 };
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Similar to JKFF
+// ******************* T Flip Flop Gate *********************
+//NOTE: For all inputs, UNKNOWN states are interpreted as 0.
+
+class Gate_TFF : public Gate
+{
+public:
+	// Initialize the gate's interface:
+	Gate_TFF();
+
+	// Handle gate events:
+	void gateProcess( void );
+
+	// Set the parameters:
+	bool setParameter( string paramName, string value );
+
+	// Get the parameters:
+	string getParameter( string paramName );
+
+protected:
+	StateType currentState;
+	bool syncSet, syncClear;
+};
 
 // ***************** n-bit by n-bit RAM Gate *******************
 class Gate_RAM : public Gate
@@ -606,6 +667,13 @@ public:
 protected:
 	unsigned long dataBits;
 	unsigned long addressBits;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Sync and Async write
+	bool syncWR;
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Bidirectional data lines
+	bool bidirectionalDATA;
 
 	map< unsigned long, unsigned long > memory;
 	
@@ -744,21 +812,21 @@ private:
 
 
 
-// ******************* BUS_END Gate *********************
+// ******************* BUSEND Gate *********************
 // This gate is basically a bunch of junctions.
 // It's used as a transition between gui buses and logic wires.
-class Gate_BUS_END : public Gate
+class Gate_BUSEND : public Gate
 {
 public:
 	// Initialize the gate:
 	// Note: Because this gate does some really funky stuff,
 	// it needs a pointer to the circuit to manipulate the Junction
 	// objects.
-	Gate_BUS_END(Circuit *newCircuit);
+	Gate_BUSEND(Circuit *newCircuit);
 
 	// Destroy the gate, and remove the Junction objects from the
 	// Circuit:
-	virtual ~Gate_BUS_END();
+	virtual ~Gate_BUSEND();
 
 	// Handle gate events:
 	void gateProcess();

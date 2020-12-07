@@ -7,6 +7,10 @@
 #ifndef LOGIC_VALUES_H
 #define LOGIC_VALUES_H
 #include <climits>
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Macros _MSG
+// Included here because this include file is very used
+#include "../dbgmsg.h"
 
 // Wire state type:
 typedef unsigned char StateType;
@@ -30,11 +34,11 @@ const int NUM_STATES = 5;
 
 
 // The states defined in truth tables:
-const StateType ZERO = 0;
-const StateType ONE = 1;
-const StateType HI_Z = 2;
-const StateType CONFLICT = 3;
-const StateType UNKNOWN = 4;
+const StateType ZERO = 0;				// Black
+const StateType ONE = 1;				// Red
+const StateType HI_Z = 2;				// Green
+const StateType CONFLICT = 3;			// Cyan
+const StateType UNKNOWN = 4;			// Blue
 
 
 // The time that represents an unitialized time variable:

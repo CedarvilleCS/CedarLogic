@@ -172,7 +172,7 @@ void Wire::connectInput( IDType gateID, string gateOutputID )
 	// Only one wire input per gate & gateOutput is allowed.
 	// (The input's state is initialized to "unknown".)
 	WireInput newInput( gateID, gateOutputID, UNKNOWN );
-	
+
 	// Add it into the input list:
 	inputList.insert( newInput );
 }

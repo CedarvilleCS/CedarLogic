@@ -67,8 +67,8 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	string ggt = gateDef.guiType;
 	
 	if (ggt == "REGISTER")
-		newGate = (guiGate*)(new guiGateREGISTER());
-	else if (ggt == "TO" || ggt == "FROM")
+		newGate = (guiGate*)(new guiGateREGISTER());	
+	else if (ggt == "TO" || ggt == "FROM" || ggt == "LINK")		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
 		newGate = (guiGate*)(new guiTO_FROM());
 	else if (ggt == "LABEL")
 		newGate = (guiGate*)(new guiLabel());
@@ -80,9 +80,8 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 		newGate = (guiGate*)(new guiGateKEYPAD());
 	else if (ggt == "PULSE")
 		newGate = (guiGate*)(new guiGatePULSE());
-	else if (ggt == "RAM"){
+	else if (ggt == "RAM")
 		newGate = (guiGate*)(new guiGateRAM());
-	}
 	else
 		newGate = new guiGate();
 
@@ -90,7 +89,7 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 
 	for (unsigned int i = 0; i < gateDef.shape.size(); i++) {
 		lgLine tempLine = gateDef.shape[i];
-		newGate->insertLine(tempLine.x1, tempLine.y1, tempLine.x2, tempLine.y2);
+		newGate->insertLine(tempLine.x1, tempLine.y1, tempLine.x2, tempLine.y2, tempLine.w);
 	}
 	for (unsigned int i = 0; i < gateDef.hotspots.size(); i++) {
 		lgHotspot tempHS = gateDef.hotspots[i];
@@ -112,11 +111,13 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	gateList[id] = newGate;
 	gateList[id]->setID(id);
 	
+	// Pedro Casanova (casanova@ujaen.es 2020/04-10
+	// TO, FROM and LINK are valid signal to Oscope
 	// Update the OScope with the new info:
-	if(ggt == "TO" && !noOscope) {
+	if (!noOscope)
+		if (ggt == "TO" || ggt == "FROM" || ggt == "LINK")
 		myOscope->UpdateMenu();
-	}
-	
+
 	return newGate;
 }
 
@@ -127,19 +128,18 @@ void GUICircuit::deleteGate(unsigned long gid, bool waitToUpdate) {
 	
 	if (gateList.find(gid) == gateList.end()) return;
 
+	// Pedro Casanova (casanova@ujaen.es 2020/04-10
+	// TO, FROM and LINK are valid signal to Oscope
 	//Update Oscope
-	if(!waitToUpdate && gateList[gid]->getGUIType() == "TO") {
-		updateMenu = true;
-	}
+	if (!waitToUpdate)
+		if (gateList[gid]->getGUIType() == "TO" || gateList[gid]->getGUIType() == "FROM" || gateList[gid]->getGUIType() == "LINK")
+			updateMenu = true;
 	
 	delete gateList[gid];
 	gateList.erase(gid);
 
 	//Call Update Oscope
-	if(updateMenu)
-	{
-		myOscope->UpdateMenu();
-	}		
+	if (updateMenu) myOscope->UpdateMenu();
 }
 
 guiWire* GUICircuit::createWire(const std::vector<IDType> &wireIds) {

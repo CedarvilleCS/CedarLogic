@@ -75,10 +75,27 @@ void guiGate::updateBBoxes( bool noUpdateWires ) {
 	glTranslatef(x, y, 0);
 	glRotatef( angle, 0.0, 0.0, 1.0);
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Eliminated, now in "mirror" param
 	// Modified by Colin 1/16/17 to allow for mirroring of bus ends
-	if ((angle == 180 || angle == 270) && this->getGUIType() == "BUSEND") {
+	/*if ((angle == 180 || angle == 270) && this->getGUIType() == "BUSEND") {
 		glScalef(1, -1, 1);
+	}*/
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// "mirror" GUI param in MUX, BUFFER and BUSEND gates
+	if (this->getLogicType() == "MUX" || (this->getLogicType() == "BUFFER" && this->getHotspotList().size() > 2)) {
+		if (gparams["mirror"] == "true")
+			glScalef(1, -1, 1);
+	} else if (this->getLogicType() == "BUSEND") {
+		if (gparams["mirror"] == "true")
+			glScalef(1, -1, 1);
 	}
+
+	//## mirror test
+	//if (this->getLogicType() == "DECODER") glScalef(1, -1, 1);
+	//if (this->getGUIType() == "KEYPAD") glScalef(1, -1, 1);
+	//##
 	
 	// Read the forward matrix into the member variable:
 	glGetDoublev( GL_MODELVIEW_MATRIX, mModel );
@@ -158,12 +175,31 @@ void guiGate::draw(bool color) {
 		glLineStipple( 1, 0x9999 );
 	}
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Draw fine and wide lines for BUSEND
+	// Now use lines vector instead of vertices
+
 	// Draw the gate:
+	glLineWidth(1);
 	glBegin(GL_LINES);
-	for( unsigned int i = 0; i < vertices.size(); i++ ) {
-		glVertex2f( vertices[i].x, vertices[i].y );
-	}
+	for (unsigned int i = 0; i < lines.size(); i++)
+		if (lines[i].w == 1) {
+			glVertex2f(lines[i].x1, lines[i].y1);
+			glVertex2f(lines[i].x2, lines[i].y2);
+		}
 	glEnd();
+
+	// Draw the buses:
+	glLineWidth(4);
+	glBegin(GL_LINES);
+	for (unsigned int i = 0; i < lines.size(); i++)
+		if (lines[i].w == 4) {
+			glVertex2f(lines[i].x1, lines[i].y1);
+			glVertex2f(lines[i].x2, lines[i].y2);
+		}
+	glEnd();
+
+	glLineWidth(1);
 
 	// Reset the stipple parameters:
 	if( selected && color ) {	
@@ -215,18 +251,23 @@ bool guiGate::clickSelect( GLfloat x, GLfloat y ) {
 }
 
 // Insert a line in the line list.
-void guiGate::insertLine( float x1, float y1, float x2, float y2 ) {
-	vertices.push_back( GLPoint2f( x1, y1 ) );
-	vertices.push_back( GLPoint2f( x2, y2 ) );
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Parameter w added for linewidth (default=1)
+// Now use lines instead vector of vertices
+void guiGate::insertLine( float x1, float y1, float x2, float y2, int w) {
+	lines.push_back(lgLine(x1, y1, x2, y2, w));
 }
 
 
 // Recalculate the bounding box, based on the lines that are included already:
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Now use lines vector instead of vertices
 void guiGate::calcBBox( void ) {
 	modelBBox.reset();
 	
-	for( unsigned int i = 0; i < vertices.size(); i++ ) {
-		modelBBox.addPoint( vertices[i] );
+	for (unsigned int i = 0; i < lines.size(); i++) {
+		modelBBox.addPoint(GLPoint2f(lines[i].x1, lines[i].y1));
+		modelBBox.addPoint(GLPoint2f(lines[i].x2, lines[i].y2));
 	}
 
 	// Recalculate the world-space bbox:
@@ -331,7 +372,8 @@ void guiGate::saveGate(XMLParser* xparse) {
 	xparse->closeTag("ID");
 	xparse->openTag("type");
 	xparse->writeTag("type", libGateName);
-	xparse->closeTag("type");
+	xparse->closeTag("type");	
+	_SAVEMSG("SAVE GATE ID: %s  NAME: %s", oss.str().c_str(), libGateName.c_str())	//**## Gate Info when SAVE
 	oss.str("");
 	xparse->openTag("position");
 	oss << x << "," << y;
@@ -351,6 +393,8 @@ void guiGate::saveGate(XMLParser* xparse) {
 		
 		xparse->writeTag((isInput[pC->first] ? "input" : "output"), oss.str());
 		xparse->closeTag((isInput[pC->first] ? "input" : "output"));
+		_SAVEMSG("SAVE ... PIN: %s  (%s)", pC->first.c_str(), isInput[pC->first] ? "input" : "output")	//**## Gate Info when SAVE
+
 		pC++;
 	}
 	map< string, string >::iterator pParams = gparams.begin();
@@ -359,7 +403,8 @@ void guiGate::saveGate(XMLParser* xparse) {
 		oss.str("");
 		oss << pParams->first << " " << pParams->second;
 		xparse->writeTag("gparam", oss.str());
-		xparse->closeTag("gparam");
+		xparse->closeTag("gparam");		
+		_SAVEMSG("SAVE ... GPARAM: %s %s", oss.str().c_str(),"")	//**## Gate Info when SAVE
 		pParams++;
 	}
 	pParams = lparams.begin();
@@ -376,7 +421,8 @@ void guiGate::saveGate(XMLParser* xparse) {
 		oss.str("");
 		oss << pParams->first << " " << pParams->second;
 		xparse->writeTag("lparam", oss.str());
-		xparse->closeTag("lparam");
+		xparse->closeTag("lparam");		
+		_SAVEMSG("SAVE ... LPARAM: %s %s", oss.str().c_str(),"")	//**## Gate Info when SAVE
 		pParams++;
 	}
 	
@@ -403,6 +449,38 @@ void guiGate::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ) {
 	myDialog.ShowModal();
 }
 
+void guiGate::setGUIParam(string paramName, string value) {
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// "mirror" GUI param in MUX, BUFFER and BUSEND gates
+	if (paramName == "mirror")
+		if (value != "true" && value != "false") return;
+
+	gparams[paramName] = value;
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// "mirror" GUI param in MUX, BUFFER and BUSEND gates
+	if (paramName == "angle") {
+		if (this->getLogicType() == "BUSEND") {
+			if ((gparams["mirror"] != "true") && (gparams["mirror"] != "false")) {
+				_MSG0("no mirror");
+				if (value == "180" || value == "270")
+					gparams["mirror"] = "true";
+				else
+					gparams["mirror"] = "false";
+			}
+		} else if (this->getLogicType() == "MUX" || (this->getLogicType() == "BUFFER" && this->getHotspotList().size() > 2)) {
+			if ((gparams["mirror"] != "true") && (gparams["mirror"] != "false"))
+				gparams["mirror"] = "false";
+		}		
+	}
+
+	if (paramName == "angle" || paramName == "mirror") {
+		// Update the matrices and bounding box:
+		updateConnectionMerges();
+		updateBBoxes();
+	}
+}
+
 // *********************** guiGateTOGGLE *************************
 
 guiGateTOGGLE::guiGateTOGGLE() {
@@ -421,13 +499,15 @@ void guiGateTOGGLE::draw( bool color ) {
 	// Draw the default lines:
 	guiGate::draw(color);
 	
-	// Add the rectangle:
-	glColor4f( (float)renderInfo_outputNum, 0.0, 0.0, 1.0 );
+	// Add the rectangle: Inner Square
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10		Added Grey for color=false
+	if (color)
+		glColor4f((float)renderInfo_outputNum, 0.0, 0.0, 1.0);
+	else
+		glColor4f(0, 0, 0, 1.0);		
 
-	//Inner Square
-	if (color) glRectd  ( renderInfo_clickBox.begin.x, renderInfo_clickBox.begin.y, 
-			renderInfo_clickBox.end.x, renderInfo_clickBox.end.y ) ;
-	
+	glRectd(renderInfo_clickBox.begin.x, renderInfo_clickBox.begin.y, renderInfo_clickBox.end.x, renderInfo_clickBox.end.y);
+
 	// Set the color back to the old color:
 	glColor4f( 0.0, 0.0, 0.0, 1.0 );
 }
@@ -603,6 +683,7 @@ guiGateREGISTER::guiGateREGISTER() {
 	renderInfo_numDigitsToShow = 1;
 	setLogicParam( "CURRENT_VALUE", "0" );
 	setLogicParam( "UNKNOWN_OUTPUTS", "false" );
+	disp_BCD = false;		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
 }
 
 void guiGateREGISTER::draw( bool color ) {
@@ -615,54 +696,104 @@ void guiGateREGISTER::draw( bool color ) {
 	diffx /= (double)renderInfo_numDigitsToShow; // set width of each digit
 	
 	//Inner Square for value
-	if (color) {
-		// Display box
-		glBegin( GL_LINE_LOOP );
-			glVertex2f(renderInfo_valueBox.begin.x,renderInfo_valueBox.begin.y);
-			glVertex2f(renderInfo_valueBox.begin.x,renderInfo_valueBox.end.y);
-			glVertex2f(renderInfo_valueBox.end.x,renderInfo_valueBox.end.y);
-			glVertex2f(renderInfo_valueBox.end.x,renderInfo_valueBox.begin.y);
-		glEnd();
-		
-		// Draw the number in red (or blue if inputs are not all sane)
-		if (renderInfo_drawBlue) glColor4f( 0.3f, 0.3f, 1.0, 1.0 );
-		else glColor4f( 1.0, 0.0, 0.0, 1.0 );
+	// Display box
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(renderInfo_valueBox.begin.x, renderInfo_valueBox.begin.y);
+	glVertex2f(renderInfo_valueBox.begin.x, renderInfo_valueBox.end.y);
+	glVertex2f(renderInfo_valueBox.end.x, renderInfo_valueBox.end.y);
+	glVertex2f(renderInfo_valueBox.end.x, renderInfo_valueBox.begin.y);
+	glEnd();
 
-		GLfloat lineWidthOld;
-		glGetFloatv(GL_LINE_WIDTH, &lineWidthOld);
-		glLineWidth(2.0);
-        
-		// THESE ARE ALL SEVEN SEGMENTS WITH DIFFERENTIAL COORDS.  USE THEM FOR EACH DIGIT VALUE FOR EACH DIGIT
-		//		AND INCREMENT CURRENTDIGIT.  CURRENTDIGIT=0 IS MSB.
-		glBegin( GL_LINES );
-		for (unsigned int currentDigit = 0; currentDigit < renderInfo_currentValue.size(); currentDigit++) {
-			char c = renderInfo_currentValue[currentDigit];
-			if ( c != '1' && c != '4' && c != 'B' && c != 'D' ) {
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.1875),renderInfo_valueBox.begin.y+(diffy*0.88462)); // TOP
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.8125),renderInfo_valueBox.begin.y+(diffy*0.88462)); }
-			if ( c != '0' && c != '1' && c != '7' && c != 'C' ) {
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.1875),renderInfo_valueBox.begin.y+(diffy*0.5)); // MID
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.8125),renderInfo_valueBox.begin.y+(diffy*0.5)); }
-			if ( c != '1' && c != '4' && c != '7' && c != '9' && c != 'A' && c != 'F' ) {
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.1875),renderInfo_valueBox.begin.y+(diffy*0.11538)); // BOTTOM
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.8125),renderInfo_valueBox.begin.y+(diffy*0.11538)); }
-			if ( c != '1' && c != '2' && c != '3' && c != '7' && c != 'D' ) {
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.1875),renderInfo_valueBox.begin.y+(diffy*0.88462)); // TL
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.1875),renderInfo_valueBox.begin.y+(diffy*0.5)); }
-			if ( c != '5' && c != '6' && c != 'B' && c != 'C' && c != 'E' && c != 'F' ) {
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.8125),renderInfo_valueBox.begin.y+(diffy*0.88462)); // TR
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.8125),renderInfo_valueBox.begin.y+(diffy*0.5)); }
-			if ( c != '1' && c != '3' && c != '4' && c != '5' && c != '7' && c != '9' ) {
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.1875),renderInfo_valueBox.begin.y+(diffy*0.11538)); // BL
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.1875),renderInfo_valueBox.begin.y+(diffy*0.5)); }
-			if ( c != '2' && c != 'C' && c != 'E' && c != 'F' ) {
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.8125),renderInfo_valueBox.begin.y+(diffy*0.11538)); // BR
-				glVertex2f(renderInfo_valueBox.begin.x+(diffx*currentDigit)+(diffx*0.8125),renderInfo_valueBox.begin.y+(diffy*0.5)); }
-		}
-		glEnd();
-		glLineWidth(lineWidthOld);
-		glColor4f( 0.0, 0.0, 0.0, 1.0 );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10		Added Grey for color=false
+	if (color)
+	{
+		// Draw the number in red (or blue if inputs are not all sane)
+		if (renderInfo_drawBlue) glColor4f(0.3f, 0.3f, 1.0, 1.0);
+		else glColor4f(1.0, 0.0, 0.0, 1.0);
 	}
+	else
+		glColor4f(0, 0, 0, 1.0);	// Grey
+
+	GLfloat lineWidthOld;
+	glGetFloatv(GL_LINE_WIDTH, &lineWidthOld);
+	glLineWidth(2.0);
+
+	// THESE ARE ALL SEVEN SEGMENTS WITH DIFFERENTIAL COORDS.  USE THEM FOR EACH DIGIT VALUE FOR EACH DIGIT
+	//		AND INCREMENT CURRENTDIGIT.  CURRENTDIGIT=0 IS MSB.
+	glBegin(GL_LINES);
+	for (unsigned int currentDigit = 0; currentDigit < renderInfo_currentValue.size(); currentDigit++) {
+		char c = renderInfo_currentValue[currentDigit];
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-10		An eight if color=false
+		if (!color)
+			c = 8;
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// En el display BCD los dígitos mayores de 9 no se presentan
+		if (disp_BCD == true)
+		{
+			if (c == '0' || c == '2' || c == '3' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TOP
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.88462));
+			}
+			if (c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '8' || c == '9') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5)); // MID
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+			if (c == '0' || c == '2' || c == '3' || c == '5' || c == '6' || c == '8') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BOTTOM
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.11538));
+			}
+			if (c == '0' || c == '4' || c == '5' || c == '6' || c == '8' || c == '9') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TL
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+			if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '7' || c == '8' || c == '9') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TR
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+			if (c == '0' || c == '2' || c == '6' || c == '8') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BL
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+			if (c == '0' || c == '1' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BR
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+		}
+		else
+		{
+			if (c != '1' && c != '4' && c != 'B' && c != 'D') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TOP
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.88462));
+			}
+			if (c != '0' && c != '1' && c != '7' && c != 'C') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5)); // MID
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+			if (c != '1' && c != '4' && c != '7' && c != '9' && c != 'A' && c != 'F') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BOTTOM
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.11538));
+			}
+			if (c != '1' && c != '2' && c != '3' && c != '7' && c != 'D') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TL
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+			if (c != '5' && c != '6' && c != 'B' && c != 'C' && c != 'E' && c != 'F') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TR
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+			if (c != '1' && c != '3' && c != '4' && c != '5' && c != '7' && c != '9') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BL
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+			if (c != '2' && c != 'C' && c != 'E' && c != 'F') {
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BR
+				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			}
+		}
+	}
+	glEnd();
+	glLineWidth(lineWidthOld);
+	glColor4f(0.0, 0.0, 0.0, 1.0);
 }
 
 void guiGateREGISTER::setLogicParam( string paramName, string value ) {
@@ -704,6 +835,9 @@ void guiGateREGISTER::setGUIParam( string paramName, string value ) {
 			dump >> renderInfo_valueBox.end.x >> dump >> renderInfo_valueBox.end.y;
 		renderInfo_diffx = renderInfo_valueBox.end.x - renderInfo_valueBox.begin.x;
 		renderInfo_diffy = renderInfo_valueBox.end.y - renderInfo_valueBox.begin.y;
+	}
+	else if (paramName == "BCD") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		disp_BCD = (value == "true");
 	}
 	guiGate::setGUIParam(paramName, value);
 }
@@ -763,28 +897,31 @@ void guiGateLED::draw( bool color ) {
 	if( theCnk != connections.end() ) {
 		outputState = (theCnk->second)->getState()[0];
 	}
-
-	switch( outputState ) {
-	case ZERO:
-		glColor4f( 0.0, 0.0, 0.0, 1.0 );
-		break;
-	case ONE:
-		glColor4f( 1.0, 0.0, 0.0, 1.0 );
-		break;
-	case HI_Z:
-		glColor4f( 0.0, 0.78f, 0.0, 1.0 );
-		break;
-	case UNKNOWN:
-		glColor4f( 0.3f, 0.3f, 1.0, 1.0 );
-		break;
-	case CONFLICT:
-		glColor4f( 0.0, 1.0, 1.0, 1.0 );
-		break;
-	}
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10		Added Grey for color=false
+	// Retouch some colors to get bettter monochrome bitmaps in clipboard
+	if (color)
+		switch( outputState ) {
+		case ZERO:
+			glColor4f( 0.0, 0.0, 0.0, 1.0 );				// Black
+			break;
+		case ONE:
+			glColor4f( 1.0, 0.0, 0.0, 1.0 );				// Red
+			break;
+		case HI_Z:
+			glColor4f( 0.0, 1.0, 0.0, 1.0 );				// Green
+			break;
+		case UNKNOWN:
+			glColor4f(0.0, 0.0, 1.0, 1.0);					// Blue
+			break;
+		case CONFLICT:
+			glColor4f( 0.0, 1.0, 1.0, 1.0 );				// Cyan
+			break;
+		}
+	else
+		glColor4f(0, 0, 0, 1.0);				// Grey
 
 	//Inner Square
-	if (color) glRectd  ( renderInfo_ledBox.begin.x, renderInfo_ledBox.begin.y, 
-			renderInfo_ledBox.end.x, renderInfo_ledBox.end.y ) ;
+	glRectd  ( renderInfo_ledBox.begin.x, renderInfo_ledBox.begin.y, renderInfo_ledBox.end.x, renderInfo_ledBox.end.y ) ;
 
 	// Set the color back to black:
 	glColor4f( 0.0, 0.0, 0.0, 1.0 );
@@ -864,7 +1001,6 @@ void guiLabel::calcBBox( void ) {
 	GLbox textBBox = theText.getBoundingBox();
 	float dx = fabs(textBBox.right-textBBox.left)/2.;
 	float dy = fabs(textBBox.top-textBBox.bottom)/2.;
-	double currentX, currentY; theText.getPosition(currentX, currentY);
 	theText.setPosition(-dx, +dy);
 	modelBBox.reset();
 	modelBBox.addPoint( GLPoint2f(textBBox.left-dx, textBBox.bottom+dy) );
@@ -875,18 +1011,16 @@ void guiLabel::calcBBox( void ) {
 }
 
 
-
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Modified to permit variable labes size (LINK).
 // ************************ TO/FROM gate *************************
-
 guiTO_FROM::guiTO_FROM() {
 	// Note that I don't set the JUNCTION_ID parameter yet, because
 	// that would call setParam() and that would call calcBBox()
 	// and that wants to know that the gate's type is, which we don't know yet.
-	
+
 	guiGate();
-	
-	// Initialize the text object:
-	theText.setSize( TO_FROM_TEXT_HEIGHT );
+
 }
 
 void guiTO_FROM::draw( bool color ) {
@@ -916,13 +1050,16 @@ void guiTO_FROM::draw( bool color ) {
 		//scoot the label over
 		GLbox textBBox = theText.getBoundingBox();
 		GLdouble textWidth = textBBox.right - textBBox.left;
+		float offx = fabs(textBBox.top - textBBox.bottom) * 0.5 / 1.5;
 		int direction = 0;
 		if( getGUIType() == "TO" ) {
 			direction = +1;
 		} else if (getGUIType() == "FROM") {
 			direction = -1;
+		} else if (getGUIType() == "LINK") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			direction =+1;
 		}
-		glTranslatef( direction * (textWidth + FLIPPED_OFFSET), 0, 0 );
+		glTranslatef(direction * (textWidth + offx), 0, 0);
 		
 		//and spin it around
 		glRotatef( 180, 0.0, 0.0, 1.0);
@@ -942,12 +1079,48 @@ void guiTO_FROM::setLogicParam( string paramName, string value ) {
 
 		string labelText = getLogicParam("JUNCTION_ID");
 		theText.setText( labelText );
-		theText.setSize( TO_FROM_TEXT_HEIGHT );
+		GLdouble height = getTextHeight();
+		theText.setSize(height);
 
 		//Sets bounding box size
 		this->calcBBox();
 	} else {
 		guiGate::setLogicParam( paramName, value );
+	}
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// A custom setParam function is required because
+// the object must resize it's bounding box 
+// each time the TEXT_HEIGHT parameter is set.
+void guiTO_FROM::setGUIParam(string paramName, string value) {
+	if (paramName == "TEXT_HEIGHT") {
+
+		// Make the text parameter safe:
+		istringstream iss(value);
+		GLdouble textHeight = 1.0;
+		iss >> textHeight;
+
+		if (textHeight < 0) textHeight = -textHeight;
+		if (textHeight < 0.01) textHeight = 0.01;
+
+		ostringstream oss;
+		oss << textHeight;
+		value = oss.str();
+
+		guiGate::setGUIParam(paramName, value);
+
+		string labelText = getLogicParam("JUNCTION_ID");
+		GLdouble height = getTextHeight();
+
+		theText.setSize(height);
+		theText.setText(labelText);
+
+		//Sets bounding box size
+		this->calcBBox();
+	}
+	else {
+		guiGate::setGUIParam(paramName, value);
 	}
 }
 
@@ -959,18 +1132,38 @@ void guiTO_FROM::calcBBox( void ) {
 	// Get the text's bounding box:	
 	GLbox textBBox = theText.getBoundingBox();
 
-	// Adjust the bounding box based on the text's bbox:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// LINK text is now variable
+
+	float dx = fabs(textBBox.right - textBBox.left) / 2.0f;
+	float dy = fabs(textBBox.top - textBBox.bottom) / 2.0f;
+
+	float offy = fabs(textBBox.top - textBBox.bottom) * 0.3f / 1.5f;
+	float offx = fabs(textBBox.top - textBBox.bottom) * 0.4f / 1.5f;
+
+// Adjust the bounding box based on the text's bbox:
 	GLdouble textWidth = textBBox.right - textBBox.left;
-	if( getGUIType() == "TO" ) {
+	GLdouble textHeight = textBBox.top- textBBox.bottom;
+	if (getGUIType() == "TO") {
 		GLPoint2f bR = modelBBox.getBottomRight();
-		bR.x += textWidth;
-		modelBBox.addPoint( bR );
-		theText.setPosition( TO_BUFFER, TO_FROM_TEXT_HEIGHT/2+0.30 );
-	} else if (getGUIType() == "FROM") {
+		bR.x += textWidth+offx;
+		modelBBox.addPoint(bR);
+		theText.setPosition(offx, dy + offy);
+	}
+	else if (getGUIType() == "FROM") {
 		GLPoint2f tL = modelBBox.getTopLeft();
-		tL.x -= (textWidth + FROM_BUFFER);
-		modelBBox.addPoint( tL );
-		theText.setPosition( tL.x + FROM_FIX_SHIFT, TO_FROM_TEXT_HEIGHT/2+0.30 );
+		tL.x -= textWidth+offx;
+		modelBBox.addPoint(tL);
+		theText.setPosition(tL.x + 0.2f, dy + offy);
+	}
+	else if (getGUIType() == "LINK") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		GLPoint2f bR = modelBBox.getBottomRight();
+		bR.x += textWidth+offx;
+		bR.y -= 1.1f * textHeight / 2.0f;
+		modelBBox.addPoint(bR);
+		bR.y += 1.1f * textHeight;
+		modelBBox.addPoint(bR);
+		theText.setPosition(offx, dy + offy);
 	}
 
 	// Recalculate the world-space bbox:
@@ -978,7 +1171,8 @@ void guiTO_FROM::calcBBox( void ) {
 }
 
 // ************************ RAM gate ****************************
-
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Modified to limit data size values.
 //*************************************************
 //Edit by Joshua Lansford 12/25/2006
 //I am creating a guiGate for the RAM so that
@@ -999,7 +1193,7 @@ guiGateRAM::~guiGateRAM(){
 
 void guiGateRAM::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ){
 	if( ramPopupDialog == NULL ){
-		ramPopupDialog = new RamPopupDialog( this, addressBits, (GUICircuit*)gc );
+		ramPopupDialog = new RamPopupDialog( this, (GUICircuit*)gc );
 		ramPopupDialog->updateGridDisplay();
 	}
 	ramPopupDialog->Show( true );
@@ -1008,9 +1202,15 @@ void guiGateRAM::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ){
 //Saves the ram contents to the circuit file
 //when the circuit saves
 void guiGateRAM::saveGateTypeSpecifics( XMLParser* xparse ){
+
+	int dataSize;
+	istringstream iss(getLogicParam("DATA_BITS"));
+	iss >> dataSize;
+
 	for( map< unsigned long, unsigned long >::iterator I = memory.begin();
 	     	I != memory.end();  ++I ){
-	     if( I->second != 0 ){
+		 I->second = I->second & ((int)pow((float)2, (int)dataSize) - 1);
+	     if( I->second != 0 ){			
 			xparse->openTag("lparam");
 		    ostringstream memoryValue;
 			memoryValue << "Address:" << I->first << " " << I->second; 
@@ -1059,7 +1259,7 @@ void guiGateRAM::setLogicParam( string paramName, string value ){
 		istringstream dataiss( value );
 		dataiss >> dataBits;
 		guiGate::setLogicParam( paramName, value );
-	}else{ 
+	} else {
 		guiGate::setLogicParam( paramName, value );
 	}
 }

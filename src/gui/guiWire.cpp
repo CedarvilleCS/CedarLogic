@@ -77,7 +77,6 @@ guiWire::~guiWire() {
 
 // Add an input connection to the wire
 void guiWire::addConnection(guiGate* iGate, string connection, bool openMode) {
-
 	wireConnection temp;
 	// Fill all necessary items - need a pointer to the gate, an id for copy/paste
 	temp.cGate = iGate;
@@ -200,7 +199,8 @@ void guiWire::draw(bool color) {
 		bool unknown = false;
 		bool hiz = false;
 		float redness = 0;
-
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Retouch some colors to get bettter monochrome bitmaps in clipboard
 		// Find color as a gradient base on decimal value.
 		// If there's a conflict, unknown, or hi_z, show that instead.
 		for (int i = 0; i < (int)state.size(); i++) {
@@ -208,7 +208,7 @@ void guiWire::draw(bool color) {
 			case ZERO:
 				break;
 			case ONE:
-				redness += pow(2, i);
+				redness += pow(2, i);					// For buses red scale
 				break;
 			case HI_Z:
 				hiz = true;
@@ -221,24 +221,23 @@ void guiWire::draw(bool color) {
 				break;
 			}
 		}
-		redness /= pow(2, state.size()) - 1;
-
-		if (conflict) {
-			glColor4f(0.0, 1.0, 1.0, 1.0);
+		redness /= pow(2, state.size()) - 1;			// For buses red scale
+		if (conflict) {		// cyan
+			glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 		}
-		else if (unknown) {
-			glColor4f(0.3f, 0.3f, 1.0, 1.0);
+		else if (unknown) {	// blue
+			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 		}
-		else if (hiz) {
-			glColor4f(0.0, 0.78f, 0.0, 1.0);
+		else if (hiz) {		// green
+			glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
 		}
-		else {
-			glColor4f(redness, 0.0, 0.0, 1.0);
+		else {				// red or black
+			glColor4f(redness, 0.0f, 0.0f, 1.0f);		// For buses red scale
 		}
 	}
-	else {
-		glColor4f(0.0, 0.0, 0.0, 1.0);
-	}
+	else {					// black
+		glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+	}	
 
 	// Draw the wire from the previously-saved render info
 	vector< GLLine2f >* lineSegments = &(renderInfo.lineSegments);
@@ -263,7 +262,6 @@ void guiWire::draw(bool color) {
 		glPointSize(1);
 	}
 
-
 	vector< GLPoint2f >* isectPoints = &(renderInfo.intersectPoints);
 	for (unsigned int i = 0; i < isectPoints->size(); i++) {
 		// Draw the connection point:
@@ -285,14 +283,22 @@ void guiWire::draw(bool color) {
 
 	if (wxGetApp().appSettings.wireConnVisible) {
 		vector< GLPoint2f >* vertexPoints = &(renderInfo.vertexPoints);
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// To identify components connetion points
+		// Usually junctions in the logic state color
+		// But now "display Wire Connections points" is only for reference
+		// Orange wireconnvisible
+		if (color)
+			glColor4f(1.0f, 0.7f, 0.0f, 1.0f);		// Orange
 		for (unsigned int i = 0; i < vertexPoints->size(); i++) {
-			// Draw the connection point:
+			// Draw the connection point:			
 			glTranslatef((*vertexPoints)[i].x, (*vertexPoints)[i].y, 0.0);
 			if (!wxGetApp().doingBitmapExport)
 				glCallList(CEDAR_GLLIST_CONNECTPOINT);
 			else {
 				glBegin(GL_TRIANGLE_FAN);
 				glVertex2f(0, 0);
+				
 				for (int z = 0; z <= 360; z += 360 / POINTS_PER_VERTEX)
 				{
 					degInRad = z*DEG2RAD;
@@ -303,6 +309,10 @@ void guiWire::draw(bool color) {
 			glTranslatef(-(*vertexPoints)[i].x, -(*vertexPoints)[i].y, 0.0);
 		}
 	}
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Restore Black color
+	glColor4f(0.0, 0.0, 0.0, 1.0);
 
 	// Reset the stipple parameters:
 	if (selected) {
@@ -918,7 +928,7 @@ void guiWire::mergeSegments() {
 	//	but endpoints need to be trimmed.  In this case, the code is
 	//	already here, and a single pass through the loop is a small
 	//	price.  After the main loop, the trip loop will finish it.
-//	if (segMap.size() == 1) return; // If there's only one seg, whom will I merge with?
+	// if (segMap.size() == 1) return; // If there's only one seg, whom will I merge with?
 
 	removeZeroLengthSegments(); // To return from H-E-double-hockeysticks
 	map < long, wireSegment > newSegMap; // holds the new segment map that contains merged segments
@@ -1049,16 +1059,16 @@ void guiWire::mergeSegments() {
 		// now set the intersects
 		map < GLfloat, vector< long > >::iterator isectWalk = (segWalk->second).intersects.begin();
 		while (isectWalk != (segWalk->second).intersects.end()) {
-			set < long > isectSegIDs;
-			isectSegIDs.insert((isectWalk->second).begin(), (isectWalk->second).end());
-			(isectWalk->second).clear();
-			(isectWalk->second).insert((isectWalk->second).begin(), isectSegIDs.begin(), isectSegIDs.end());
-			vector < long > newIsectVector;
-			for (unsigned int i = 0; i < (isectWalk->second).size(); i++) {
-				if (newSegMap[mapIDs[(isectWalk->second)[i]]].isVertical() != (segWalk->second).isVertical()) newIsectVector.push_back(mapIDs[(isectWalk->second)[i]]);
-			}
-			(isectWalk->second) = newIsectVector;
-			isectWalk++;
+set < long > isectSegIDs;
+isectSegIDs.insert((isectWalk->second).begin(), (isectWalk->second).end());
+(isectWalk->second).clear();
+(isectWalk->second).insert((isectWalk->second).begin(), isectSegIDs.begin(), isectSegIDs.end());
+vector < long > newIsectVector;
+for (unsigned int i = 0; i < (isectWalk->second).size(); i++) {
+	if (newSegMap[mapIDs[(isectWalk->second)[i]]].isVertical() != (segWalk->second).isVertical()) newIsectVector.push_back(mapIDs[(isectWalk->second)[i]]);
+}
+(isectWalk->second) = newIsectVector;
+isectWalk++;
 		}
 
 		(segWalk->second).calcBBox();
@@ -1128,9 +1138,15 @@ void guiWire::removeZeroLengthSegments() {
 	headSegment = segMap.begin()->first;
 }
 
+// Pedro Casanova (casanova@ujaen.es)  2020/04-10
+// Modified to puts junctions in component connections points
+// Display Wire Connections points is now only for reference
 // fill out some info to avoid loss of cycles in render loop
 void guiWire::generateRenderInfo() {
 	float x, y;
+	float xv, yv;
+	float xb, yb;
+	float xe, ye;
 	GLLine2f glLine;
 
 	// clear out the old information.  this function is only called when
@@ -1142,14 +1158,21 @@ void guiWire::generateRenderInfo() {
 	// gate connection points
 	for (unsigned int i = 0; i < connectPoints.size(); i++) {
 		connectPoints[i].cGate->getHotspotCoords(connectPoints[i].connection, x, y);
+		x = Round(x);
+		y = Round(y);
 		renderInfo.vertexPoints.push_back(GLPoint2f(x, y));
 	}
 
 	// lines and segment intersections
 	map < long, wireSegment >::iterator segWalk = segMap.begin();
 	while (segWalk != segMap.end()) {
-		glLine.begin = GLPoint2f((segWalk->second).begin.x, (segWalk->second).begin.y);
-		glLine.end = GLPoint2f((segWalk->second).end.x, (segWalk->second).end.y);
+		xb = Round((segWalk->second).begin.x);
+		yb = Round((segWalk->second).begin.y);
+		xe = Round((segWalk->second).end.x);
+		ye = Round((segWalk->second).end.y);
+
+		glLine.begin = GLPoint2f(xb, yb);
+		glLine.end = GLPoint2f(xe, ye);
 
 		renderInfo.lineSegments.push_back(glLine);
 
@@ -1165,10 +1188,88 @@ void guiWire::generateRenderInfo() {
 			for (unsigned int i = 0; i < (isectWalk->second).size(); i++) {
 				x = ((segWalk->second).isVertical() ? (segWalk->second).begin.x : isectWalk->first);
 				y = ((segWalk->second).isVertical() ? isectWalk->first : (segWalk->second).begin.y);
-				renderInfo.intersectPoints.push_back(GLPoint2f(x, y));
+				if (!checkPointInList(x, y))
+					renderInfo.intersectPoints.push_back(GLPoint2f(x, y));
 			}
 			isectWalk++;
 		}
+
+		// Put juntions in components pins in the middle of the segment
+		for (unsigned int i = 0; i < renderInfo.vertexPoints.size(); i++)
+		{
+			xv = Round(renderInfo.vertexPoints[i].x);
+			yv = Round(renderInfo.vertexPoints[i].y);
+			if (yb == ye)			// Horizontal
+				if (xv > xb && xv < xe && yv == yb)
+					if (!checkPointInList(xv, yv))
+						renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+			if (xb == xe)			// Vertical
+				if (yv > yb && yv < ye && xv == xb)
+					if (!checkPointInList(xv, yv))
+						renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+		}
+
 		segWalk++;
 	}
+
+	// Put juntions in components pins in the extrem of the segment
+	int* Nconex = new int[renderInfo.vertexPoints.size()];
+	for (unsigned int i = 0; i < renderInfo.vertexPoints.size(); i++)
+		Nconex[i] = 0;
+	for (unsigned int i = 0; i < renderInfo.vertexPoints.size(); i++)
+	{
+		xv = renderInfo.vertexPoints[i].x;
+		yv = renderInfo.vertexPoints[i].y;
+		for (unsigned int j = 0; j < renderInfo.vertexPoints.size(); j++)
+			if (i != j)
+				if ((xv == renderInfo.vertexPoints[j].x) && (yv == renderInfo.vertexPoints[j].y))
+					Nconex[i]++;
+		for (unsigned int j = 0; j < renderInfo.lineSegments.size(); j++)
+		{
+			xb = renderInfo.lineSegments[j].begin.x;
+			yb = renderInfo.lineSegments[j].begin.y;
+			xe = renderInfo.lineSegments[j].end.x;
+			ye = renderInfo.lineSegments[j].end.y;
+			if ((xb != xe) || (yb != ye))
+			{
+				if ((xv == xb) && (yv == yb))
+					Nconex[i]++;
+				else if ((xv == xe) && (yv == ye))
+					Nconex[i]++;
+			}
+		}
+	}
+	for (unsigned int i = 0; i < renderInfo.vertexPoints.size(); i++)
+	{
+		xv = renderInfo.vertexPoints[i].x;
+		yv = renderInfo.vertexPoints[i].y;
+		if (Nconex[i]>1)
+			if (!checkPointInList(xv, yv))
+				renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+	}
+
+	delete Nconex;
+
 }
+
+// Pedro Casanova (casanova@ujaen.es)  2020/04-10
+// To check if a point is yet in the intersectPoints list
+bool guiWire::checkPointInList(float x, float y) {
+	for (unsigned int i = 0; i < renderInfo.intersectPoints.size(); i++)
+		if ((x == renderInfo.intersectPoints[i].x) && (y == renderInfo.intersectPoints[i].y))
+			return true;
+	return false;
+}
+
+// Pedro Casanova (casanova@ujaen.es)  2020/04-10
+// Round 0.1 precission
+float guiWire::Round(float v)
+{
+	float retVal;
+	if (v<0)
+		retVal = -int(-v * 10.0f + 0.5f) / 10.0f;
+	else
+		retVal = int(v * 10.0f + 0.5f) / 10.0f;
+	return retVal;
+}
+

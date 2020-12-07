@@ -29,6 +29,9 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
+// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// To search "My Documents" dikrectory
+#include <shlobj.h>
 
 class MainFrame;
 
@@ -36,7 +39,7 @@ using namespace std;
 
 struct ApplicationSettings {
 	string gateLibFile;
-	string textFontFile;
+	string textFontFile = "res";		// Pedro Casanova (casanova@ujaen.es) 2020/07 // Font is now in resources 
 	string helpFile;
 	string lastDir;
 	unsigned int mainFrameWidth;
@@ -44,10 +47,13 @@ struct ApplicationSettings {
 	int mainFrameLeft;
 	int mainFrameTop;
 	unsigned int timePerStep;
-	int refreshRate;
-    float wireConnRadius;
-    bool wireConnVisible;
-    bool gridlineVisible;
+	int refreshRate;    
+	bool gridlineVisible;
+    bool wireConnVisible;    
+	bool componentCollVisible;
+	float wireConnRadius;
+	// Pedro Casanova (casanova@ujaen.es) 2020/07
+	bool settingsInReg = true;
 };
 
 class MainApp : public wxApp {
@@ -110,7 +116,12 @@ public:
 	bool doingBitmapExport;
 	
 private:
-	void loadSettings( void );
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Settings now in windows register
+	void loadSettingsFile(void);
+	void loadSettingsReg(void);
+	void loadSettings(bool Reg);	
 };
 
 #endif /*MAINAPP_H_*/
