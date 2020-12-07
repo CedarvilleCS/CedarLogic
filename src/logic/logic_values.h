@@ -7,8 +7,8 @@
 #ifndef LOGIC_VALUES_H
 #define LOGIC_VALUES_H
 #include <climits>
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-// Macros _MSG
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Macros _MSG y _MSGC
 // Included here because this include file is very used
 #include "../dbgmsg.h"
 

@@ -12,6 +12,8 @@
 #include "logic_defaults.h"
 #include "logic_event.h"
 #include "logic_wire.h"
+#include "logic_circuit.h"
+#include "..\gui\guiGate.h"
 
 class Circuit;
 
@@ -29,8 +31,9 @@ struct GateInput {
 	bool inverted;
 	bool pullup;
 	bool pulldown;
-	
-	GateInput() : wireID(ID_NONE), inverted(false), pullup(false), pulldown(false) {};
+	bool forcejunction;		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+
+	GateInput() : wireID(ID_NONE), inverted(false), pullup(false), pulldown(false), forcejunction(false) {};
 };
 
 struct GateOutput {
@@ -49,8 +52,10 @@ class Gate
 {
 public:
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added theGUICircuit parameter
 	// Update the gate's outputs:
-	void updateGate( IDType myID, Circuit * theCircuit );
+	void updateGate( IDType myID, Circuit * theCircuit, GUICircuit  * theGUICircuit );
 
 	// Resend the last event to a (probably newly connected) wire:	
 	void resendLastEvent( IDType myID, string outputID, Circuit * theCircuit );
@@ -94,7 +99,7 @@ public:
 
 	// Get the first output of the gate that has a wire attached to it:
 	string getFirstConnectedOutput( void );
-
+	
 	Gate();
 	virtual ~Gate();
 
@@ -104,7 +109,7 @@ protected:
 	// Register an input for this gate:
 	// Possibly declare the input as edge triggered, which will cause it
 	// to be tracked to be able to check rising and falling edges.
-	void declareInput( string inputID, bool edgeTriggered = false );
+	void declareInput( string inputID, bool edgeTriggered = false);
 
 	// Return true if an input has been declared. False otherwise.
 	bool inputExists( string inputID ) {
@@ -123,8 +128,6 @@ protected:
 			declareInput( oss.str() );
 		}
 	};
-
-
 
 	// Register an output for this gate :
 	void declareOutput( string name );
@@ -151,6 +154,7 @@ protected:
 	void  setInputInverted( string inputID, bool newInv = true ) {
 		if(inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setInputState() - Invalid input name.");
+			_MSGC(!(false), "ASSERT END 1")
 			assert( false );
 			return;
 		}
@@ -163,6 +167,7 @@ protected:
 	void  setInputPullUp(string inputID, bool newPU = true) {
 		if (inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setInputState() - Invalid input name.");
+			_MSGC(!(false), "ASSERT END 2")
 			assert(false);
 			return;
 		}
@@ -175,6 +180,7 @@ protected:
 	void  setInputPullDown(string inputID, bool newPD = true) {
 		if (inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setInputState() - Invalid input name.");
+			_MSGC(!(false), "ASSERT END 3")
 			assert(false);
 			return;
 		}
@@ -187,6 +193,7 @@ protected:
 	void  setOutputInverted( string outputID, bool newInv = true ) {
 		if(outputList.find(outputID) == outputList.end()) {
 			WARNING("Gate::setOutputState() - Invalid output name.");
+			_MSGC(!(false), "ASSERT END 4")
 			assert( false );
 			return;
 		}
@@ -195,17 +202,28 @@ protected:
 		this->outputList[outputID].inverted = newInv;
 	};
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Force the junction in input:
+	void  setInputForceJunction(string inputID, bool newPU = false) {
+		if (inputList.find(inputID) == inputList.end()) {
+			return;
+		}
+		// Set the forcejunction state:
+		this->inputList[inputID].forcejunction = newPU;
+	};
 
-	// Set the output to be automatically inverted:
+	// Set the output Enable Pin:
 	void  setOutputEnablePin( string outputID, string inputID ) {
 		if(outputList.find(outputID) == outputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid output name.");
+			_MSGC(!(false), "ASSERT END 5")
 			assert( false );
 			return;
 		}
 
 		if(inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid input name.");
+			_MSGC(!(false), "ASSERT END 6")
 			assert( false );
 			return;
 		}
@@ -237,7 +255,7 @@ protected:
 	// "busName_x" and return their states as a vector.
 	vector< StateType > getInputBusState( string busName );
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Get the wire states of a bus of output named "busName_0" through
 	// "busName_x" and return their states as a vector.
 	vector< StateType > Gate::getOutputBusWireState(string busName);
@@ -282,7 +300,9 @@ protected:
 	
 	// A temporary pointer to the Circuit object, used for getting wire states, time info,
 	// and for sending events from gate outputs:
-	Circuit* ourCircuit;
+	Circuit* ourCircuit = NULL;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	GUICircuit* ourGUICircuit = NULL;
 	
 	// A temporary ID used during updates, which represents this gate's ID in the Circuit.
 	IDType myID;
@@ -365,6 +385,27 @@ public:
 	void gateProcess( void );
 };
 
+// ******************* PLD_AND Gate *****************
+class Gate_PLD_AND : public Gate_AND
+{
+public:
+
+	// Initialize the gate's interface:
+	Gate_PLD_AND();
+
+	// Handle gate events:
+	void gateProcess(void);
+
+	// Set the parameters:
+	bool setParameter(string paramName, string value);
+
+	// Get the parameters:
+	string getParameter(string paramName);
+
+protected:
+	bool forceZero;
+};
+
 // ****************** EQUIVALENCE Gate **************
 class Gate_EQUIVALENCE : public Gate_N_INPUT
 {
@@ -419,13 +460,17 @@ protected:
 
 	// The clock pin had a triggering edge and clocking is enabled,
 	// or the register isn't synched to a clock.
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// syncSignal added to permit set and clear
 	bool hasClockEdge(bool syncSignal);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Bidirectional data lines
 	bool bidirectionalDATA;
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Carry out on overflow, not in min/max
+	bool CoOnOverflow;
 
 };
 
@@ -462,10 +507,18 @@ public:
 	// Handle gate events:
 	void gateProcess( void );
 
-	// Set the pulse:
+	// Set the parameters:
 	bool setParameter( string paramName, string value );
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Get the parameters
+	string getParameter(string paramName);
+
 private:
 	TimeType pulseRemaining;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	TimeType pulseWidth;
+	bool High_Z;
 };
 
 
@@ -502,21 +555,30 @@ protected:
 	unsigned long outBits;
 };
 
-// ******************* Priority Encoder Gate *********************
-// Encodes only the highest significant bit value
-class Gate_PRI_ENCODER : public Gate_N_INPUT
+// ******************* Encoder Gate *********************
+// Pedro Casanova (casanova@ujaen.es) 2020/04-07
+// Change name from PRI_ENCODER to ENCODER
+// None, high an low priority
+class Gate_ENCODER : public Gate_N_INPUT
 {
 public:
-	Gate_PRI_ENCODER();
+	Gate_ENCODER();
 
 	// Handle gate events:
 	void gateProcess(void);
 
 	// Set the parameters:
 	bool setParameter(string paramName, string value);
+	
+	// Get the parameters:
+	string getParameter(string paramName);
 
 protected:
 	unsigned long outBits;
+
+	// Pedro Casanova (casanova@ujan.es) 2020/04-11
+	bool Priority;
+	bool PriorityHigh;
 };
 
 
@@ -606,7 +668,7 @@ protected:
 	bool syncSet, syncClear;
 };
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // Similar to JKFF
 // ******************* T Flip Flop Gate *********************
 //NOTE: For all inputs, UNKNOWN states are interpreted as 0.
@@ -667,11 +729,11 @@ public:
 protected:
 	unsigned long dataBits;
 	unsigned long addressBits;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Sync and Async write
 	bool syncWR;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Bidirectional data lines
 	bool bidirectionalDATA;
 

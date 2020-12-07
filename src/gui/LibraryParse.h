@@ -24,25 +24,34 @@
 using namespace std;
 
 struct lgHotspot {
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-	// To permit pull-up and pull-down inputs
-	lgHotspot(string nName = "", bool nIsInput = true, float nX = 0, float nY = 0, bool nIsInverted = false, bool nIsPullUp = false, bool nIsPullDown = false, string nEInput = "", int busLines = 1) : name(nName), isInput(nIsInput), x(nX), y(nY), isInverted(nIsInverted), isPullUp(nIsPullUp), isPullDown(nIsPullDown), logicEInput(nEInput), busLines(busLines) {};
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// To permit pull-up, pull-down and forceJunction inputs
+	lgHotspot(string nName = "", bool nIsInput = true, float nX = 0, float nY = 0, bool nIsInverted = false, bool nIsPullUp = false, bool nIsPullDown = false, bool nForceJunction = false, string nEInput = "", int busLines = 1) : name(nName), isInput(nIsInput), x(nX), y(nY), isInverted(nIsInverted), isPullUp(nIsPullUp), isPullDown(nIsPullDown), ForceJunction(nForceJunction), logicEInput(nEInput), busLines(busLines) {};
 	string name;
 	bool isInput;
 	float x, y;
 	bool isInverted;
 	bool isPullUp;
 	bool isPullDown;
+	bool ForceJunction;	
 	string logicEInput;
 	int busLines;
 };
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // parameter w added for linewidth (default=1)
 struct lgLine {
 	lgLine(float nX1 = 0, float nY1 = 0, float nX2 = 0, float nY2 = 0, int nW = 1) : x1(nX1), x2(nX2), y1(nY1), y2(nY2), w(nW) {}
 	float x1, x2, y1, y2;
 	int w;
+};
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Lines with offset for rotate chars
+struct lgOffLine {
+	lgOffLine(lgLine nLine = lgLine(), float nX0 = 0, float nY0 = 0) : Line(nLine), x0(nX0), y0(nY0) {}
+	lgLine Line;
+	float x0, y0;
 };
 
 struct lgDlgParam {
@@ -64,6 +73,9 @@ struct LibraryGate {
 	string logicType; // Note: If a gate has no logic type, then logicType="".
 	vector < lgHotspot > hotspots;
 	vector < lgLine > shape;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Lines with offset for rotate chars
+	vector < lgOffLine > Offshape;
 	vector < lgDlgParam > dlgParams; // The parameters to be listed in the "settings dialog".
 	map < string, string > guiParams;
 	map < string, string > logicParams;
@@ -80,9 +92,17 @@ public:
 	// Added by Colin Broberg 11/16/16 -- need to make this a public function so that I can use it for dynamic gates
 	void addGate(string libName, LibraryGate newGate);
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// New command to generate text shapes
+	bool parseTextObject(LibraryGate* newGate);
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Lines with offset for rotate chars
+	bool parseShapeText(XMLParser* Parse, string type, LibraryGate* newGate, int stringType, double cenX = 0.0, double cenY = 0.0, double dX = 0.0, double dY = 0.0, double Scale = 1.0);
+
 	// Parse the shape object from the mParse file, adding an offset if needed:
 	bool parseShapeObject( string type, LibraryGate* newGate, double offX = 0.0, double offY = 0.0 );
-	
+
 	// Returns a gate from the library in lgGate.  If the gate does not
 	//	exist in the library, returns false, otherwise true.
 	bool getGate(string gateName, LibraryGate &lgGate);
@@ -98,6 +118,7 @@ public:
 	map < string, map < string, LibraryGate > >* getGateDefs() { return &gates; };
 
 private:
+	stringstream getXMLChar(char ch, bool Negate);
 	XMLParser* mParse;
 	string fileName;
 	string libName;

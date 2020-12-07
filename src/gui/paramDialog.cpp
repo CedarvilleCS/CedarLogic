@@ -205,6 +205,9 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 	paramWalk = lParamList.begin();
 	while (paramWalk != lParamList.end() && allParamsSame) {
 		allParamsSame = (gGate->getLogicParam(paramWalk->first) == paramWalk->second);
+		// Pedro Casanova (casanova@ujaen) 2020/04-11
+		// To generate a pulse when change in gate_PULSE for Initializer
+		if (paramWalk->first == "PULSE_WIDTH") allParamsSame = false;
 		paramWalk++;
 	}
 	if (!allParamsSame) wxcmd->Submit( new cmdSetParams( gCircuit, gGate->getID(), paramSet(&gParamList, &lParamList) ) );

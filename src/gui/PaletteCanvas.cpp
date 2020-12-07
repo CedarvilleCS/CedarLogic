@@ -46,7 +46,8 @@ void PaletteCanvas::OnPaint( wxPaintEvent &event ) {
 		wxBoxSizer* lineSizer = NULL;
 		gateSizer = new wxBoxSizer( wxVERTICAL );
 		while (gateWalk != wxGetApp().libraries[libraryName].end()) {
-			if (!(counter%3)) {
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-11	4 columns of components instead of 3
+			if (!(counter%4)) {
 				lineSizer = new wxBoxSizer( wxHORIZONTAL );
 				gateSizer->Add( lineSizer, wxSizerFlags(0).Border(wxALL, 1) );			
 			}	

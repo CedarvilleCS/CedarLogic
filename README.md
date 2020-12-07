@@ -46,7 +46,7 @@ In February 2020 Cedarville Unversity agreed to open source the project with @jo
 
 2. Next, go to the root of the git repo.
 
-3. Run `mkdir build && cd build && cmake .. "Visual Studio 15 2017"`.
+3. Run `mkdir build && cd build && cmake ..`.
 
 4. There is now a visual studio solution in the `build` directory. Open the solution file.
 

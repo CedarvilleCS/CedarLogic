@@ -143,7 +143,7 @@ public:
 	void deleteSelection();
 	
 	// Render this page
-    void OnRender( bool noColor = false );
+    void OnRender( bool color = true );
 
 	// Update the collision checker and refresh
 	void Update();
@@ -195,7 +195,7 @@ public:
 	// Create a command to connect a gate to a gate.
 	klsCommand * createGateConnectionCommand(IDType gate1Id, const string &hotspot1, IDType gate2Id, const string &hotspot2);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Create a command to connect a wire to a wire.
 	klsCommand * createWireConnectionCommand(IDType wireId1, IDType wireId2);
 

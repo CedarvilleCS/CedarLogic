@@ -106,7 +106,7 @@ void guiText::setSize( GLdouble textHeight, GLdouble aspect ) {
 
 // loadFont - call this for each context after initialization
 void guiText::loadFont(string fontpath) {
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	if (fontpath == "res")
 	{
 		// Font in Resources

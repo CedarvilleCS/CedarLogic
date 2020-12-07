@@ -24,13 +24,14 @@
 #include "LibraryParse.h"
 #include "gl_defs.h"
 #include "klsMessage.h"
+#include "settings_values.h"
 #include <deque>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <cmath>
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-// To search "My Documents" dikrectory
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// To search "My Documents" directory
 #include <shlobj.h>
 
 class MainFrame;
@@ -39,7 +40,7 @@ using namespace std;
 
 struct ApplicationSettings {
 	string gateLibFile;
-	string textFontFile = "res";		// Pedro Casanova (casanova@ujaen.es) 2020/07 // Font is now in resources 
+	string textFontFile = "res";		// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Font is now in resources 
 	string helpFile;
 	string lastDir;
 	unsigned int mainFrameWidth;
@@ -49,11 +50,13 @@ struct ApplicationSettings {
 	unsigned int timePerStep;
 	int refreshRate;    
 	bool gridlineVisible;
-    bool wireConnVisible;    
+    bool wireConnVisible; 
+	bool wideOutline;
 	bool componentCollVisible;
-	float wireConnRadius;
-	// Pedro Casanova (casanova@ujaen.es) 2020/07
-	bool settingsInReg = true;
+	bool adjustBitmap;
+	bool markDeprecated;
+	float wireConnRadius;	
+	bool settingsInReg = true;			// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Settings in register
 };
 
 class MainApp : public wxApp {
@@ -117,7 +120,7 @@ public:
 	
 private:
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Settings now in windows register
 	void loadSettingsFile(void);
 	void loadSettingsReg(void);

@@ -24,7 +24,7 @@ XMLParser::XMLParser(fstream* strIO, bool writing)
 	while (!mStream->eof()) {
 	    getline(*mStream, temp, '\n');
 
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// Now permit LF (UNIX) and CRLF (WINDOWS)
 		if (temp.c_str()[strlen(temp.c_str()) - 1] == '\r')
 		{

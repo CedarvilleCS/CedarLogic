@@ -26,6 +26,4 @@
 #include "command/cmdSetParams.h"
 #include "command/cmdDeleteTab.h"
 #include "command/cmdAddTab.h"
-
-//##
 #include "command/cmdMergeWire.h"

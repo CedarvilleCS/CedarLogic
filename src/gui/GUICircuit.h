@@ -22,6 +22,7 @@
 #include "gl_wrapper.h"
 #include "klsMessage.h"
 #include "../logic/logic_values.h"
+
 using namespace std;
 
 class GUICanvas;
@@ -38,6 +39,9 @@ public:
     GUICircuit();
 
     virtual ~GUICircuit();
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	void setCircuit(void* theCircuit) { ourCircuit = theCircuit; };
 
 	// Reinit circuit
 	void reInitializeLogicCircuit();
@@ -84,6 +88,8 @@ public:
 	int lastTimeMod;
 	int lastNumSteps;
 	int lastTime;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	void* ourCircuit = NULL;
 	
 private:
 	unordered_map< unsigned long, guiGate* > gateList;

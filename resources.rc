@@ -19,4 +19,4 @@ LOCKED.BMP BITMAP "res/bitmaps/locked.bmp"
 NEWTAB.BMP BITMAP "res/bitmaps/newtab.bmp"
 GRID.BMP BITMAP "res/bitmaps/grid.bmp"
 JUNCTION.BMP BITMAP "res/bitmaps/junction.bmp"
-
+OUTLINE.BMP BITMAP "res/bitmaps/outline.bmp"

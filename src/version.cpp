@@ -9,7 +9,7 @@ namespace {
 	const int VERSION_PATCH = CEDARLOGIC_PATCH;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // Now VERSION_NUMBER_STRING has VERSION only, not DATE and TIME
 string VERSION_NUMBER_STRING() {
 

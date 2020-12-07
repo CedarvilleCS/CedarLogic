@@ -32,7 +32,7 @@ enum
 {
 	File_Export = 5901, // out of range of wxWidgets constants	
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	//File_ClipCopy,
 	Copy_Color,
 	Copy_Greyscale,
@@ -41,10 +41,12 @@ enum
 	View_Oscope,
 	View_Gridline,
 	View_WireConn,
-	View_ComponentColl,
+	View_WideOutline,
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-	View_componentCollisions,
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	View_ComponentColl,
+	Adjust_Bitmap,
+	Mark_Deprecated,
 	
     TIMER_ID,
     IDLETIMER_ID,
@@ -92,7 +94,7 @@ public:
 	void OnRedo(wxCommandEvent& event);
 	void OnCopy(wxCommandEvent& event);
 	void OnPaste(wxCommandEvent& event);
-	// Pedro Casanova(casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova(casanova@ujaen.es) 2020/04-11
 	// Separate options to copy bitmap to clipboard
 	void OnCopyColor(wxCommandEvent& event);
 	void OnCopyGreyscale(wxCommandEvent& event);
@@ -100,14 +102,19 @@ public:
 	void OnOscope(wxCommandEvent& event);
 	void OnViewGridline(wxCommandEvent& event);
 	void OnViewWireConn(wxCommandEvent& event);
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// To show/hide Wide Outliones
+	void OnViewWideOutline(wxCommandEvent& event);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// To show/hide components collisions
-	void OnViewComponentCollisions(wxCommandEvent& event);
+	void OnViewComponentCollision(wxCommandEvent& event);
+	void OnAdjustBitmap(wxCommandEvent& event);
+	void OnMarkDeprecated(wxCommandEvent& event);
 	void OnPause(wxCommandEvent& event);
 	void OnStep(wxCommandEvent& event);
 	void OnZoomIn(wxCommandEvent& event);
 	void OnZoomOut(wxCommandEvent& event);
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Any Slider scroll
 	void OnSlider(wxScrollEvent& event);
 	void OnLock(wxCommandEvent& event);
@@ -117,7 +124,7 @@ public:
 	void OnRequestAFeature(wxCommandEvent& event);
 	void OnDownloadLatestVersion(wxCommandEvent& event);
 	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Settings now in windows register
 	void saveSettingsFile(void);
 	void saveSettingsReg(void);
@@ -146,8 +153,8 @@ public:
 	void load(string filename);
 
 	//Julian: Added to simplify exporting and copying to clipboard
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10		Added noColor
-	wxBitmap getBitmap(bool withGrid, bool noColor = false);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11		Added color
+	wxBitmap getBitmap(bool withGrid, bool color = true);
 	
 private:
     // helper function - creates a new thread (but doesn't run it)
@@ -164,7 +171,7 @@ private:
 
 	wxPanel* mainPanel;
 	wxToolBar* toolBar;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	wxMenuBar* menuBar;
 
 	//Julian: Re-added timers to fix refresh error
@@ -187,7 +194,7 @@ private:
 	wxSlider* timeStepModSlider;
 	wxStaticText* timeStepModVal;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Slider to select wireConnRadius
 	wxSlider* wireConnRadiusSlider;
 	wxStaticText* wireConnRadiusVal;

@@ -59,8 +59,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	// of CedarLogic from opening new, incompatable files.
 	if (firstTag == "version") {
 		std::string versionNumber = mParse->readTagValue("version");
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// Compare version number only "x.y.z"
 		// originally it was: "x.y.z | DATE - TIME"
 		if (versionNumber.find(" ") >= 0)
@@ -75,7 +74,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 				"If this circuit does not operate correctily close CedarLogic without saving."				
 				, "Version Error!");
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 			// Can continue if no incompatibility (don't quit)
 			//return gCanvases;
 		}
@@ -153,11 +152,19 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 							//Thus no warning needs to be given.
 							type = "AM_RAM_16x16";
 						}
-						// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 						// Some names are changed for alfabetic order
 						if (type == "CA_SMALL_TGATE") type = "TA_SMALL_TGATE";
-						if (type == "AI_INVERTER_4BIT") type = "BI_INVERTER_4BIT";
-						// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+						if (type == "AI_INVERTER_4BIT") type = "BI_INVERTER_4BIT";				
+
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+						// Names are changed becuse now the encoder can chage priority type (none. high and low)
+						if (type == "CB_PRI_ENCODER_4x2") type = "CB_ENCODER_4x2_EN";
+						if (type == "CC_PRI_ENCODER_8x3") type = "CC_ENCODER_8x3_EN";
+						if (type == "CD_PRI_ENCODER_16x4") type = "CD_ENCODER_16x4_EN";
+						if (type == "HO_JUNC_00") type = "HP_JUNC_00";
+
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 						// Not necesary to deprecate, components are now in library
 						/* else if (type == "AA_DFF") {
 							wxMessageBox("The High Active Reset D flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
@@ -179,7 +186,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						temp = mParse->readTag(); // get input ID
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
-						// pedro casanova (casasanova@ujaen.es) 2020/04-10
+						// pedro casanova (casasanova@ujaen.es) 2020/04-11
 						// Convert to uppercase and rename
 						for (unsigned long cnt = 0; cnt < gc->connectionID.length(); cnt++)
 							gc->connectionID[cnt] = toupper(gc->connectionID[cnt]);
@@ -200,7 +207,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
-						// pedro casanova (casasanova@ujaen.es) 2020/04-10
+						// pedro casanova (casasanova@ujaen.es) 2020/04-11
 						// Convert to uppercase
 						for (unsigned long cnt = 0; cnt < gc->connectionID.length(); cnt++)
 							gc->connectionID[cnt] = toupper(gc->connectionID[cnt]);
@@ -219,12 +226,15 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						istringstream iss(paramData);
 						iss >> x;
 						getline(iss, y, '\n');
+						// Pedro casanova (casanova@ujaen.es) 2020/04-11		PULSE_WITH now is a logic param
+						if (x == "PULSE_WIDTH")
+							temp = "lparam";
 						pParam = new parameter(x, y.substr(1,y.size()-1), (temp == "gparam"));
 						params.push_back(*pParam);
 						delete pParam;
 					}
 					// ADD OTHER TAGS FOR GATE HERE
-						// ALSO MODIFY parseGateToSend
+					// ALSO MODIFY parseGateToSend
 					mParse->readCloseTag(); // </>
 				} while (!mParse->isCloseTag(mParse->getCurrentIndex()));
 				mParse->readCloseTag(); // >gate
@@ -262,9 +272,18 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	float x, y;
 	istringstream issb(ID);
 	issb >> id;
-	
-	string logicType = wxGetApp().libParser.getGateLogicType( type );
-	if (logicType.size() > 0)
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// To avoid crash when a gate does not exist
+	LibraryGate libGate;
+	if (!wxGetApp().libParser.getGate(type, libGate))
+	{
+		wxMessageBox("Component not found!\nGate name:" + type, "Not found Error!");
+		type = "@@_NOT_FOUND";
+		wxGetApp().libParser.getGate(type, libGate);
+	}
+
+	if (libGate.logicType.size() > 0)
 		gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_GATE, new klsMessage::Message_CREATE_GATE(wxGetApp().libraries[wxGetApp().gateNameToLibrary[type]][type].logicType, id)));
 	// Create gate for GUI
 	istringstream issa(position.substr(0,position.find(",")+1));
@@ -274,16 +293,20 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	guiGate* newGate = gCanvas->getCircuit()->createGate( type, id, true );
 	if (newGate == NULL) return; // IN CASE OF ERROR
 	gCanvas->insertGate(id, newGate, x, y);
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// To avoid crash when a gate does not exist
+	if (type == "@@_NOT_FOUND")	return;
+	
 	for (unsigned int i = 0; i < params.size(); i++) {
 		if (!(params[i].isGUI)) {
 			newGate->setLogicParam( params[i].paramName, params[i].paramValue );
 			gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(id, params[i].paramName, params[i].paramValue)));
 		} else newGate->setGUIParam( params[i].paramName, params[i].paramValue );
 	}
-	if( logicType.size() > 0 ) {
+
+	if(libGate.logicType.size() > 0 ) {
 		// Loop through the hotspots and pass logic core hotspot settings:
-		LibraryGate libGate;
-		wxGetApp().libParser.getGate(type, libGate);
 		for( unsigned int i = 0; i < libGate.hotspots.size(); i++ ) {
 
 			// Send the isInverted message:
@@ -295,7 +318,8 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Nedeed only for inputs
 			// Send the isPullUp message:
 			if (libGate.hotspots[i].isPullUp) {
 				if (libGate.hotspots[i].isInput) {
@@ -303,7 +327,8 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Nedeed only for inputs
 			// Send the isPullDown message:
 			if (libGate.hotspots[i].isPullDown) {
 				if (libGate.hotspots[i].isInput) {
@@ -311,17 +336,26 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Nedeed only for inputs
+			// Send the ForceJunction message:
+			if (libGate.hotspots[i].ForceJunction) {
+				if (libGate.hotspots[i].isInput) {
+					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "FORCE_JUNCTION", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 			// Nedeed only for outputs
 			// Send the logicEInput message:
-			if( libGate.hotspots[i].logicEInput != "" ) {
-				if ( !libGate.hotspots[i].isInput ) {
+			if (libGate.hotspots[i].logicEInput != "") {
+				if (!libGate.hotspots[i].isInput) {
 					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT_PARAM, new klsMessage::Message_SET_GATE_OUTPUT_PARAM(id, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
 				}
 			}
+
 		} // for( loop through the hotspots )
 	} // if( logic type is non-null )
-
 
 	// Connect inputs and outputs.
 	GUICircuit *gCircuit = gCanvas->getCircuit();
@@ -405,7 +439,7 @@ void CircuitParse::parseWireToSend( void ) {
 								mParse->readCloseTag();
 							} else if (temp == "name") {
 								hsName = mParse->readTagValue("name");
-								// pedro casanova (casasanova@ujaen.es) 2020/04-10
+								// pedro casanova (casasanova@ujaen.es) 2020/04-11
 								// Convert to uppercase and rename
 								for (unsigned long cnt = 0; cnt < hsName.length(); cnt++)
 									hsName[cnt] = toupper(hsName[cnt]);

@@ -92,7 +92,7 @@ bool MainApp::OnInit()
     return true;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // Not used, now in windows register
 void MainApp::loadSettingsFile() {
 
@@ -113,7 +113,7 @@ void MainApp::loadSettingsFile() {
 		}
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// To make test this is a problem
 #ifndef _PRODUCTION_
 	if (pathToExe.find("Debug") != string::npos || pathToExe.find("Release") != string::npos) {
@@ -125,37 +125,41 @@ void MainApp::loadSettingsFile() {
 	ifstream iniFile( settingsIni.c_str(), ios::in );
 	if (!iniFile) {
 		// set defaults
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// cl_gatedefs.xm in Resources, added extern UserLib.xml
-		appSettings.gateLibFile = pathToExe + "UserLib.xml";
-		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-10
-		appSettings.helpFile = pathToExe + "KLS_Logic.chm";
-		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-10
-		if (appSettings.textFontFile == "res")
-			appSettings.textFontFile = "res";
-		else
-			appSettings.textFontFile = pathToExe + "arial.glf";
-		appSettings.mainFrameWidth = 1000;
-		appSettings.mainFrameHeight = 800;
-		appSettings.mainFrameLeft = appSettings.mainFrameTop = 20;
-		appSettings.timePerStep = timeStepMod = 25; // ms
-		appSettings.refreshRate = 60; // ms				
-		appSettings.gridlineVisible = true;
-		appSettings.wireConnVisible = false;	// Pedro Casanova (casanova@ujaen.es) 2020/04-10		(Changed to false)
-		appSettings.componentCollVisible = false; // Pedro Casanova (casanova@ujaen.es) 2020/04-10	(Addded)
-		appSettings.wireConnRadius = 0.175f; // Pedro Casanova (casanova@ujaen.es) 2020/04-10  (was 0.18)
+		appSettings.gateLibFile = pathToExe + DEFAULT_GATELIBFILE;
+		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		//appSettings.helpFile = pathToExe + "KLS_Logic.chm";
+		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		if (appSettings.textFontFile != "res")
+			appSettings.textFontFile = pathToExe + DEFAULT_TEXTFONTFILE;
+		appSettings.mainFrameWidth = DEFAULT_MAINFRAMEWIDTH;
+		appSettings.mainFrameHeight = DEFAULT_MAINFRAMEHEIGHT;
+		appSettings.mainFrameLeft = DEFAULT_MAINFRAMELEFT;
+		appSettings.mainFrameTop = DEFAULT_MAINFRAMETOP;
+		appSettings.timePerStep = timeStepMod = DEFAULT_TIMEPERSTEP;		// ms
+		appSettings.refreshRate = DEFAULT_REFRESHRATE;						// ms
+		appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(was 0.18)
+		appSettings.gridlineVisible = DEFAULT_GRIDLINEVISIBLE;		
+		appSettings.wireConnVisible = DEFAULT_WIRECONNVISIBLE;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Changed to false)
+		appSettings.wideOutline = DEFAULT_WIDEOUTLINE;						// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
+		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
+		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
+		appSettings.markDeprecated = DEFAULT_MARKDEPRECATED;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
 	} else {
 		// load from the file
 		string line;
 		// gateLibFile
 		getline(iniFile, line, '\n');
 		int pos = line.find('=',0);
-		appSettings.gateLibFile = pathToExe + line.substr(pos+1,line.size()-(pos+1));
+		appSettings.gateLibFile = line.substr(pos+1,line.size()-(pos+1));
 		// helpFile
-		getline(iniFile, line, '\n');
-		pos = line.find('=',0);
-		appSettings.helpFile = pathToExe + line.substr(pos+1,line.size()-(pos+1));
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Obsolete
+		//getline(iniFile, line, '\n');
+		//pos = line.find('=',0);
+		//appSettings.helpFile = pathToExe + line.substr(pos+1,line.size()-(pos+1));
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// Now in resources
 		// textFontFile
 		getline(iniFile, line, '\n');
@@ -218,29 +222,48 @@ void MainApp::loadSettingsFile() {
         line = line.substr(pos+1,line.size()-(pos+1));
         istringstream issWireConnVisible(line);
         issWireConnVisible >> appSettings.wireConnVisible;
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Wide Outlines Visible
+		getline(iniFile, line, '\n');
+		pos = line.find('=', 0);
+		line = line.substr(pos + 1, line.size() - (pos + 1));
+		istringstream isswideOutline(line);
+		isswideOutline >> appSettings.wideOutline;
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// Component Collision Visible
 		getline(iniFile, line, '\n');
 		pos = line.find('=', 0);
 		line = line.substr(pos + 1, line.size() - (pos + 1));
 		istringstream issComponentCollVisible(line);
 		issComponentCollVisible >> appSettings.componentCollVisible;
+		// Adjust bitmaps
+		getline(iniFile, line, '\n');
+		pos = line.find('=', 0);
+		line = line.substr(pos + 1, line.size() - (pos + 1));
+		istringstream issAdjustBitmap(line);
+		issAdjustBitmap >> appSettings.adjustBitmap;
+		// Show Deprecated
+		getline(iniFile, line, '\n');
+		pos = line.find('=', 0);
+		line = line.substr(pos + 1, line.size() - (pos + 1));
+		istringstream issMarkDeprecated(line);
+		issMarkDeprecated >> appSettings.markDeprecated;
 		// wire connection radius
 		getline(iniFile, line, '\n');
 		pos = line.find('=', 0);
 		line = line.substr(pos + 1, line.size() - (pos + 1));
 		istringstream issRadius(line);
 		issRadius >> appSettings.wireConnRadius;
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// Change the min value from 0.18 to 0.05, default 0.1
-		if (appSettings.wireConnRadius < 0.025f || appSettings.wireConnRadius > 0.3f) appSettings.wireConnRadius = 0.175f;
+		if (appSettings.wireConnRadius < 0.025f || appSettings.wireConnRadius > 0.3f) appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;
 
         // all done
         iniFile.close();
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // Settings in windows register
 void MainApp::loadSettingsReg() {
 
@@ -261,7 +284,7 @@ void MainApp::loadSettingsReg() {
 		}
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// To make test this is a problem
 #ifndef _PRODUCTION_
 	if (pathToExe.find("Debug") != string::npos || pathToExe.find("Release") != string::npos) {
@@ -281,20 +304,22 @@ void MainApp::loadSettingsReg() {
 				newVersion = false;
 				Length = MAX_PATH;
 				if (RegQueryValueEx(hKey, "GateLib", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
-					appSettings.gateLibFile = pathToExe + Value_C;
+					appSettings.gateLibFile = Value_C;
 				else
-					appSettings.gateLibFile = pathToExe + "UserLib.xml";
+					appSettings.gateLibFile = pathToExe + DEFAULT_GATELIBFILE;
 				Length = MAX_PATH;
-				if (RegQueryValueEx(hKey, "HelpFile", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
+				// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+				// There is no helpfile
+				/*if (RegQueryValueEx(hKey, "HelpFile", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
 					appSettings.helpFile = pathToExe + Value_C;
 				else
-					appSettings.helpFile = pathToExe + "KLS_Logic.chm";
+					appSettings.helpFile = pathToExe + "KLS_Logic.chm";*/
 				Length = MAX_PATH;
 				if (RegQueryValueEx(hKey, "LastDirectory", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
 					appSettings.lastDir = Value_C;
 				else
 				{
-					// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 					// Set default directory to "My Documents"
 					char myDocs[MAX_PATH] = "";
 					SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT, myDocs);
@@ -303,46 +328,56 @@ void MainApp::loadSettingsReg() {
 				}
 				Length = 4;
 				if (RegQueryValueEx(hKey, "FrameWidth", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 1000;
+					Value = DEFAULT_MAINFRAMEWIDTH;
 				appSettings.mainFrameWidth = (unsigned int)Value;
 				Length = 4;
 				if (RegQueryValueEx(hKey, "FrameHeight", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 800;
+					Value = DEFAULT_MAINFRAMEHEIGHT;
 				appSettings.mainFrameHeight = (unsigned int)Value;
 				Length = 4;
 				if (RegQueryValueEx(hKey, "FrameLeft", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 20;
+					Value = DEFAULT_MAINFRAMELEFT;
 				appSettings.mainFrameLeft = Value;
 				Length = 4;
 				if (RegQueryValueEx(hKey, "FrameTop", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 20;
+					Value = DEFAULT_MAINFRAMETOP;
 				appSettings.mainFrameTop = Value;
 				Length = 4;
 				if (RegQueryValueEx(hKey, "TimeStep", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 25;
+					Value = DEFAULT_TIMEPERSTEP;
 				appSettings.timePerStep = timeStepMod = (unsigned int)Value;
 				Length = 4;
 				if (RegQueryValueEx(hKey, "RefreshRate", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 60;
+					Value = DEFAULT_REFRESHRATE;
 				appSettings.refreshRate = Value;
 				if (appSettings.refreshRate <= 0) appSettings.refreshRate = 60;
 				Length = 4;
 				if (RegQueryValueEx(hKey, "WireConnRadius", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 175;
+					Value = ceil(100* DEFAULT_WIRECONNRADIUS);
 				appSettings.wireConnRadius = ((float)Value) / 1000.0f;
-				if (appSettings.wireConnRadius < 0.025f || appSettings.wireConnRadius > 0.3f) appSettings.wireConnRadius = 0.175f;
+				if (appSettings.wireConnRadius < 0.025f || appSettings.wireConnRadius > 0.3f) appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;
 				Length = 4;
 				if (RegQueryValueEx(hKey, "GridLineVisible", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 1;
+					Value = (DEFAULT_GRIDLINEVISIBLE == true) ? 1 : 0;
 				appSettings.gridlineVisible = (Value == 0) ? false : true;
 				Length = 4;
 				if (RegQueryValueEx(hKey, "WireConnVisible", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 0;
+					Value = (DEFAULT_WIRECONNVISIBLE == true) ? 1 : 0;
 				appSettings.wireConnVisible = (Value == 0) ? false : true;
 				Length = 4;
+				if (RegQueryValueEx(hKey, "WideOutline", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
+					Value = (DEFAULT_WIDEOUTLINE == true) ? 1 : 0;
+				appSettings.wideOutline = (Value == 0) ? false : true;
+				Length = 4;
 				if (RegQueryValueEx(hKey, "ComponentCollVisible", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
-					Value = 0;
+					Value = (DEFAULT_COMPONENTCOLLVISIBLE == true) ? 1 : 0;
 				appSettings.componentCollVisible = (Value == 0) ? false : true;
+				if (RegQueryValueEx(hKey, "AdjustBitmap", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
+					Value = (DEFAULT_ADJUSTBITMAP == true) ? 1 : 0;
+				appSettings.adjustBitmap = (Value == 0) ? false : true;
+				if (RegQueryValueEx(hKey, "MarkDeprecated", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
+					Value = (DEFAULT_MARKDEPRECATED == true) ? 1 : 0;
+				appSettings.markDeprecated = (Value == 0) ? false : true;
 			}
 		RegCloseKey(hKey);
 		if (newVersion)
@@ -350,41 +385,46 @@ void MainApp::loadSettingsReg() {
 	}
 	if (newVersion) {
 		// set defaults
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-		// cl_gatedefs.xml in Resources, added extern UserLib.xml
-		appSettings.gateLibFile = pathToExe + "UserLib.xml";
-		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-10
-		appSettings.helpFile = pathToExe + "KLS_Logic.chm";
-		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-10
-		if (appSettings.textFontFile!="res")
-			appSettings.textFontFile = pathToExe + "arial.glf";
-		appSettings.mainFrameWidth = 1000;
-		appSettings.mainFrameHeight = 800;
-		appSettings.mainFrameLeft = 20;
-		appSettings.mainFrameTop = 20;
-		appSettings.timePerStep = timeStepMod = 25; // ms
-		appSettings.refreshRate = 60; // ms				
-		appSettings.gridlineVisible = true;
-		appSettings.wireConnVisible = false;		// Changed to false -  Pedro Casanova (casanova@ujaen.es) 2020/04-10
-		appSettings.componentCollVisible = false;	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-		appSettings.wireConnRadius = 0.175f;		// Pedro Casanova (casanova@ujaen.es) 2020/04-10  (was 0.18f)
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// cl_gatedefs.xm in Resources, added extern UserLib.xml
+		appSettings.gateLibFile = pathToExe + DEFAULT_GATELIBFILE;
+		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		//appSettings.helpFile = pathToExe + "KLS_Logic.chm";
+		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		if (appSettings.textFontFile != "res")
+			appSettings.textFontFile = pathToExe + DEFAULT_TEXTFONTFILE;
+		appSettings.mainFrameWidth = DEFAULT_MAINFRAMEWIDTH;
+		appSettings.mainFrameHeight = DEFAULT_MAINFRAMEHEIGHT;
+		appSettings.mainFrameLeft = DEFAULT_MAINFRAMELEFT;
+		appSettings.mainFrameTop = DEFAULT_MAINFRAMETOP;
+		appSettings.timePerStep = timeStepMod = DEFAULT_TIMEPERSTEP;		// ms
+		appSettings.refreshRate = DEFAULT_REFRESHRATE;						// ms
+		appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(was 0.18)
+		appSettings.gridlineVisible = DEFAULT_GRIDLINEVISIBLE;
+		appSettings.wireConnVisible = DEFAULT_WIRECONNVISIBLE;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Changed to false)
+		appSettings.wideOutline = DEFAULT_WIDEOUTLINE;						// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
+		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)		
+		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)		
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// .CDL extension file association
-	if (RegCreateKey(HKEY_CURRENT_USER, "Software\\Classes\\.cdl", &hKey) == ERROR_SUCCESS)
-	{
-		RegSetValue(hKey, "", REG_SZ, ".cdl_auto_file", 0);
-		RegCloseKey(hKey);
-		if (RegCreateKey(HKEY_CURRENT_USER, "Software\\Classes\\.cdl_auto_file\\shell\\open\\command", &hKey) == ERROR_SUCCESS)
+	// Not necesary, made by the installer in HKCR
+/*	if (RegOpenKey(HKEY_CURRENT_USER, "Software\\Classes\\.cdl", &hKey) != ERROR_SUCCESS)
+		if (RegCreateKey(HKEY_CURRENT_USER, "Software\\Classes\\.cdl", &hKey) == ERROR_SUCCESS)
 		{
-			strcat_s(AppFilePath, " \"%1\"");
-			RegSetValue(hKey, "", REG_SZ, AppFilePath, 0);
+			RegSetValue(hKey, "", REG_SZ, "CedarLogic", 0);
 			RegCloseKey(hKey);
-		}
-		else
-			RegDeleteKey(HKEY_CURRENT_USER, "Software\\Classes\\.cdl");
-	}
+			if (RegCreateKey(HKEY_CURRENT_USER, "Software\\Classes\\.cdl_auto_file_CedarLogic\\shell\\open\\command", &hKey) == ERROR_SUCCESS)
+			{
+				strcat_s(AppFilePath, " \"%1\"");
+				RegSetValue(hKey, "", REG_SZ, AppFilePath, 0);
+				RegCloseKey(hKey);
+			}
+			else
+				RegDeleteKey(HKEY_CURRENT_USER, "Software\\Classes\\.cdl");
+		}*/
 }
 
 void MainApp::loadSettings(bool Reg) {
@@ -395,23 +435,6 @@ void MainApp::loadSettings(bool Reg) {
 	else
 		loadSettingsFile();
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-	// Initial Settings
-	/*_MSG1("GATELIB %s", appSettings.gateLibFile.c_str());
-	_MSG1("HELPFILE %s", appSettings.helpFile.c_str());
-	_MSG1("LASTDIR %s", appSettings.lastDir.c_str());
-	_MSG1("FONT %s", appSettings.textFontFile.c_str());
-	_MSG1("WIDTH %d", appSettings.mainFrameWidth);
-	_MSG1("HEIGHT %d", appSettings.mainFrameHeight);
-	_MSG1("LEFT %d", appSettings.mainFrameLeft);
-	_MSG1("TOP %d", appSettings.mainFrameTop);
-	_MSG1("TIME %d", appSettings.timePerStep);
-	_MSG1("RADIUS %1.3f", appSettings.wireConnRadius);
-	_MSG1("GRID %d", appSettings.gridlineVisible);
-	_MSG1("CONN %d", appSettings.wireConnVisible);
-	_MSG1("COLL %d", appSettings.componentCollVisible);	*/
-
-
 	// check screen coords
 	wxScreenDC sdc;
 
@@ -420,7 +443,7 @@ void MainApp::loadSettings(bool Reg) {
 	if (appSettings.mainFrameLeft + (signed int)(appSettings.mainFrameWidth) > (signed int)(sdc.GetSize().GetWidth()) ||
 		appSettings.mainFrameTop + (signed int)(appSettings.mainFrameHeight) > (signed int)(sdc.GetSize().GetHeight())) {
 
-		appSettings.mainFrameWidth = 1000;
+		appSettings.mainFrameWidth = 1100;
 		appSettings.mainFrameHeight = 800;
 		appSettings.mainFrameLeft = appSettings.mainFrameTop = 20;
 	}

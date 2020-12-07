@@ -18,6 +18,7 @@ DECLARE_APP(MainApp)
 IMPLEMENT_DYNAMIC_CLASS(GUICircuit, wxDocument)
 
 GUICircuit::GUICircuit() {
+	ourCircuit = NULL;
 	nextGateID = nextWireID = 0;
 	simulate = true;
 	waitToSendMessage = true;
@@ -67,13 +68,15 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	string ggt = gateDef.guiType;
 	
 	if (ggt == "REGISTER")
-		newGate = (guiGate*)(new guiGateREGISTER());	
-	else if (ggt == "TO" || ggt == "FROM" || ggt == "LINK")		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		newGate = (guiGate*)(new guiGateREGISTER());
+	else if (ggt == "TO" || ggt == "FROM" || ggt == "LINK")		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		newGate = (guiGate*)(new guiTO_FROM());
 	else if (ggt == "LABEL")
 		newGate = (guiGate*)(new guiLabel());
 	else if (ggt == "LED")
 		newGate = (guiGate*)(new guiGateLED());
+	else if (ggt == "WIRE")
+		newGate = (guiGate*)(new guiGateWIRE());
 	else if (ggt == "TOGGLE")
 		newGate = (guiGate*)(new guiGateTOGGLE());
 	else if (ggt == "KEYPAD")
@@ -82,14 +85,23 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 		newGate = (guiGate*)(new guiGatePULSE());
 	else if (ggt == "RAM")
 		newGate = (guiGate*)(new guiGateRAM());
+	else if (ggt == "PLD")
+		newGate = (guiGate*)(new guiGatePLD());
 	else
 		newGate = new guiGate();
 
 	newGate->setLibraryName( libName, gateName );
+	newGate->setGUICircuit(this);
 
 	for (unsigned int i = 0; i < gateDef.shape.size(); i++) {
 		lgLine tempLine = gateDef.shape[i];
 		newGate->insertLine(tempLine.x1, tempLine.y1, tempLine.x2, tempLine.y2, tempLine.w);
+	}
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Lines with offset for rotate chars
+	for (unsigned int i = 0; i < gateDef.Offshape.size(); i++) {
+		lgOffLine tempLine = gateDef.Offshape[i];
+		newGate->insertOffLine(tempLine.x0, tempLine.y0, tempLine.Line.x1, tempLine.Line.y1, tempLine.Line.x2, tempLine.Line.y2, tempLine.Line.w);
 	}
 	for (unsigned int i = 0; i < gateDef.hotspots.size(); i++) {
 		lgHotspot tempHS = gateDef.hotspots[i];
@@ -111,7 +123,7 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	gateList[id] = newGate;
 	gateList[id]->setID(id);
 	
-	// Pedro Casanova (casanova@ujaen.es 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es 2020/04-11
 	// TO, FROM and LINK are valid signal to Oscope
 	// Update the OScope with the new info:
 	if (!noOscope)
@@ -128,7 +140,7 @@ void GUICircuit::deleteGate(unsigned long gid, bool waitToUpdate) {
 	
 	if (gateList.find(gid) == gateList.end()) return;
 
-	// Pedro Casanova (casanova@ujaen.es 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es 2020/04-11
 	// TO, FROM and LINK are valid signal to Oscope
 	//Update Oscope
 	if (!waitToUpdate)
@@ -260,7 +272,7 @@ void GUICircuit::sendMessageToCore(klsMessage::Message message) {
 		
 		if (simulate) {
 			wxGetApp().dGUItoLOGIC.push_back(message);
-		} else{
+		} else {
 			messageQueue.push_back(message);
 		}
 	} else{

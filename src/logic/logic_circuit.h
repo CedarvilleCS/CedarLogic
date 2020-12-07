@@ -18,6 +18,7 @@
 #include "logic_wire.h"
 #include "logic_gate.h"
 #include "logic_junction.h"
+#include "..\gui\GUICircuit.h"
 
 #include<queue>
 #include<functional>  // KAS 2016
@@ -41,7 +42,7 @@ class Circuit {
 
 public:
 
-	Circuit();
+	Circuit(GUICircuit * theGUICircuit);
 
 	virtual ~Circuit();
 
@@ -133,6 +134,9 @@ public:
 	// sent to the GUI from the logic core:
 	void addUpdateParam(IDType gateID, const string &paramName);
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	void UpdateGate(IDType gateID);	
+
 	vector < changedParam > getParamUpdateList();
 
 	void clearParamUpdateList();
@@ -164,6 +168,10 @@ public:
 	// Returns maps of junction items for use in gate functions
 	ID_MAP< string, IDType >* getJunctionIDs();
 	ID_MAP< string, unsigned long >* getJunctionUseCounter();
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	GUICircuit* ourGUICircuit;
+
 
 protected:
 	// For use by the Junction and Wire classes only:

@@ -35,18 +35,27 @@ bool GLPoint2f::operator!=(const GLPoint2f &other) const {
 }
 
 void defineGLLists() {
-	float degInRad = 0;
 	
 	// Wire end/junction points
 	glNewList( CEDAR_GLLIST_CONNECTPOINT, GL_COMPILE );
 		glBegin(GL_TRIANGLE_FAN);
 		glVertex2f(0, 0);
  		for (int z=0; z <= 360; z += 360/POINTS_PER_VERTEX)
-		{
-			degInRad = z*DEG2RAD;
-			glVertex2f(cos(degInRad)*wxGetApp().appSettings.wireConnRadius, sin(degInRad)*wxGetApp().appSettings.wireConnRadius);
-		}
+			glVertex2f(cos(z*DEG2RAD)*wxGetApp().appSettings.wireConnRadius, sin(z*DEG2RAD)*wxGetApp().appSettings.wireConnRadius);
 		glEnd();
+	glEndList();
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Cross junction
+	glNewList(CEDAR_GLLIST_CROSSPOINT, GL_COMPILE);
+		glLineWidth(2);
+		glBegin(GL_LINES);
+		glVertex2f(wxGetApp().appSettings.wireConnRadius, wxGetApp().appSettings.wireConnRadius);
+		glVertex2f(-wxGetApp().appSettings.wireConnRadius, -wxGetApp().appSettings.wireConnRadius);
+		glVertex2f(-wxGetApp().appSettings.wireConnRadius, wxGetApp().appSettings.wireConnRadius);
+		glVertex2f(wxGetApp().appSettings.wireConnRadius, -wxGetApp().appSettings.wireConnRadius);
+		glEnd();
+		glLineWidth(1);
 	glEndList();
 	
 }

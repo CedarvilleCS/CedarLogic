@@ -2261,7 +2261,6 @@
 		<caption>Inverter</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
-		<logic_param>DEFAULT_DELAY 1</logic_param>
 		<input> <name>IN_0</name>
 		          <point>-2,0</point> 
 		</input>
@@ -2282,10 +2281,8 @@
 	</gate>
 	<gate> <name>AE_SNOT</name>
 		<caption>Small Inverter</caption>
-
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
-		<logic_param>DEFAULT_DELAY 1</logic_param>	
 		<input> <name>IN_0</name>
 		          <point>-1,0</point> 
 		</input>
@@ -2304,7 +2301,7 @@
 
 		</shape>
 	</gate>
-	<gate> <name>AF_MINI_INVERTER</name>
+	<gate> <name>AF_MINI_NOT</name>
 		<caption>Mini Inverter</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
@@ -2313,22 +2310,31 @@
 		          <point>-0.5,0</point>
 		</input>
 		<output> <name>OUT_0</name>
-		          <point>0.5,0</point>
+		          <point>1,0</point>
 				<inverted>true</inverted>
 		</output>
 		<shape>			
-			<line>-0.5,0,-0.4,0</line>
-			<line>0.4,0,0.5,0</line>
-			<circle>0.3,0,0.1,24</circle>
-			<line>-0.4,0.4,-0.4,-0.4</line>
-			<line>-0.4,0.4,0.2,0</line>
-			<line>-0.4,-0.4,0.2,0</line>
+			<line>-0.5,0,0,0</line>
+			<line>0.8,0,1,0</line>
+			<circle>0.7,0,0.1,24</circle>
+			<line>0,0.4,0,-0.4</line>
+			<line>0,0.4,0.6,0</line>
+			<line>0,-0.4,0.6,0</line>
 		</shape>
 	</gate>	
 	<gate> <name>AG_BUFFER</name>
 		<caption>Big Buffer</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
+		<logic_param>DEFAULT_DELAY 1</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Delay</label>
+				<varname>LOGIC DEFAULT_DELAY</varname>				
+				<range>1,1000</range>
+			</param>
+		</param_dlg_data>
 		<input> <name>IN_0</name>
 		          <point>-3.00,0</point> 
 		</input>
@@ -2348,6 +2354,14 @@
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
 		<logic_param>DEFAULT_DELAY 1</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Delay</label>
+				<varname>LOGIC DEFAULT_DELAY</varname>				
+				<range>1,1000</range>
+			</param>
+		</param_dlg_data>
 		<input> <name>IN_0</name>
 		          <point>-2,0</point> 
 		</input>
@@ -2359,15 +2373,22 @@
 			<line>-1,0.9,-1,-0.9</line>
 			<line>-1,0.9,0.67,0</line>
 			<line>-1,-0.9,0.67,0</line>
-			<line>0.5,0,2,0</line>
+			<line>0.67,0,2,0</line>
 		</shape>
 	</gate>
 	<gate> <name>AG_SSBUF</name>
 		<caption>Small Buffer</caption>
-
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
 		<logic_param>DEFAULT_DELAY 1</logic_param>	
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Delay</label>
+				<varname>LOGIC DEFAULT_DELAY</varname>				
+				<range>1,1000</range>
+			</param>
+		</param_dlg_data>
 		<input> <name>IN_0</name>
 		          <point>-1,0</point> 
 		</input>
@@ -2384,120 +2405,33 @@
 
 		</shape>
 	</gate>
-	<gate> <name>AH_MINI_BUFFER</name>
+	<gate> <name>AH_MINI_BUF</name>
 		<caption>Mini Buffer</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
 		<logic_param>DEFAULT_DELAY 1</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Delay</label>
+				<varname>LOGIC DEFAULT_DELAY</varname>				
+				<range>1,1000</range>
+			</param>
+		</param_dlg_data>
 		<input> <name>IN_0</name>
 		          <point>-0.5,0</point>
 		</input>
 		<output> <name>OUT_0</name>
-		          <point>0.5,0</point>
-		</output>
-		<shape>			
-			<line>-0.5,0,-0.4,0</line>
-			<line>0.2,0,0.5,0</line>
-			<line>-0.4,0.4,-0.4,-0.4</line>
-			<line>-0.4,0.4,0.2,0</line>
-			<line>-0.4,-0.4,0.2,0</line>
-		</shape>
-	</gate>
-	<gate> <name>AI_DELAY</name>
-		<caption>Big Delay</caption>
-		<logic_type>BUFFER</logic_type>
-		<logic_param>DEFAULT_DELAY 10</logic_param>
-		<param_dlg_data>
-			<param>
-				<type>INT</type>
-				<label>Delay</label>
-				<varname>LOGIC DEFAULT_DELAY</varname>				
-				<range>1,1000</range>
-			</param>
-		</param_dlg_data>		
-		<logic_param>INPUT_BITS 1</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-3.00,0</point> 
-		</input>
-		<output> <name>OUT_0</name>
-		          <point>2.5,0</point>
-		</output>
-		<shape>
-			<line>-3,0,-2,0</line>
-			<line>-2,2,-2,-2</line>
-			<line>-2,2,1.5,0</line>
-			<line>-2,-2,1.5,0</line>
-			<line>1.5,0,2.5,0</line>
-			
-			<line>-1.5,-0.5,-1,-0.5</line>
-			<line>-1,-0.5,-0.5,0.5</line>
-			<line>-0.5,0.5,0,0.5</line>		
-		</shape>
-	</gate>	
-	<gate> <name>AJ_SMALL_DELAY</name>
-		<caption>Delay</caption>
-		<logic_type>BUFFER</logic_type>
-		<logic_param>DEFAULT_DELAY 10</logic_param>
-		<param_dlg_data>
-			<param>
-				<type>INT</type>
-				<label>Delay</label>
-				<varname>LOGIC DEFAULT_DELAY</varname>				
-				<range>1,1000</range>
-			</param>
-		</param_dlg_data>		
-		<logic_param>INPUT_BITS 1</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-2.00,0</point> 
-		</input>
-		<output> <name>OUT_0</name>
-		          <point>2,0</point>
-		</output>
-		<shape>
-			<line>-2,0,-1,0</line>
-			<line>-1,0.9,-1,-0.9</line>
-			<line>-1,0.9,0.67,0</line>
-			<line>-1,-0.9,0.67,0</line>
-
-			<line>0.67,0,2,0</line>
-			
-			<line>-0.67,-0.33,-0.5,-0.33</line>
-			<line>-0.5,-0.33,-0.33,0.33</line>
-			<line>-0.33,0.33,-0.16,0.33</line>		
-		</shape>	
-	</gate>
-	<gate> <name>AK_SMALL_DELAY_S</name>
-		<caption>Small Delay</caption>
-		<logic_type>BUFFER</logic_type>
-		<logic_param>DEFAULT_DELAY 10</logic_param>
-		<param_dlg_data>
-			<param>
-				<type>INT</type>
-				<label>Delay</label>
-				<varname>LOGIC DEFAULT_DELAY</varname>				
-				<range>1,1000</range>
-			</param>
-		</param_dlg_data>		
-		<logic_param>INPUT_BITS 1</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-1,0</point> 
-		</input>
-		<output> <name>OUT_0</name>
 		          <point>1,0</point>
 		</output>
-		<shape>
-			<line>-1,0,-0.5,0</line>
-			<line>0.5,0,1,0</line>
-
-			<line>-0.5,0.4,0.5,0</line>
-			<line>-0.5,0.4,-0.5,-0.4</line>
-			<line>-0.5,-0.4,0.5,0</line>
-		
-			<line>-0.4,-0.2,-0.3,-0.2</line>
-			<line>-0.3,-0.2,-0.2,0.2</line>
-			<line>-0.2,0.2,-0.1,0.2</line>		
-		</shape>	
-	</gate>
+		<shape>			
+			<line>-0.5,0,0,0</line>
+			<line>0.6,0,1,0</line>
+			<line>0,0.4,0,-0.4</line>
+			<line>0,0.4,0.6,0</line>
+			<line>0,-0.4,0.6,0</line>
+		</shape>
+	</gate>	
 	<gate> <name>AL_NOTBUF</name>
 		<caption>Big NOT-BUF</caption>
 		<logic_type>BUFFER</logic_type>
@@ -2528,7 +2462,6 @@
 		<caption>NOT-BUF</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
-		<logic_param>DEFAULT_DELAY 1</logic_param>
 		<input> <name>IN_0</name>
 		          <point>-2,0</point> 
 		</input>
@@ -2555,7 +2488,6 @@
 		<caption>Small NOT-BUF</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
-		<logic_param>DEFAULT_DELAY 1</logic_param>
 		<input> <name>IN_0</name>
 		          <point>-1,0</point>
 		</input>
@@ -2574,6 +2506,32 @@
 			<line>-0.5,0.7,-0.5,-0.7</line>
 			<line>-0.5,0.7,0.5,0</line>
 			<line>-0.5,-0.7,0.5,0</line>
+		</shape>
+	</gate>
+	<gate> <name>AO_MINI_NOTBUF</name>
+		<caption>Mini NOT-BUF</caption>
+		<logic_type>BUFFER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-1,0</point>
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>0.5,0.5</point>				  
+		</output>
+		<output> <name>OUTINV_0</name>
+		          <point>0.5,-0.5</point>
+				  <inverted>true</inverted>
+		</output>		
+		<shape>
+			<line>-1,0,-0.5,0</line>
+			<line>-0.25,0.5,0.5,0.5</line>
+			<line>-0.25,0.225,-0.25,0.5</line>
+			<line>-0.25,-0.5,0.5,-0.5</line>
+			<line>-0.25,-0.45,-0.25,-0.5</line>
+			<line>-0.5,0.4,0.1,0</line>
+			<line>-0.5,0.4,-0.5,-0.4</line>
+			<line>-0.5,-0.4,0.1,0</line>
+			<circle>-0.25,-0.35,0.1,24</circle>
 		</shape>
 	</gate>
 	<gate> <name>BA_TRI_STATE</name>
@@ -2644,6 +2602,29 @@
 			<line>-0.5,0.4,0.5,0</line>
 			<line>-0.5,0.4,-0.5,-0.4</line>
 			<line>-0.5,-0.4,0.5,0</line>
+			<line>0,0.2,0,1</line>
+		</shape>
+	</gate>
+	<gate> <name>BA_TRI_STATE__MINI</name>
+		<caption>Mini Tri-State Buffer - High Active Enable</caption>
+		<logic_type>BUFFER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-1.00,0</point> 
+		</input>
+		<input> <name>OUTPUT_ENABLE</name>
+		          <point>0,1</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>1,0</point>
+			<enable_input>OUTPUT_ENABLE</enable_input>
+		</output>
+		<shape>
+			<line>-1,0,-0.3,0</line>
+			<line>0.3,0,1,0</line>
+			<line>-0.3,0.4,0.3,0</line>
+			<line>-0.3,0.4,-0.3,-0.4</line>
+			<line>-0.3,-0.4,0.3,0</line>
 			<line>0,0.2,0,1</line>
 		</shape>
 	</gate>
@@ -2725,6 +2706,30 @@
 			<circle>0,0.36,0.15,24</circle>
 		</shape>
 	</gate>
+	<gate> <name>BE_TRI_STATE__MINI</name>
+		<caption>Mini Tri-State Buffer - Low Active Enable</caption>
+		<logic_type>BUFFER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-1.00,0</point> 
+		</input>
+		<input> <name>OUTPUT_ENABLE</name>
+		          <point>0,1</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>1,0</point>
+			<enable_input>OUTPUT_ENABLE</enable_input>
+		</output>
+		<shape>
+			<line>-1,0,-0.3,0</line>
+			<line>0.3,0,1,0</line>
+			<line>-0.3,0.4,0.3,0</line>
+			<line>-0.3,0.4,-0.3,-0.4</line>
+			<line>-0.3,-0.4,0.3,0</line>
+			<line>0,0.425,0,1</line>
+			<circle>0,0.32,0.1,24</circle>
+		</shape>
+	</gate>
 	<gate> <name>BG_TRI_STATE_INV</name>
 		<caption>Big Tri-State Inverter - High Active Enable</caption>
 		<logic_type>BUFFER</logic_type>
@@ -2798,6 +2803,31 @@
 			<line>-0.5,0.4,0.5,0</line>
 			<line>-0.5,0.4,-0.5,-0.4</line>
 			<line>-0.5,-0.4,0.5,0</line>
+			<line>0,0.2,0,1</line>
+		</shape>
+	</gate>
+	<gate> <name>BG_TRI_STATE_INV__MINI</name>
+		<caption>Mini Tri-State Inverter - High Active Enable</caption>
+		<logic_type>BUFFER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-1.00,0</point> 
+		</input>
+		<input> <name>OUTPUT_ENABLE</name>
+		          <point>0,1</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>1,0</point>
+			<enable_input>OUTPUT_ENABLE</enable_input>
+			<inverted>true</inverted>
+		</output>
+		<shape>
+			<line>-1,0,-0.3,0</line>
+			<line>0.5,0,1,0</line>
+			<circle>0.4,0,0.1,24</circle>
+			<line>-0.3,0.4,0.3,0</line>
+			<line>-0.3,0.4,-0.3,-0.4</line>
+			<line>-0.3,-0.4,0.3,0</line>
 			<line>0,0.2,0,1</line>
 		</shape>
 	</gate>
@@ -2884,11 +2914,37 @@
 			<circle>0,0.36,0.15,24</circle>
 		</shape>
 	</gate>
+	<gate> <name>BH_TRI_STATE_INV_LOW__MINI</name>
+		<caption>Mini Tri-State Inverter - Low Active Enable</caption>
+		<logic_type>BUFFER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-1.00,0</point> 
+		</input>
+		<input> <name>OUTPUT_ENABLE</name>
+		          <point>0,1</point>
+			<inverted>true</inverted>
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>1,0</point>
+			<enable_input>OUTPUT_ENABLE</enable_input>
+			<inverted>true</inverted>
+		</output>
+		<shape>
+			<line>-1,0,-0.3,0</line>
+			<line>0.5,0,1,0</line>
+			<circle>0.4,0,0.1,24</circle>
+			<line>-0.3,0.4,0.3,0</line>
+			<line>-0.3,0.4,-0.3,-0.4</line>
+			<line>-0.3,-0.4,0.3,0</line>
+			<line>0,0.425,0,1</line>
+			<circle>0,0.32,0.1,24</circle>
+		</shape>
+	</gate>
 	<gate> <name>BI_TRI_STATE_2BIT</name>
-		<caption>2-Bit Tri-State Bus - High Active Enable </caption>
+		<caption>2-Bit Tri-State Buffer - High Active Enable </caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 4</logic_param>
-
 		<input> <name>IN_0</name>
 		          <point>-2.0,-0.5</point> 
 		</input>
@@ -2909,10 +2965,10 @@
 			<enable_input>OUTPUT_ENABLE</enable_input>
 		</output>
 		<shape>
-			<line>-1,-1,-1,1</line>
-			<line>-1,1,1,1</line>
-			<line>1,1,1,-1</line>
-			<line>1,-1,-1,-1</line>
+			<outline>-1,-1,-1,1</outline>
+			<outline>-1,1,1,1</outline>
+			<outline>1,1,1,-1</outline>
+			<outline>1,-1,-1,-1</outline>
 
 			<line>-2,-0.5,-1,-0.5</line>
 			<line>-2,0.5,-1,0.5</line>
@@ -2943,10 +2999,9 @@
 		</shape>
 	</gate>
 	<gate> <name>BI_TRI_STATE_4BIT</name>
-		<caption>4-Bit Tri-State Bus - High Active Enable </caption>
+		<caption>4-Bit Tri-State Buffer - High Active Enable </caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 4</logic_param>
-
 		<input> <name>IN_0</name>
 		          <point>-2.0,-1.5</point> 
 		</input>
@@ -2981,10 +3036,10 @@
 			<enable_input>OUTPUT_ENABLE</enable_input>
 		</output>
 		<shape>
-			<line>-1,-2,-1,2</line>
-			<line>-1,2,1,2</line>
-			<line>1,2,1,-2</line>
-			<line>1,-2,-1,-2</line>
+			<outline>-1,-2,-1,2</outline>
+			<outline>-1,2,1,2</outline>
+			<outline>1,2,1,-2</outline>
+			<outline>1,-2,-1,-2</outline>
 
 			<line>-2,-1.5,-1,-1.5</line>
 			<line>-2,-0.5,-1,-0.5</line>
@@ -3040,10 +3095,9 @@
 		</shape>
 	</gate>
 	<gate> <name>BO_TRI_STATE_8BIT</name>
-		<caption>8-Bit Tri-State Bus - High Active Enable </caption>
+		<caption>8-Bit Tri-State Buffer - High Active Enable </caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 8</logic_param>
-
 		<input> <name>IN_0</name>
 		          <point>-2.0,-3.5</point> 
 		</input>
@@ -3106,10 +3160,10 @@
 			<enable_input>OUTPUT_ENABLE</enable_input>
 		</output>
 		<shape>
-			<line>-1,-4,-1,4</line>
-			<line>-1,4,1,4</line>
-			<line>1,4,1,-4</line>
-			<line>1,-4,-1,-4</line>
+			<outline>-1,-4,-1,4</outline>
+			<outline>-1,4,1,4</outline>
+			<outline>1,4,1,-4</outline>
+			<outline>1,-4,-1,-4</outline>
 
 			<line>-2,-3.5,-1,-3.5</line>
 			<line>-2,-2.5,-1,-2.5</line>
@@ -3212,10 +3266,9 @@
 		</shape>
 	</gate>
 	<gate> <name>BU_TRI_STATE_16BIT</name>
-		<caption>16-Bit Tri-State Bus - High Active Enable</caption>
+		<caption>16-Bit Tri-State Buffer - High Active Enable</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 16</logic_param>
-
 		<input> <name>IN_0</name>
 		          <point>-2.0,-7.5</point> 
 		</input>
@@ -3335,10 +3388,10 @@
 		</output>
 
 		<shape>
-			<line>-1,-8,-1,8</line>
-			<line>-1,8,1,8</line>
-			<line>1,8,1,-8</line>
-			<line>1,-8,-1,-8</line>
+			<outline>-1,-8,-1,8</outline>
+			<outline>-1,8,1,8</outline>
+			<outline>1,8,1,-8</outline>
+			<outline>1,-8,-1,-8</outline>
 
 			<line>0,-7.28,0,9</line>
 
@@ -3539,6 +3592,7 @@
 		<logic_type>DRIVER</logic_type>
 		<logic_param>OUTPUT_BITS 1</logic_param>
 		<logic_param>OUTPUT_NUM 0</logic_param>
+		<gui_param>CLICK_BOX -0.75,-0.75,0.75,0.75</gui_param>
 		<output> <name>OUT_0</name>
 		          <point>2,0</point> 
 		</output>
@@ -3644,12 +3698,12 @@
 		<gui_type>PULSE</gui_type>
 		<logic_type>PULSE</logic_type>
 		<gui_param>CLICK_BOX -0.75,-0.75,0.75,0.75</gui_param>
-		<gui_param>PULSE_WIDTH 1</gui_param>
+		<logic_param>PULSE_WIDTH 1</logic_param>
 		<param_dlg_data>
 			<param>
 				<type>INT</type>
 				<label>Pulse Width</label>
-				<varname>GUI PULSE_WIDTH</varname>
+				<varname>LOGIC PULSE_WIDTH</varname>
 				<range>1,500</range>
 			</param>
 		</param_dlg_data>
@@ -3664,11 +3718,6 @@
 			<line>1,-1,1.5,0</line>
 			<line>1.5,0,2,0</line>
 			
-#			<offset><point>-0.25,0</point>
-#			<line>1,1,2,0</line>
-#			<line>1,-1,2,0</line>
-#			</offset>
-
 # The button outline:
 			<line>-0.76,-0.76,-0.76,0.76</line>
 			<line>-0.76,0.76,0.76,0.76</line>
@@ -3688,12 +3737,12 @@
 		<gui_type>PULSE</gui_type>
 		<logic_type>PULSE</logic_type>
 		<gui_param>CLICK_BOX -0.75,-0.75,0.75,0.75</gui_param>
-		<gui_param>PULSE_WIDTH 1</gui_param>
+		<logic_param>PULSE_WIDTH 1</logic_param>
 		<param_dlg_data>
 			<param>
 				<type>INT</type>
 				<label>Pulse Width</label>
-				<varname>GUI PULSE_WIDTH</varname>
+				<varname>LOGIC PULSE_WIDTH</varname>
 				<range>1,500</range>
 			</param>
 		</param_dlg_data>
@@ -3730,12 +3779,12 @@
 		<gui_type>PULSE</gui_type>
 		<logic_type>PULSE</logic_type>
 		<gui_param>CLICK_BOX -0.45,-0.45,0.45,0.45</gui_param>
-		<gui_param>PULSE_WIDTH 1</gui_param>
+		<logic_param>PULSE_WIDTH 1</logic_param>
 		<param_dlg_data>
 			<param>
 				<type>INT</type>
 				<label>Pulse Width</label>
-				<varname>GUI PULSE_WIDTH</varname>
+				<varname>LOGIC PULSE_WIDTH</varname>
 				<range>1,500</range>
 			</param>
 		</param_dlg_data>
@@ -3763,12 +3812,12 @@
 		<gui_type>PULSE</gui_type>
 		<logic_type>PULSE</logic_type>
 		<gui_param>CLICK_BOX -0.45,-0.45,0.45,0.45</gui_param>
-		<gui_param>PULSE_WIDTH 1</gui_param>
+		<logic_param>PULSE_WIDTH 1</logic_param>
 		<param_dlg_data>
 			<param>
 				<type>INT</type>
 				<label>Pulse Width</label>
-				<varname>GUI PULSE_WIDTH</varname>
+				<varname>LOGIC PULSE_WIDTH</varname>
 				<range>1,500</range>
 			</param>
 		</param_dlg_data>
@@ -3834,8 +3883,7 @@
 #0
 			<offset> <point>-3.65,3.05</point>
 			<line>0.3,2.3,1.3,2.3</line>
-			<line>0.3,0.3,1.3,0.3</line>
-			
+			<line>0.3,0.3,1.3,0.3</line>		
 			<line>0.3,2.3,0.3,1.3</line>
 			<line>1.3,2.3,1.3,1.3</line>
 			<line>0.3,0.3,0.3,1.3</line>
@@ -3988,10 +4036,10 @@
 			</offset>
 
 #lines for outer box
-			<line>-3.95,6.00,-3.95,-6.00</line>
-			<line>-3.95,-6.00,3.88,-6.00</line>
-			<line>3.88,-6.00,3.88,6.00</line>
-			<line>3.88,6.00,-3.95,6.00</line>
+			<outline>-3.95,6.00,-3.95,-6.00</outline>
+			<outline>-3.95,-6.00,3.88,-6.00</outline>
+			<outline>3.88,-6.00,3.88,6.00</outline>
+			<outline>3.88,6.00,-3.95,6.00</outline>
 
 #lines to hotspots
 			<line>3.88,-1.5,5.00,-1.5</line>
@@ -3999,13 +4047,8 @@
 			<line>3.88,0.5,5.00,0.5</line>
 			<line>3.88,1.5,5.00,1.5</line>
 			
-#			0
-			<offset><point>4.2,-1.7</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>		
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>			
+			<circle>4.5,-1.9,0.2,24</circle>
+
 		</shape>
 	</gate>	
 	<gate> <name>DF_KEYPAD_DEC2</name>
@@ -4145,10 +4188,10 @@
 			</offset>
 
 #lines for outer box
-			<line>-3.45,6.00,-3.45,-6.00</line>
-			<line>-3.45,-6.00,3.38,-6.00</line>
-			<line>3.38,-6.00,3.38,6.00</line>
-			<line>3.38,6.00,-3.45,6.00</line>
+			<outline>-3.45,6.00,-3.45,-6.00</outline>
+			<outline>-3.45,-6.00,3.38,-6.00</outline>
+			<outline>3.38,-6.00,3.38,6.00</outline>
+			<outline>3.38,6.00,-3.45,6.00</outline>
 
 #lines to hotspots
 			<line>3.38,-1.5,4.5,-1.5</line>
@@ -4156,13 +4199,8 @@
 			<line>3.38,0.5,4.5,0.5</line>
 			<line>3.38,1.5,4.5,1.5</line>
 			
-#			0
-			<offset><point>3.8,-1.7</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>		
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>			
+			<circle>4,-1.9,0.2,24</circle>
+			
 		</shape>
 	</gate>
 	<gate> <name>DF_KEYPAD_OCT2</name>
@@ -4268,23 +4306,18 @@
 			</offset>
 
 #lines for outer box
-			<line>-3.95,6.00,-3.95,0</line>
-			<line>-3.95,0,3.88,0</line>
-			<line>3.88,0,3.88,6.00</line>
-			<line>3.88,6.00,-3.95,6.00</line>
+			<outline>-3.95,6.00,-3.95,0</outline>
+			<outline>-3.95,0,3.88,0</outline>
+			<outline>3.88,0,3.88,6.00</outline>
+			<outline>3.88,6.00,-3.95,6.00</outline>
 
 #lines to hotspots
 			<line>3.88,2,5.00,2</line>
 			<line>3.88,3,5.00,3</line>
 			<line>3.88,4,5.00,4</line>
 			
-#			0
-			<offset><point>4.2,1.8</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>		
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>			
+			<circle>4.5,1.6,0.2,24</circle>
+			
 		</shape>
 	</gate>
 	<gate> <name>DG_KEYPAD_QUA2</name>
@@ -4345,22 +4378,17 @@
 			</offset>
 
 #lines for outer box
-			<line>-3.95,3.00,-3.95,0</line>
-			<line>-3.95,0,3.88,0</line>
-			<line>3.88,3.00,3.88,0</line>
-			<line>3.88,3.00,-3.95,3.00</line>
+			<outline>-3.95,3.00,-3.95,0</outline>
+			<outline>-3.95,0,3.88,0</outline>
+			<outline>3.88,3.00,3.88,0</outline>
+			<outline>3.88,3.00,-3.95,3.00</outline>
 
 #lines to hotspots
 			<line>3.88,1,5.00,1</line>
 			<line>3.88,2,5.00,2</line>
 			
-#			0
-			<offset><point>4.2,0.8</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>		
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>			
+			<circle>4.5,0.6,0.2,24</circle>
+			
 		</shape>
 	</gate>
 	<gate> <name>DH_KEYPAD_BIN2</name>
@@ -4396,10 +4424,10 @@
 			</offset>
 
 #lines for outer box
-			<line>-3.95,3.00,-3.95,0</line>
-			<line>-3.95,0,0,0</line>
-			<line>0,3.00,0,0</line>
-			<line>0,3.00,-3.95,3.00</line>
+			<outline>-3.95,3.00,-3.95,0</outline>
+			<outline>-3.95,0,0,0</outline>
+			<outline>0,3.00,0,0</outline>
+			<outline>0,3.00,-3.95,3.00</outline>
 
 #lines to hotspots
 			<line>0,1.5,1,1.5</line>
@@ -4423,11 +4451,6 @@
 		          <point>0,1</point> 
 		</input>
 		<shape>
-#			<line>-1,1,1,1</line>
-#			<line>1,1,1,-1</line>
-#			<line>1,-1,-1,-1</line>
-#			<line>-1,-1,-1,1</line>
-
 			<line>-1,-1,-1,-0.2</line>
 			<line>-1,0.2,-1,1</line>
 			<line>1,-1,0.2,-1</line>
@@ -4512,20 +4535,15 @@
 			<line>2,4,2,-3</line>
 			<line>2,-3,-2,-3</line>
 			<line>-2,-3,-2,4</line>
-
+		
 # Input Lines:
 			<line>-2,2,-3,2</line>
 			<line>-2,1,-3,1</line>
 			<line>-2,0,-3,0</line>			
 			<line>-2,-1,-3,-1</line>
 			
-#			0
-			<offset><point>-2.7,-1.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>		
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<circle>-2.5,-1.4,0.2,24</circle>
+			
 		</shape>
 	</gate>
 	<gate> <name>GI_LED_DISPLAY_8BIT</name>
@@ -4576,7 +4594,7 @@
 			<line>-4,5,4,5</line>
 			<line>4,5,4,-4</line>
 			<line>4,-4,-4,-4</line>
-			<line>-4,-4,-4,5</line>
+			<line>-4,-4,-4,5</line>			
 
 # Input Lines:
 			<line>-4,-3,-5,-3</line>
@@ -4588,13 +4606,9 @@
 			<line>-4,3,-5,3</line>
 			<line>-4,4,-5,4</line>
 			
-#			0
-			<offset><point>-4.7,-3.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>		
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>					
+			<circle>-4.5,-3.4,0.2,24</circle>
+			
+			
 		</shape>
 	</gate>
 </library>
@@ -4686,18 +4700,10 @@
 			</param>
 		</param_dlg_data>
 		<input> <name>IN_0</name>
-		          <point>-1,0</point> 
+		          <point>-0.5,0</point> 
 		</input>
 		<shape>
-#			<line>-.5,0.02,0,0.02</line>
-#			<line>-.5,0.015,0,0.015</line>
-#			<line>-.5,0.01,0,0.01</line>
-#			<line>-.5,0.005,0,0.005</line>
-			<line>-1,0,0,0</line>
-#			<line>-.5,-0.005,0,-0.005</line>
-#			<line>-.5,-0.01,0,-0.01</line>
-#			<line>-.5,-0.015,0,-0.015</line>
-#			<line>-.5,-0.02,0,-0.02</line>
+			<line>-0.5,0,0,0</line>
 		</shape>
 	</gate>
 	<gate> <name>HA_JUNC_2</name>
@@ -4775,6 +4781,20 @@
 			<line>0,1,0,0.26</line>
 		</shape>
 	</gate>
+	<gate> <name>HP_JUNC_00</name>
+		<caption>Connection</caption>
+		<logic_type>NODE</logic_type>
+		<gui_type>WIRE</gui_type>
+		<input> <name>N_IN0</name>
+		          <point>0,0</point> 
+		</input>
+		<input> <name>N_IN1</name>
+		          <point>0.5,0</point> 
+		</input>
+		<shape>
+			<line>0,0,0.5,0</line>
+		</shape>
+	</gate>
 	<gate>
 	<name>MV_04x1_BUSEND</name>
 		<caption>4x1 Bus End</caption>
@@ -4815,16 +4835,10 @@
 	  <line>-1,-3,0,-3</line>
 
 	  # bus
-	  <wideline>0,0,0,-3</wideline>
-      
-      #	0
-			<offset><point>-0.8,-3.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-		</shape>
+	  <busline>0,0,0,-3</busline>
+	  
+	  <circle>-0.5,-3.4,0.2,24</circle>
+	</shape>
 	</gate>
 	<gate>
 	<name>MV_08x1_BUSEND</name>
@@ -4886,16 +4900,11 @@
 	  <line>-1,-7,0,-7</line>
 
 	  # bus
-	  <wideline>0,0,0,-7</wideline>
+	  <busline>0,0,0,-7</busline>
+	  
+	  <circle>-0.5,-7.4,0.2,24</circle>
       
-      #	0
-			<offset><point>-0.8,-7.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-		</shape>
+	</shape>
 	</gate>
 	<gate>
 	<name>MV_12x1_BUSEND</name>
@@ -4977,15 +4986,10 @@
 	  <line>-1,-11,0,-11</line>
 	  
 	  # bus
-	  <wideline>0,0,0,-11</wideline>
-      
-      #	0
-			<offset><point>-0.8,-11.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+	  <busline>0,0,0,-11</busline>
+	  
+	  <circle>-0.5,-11.4,0.2,24</circle>
+
 		</shape>
 	</gate>	
 	<gate>
@@ -5088,15 +5092,10 @@
 	  <line>-1,-15,0,-15</line>
 	  
 	  # bus
-	  <wideline>0,0,0,-15</wideline>
+	  <busline>0,0,0,-15</busline>
+	  
+	  <circle>-0.5,-15.4,0.2,24</circle>
       
-      #	0
-			<offset><point>-0.8,-15.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
 		</shape>
 	</gate>
 	<gate> <name>TA_SMALL_TGATE</name>
@@ -5235,9 +5234,6 @@
 			<line>5.0,-0.0,4.0,-0.0</line>
 
 #			lettering
-			<offset>
-				<point>3.5,0.4</point>
-			</offset>
 
 #			P
 			<line>-3,-0.4,-3,0.4</line>
@@ -5301,46 +5297,7 @@
 			<line>2.6,0.0,3,0.0</line>
 		</shape>
 	</gate>
-	<gate> <name>EE_1_H</name>
-		<caption>(1)</caption>
-		<logic_type>DRIVER</logic_type>
-		<logic_param>OUTPUT_BITS 1</logic_param>
-		<logic_param>OUTPUT_NUM 1</logic_param>
-		<output> <name>OUT_0</name>
-		          <point>1,0.5</point>
-		</output>
-		<shape>
-			<circle>0,0.5,0.5,24</circle>
-			<line>0.5,0.5,1,0.5</line>
-			
-#			1
-			<offset><point>0,0.5</point>
-			<line>0,-0.3,0,0.3</line>
-			</offset>
-		</shape>
-	</gate>
-	<gate> <name>FF_0_H</name>
-		<caption>(0)</caption>
-		<logic_type>DRIVER</logic_type>
-		<logic_param>OUTPUT_BITS 1</logic_param>
-		<logic_param>OUTPUT_NUM 0</logic_param>
-		<output> <name>OUT_0</name>
-		          <point>1,0.5</point> 
-		</output>
-		<shape>
-			<circle>0,0.5,0.5,24</circle>
-			<line>0.5,0.5,1,0.5</line>
-
-#			0
-			<offset><point>0,0.5</point>
-			<line>-0.15,0.3,0.15,0.3</line>
-			<line>0.15,0.3,0.15,-0.3</line>
-			<line>0.15,-0.3,-0.15,-0.3</line>
-			<line>-0.15,-0.3,-0.15,0.3</line>
-			</offset>
-		</shape>
-	</gate>
-	<gate> <name>EE_1_V</name>
+	<gate> <name>EE_1</name>
 		<caption>(1)</caption>
 		<logic_type>DRIVER</logic_type>
 		<logic_param>OUTPUT_BITS 1</logic_param>
@@ -5349,16 +5306,14 @@
 		          <point>0,-0.5</point>
 		</output>
 		<shape>
-			<circle>0,0.5,0.5,24</circle>
-			<line>0,0,0,-0.5</line>
+			<circle>0,0.5,0.45,24</circle>
+			<line>0,0.05,0,-0.5</line>
 			
 #			1
-			<offset><point>0,0.5</point>
-			<line>0,-0.3,0,0.3</line>
-			</offset>
+			<text>0,0.5,$1</text>
 		</shape>
 	</gate>
-	<gate> <name>FF_0_V</name>
+	<gate> <name>FF_0</name>
 		<caption>(0)</caption>
 		<logic_type>DRIVER</logic_type>
 		<logic_param>OUTPUT_BITS 1</logic_param>
@@ -5367,16 +5322,11 @@
 		          <point>0,-0.5</point> 
 		</output>
 		<shape>
-			<circle>0,0.5,0.5,24</circle>
-			<line>0,0,0,-0.5</line>
+			<circle>0,0.5,0.45,24</circle>
+			<line>0,0.05,0,-0.5</line>
 
 #			0
-			<offset><point>0,0.5</point>
-			<line>-0.15,0.3,0.15,0.3</line>
-			<line>0.15,0.3,0.15,-0.3</line>
-			<line>0.15,-0.3,-0.15,-0.3</line>
-			<line>-0.15,-0.3,-0.15,0.3</line>
-			</offset>
+			<text>0,0.5,$0</text>
 		</shape>
 	</gate>
 	<gate> <name>EE_VDD</name>
@@ -5412,8 +5362,124 @@
 			<line>.3,-.6,-.3,-.6</line>
 		</shape>
 	</gate>
+	<gate> <name>GA_INIC_1</name>
+		<caption>High Level Initializer</caption>
+		<gui_type>PULSE</gui_type>
+		<logic_type>PULSE</logic_type>
+		<logic_param>HIGH_Z true</logic_param>
+		<logic_param>PULSE_WIDTH 10</logic_param>		
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Pulse Width</label>
+				<varname>LOGIC PULSE_WIDTH</varname>
+				<range>1,500</range>
+			</param>
+		</param_dlg_data>
+		<output> <name>OUT_0</name>
+		          <point>0,-1</point> 
+		</output>
+		<shape>
+			<line>0,-1,0,-0.25</line>
+			<boldline>-0.5,-0.25,0.5,-0.25</boldline>
+			<boldline>-0.5,0.25,0.5,0.25</boldline>
+			<line>0,0.25,0,1</line>	
+			
+			<line>.6,1,-.6,1</line>
+			<line>.6,1,0,1.75</line>
+			<line>-.6,1,0,1.75</line>
+		</shape>
+	</gate>
+	<gate> <name>GE_INIC_0</name>
+		<caption>Low Level Initializer</caption>
+		<gui_type>PULSE</gui_type>
+		<logic_type>PULSE</logic_type>
+		<logic_param>HIGH_Z true</logic_param>
+		<logic_param>PULSE_WIDTH 10</logic_param>		
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Pulse Width</label>
+				<varname>LOGIC PULSE_WIDTH</varname>
+				<range>1,500</range>
+			</param>
+		</param_dlg_data>
+		<output> <name>OUT_0</name>
+		          <point>0,1</point> 
+				  <inverted>true</inverted>
+		</output>
+		<shape>
+			<line>0,1,0,0.25</line>
+			<boldline>-0.5,0.25,0.5,0.25</boldline>
+			<boldline>-0.5,-0.25,0.5,-0.25</boldline>
+			<line>0,-0.25,0,-1</line>
+			
+			<line>.6,-1,-.6,-1</line>
+			<line>.5,-1.2,-.5,-1.2</line>
+			<line>.4,-1.4,-.4,-1.4</line>
+			<line>.3,-1.6,-.3,-1.6</line>
+		</shape>
+	</gate>	
+	<gate> <name>GI_INIC_1_SMALL</name>
+		<caption>Small High Level Initializer</caption>
+		<gui_type>PULSE</gui_type>
+		<logic_type>PULSE</logic_type>
+		<logic_param>HIGH_Z true</logic_param>
+		<logic_param>PULSE_WIDTH 10</logic_param>		
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Pulse Width</label>
+				<varname>LOGIC PULSE_WIDTH</varname>
+				<range>1,500</range>
+			</param>
+		</param_dlg_data>
+		<output> <name>OUT_0</name>
+		          <point>0,-1</point> 
+		</output>
+		<shape>
+			<line>0,-1,0,-0.75</line>
+			<boldline>-0.25,-0.75,0.25,-0.75</boldline>
+			<boldline>-0.25,-0.5,0.25,-0.5</boldline>
+			<line>0,-0.5,0,-0.25</line>	
+			
+			<line>.2,-0.25,-.2,-0.25</line>
+			<line>.2,-0.25,0,0</line>
+			<line>-.2,-0.25,0,0</line>
+		</shape>
+	</gate>
+	<gate> <name>GO_INIC_0_SMALL</name>
+		<caption>Small Low Level Initializer</caption>
+		<gui_type>PULSE</gui_type>
+		<logic_type>PULSE</logic_type>
+		<logic_param>HIGH_Z true</logic_param>
+		<logic_param>PULSE_WIDTH 10</logic_param>		
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Pulse Width</label>
+				<varname>LOGIC PULSE_WIDTH</varname>
+				<range>1,500</range>
+			</param>
+		</param_dlg_data>
+		<output> <name>OUT_0</name>
+		          <point>0,1</point> 
+				  <inverted>true</inverted>
+		</output>
+		<shape>
+			<line>0,1,0,0.75</line>
+			<boldline>-0.25,0.75,0.25,0.75</boldline>
+			<boldline>-0.25,0.5,0.25,0.5</boldline>
+			<line>0,0.5,0,0.25</line>
+			
+			<line>.2,.25,-.2,.25</line>
+			<line>.15,.15,-.15,.15</line>
+			<line>.1,.05,-.1,.05</line>
+			<line>.05,-.05,-.05,-.05</line>
+		</shape>
+	</gate>
 </library>
-<library> <name> 05  - MUX & Decoder</name>
+<library> <name> 05  - MUX, Decoder, etc.</name>
 	<gate> <name>AA_MUX_2x1</name>
 		<caption>2x1 Mux</caption>
 		<logic_type>MUX</logic_type>
@@ -5437,25 +5503,20 @@
 			<line>-2,1,-1,1</line>
 			<line>-2,-1,-1,-1</line>
 
-			<line>-1,2,1,1</line>
-			<line>-1,2,-1,-2</line>
-			<line>-1,-2,1,-1</line>
-			<line>1,1,1,-1</line>
+			<outline>-1,2,1,1</outline>
+			<outline>-1,2,-1,-2</outline>
+			<outline>-1,-2,1,-1</outline>
+			<outline>1,1,1,-1</outline>
 
 			<line>1,0,2,0</line>
 
 			<line>0,1.5,0,2.5</line>
+						
+#			O
+			<text>0.5,0,O</text>
 
 #			0
-			<offset><point>-0.7,-0.6</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+			<text>-0.5,-1,0</text>
 
 		</shape>
 	</gate>
@@ -5489,34 +5550,25 @@
 			<line>-3,1,-2,1</line>
 			<line>-3,-1,-2,-1</line>
 			<line>-3,-3,-2,-3</line>
-			<line>-2,4,2,3</line>
-			<line>-2,4,-2,-4</line>
-			<line>-2,-4,2,-3</line>
-			<line>2,3,2,-3</line>
+			
+			<outline>-2,4,2,3</outline>
+			<outline>-2,4,-2,-4</outline>			
+			<outline>-2,-4,2,-3</outline>
+			<outline>2,3,2,-3</outline>
+
 			<line>2,0,3,0</line>
 			<line>-0.5,3.625,-0.5,5</line>
 			<line>0.5,3.375,0.5,5</line>
 
-#			0
-			<offset><point>-1.7,-2.6</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+#			O
+			<text>1.5,0,O</text>
 
 #			0
-			<offset><point>0.3,3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+			<text>-1.5,-3,0</text>
+			
+#			0
+			<text>0.5,2.7,0</text>
+			
 		</shape>
 	</gate>
 	<gate> <name>AI_MUX_8x1</name>
@@ -5563,49 +5615,34 @@
 		</output>
 
 		<shape>
-			<offset> <point>-2,3.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
-			<offset> <point>-2,-0.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
+			<line>-3,3.5,-2,3.5</line>
+			<line>-3,2.5,-2,2.5</line>
+			<line>-3,1.5,-2,1.5</line>			
+			<line>-3,0.5,-2,0.5</line>
+			<line>-3,-0.5,-2,-0.5</line>
+			<line>-3,-1.5,-2,-1.5</line>
+			<line>-3,-2.5,-2,-2.5</line>			
+			<line>-3,-3.5,-2,-3.5</line>
 
-			<line>-2,4.5,2,3.5</line>
-			<line>-2,4.5,-2,-4.5</line>
-			<line>-2,-4.5,2,-3.5</line>
-			<line>2,3.5,2,-3.5</line>
+			<outline>-2,4.5,2,3.5</outline>
+			<outline>-2,4.5,-2,-4.5</outline>
+			<outline>-2,-4.5,2,-3.5</outline>
+			<outline>2,3.5,2,-3.5</outline>
 
 			<line>2,0,3,0</line>
 
 			<line>-1,4.25,-1,5.5</line>
 			<line>0,4.0,0,5.5</line>
 			<line>1,3.75,1,5.5</line>
+			
+#			O
+			<text>1.5,0,O</text>
 
 #			0
-			<offset><point>-1.7,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+			<text>-1.5,-3.5,0</text>
+			
 #			0
-			<offset><point>0.8,3.5</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1,3.1,0</text>
 
 		</shape>
 	</gate>
@@ -5680,35 +5717,27 @@
 		</output>
 
 		<shape>
-			<offset> <point>-2,7.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
-			<offset> <point>-2,3.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
-			<offset> <point>-2,-0.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
-			<offset> <point>-2,-4.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
+			<line>-3,7.5,-2,7.5</line>
+			<line>-3,6.5,-2,6.5</line>
+			<line>-3,5.5,-2,5.5</line>
+			<line>-3,4.5,-2,4.5</line>
+			<line>-3,3.5,-2,3.5</line>
+			<line>-3,2.5,-2,2.5</line>
+			<line>-3,1.5,-2,1.5</line>			
+			<line>-3,0.5,-2,0.5</line>
+			<line>-3,-0.5,-2,-0.5</line>
+			<line>-3,-1.5,-2,-1.5</line>
+			<line>-3,-2.5,-2,-2.5</line>			
+			<line>-3,-3.5,-2,-3.5</line>
+			<line>-3,-4.5,-2,-4.5</line>
+			<line>-3,-5.5,-2,-5.5</line>
+			<line>-3,-6.5,-2,-6.5</line>			
+			<line>-3,-7.5,-2,-7.5</line>
 
-			<line>-2,8.5,2,7.5</line>
-			<line>-2,8.5,-2,-8.5</line>
-			<line>-2,-8.5,2,-7.5</line>
-			<line>2,7.5,2,-7.5</line>
+			<outline>-2,8.5,2,7.5</outline>
+			<outline>-2,8.5,-2,-8.5</outline>
+			<outline>-2,-8.5,2,-7.5</outline>
+			<outline>2,7.5,2,-7.5</outline>
 
 			<line>2,0,3,0</line>
 		
@@ -5716,26 +5745,15 @@
 			<line>-0.5,8.125,-0.5,9.5</line>
 			<line>0.5,7.875,0.5,9.5</line>
 			<line>1.5,7.625,1.5,9.5</line>
+			
+#			O
+			<text>1.5,0,O</text>
 
 #			0
-			<offset><point>-1.7,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+			<text>-1.5,-7.5,0</text>
+			
 #			0
-			<offset><point>1.3,7.4</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,7,0</text>
 
 		</shape>
 	</gate>
@@ -5761,25 +5779,21 @@
 			<line>1,1,2,1</line>
 			<line>1,-1,2,-1</line>
 
-			<line>-1,1,1,2</line>
-			<line>1,2,1,-2</line>
-			<line>1,-2,-1,-1</line>
-			<line>-1,-1,-1,1</line>
+			<outline>-1,1,1,2</outline>
+			<outline>1,2,1,-2</outline>
+			<outline>1,-2,-1,-1</outline>
+			<outline>-1,-1,-1,1</outline>
 
 			<line>-1,0,-2,0</line>
 
 			<line>0,2.5,0,1.5</line>
+			
+#			I
+			<text>-0.5,0,I</text>
 
 #			0
-			<offset><point>0.3,-0.6</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+			<text>0.5,-1,0</text>
+				
 		</shape>
 	</gate>
 	<gate> <name>AQ_DEMUX_1x4</name>
@@ -5816,36 +5830,25 @@
 			<line>3,-3,2,-3</line>
 
 
-			<line>-2,3.5,2,4.5</line>
-			<line>-2,3.5,-2,-3.5</line>
-			<line>-2,-3.5,2,-4.5</line>
-			<line>2,4.5,2,-4.5</line>
+			<outline>-2,3.5,2,4.5</outline>
+			<outline>-2,3.5,-2,-3.5</outline>
+			<outline>-2,-3.5,2,-4.5</outline>
+			<outline>2,4.5,2,-4.5</outline>
 
 			<line>-2,0,-3,0</line>
 
 			<line>-0.5,3.875,-0.5,5.5</line>
 			<line>0.5,4.125,0.5,5.5</line>
+			
+#			I
+			<text>-1.5,0,I</text>
 
 #			0
-			<offset><point>0.3,3.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+			<text>1.5,-3,0</text>
+			
 #			0
-			<offset><point>1.3,-2.7</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+			<text>0.5,3.5,0</text>
+			
 		</shape>
 	</gate>
 	<gate> <name>AS_DEMUX_1x8</name>
@@ -5891,49 +5894,34 @@
 		          <point>-3,0</point>
 		</input>
 		<shape>
-			<offset> <point>3,3.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
-			<offset> <point>3,-0.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
+			<line>2,3.5,3,3.5</line>
+			<line>2,2.5,3,2.5</line>
+			<line>2,1.5,3,1.5</line>
+			<line>2,0.5,3,0.5</line>
+			<line>2,-0.5,3,-0.5</line>
+			<line>2,-1.5,3,-1.5</line>
+			<line>2,-2.5,3,-2.5</line>
+			<line>2,-3.5,3,-3.5</line>
 
-			<line>-2,3.5,2,4.5</line>
-			<line>-2,3.5,-2,-3.5</line>
-			<line>-2,-3.5,2,-4.5</line>
-			<line>2,4.5,2,-4.5</line>
+			<outline>-2,3.5,2,4.5</outline>
+			<outline>-2,3.5,-2,-3.5</outline>
+			<outline>-2,-3.5,2,-4.5</outline>
+			<outline>2,4.5,2,-4.5</outline>
 
 			<line>-2,0,-3,0</line>
 
 			<line>-1,3.75,-1,5.5</line>
 			<line>0,4.0,0,5.5</line>
 			<line>1,4.25,1,5.5</line>
+			
+#			I
+			<text>-1.5,0,I</text>
 
 #			0
-			<offset><point>0.8,4</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+			<text>1.5,-3.5,0</text>
+			
 #			0
-			<offset><point>1.3,-3.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1,3.6,0</text>
 
 		</shape>
 	</gate>
@@ -6007,62 +5995,43 @@
 		          <point>-3,0</point>
 		</input>
 		<shape>
-			<offset> <point>3,7.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
-			<offset> <point>3,3.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
-			<offset> <point>3,-0.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
-			<offset> <point>3,-4.5</point>
-			<line>-1,0,0,0</line>
-			<line>-1,-1,0,-1</line>
-			<line>-1,-2,0,-2</line>			
-			<line>-1,-3,0,-3</line>
-			</offset>
-
-			<line>-2,7.5,2,8.5</line>
-			<line>-2,7.5,-2,-7.5</line>
-			<line>-2,-7.5,2,-8.5</line>
-			<line>2,8.5,2,-8.5</line>
+			<line>2,7.5,3,7.5</line>
+			<line>2,6.5,3,6.5</line>
+			<line>2,5.5,3,5.5</line>
+			<line>2,4.5,3,4.5</line>
+			<line>2,3.5,3,3.5</line>
+			<line>2,2.5,3,2.5</line>
+			<line>2,1.5,3,1.5</line>
+			<line>2,0.5,3,0.5</line>
+			<line>2,-0.5,3,-0.5</line>
+			<line>2,-1.5,3,-1.5</line>
+			<line>2,-2.5,3,-2.5</line>
+			<line>2,-3.5,3,-3.5</line>
+			<line>2,-4.5,3,-4.5</line>
+			<line>2,-5.5,3,-5.5</line>
+			<line>2,-6.5,3,-6.5</line>
+			<line>2,-7.5,3,-7.5</line>
+			
+			<outline>-2,7.5,2,8.5</outline>
+			<outline>-2,7.5,-2,-7.5</outline>
+			<outline>-2,-7.5,2,-8.5</outline>
+			<outline>2,8.5,2,-8.5</outline>
 
 			<line>-2,0,-3,0</line>
 	
 			<line>-1.5,7.625,-1.5,9.5</line>	
 			<line>-0.5,7.875,-0.5,9.5</line>
 			<line>0.5,8.125,0.5,9.5</line>
-			<line>1.5,8.375,1.5,9.5</line>			
+			<line>1.5,8.375,1.5,9.5</line>
+			
+#			I
+			<text>-1.5,0,I</text>
 
 #			0
-			<offset><point>1.3,8.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+			<text>1.5,-7.5,0</text>
+			
 #			0
-			<offset><point>1.3,-7.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,7.7,0</text>
 
 		</shape>
 	</gate>
@@ -6089,12 +6058,11 @@
 		          <point>3,1.5</point> 
 		</output>
 		<shape>
-			<line>-2,2.5,2,2.5</line>
-			<line>2,2.5,2,-2.5</line>
-			<line>2,-2.5,-2,-2.5</line>
-			<line>-2,-2.5,-2,2.5</line>
+			<outline>-2,2.5,2,2.5</outline>
+			<outline>2,2.5,2,-2.5</outline>
+			<outline>2,-2.5,-2,-2.5</outline>
+			<outline>-2,-2.5,-2,2.5</outline>
 
-#		      Lines for offset in other decoders
 			<line>2,1.5,3,1.5</line>
 			<line>2,0.5,3,0.5</line>
 			<line>2,-0.5,3,-0.5</line>
@@ -6105,32 +6073,11 @@
 			<line>-2,-0.5,-3,-0.5</line>
 
 #			0
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-1.5,0</text>
 
 #			0
-			<offset><point>1.3,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,-1.5,0</text>
 
-#			3
-			<offset><point>1.3,1.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
 		</shape>
 	</gate>
 	<gate> <name>BA_DECODER_2x4</name>
@@ -6159,12 +6106,11 @@
 		          <point>3,1.5</point> 
 		</output>
 		<shape>
-			<line>-2,2.5,2,2.5</line>
-			<line>2,2.5,2,-2.5</line>
-			<line>2,-2.5,-2,-2.5</line>
-			<line>-2,-2.5,-2,2.5</line>
+			<outline>-2,2.5,2,2.5</outline>
+			<outline>2,2.5,2,-2.5</outline>
+			<outline>2,-2.5,-2,-2.5</outline>
+			<outline>-2,-2.5,-2,2.5</outline>
 
-#		      Lines for offset in other decoders
 			<line>2,1.5,3,1.5</line>
 			<line>2,0.5,3,0.5</line>
 			<line>2,-0.5,3,-0.5</line>
@@ -6178,42 +6124,253 @@
 			<line>-2,1.5,-3,1.5</line>
 			
 #			E
-			<offset><point>-1.7,1.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
+			<text>-1.5,1.5,E</text>
 
 #			0
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-1.5,0</text>
 
 #			0
-			<offset><point>1.3,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,-1.5,0</text>
 
-#			3
-			<offset><point>1.3,1.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
 		</shape>
 	</gate>
+	<gate> <name>BA_DECODER2x4_LOW</name>
+		<caption>2x4 Decoder no enable low active outputs</caption>
+		<logic_type>DECODER</logic_type>
+		<logic_param>INPUT_BITS 2</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-3,-1.5</point> 
+		</input>
+		<input> <name>IN_1</name>
+		          <point>-3,-0.5</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>3,-1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_2</name>
+		          <point>3,0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_3</name>
+		          <point>3,1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<shape>
+			<outline>-2,2.5,2,2.5</outline>
+			<outline>2,2.5,2,-2.5</outline>
+			<outline>2,-2.5,-2,-2.5</outline>
+			<outline>-2,-2.5,-2,2.5</outline>
+			
+			<circle>2.35,1.5,0.35,24</circle>
+			<circle>2.35,0.5,0.35,24</circle>
+			<circle>2.35,-0.5,0.35,24</circle>
+			<circle>2.35,-1.5,0.35,24</circle>
+
+			<line>2.7,1.5,3,1.5</line>
+			<line>2.7,0.5,3,0.5</line>
+			<line>2.7,-0.5,3,-0.5</line>
+			<line>2.7,-1.5,3,-1.5</line>
+
+#			Decoder Input Lines
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-0.5,-3,-0.5</line>
+
+#			0
+			<text>-1.5,-1.5,0</text>
+
+#			0
+			<text>1.5,-1.5,0</text>
+		</shape>
+	</gate>
+	<gate> <name>BB_DECODER_2x4_LOW</name>
+		<caption>2x4 Decoder low active outputs</caption>
+		<logic_type>DECODER</logic_type>
+		<logic_param>INPUT_BITS 2</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-3,-1.5</point> 
+		</input>
+		<input> <name>IN_1</name>
+		          <point>-3,-0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>-3,1.5</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>3,-1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_2</name>
+		          <point>3,0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_3</name>
+		          <point>3,1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<shape>
+			<outline>-2,2.5,2,2.5</outline>
+			<outline>2,2.5,2,-2.5</outline>
+			<outline>2,-2.5,-2,-2.5</outline>
+			<outline>-2,-2.5,-2,2.5</outline>
+			
+			<circle>2.35,1.5,0.35,24</circle>
+			<circle>2.35,0.5,0.35,24</circle>
+			<circle>2.35,-0.5,0.35,24</circle>
+			<circle>2.35,-1.5,0.35,24</circle>
+
+			<line>2.7,1.5,3,1.5</line>
+			<line>2.7,0.5,3,0.5</line>
+			<line>2.7,-0.5,3,-0.5</line>
+			<line>2.7,-1.5,3,-1.5</line>
+
+#			Decoder Input Lines
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-0.5,-3,-0.5</line>
+
+#			Enable
+			<line>-2,1.5,-3,1.5</line>
+			
+#			E
+			<text>-1.5,1.5,E</text>
+
+#			0
+			<text>-1.5,-1.5,0</text>
+
+#			0
+			<text>1.5,-1.5,0</text>
+						
+		</shape>
+	</gate>
+	<gate> <name>BC_DECODER_2x4_LE</name>
+		<caption>2x4 Decoder low active enable</caption>
+		<logic_type>DECODER</logic_type>
+		<logic_param>INPUT_BITS 2</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-3,-1.5</point> 
+		</input>
+		<input> <name>IN_1</name>
+		          <point>-3,-0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>-3,1.5</point> 
+				  <inverted>true</inverted>
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>3,-1.5</point> 
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-0.5</point> 
+		</output>
+		<output> <name>OUT_2</name>
+		          <point>3,0.5</point> 
+		</output>
+		<output> <name>OUT_3</name>
+		          <point>3,1.5</point> 
+		</output>
+		<shape>
+			<outline>-2,2.5,2,2.5</outline>
+			<outline>2,2.5,2,-2.5</outline>
+			<outline>2,-2.5,-2,-2.5</outline>
+			<outline>-2,-2.5,-2,2.5</outline>
+
+			<line>2,1.5,3,1.5</line>
+			<line>2,0.5,3,0.5</line>
+			<line>2,-0.5,3,-0.5</line>
+			<line>2,-1.5,3,-1.5</line>
+
+#			Decoder Input Lines
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-0.5,-3,-0.5</line>
+
+#			Enable
+			<line>-2.7,1.5,-3,1.5</line>
+			<circle>-2.35,1.5,0.35,24</circle>
+			
+#			E
+			<text>-1.5,1.5,E</text>
+
+#			0
+			<text>-1.5,-1.5,0</text>
+
+#			0
+			<text>1.5,-1.5,0</text>
+
+		</shape>
+	</gate>
+	<gate> <name>BD_DECODER_2x4_LOW_LE</name>
+		<caption>2x4 Decoder low active enable low active outputs</caption>
+		<logic_type>DECODER</logic_type>
+		<logic_param>INPUT_BITS 2</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-3,-1.5</point> 
+		</input>
+		<input> <name>IN_1</name>
+		          <point>-3,-0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>-3,1.5</point> 
+				  <inverted>true</inverted>
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>3,-1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_2</name>
+		          <point>3,0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_3</name>
+		          <point>3,1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<shape>
+			<outline>-2,2.5,2,2.5</outline>
+			<outline>2,2.5,2,-2.5</outline>
+			<outline>2,-2.5,-2,-2.5</outline>
+			<outline>-2,-2.5,-2,2.5</outline>
+			
+			<circle>2.35,1.5,0.35,24</circle>
+			<circle>2.35,0.5,0.35,24</circle>
+			<circle>2.35,-0.5,0.35,24</circle>
+			<circle>2.35,-1.5,0.35,24</circle>
+
+			<line>2.7,1.5,3,1.5</line>
+			<line>2.7,0.5,3,0.5</line>
+			<line>2.7,-0.5,3,-0.5</line>
+			<line>2.7,-1.5,3,-1.5</line>
+
+#			Decoder Input Lines
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-0.5,-3,-0.5</line>
+
+#			Enable			
+			<line>-2.7,1.5,-3,1.5</line>
+			<circle>-2.35,1.5,0.35,24</circle>			
+			
+#			E
+			<text>-1.5,1.5,E</text>
+
+#			0
+			<text>-1.5,-1.5,0</text>
+
+#			0
+			<text>1.5,-1.5,0</text>
+						
+		</shape>
+	</gate>	
 	<gate> <name>BE_DECODER3x8</name>
 		<caption>3x8 Decoder no enable</caption>
 		<logic_type>DECODER</logic_type>
@@ -6252,13 +6409,11 @@
 		          <point>3,3.5</point> 
 		</output>
 		<shape>
-			<line>-2,4.5,2,4.5</line>
-			<line>2,4.5,2,-4.5</line>
-			<line>2,-4.5,-2,-4.5</line>
-			<line>-2,-4.5,-2,4.5</line>
-			<line>-2,-1.5,-3,-1.5</line>
-			<line>-2,-2.5,-3,-2.5</line>
-			<line>-2,-3.5,-3,-3.5</line>
+			<outline>-2,4.5,2,4.5</outline>
+			<outline>2,4.5,2,-4.5</outline>
+			<outline>2,-4.5,-2,-4.5</outline>
+			<outline>-2,-4.5,-2,4.5</outline>
+
 			<line>2,-3.5,3,-3.5</line>
 			<line>2,-2.5,3,-2.5</line>
 			<line>2,-1.5,3,-1.5</line>
@@ -6267,43 +6422,17 @@
 			<line>2,1.5,3,1.5</line>
 			<line>2,2.5,3,2.5</line>
 			<line>2,3.5,3,3.5</line>
-			<line>2,3.5,3,3.5</line>
-
-#			2
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			</offset>
+			
+#			Decoder Input Lines
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-2.5,-3,-2.5</line>
+			<line>-2,-3.5,-3,-3.5</line>
 
 #			0
-			<offset><point>-1.7,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-3.5,0</text>
 
 #			0
-			<offset><point>1.3,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			7
-			<offset><point>1.3,3.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			</offset>
+			<text>1.5,-3.5,0</text>
 
 		</shape>
 	</gate>
@@ -6353,14 +6482,11 @@
 				  <inverted>true</inverted>
 		</output>
 		<shape>
-			<line>-2,4.5,2,4.5</line>
-			<line>2,4.5,2,-4.5</line>
-			<line>2,-4.5,-2,-4.5</line>
-			<line>-2,-4.5,-2,4.5</line>			
-			<line>-2,-1.5,-3,-1.5</line>
-			<line>-2,-2.5,-3,-2.5</line>
-			<line>-2,-3.5,-3,-3.5</line>
-			
+			<outline>-2,4.5,2,4.5</outline>
+			<outline>2,4.5,2,-4.5</outline>
+			<outline>2,-4.5,-2,-4.5</outline>
+			<outline>-2,-4.5,-2,4.5</outline>
+				
 			<circle>2.35,3.5,0.35,24</circle>
 			<circle>2.35,2.5,0.35,24</circle>
 			<circle>2.35,1.5,0.35,24</circle>
@@ -6370,7 +6496,6 @@
 			<circle>2.35,-2.5,0.35,24</circle>
 			<circle>2.35,-3.5,0.35,24</circle>			
 
-#		      Lines for offset in other decoders
 			<line>2.7,-3.5,3,-3.5</line>
 			<line>2.7,-2.5,3,-2.5</line>
 			<line>2.7,-1.5,3,-1.5</line>
@@ -6379,43 +6504,17 @@
 			<line>2.7,1.5,3,1.5</line>
 			<line>2.7,2.5,3,2.5</line>
 			<line>2.7,3.5,3,3.5</line>
-			<line>2.7,3.5,3,3.5</line>
-
-#			2
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			</offset>
+	
+#			Decoder Input Lines
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-2.5,-3,-2.5</line>
+			<line>-2,-3.5,-3,-3.5</line>
 
 #			0
-			<offset><point>-1.7,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-3.5,0</text>
 
 #			0
-			<offset><point>1.3,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			7
-			<offset><point>1.3,3.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			</offset>
+			<text>1.5,-3.5,0</text>
 
 		</shape>
 	</gate>
@@ -6460,11 +6559,173 @@
 		          <point>3,3.5</point> 
 		</output>
 		<shape>
-			<line>-2,4.5,2,4.5</line>
-			<line>2,4.5,2,-4.5</line>
-			<line>2,-4.5,-2,-4.5</line>
-			<line>-2,-4.5,-2,4.5</line>
+			<outline>-2,4.5,2,4.5</outline>
+			<outline>2,4.5,2,-4.5</outline>
+			<outline>2,-4.5,-2,-4.5</outline>
+			<outline>-2,-4.5,-2,4.5</outline>
+			
+			<line>2,-3.5,3,-3.5</line>
+			<line>2,-2.5,3,-2.5</line>
+			<line>2,-1.5,3,-1.5</line>
+			<line>2,-0.5,3,-0.5</line>
+			<line>2,0.5,3,0.5</line>
+			<line>2,1.5,3,1.5</line>
+			<line>2,2.5,3,2.5</line>
+			<line>2,3.5,3,3.5</line>
+			
+#			Decoder Input Lines
 			<line>-2,3.5,-3,3.5</line>
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-2.5,-3,-2.5</line>
+			<line>-2,-3.5,-3,-3.5</line>
+			
+#			E
+			<text>-1.5,3.5,E</text>
+
+#			0
+			<text>-1.5,-3.5,0</text>
+
+#			0
+			<text>1.5,-3.5,0</text>
+
+		</shape>
+	</gate>
+	<gate> <name>BF_DECODER_3x8_LOW</name>
+		<caption>3x8 Decoder low active outputs</caption>
+		<logic_type>DECODER</logic_type>
+		<logic_param>INPUT_BITS 3</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-3,-3.5</point> 
+		</input>
+		<input> <name>IN_1</name>
+		          <point>-3,-2.5</point> 
+		</input>
+		<input> <name>IN_2</name>
+		          <point>-3,-1.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>-3,3.5</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>3,-3.5</point>
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-2.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_2</name>
+		          <point>3,-1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_3</name>
+		          <point>3,-0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_4</name>
+		          <point>3,0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_5</name>
+		          <point>3,1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_6</name>
+		          <point>3,2.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_7</name>
+		          <point>3,3.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<shape>
+			<outline>-2,4.5,2,4.5</outline>
+			<outline>2,4.5,2,-4.5</outline>
+			<outline>2,-4.5,-2,-4.5</outline>
+			<outline>-2,-4.5,-2,4.5</outline>
+				
+			<circle>2.35,3.5,0.35,24</circle>
+			<circle>2.35,2.5,0.35,24</circle>
+			<circle>2.35,1.5,0.35,24</circle>
+			<circle>2.35,0.5,0.35,24</circle>
+			<circle>2.35,-0.5,0.35,24</circle>
+			<circle>2.35,-1.5,0.35,24</circle>
+			<circle>2.35,-2.5,0.35,24</circle>
+			<circle>2.35,-3.5,0.35,24</circle>			
+
+			<line>2.7,-3.5,3,-3.5</line>
+			<line>2.7,-2.5,3,-2.5</line>
+			<line>2.7,-1.5,3,-1.5</line>
+			<line>2.7,-0.5,3,-0.5</line>
+			<line>2.7,0.5,3,0.5</line>
+			<line>2.7,1.5,3,1.5</line>
+			<line>2.7,2.5,3,2.5</line>
+			<line>2.7,3.5,3,3.5</line>
+			
+#			Decoder Input Lines
+			<line>-2,3.5,-3,3.5</line>
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-2.5,-3,-2.5</line>
+			<line>-2,-3.5,-3,-3.5</line>
+
+#			E
+			<text>-1.5,3.5,E</text>
+
+#			0
+			<text>-1.5,-3.5,0</text>
+
+#			0
+			<text>1.5,-3.5,0</text>
+
+		</shape>
+	</gate>
+	<gate> <name>BG_DECODER_3x8_LE</name>
+		<caption>3x8 Decoder low active enable</caption>
+		<logic_type>DECODER</logic_type>
+		<logic_param>INPUT_BITS 3</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-3,-3.5</point> 
+		</input>
+		<input> <name>IN_1</name>
+		          <point>-3,-2.5</point> 
+		</input>
+		<input> <name>IN_2</name>
+		          <point>-3,-1.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>-3,3.5</point>
+				  <inverted>true</inverted>
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>3,-3.5</point>
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-2.5</point> 
+		</output>
+		<output> <name>OUT_2</name>
+		          <point>3,-1.5</point> 
+		</output>
+		<output> <name>OUT_3</name>
+		          <point>3,-0.5</point> 
+		</output>
+		<output> <name>OUT_4</name>
+		          <point>3,0.5</point> 
+		</output>
+		<output> <name>OUT_5</name>
+		          <point>3,1.5</point> 
+		</output>
+		<output> <name>OUT_6</name>
+		          <point>3,2.5</point> 
+		</output>
+		<output> <name>OUT_7</name>
+		          <point>3,3.5</point> 
+		</output>
+		<shape>
+			<outline>-2,4.5,2,4.5</outline>
+			<outline>2,4.5,2,-4.5</outline>
+			<outline>2,-4.5,-2,-4.5</outline>
+			<outline>-2,-4.5,-2,4.5</outline>
+			
 			<line>-2,-1.5,-3,-1.5</line>
 			<line>-2,-2.5,-3,-2.5</line>
 			<line>-2,-3.5,-3,-3.5</line>
@@ -6476,51 +6737,115 @@
 			<line>2,1.5,3,1.5</line>
 			<line>2,2.5,3,2.5</line>
 			<line>2,3.5,3,3.5</line>
-			<line>2,3.5,3,3.5</line>
 
+			<line>-2.7,3.5,-3,3.5</line>
+			<circle>-2.35,3.5,0.35,24</circle>
+			
+#			Decoder Input Lines
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-2.5,-3,-2.5</line>
+			<line>-2,-3.5,-3,-3.5</line>
+			
 #			E
-			<offset><point>-1.7,3.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			2
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			</offset>
+			<text>-1.5,3.5,E</text>
 
 #			0
-			<offset><point>-1.7,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-3.5,0</text>
 
 #			0
-			<offset><point>1.3,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,-3.5,0</text>
 
-#			7
-			<offset><point>1.3,3.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			</offset>
+		</shape>
+	</gate>
+	<gate> <name>BH_DECODER_3x8_LOW_LE</name>
+		<caption>3x8 Decoder low active enable low active outputs</caption>
+		<logic_type>DECODER</logic_type>
+		<logic_param>INPUT_BITS 3</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-3,-3.5</point> 
+		</input>
+		<input> <name>IN_1</name>
+		          <point>-3,-2.5</point> 
+		</input>
+		<input> <name>IN_2</name>
+		          <point>-3,-1.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>-3,3.5</point>
+				  <inverted>true</inverted>
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>3,-3.5</point>
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-2.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_2</name>
+		          <point>3,-1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_3</name>
+		          <point>3,-0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_4</name>
+		          <point>3,0.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_5</name>
+		          <point>3,1.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_6</name>
+		          <point>3,2.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<output> <name>OUT_7</name>
+		          <point>3,3.5</point> 
+				  <inverted>true</inverted>
+		</output>
+		<shape>
+			<outline>-2,4.5,2,4.5</outline>
+			<outline>2,4.5,2,-4.5</outline>
+			<outline>2,-4.5,-2,-4.5</outline>
+			<outline>-2,-4.5,-2,4.5</outline>
+		
+			<circle>2.35,3.5,0.35,24</circle>
+			<circle>2.35,2.5,0.35,24</circle>
+			<circle>2.35,1.5,0.35,24</circle>
+			<circle>2.35,0.5,0.35,24</circle>
+			<circle>2.35,-0.5,0.35,24</circle>
+			<circle>2.35,-1.5,0.35,24</circle>
+			<circle>2.35,-2.5,0.35,24</circle>
+			<circle>2.35,-3.5,0.35,24</circle>			
+
+			<line>2.7,-3.5,3,-3.5</line>
+			<line>2.7,-2.5,3,-2.5</line>
+			<line>2.7,-1.5,3,-1.5</line>
+			<line>2.7,-0.5,3,-0.5</line>
+			<line>2.7,0.5,3,0.5</line>
+			<line>2.7,1.5,3,1.5</line>
+			<line>2.7,2.5,3,2.5</line>
+			<line>2.7,3.5,3,3.5</line>
+
+			<line>-2.7,3.5,-3,3.5</line>
+			<circle>-2.35,3.5,0.35,24</circle>
+
+#			Decoder Input Lines
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-2.5,-3,-2.5</line>
+			<line>-2,-3.5,-3,-3.5</line>
+			
+#			E
+			<text>-1.5,3.5,E</text>
+
+#			0
+			<text>-1.5,-3.5,0</text>
+
+#			0
+			<text>1.5,-3.5,0</text>
 
 		</shape>
 	</gate>
@@ -6589,89 +6914,40 @@
 		          <point>3,7.5</point> 
 		</output>
 		<shape>
-			<line>2,8.5,2,-8.5</line>
-			<line>2,-8.5,-2,-8.5</line>
-			<line>-2,-8.5,-2,8.5</line>
-			<line>-2,8.5,2,8.5</line>
+			<outline>2,8.5,2,-8.5</outline>
+			<outline>2,-8.5,-2,-8.5</outline>
+			<outline>-2,-8.5,-2,8.5</outline>
+			<outline>-2,8.5,2,8.5</outline>
 
-#		      Lines for offset in other decoders
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-
-		      <offset><point>0,4</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
-
-		      <offset><point>0,-4</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
-
-#			Top Half
 			<line>2,7.5,3,7.5</line>
 			<line>2,6.5,3,6.5</line>
-
-#			Bottom Half
+			<line>2,5.5,3,5.5</line>
+			<line>2,4.5,3,4.5</line>
+			<line>2,3.5,3,3.5</line>
+			<line>2,2.5,3,2.5</line>
+			<line>2,1.5,3,1.5</line>
+			<line>2,0.5,3,0.5</line>
+			<line>2,-0.5,3,-0.5</line>
+			<line>2,-1.5,3,-1.5</line>
+			<line>2,-2.5,3,-2.5</line>
+			<line>2,-3.5,3,-3.5</line>
+			<line>2,-4.5,3,-4.5</line>
+			<line>2,-5.5,3,-5.5</line>
 			<line>2,-6.5,3,-6.5</line>
 			<line>2,-7.5,3,-7.5</line>
 
 #			Select Line Pins
-		      <offset><point>-5,-6</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
-
-#			3
-			<offset><point>-1.7,-4.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
+			<line>-3,-4.5,-2,-4.5</line>
+			<line>-3,-5.5,-2,-5.5</line>
+			<line>-3,-6.5,-2,-6.5</line>
+			<line>-3,-7.5,-2,-7.5</line>
 
 #			0
-			<offset><point>-1.7,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-7.5,0</text>
 
 #			0
-			<offset><point>1.3,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,-7.5,0</text>			
 
-#			1
-			<offset><point>1.1,7.9</point>
-			<line>0,0,0,-0.8</line>
-			</offset>
-
-#			5
-			<offset><point>1.3,7.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
 		</shape>
 	</gate>
 	<gate> <name>BI_DECODER4x16_LOW</name>
@@ -6755,12 +7031,11 @@
 				  <inverted>true</inverted>
 		</output>
 		<shape>
-			<line>2,8.5,2,-8.5</line>
-			<line>2,-8.5,-2,-8.5</line>
-			<line>-2,-8.5,-2,8.5</line>
-			<line>-2,8.5,2,8.5</line>
+			<outline>2,8.5,2,-8.5</outline>
+			<outline>2,-8.5,-2,-8.5</outline>
+			<outline>-2,-8.5,-2,8.5</outline>
+			<outline>-2,8.5,2,8.5</outline>
 			
-
 			<circle>2.35,7.5,0.35,24</circle>
 			<circle>2.35,6.5,0.35,24</circle>
 			<circle>2.35,5.5,0.35,24</circle>
@@ -6778,84 +7053,35 @@
 			<circle>2.35,-6.5,0.35,24</circle>
 			<circle>2.35,-7.5,0.35,24</circle>			
 
-#		      Lines for offset in other decoders
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-
-		      <offset><point>0,4</point>
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-			</offset>
-
-		      <offset><point>0,-4</point>
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-			</offset>
-
-#			Top Half
 			<line>2.7,7.5,3,7.5</line>
 			<line>2.7,6.5,3,6.5</line>
-
-#			Bottom Half
+			<line>2.7,5.5,3,5.5</line>
+			<line>2.7,4.5,3,4.5</line>
+			<line>2.7,3.5,3,3.5</line>
+			<line>2.7,2.5,3,2.5</line>
+			<line>2.7,1.5,3,1.5</line>
+			<line>2.7,0.5,3,0.5</line>
+			<line>2.7,-0.5,3,-0.5</line>
+			<line>2.7,-1.5,3,-1.5</line>
+			<line>2.7,-2.5,3,-2.5</line>
+			<line>2.7,-3.5,3,-3.5</line>
+			<line>2.7,-4.5,3,-4.5</line>
+			<line>2.7,-5.5,3,-5.5</line>
 			<line>2.7,-6.5,3,-6.5</line>
 			<line>2.7,-7.5,3,-7.5</line>
 
 #			Select Line Pins
-		      <offset><point>-5,-6</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
-
-#			3
-			<offset><point>-1.7,-4.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
+			<line>-3,-4.5,-2,-4.5</line>
+			<line>-3,-5.5,-2,-5.5</line>
+			<line>-3,-6.5,-2,-6.5</line>
+			<line>-3,-7.5,-2,-7.5</line>
 
 #			0
-			<offset><point>-1.7,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-7.5,0</text>
 
 #			0
-			<offset><point>1.3,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			1
-			<offset><point>1.1,7.9</point>
-			<line>0,0,0,-0.8</line>
-			</offset>
-
-#			5
-			<offset><point>1.3,7.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
+			<text>1.5,-7.5,0</text>			
+			
 		</shape>
 	</gate>
 	<gate> <name>BI_DECODER_4x16</name>
@@ -6926,391 +7152,45 @@
 		          <point>3,7.5</point> 
 		</output>
 		<shape>
-			<line>2,8.5,2,-8.5</line>
-			<line>2,-8.5,-2,-8.5</line>
-			<line>-2,-8.5,-2,8.5</line>
-			<line>-2,8.5,2,8.5</line>
+			<outline>2,8.5,2,-8.5</outline>
+			<outline>2,-8.5,-2,-8.5</outline>
+			<outline>-2,-8.5,-2,8.5</outline>
+			<outline>-2,8.5,2,8.5</outline>
 
-#		      Lines for offset in other decoders
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-
-		      <offset><point>0,4</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
-
-		      <offset><point>0,-4</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
-
-#			Top Half
 			<line>2,7.5,3,7.5</line>
 			<line>2,6.5,3,6.5</line>
-
-#			Bottom Half
+			<line>2,5.5,3,5.5</line>
+			<line>2,4.5,3,4.5</line>
+			<line>2,3.5,3,3.5</line>
+			<line>2,2.5,3,2.5</line>
+			<line>2,1.5,3,1.5</line>
+			<line>2,0.5,3,0.5</line>
+			<line>2,-0.5,3,-0.5</line>
+			<line>2,-1.5,3,-1.5</line>
+			<line>2,-2.5,3,-2.5</line>
+			<line>2,-3.5,3,-3.5</line>
+			<line>2,-4.5,3,-4.5</line>
+			<line>2,-5.5,3,-5.5</line>
 			<line>2,-6.5,3,-6.5</line>
 			<line>2,-7.5,3,-7.5</line>
 
 #			Select Line Pins
-		      <offset><point>-5,-6</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
+			<line>-3,-4.5,-2,-4.5</line>
+			<line>-3,-5.5,-2,-5.5</line>
+			<line>-3,-6.5,-2,-6.5</line>
+			<line>-3,-7.5,-2,-7.5</line>
 
 #			Enable	
 			<line>-2,7.5,-3,7.5</line>	
-
-#			E
-			<offset><point>-1.7,7.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			3
-			<offset><point>-1.7,-4.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
-
-#			0
-			<offset><point>-1.7,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			0
-			<offset><point>1.3,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			1
-			<offset><point>1.1,7.9</point>
-			<line>0,0,0,-0.8</line>
-			</offset>
-
-#			5
-			<offset><point>1.3,7.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
-		</shape>
-	</gate>
-	<gate> <name>BA_DECODER2x4_LOW</name>
-		<caption>2x4 Decoder no enable low active outputs</caption>
-		<logic_type>DECODER</logic_type>
-		<logic_param>INPUT_BITS 2</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-3,-1.5</point> 
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-3,-0.5</point> 
-		</input>
-		<output> <name>OUT_0</name>
-		          <point>3,-1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_1</name>
-		          <point>3,-0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_2</name>
-		          <point>3,0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_3</name>
-		          <point>3,1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<shape>
-			<line>-2,2.5,2,2.5</line>
-			<line>2,2.5,2,-2.5</line>
-			<line>2,-2.5,-2,-2.5</line>
-			<line>-2,-2.5,-2,2.5</line>
-			
-			<circle>2.35,1.5,0.35,24</circle>
-			<circle>2.35,0.5,0.35,24</circle>
-			<circle>2.35,-0.5,0.35,24</circle>
-			<circle>2.35,-1.5,0.35,24</circle>
-
-#		      Lines for offset in other decoders
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-
-#			Decoder Input Lines
-			<line>-2,-1.5,-3,-1.5</line>
-			<line>-2,-0.5,-3,-0.5</line>
-
-#			0
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			0
-			<offset><point>1.3,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			3
-			<offset><point>1.3,1.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
-						
-		</shape>
-	</gate>
-	<gate> <name>BB_DECODER_2x4_LOW</name>
-		<caption>2x4 Decoder low active outputs</caption>
-		<logic_type>DECODER</logic_type>
-		<logic_param>INPUT_BITS 2</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-3,-1.5</point> 
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-3,-0.5</point> 
-		</input>
-		<input> <name>ENABLE</name>
-		          <point>-3,1.5</point> 
-		</input>
-		<output> <name>OUT_0</name>
-		          <point>3,-1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_1</name>
-		          <point>3,-0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_2</name>
-		          <point>3,0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_3</name>
-		          <point>3,1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<shape>
-			<line>-2,2.5,2,2.5</line>
-			<line>2,2.5,2,-2.5</line>
-			<line>2,-2.5,-2,-2.5</line>
-			<line>-2,-2.5,-2,2.5</line>
-			
-			<circle>2.35,1.5,0.35,24</circle>
-			<circle>2.35,0.5,0.35,24</circle>
-			<circle>2.35,-0.5,0.35,24</circle>
-			<circle>2.35,-1.5,0.35,24</circle>
-
-#		      Lines for offset in other decoders
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-
-#			Decoder Input Lines
-			<line>-2,-1.5,-3,-1.5</line>
-			<line>-2,-0.5,-3,-0.5</line>
-
-#			Enable
-			<line>-2,1.5,-3,1.5</line>
 			
 #			E
-			<offset><point>-1.7,1.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
+			<text>-1.5,7.5,E</text>
 
 #			0
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-7.5,0</text>
 
 #			0
-			<offset><point>1.3,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			3
-			<offset><point>1.3,1.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
-						
-		</shape>
-	</gate>
-	<gate> <name>BF_DECODER_3x8_LOW</name>
-		<caption>3x8 Decoder low active outputs</caption>
-		<logic_type>DECODER</logic_type>
-		<logic_param>INPUT_BITS 3</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-3,-3.5</point> 
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-3,-2.5</point> 
-		</input>
-		<input> <name>IN_2</name>
-		          <point>-3,-1.5</point> 
-		</input>
-		<input> <name>ENABLE</name>
-		          <point>-3,3.5</point> 
-		</input>
-		<output> <name>OUT_0</name>
-		          <point>3,-3.5</point>
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_1</name>
-		          <point>3,-2.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_2</name>
-		          <point>3,-1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_3</name>
-		          <point>3,-0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_4</name>
-		          <point>3,0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_5</name>
-		          <point>3,1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_6</name>
-		          <point>3,2.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_7</name>
-		          <point>3,3.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<shape>
-			<line>-2,4.5,2,4.5</line>
-			<line>2,4.5,2,-4.5</line>
-			<line>2,-4.5,-2,-4.5</line>
-			<line>-2,-4.5,-2,4.5</line>			
-			<line>-2,3.5,-3,3.5</line>
-			<line>-2,-1.5,-3,-1.5</line>
-			<line>-2,-2.5,-3,-2.5</line>
-			<line>-2,-3.5,-3,-3.5</line>
-			
-			<circle>2.35,3.5,0.35,24</circle>
-			<circle>2.35,2.5,0.35,24</circle>
-			<circle>2.35,1.5,0.35,24</circle>
-			<circle>2.35,0.5,0.35,24</circle>
-			<circle>2.35,-0.5,0.35,24</circle>
-			<circle>2.35,-1.5,0.35,24</circle>
-			<circle>2.35,-2.5,0.35,24</circle>
-			<circle>2.35,-3.5,0.35,24</circle>			
-
-#		      Lines for offset in other decoders
-			<line>2.7,-3.5,3,-3.5</line>
-			<line>2.7,-2.5,3,-2.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,2.5,3,2.5</line>
-			<line>2.7,3.5,3,3.5</line>
-			<line>2.7,3.5,3,3.5</line>
-
-#			E
-			<offset><point>-1.7,3.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			2
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			</offset>
-
-#			0
-			<offset><point>-1.7,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			0
-			<offset><point>1.3,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			7
-			<offset><point>1.3,3.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			</offset>
+			<text>1.5,-7.5,0</text>			
 
 		</shape>
 	</gate>
@@ -7398,10 +7278,10 @@
 				  <inverted>true</inverted>
 		</output>
 		<shape>
-			<line>2,8.5,2,-8.5</line>
-			<line>2,-8.5,-2,-8.5</line>
-			<line>-2,-8.5,-2,8.5</line>
-			<line>-2,8.5,2,8.5</line>
+			<outline>2,8.5,2,-8.5</outline>
+			<outline>2,-8.5,-2,-8.5</outline>
+			<outline>-2,-8.5,-2,8.5</outline>
+			<outline>-2,8.5,2,8.5</outline>
 			
 
 			<circle>2.35,7.5,0.35,24</circle>
@@ -7421,285 +7301,41 @@
 			<circle>2.35,-6.5,0.35,24</circle>
 			<circle>2.35,-7.5,0.35,24</circle>			
 
-#		      Lines for offset in other decoders
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-
-		      <offset><point>0,4</point>
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-			</offset>
-
-		      <offset><point>0,-4</point>
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-			</offset>
-
-#			Top Half
 			<line>2.7,7.5,3,7.5</line>
 			<line>2.7,6.5,3,6.5</line>
-
-#			Bottom Half
+			<line>2.7,5.5,3,5.5</line>
+			<line>2.7,4.5,3,4.5</line>
+			<line>2.7,3.5,3,3.5</line>
+			<line>2.7,2.5,3,2.5</line>
+			<line>2.7,1.5,3,1.5</line>
+			<line>2.7,0.5,3,0.5</line>
+			<line>2.7,-0.5,3,-0.5</line>
+			<line>2.7,-1.5,3,-1.5</line>
+			<line>2.7,-2.5,3,-2.5</line>
+			<line>2.7,-3.5,3,-3.5</line>
+			<line>2.7,-4.5,3,-4.5</line>
+			<line>2.7,-5.5,3,-5.5</line>
 			<line>2.7,-6.5,3,-6.5</line>
 			<line>2.7,-7.5,3,-7.5</line>
 
 #			Select Line Pins
-		      <offset><point>-5,-6</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
+			<line>-3,-4.5,-2,-4.5</line>
+			<line>-3,-5.5,-2,-5.5</line>
+			<line>-3,-6.5,-2,-6.5</line>
+			<line>-3,-7.5,-2,-7.5</line>
 
 #			Enable	
 			<line>-2,7.5,-3,7.5</line>	
 
 #			E
-			<offset><point>-1.7,7.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			3
-			<offset><point>-1.7,-4.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
+			<text>-1.5,7.5,E</text>
 
 #			0
-			<offset><point>-1.7,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-7.5,0</text>
 
 #			0
-			<offset><point>1.3,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,-7.5,0</text>			
 
-#			1
-			<offset><point>1.1,7.9</point>
-			<line>0,0,0,-0.8</line>
-			</offset>
-
-#			5
-			<offset><point>1.3,7.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
-		</shape>
-	</gate>
-	<gate> <name>BC_DECODER_2x4_LE</name>
-		<caption>2x4 Decoder low active enable</caption>
-		<logic_type>DECODER</logic_type>
-		<logic_param>INPUT_BITS 2</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-3,-1.5</point> 
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-3,-0.5</point> 
-		</input>
-		<input> <name>ENABLE</name>
-		          <point>-3,1.5</point> 
-				  <inverted>true</inverted>
-		</input>
-		<output> <name>OUT_0</name>
-		          <point>3,-1.5</point> 
-		</output>
-		<output> <name>OUT_1</name>
-		          <point>3,-0.5</point> 
-		</output>
-		<output> <name>OUT_2</name>
-		          <point>3,0.5</point> 
-		</output>
-		<output> <name>OUT_3</name>
-		          <point>3,1.5</point> 
-		</output>
-		<shape>
-			<line>-2,2.5,2,2.5</line>
-			<line>2,2.5,2,-2.5</line>
-			<line>2,-2.5,-2,-2.5</line>
-			<line>-2,-2.5,-2,2.5</line>
-
-#		      Lines for offset in other decoders
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-
-#			Decoder Input Lines
-			<line>-2,-1.5,-3,-1.5</line>
-			<line>-2,-0.5,-3,-0.5</line>
-
-#			Enable
-			<line>-2.7,1.5,-3,1.5</line>
-			<circle>-2.35,1.5,0.35,24</circle>
-			
-#			E
-			<offset><point>-1.7,1.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			0
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			0
-			<offset><point>1.3,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			3
-			<offset><point>1.3,1.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
-		</shape>
-	</gate>
-	<gate> <name>BG_DECODER_3x8_LE</name>
-		<caption>3x8 Decoder low active enable</caption>
-		<logic_type>DECODER</logic_type>
-		<logic_param>INPUT_BITS 3</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-3,-3.5</point> 
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-3,-2.5</point> 
-		</input>
-		<input> <name>IN_2</name>
-		          <point>-3,-1.5</point> 
-		</input>
-		<input> <name>ENABLE</name>
-		          <point>-3,3.5</point>
-				  <inverted>true</inverted>
-		</input>
-		<output> <name>OUT_0</name>
-		          <point>3,-3.5</point>
-		</output>
-		<output> <name>OUT_1</name>
-		          <point>3,-2.5</point> 
-		</output>
-		<output> <name>OUT_2</name>
-		          <point>3,-1.5</point> 
-		</output>
-		<output> <name>OUT_3</name>
-		          <point>3,-0.5</point> 
-		</output>
-		<output> <name>OUT_4</name>
-		          <point>3,0.5</point> 
-		</output>
-		<output> <name>OUT_5</name>
-		          <point>3,1.5</point> 
-		</output>
-		<output> <name>OUT_6</name>
-		          <point>3,2.5</point> 
-		</output>
-		<output> <name>OUT_7</name>
-		          <point>3,3.5</point> 
-		</output>
-		<shape>
-			<line>-2,4.5,2,4.5</line>
-			<line>2,4.5,2,-4.5</line>
-			<line>2,-4.5,-2,-4.5</line>
-			<line>-2,-4.5,-2,4.5</line>			
-			<line>-2,-1.5,-3,-1.5</line>
-			<line>-2,-2.5,-3,-2.5</line>
-			<line>-2,-3.5,-3,-3.5</line>
-			<line>2,-3.5,3,-3.5</line>
-			<line>2,-2.5,3,-2.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,1.5,3,1.5</line>
-			<line>2,2.5,3,2.5</line>
-			<line>2,3.5,3,3.5</line>
-			<line>2,3.5,3,3.5</line>
-
-			<line>-2.7,3.5,-3,3.5</line>
-			<circle>-2.35,3.5,0.35,24</circle>
-			
-#			E
-			<offset><point>-1.7,3.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			2
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			</offset>
-
-#			0
-			<offset><point>-1.7,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			0
-			<offset><point>1.3,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			7
-			<offset><point>1.3,3.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			</offset>
 		</shape>
 	</gate>
 	<gate> <name>BK_DECODER_4x16_LE</name>
@@ -7771,46 +7407,33 @@
 		          <point>3,7.5</point> 
 		</output>
 		<shape>
-			<line>2,8.5,2,-8.5</line>
-			<line>2,-8.5,-2,-8.5</line>
-			<line>-2,-8.5,-2,8.5</line>
-			<line>-2,8.5,2,8.5</line>
+			<outline>2,8.5,2,-8.5</outline>
+			<outline>2,-8.5,-2,-8.5</outline>
+			<outline>-2,-8.5,-2,8.5</outline>
+			<outline>-2,8.5,2,8.5</outline>
 			
-#		      Lines for offset in other decoders
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-
-		      <offset><point>0,4</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
-
-		      <offset><point>0,-4</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
-
-#			Top Half
 			<line>2,7.5,3,7.5</line>
 			<line>2,6.5,3,6.5</line>
-
-#			Bottom Half
+			<line>2,5.5,3,5.5</line>
+			<line>2,4.5,3,4.5</line>
+			<line>2,3.5,3,3.5</line>
+			<line>2,2.5,3,2.5</line>
+			<line>2,1.5,3,1.5</line>
+			<line>2,0.5,3,0.5</line>
+			<line>2,-0.5,3,-0.5</line>
+			<line>2,-1.5,3,-1.5</line>
+			<line>2,-2.5,3,-2.5</line>
+			<line>2,-3.5,3,-3.5</line>
+			<line>2,-4.5,3,-4.5</line>
+			<line>2,-5.5,3,-5.5</line>
 			<line>2,-6.5,3,-6.5</line>
 			<line>2,-7.5,3,-7.5</line>
 
 #			Select Line Pins
-		      <offset><point>-5,-6</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
+			<line>-3,-4.5,-2,-4.5</line>
+			<line>-3,-5.5,-2,-5.5</line>
+			<line>-3,-6.5,-2,-6.5</line>
+			<line>-3,-7.5,-2,-7.5</line>
 
 #			Enable	
 			<line>-2.7,7.5,-3,7.5</line>
@@ -7818,277 +7441,16 @@
 			
 
 #			E
-			<offset><point>-1.7,7.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			3
-			<offset><point>-1.7,-4.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
+			<text>-1.5,7.5,E</text>
 
 #			0
-			<offset><point>-1.7,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-7.5,0</text>
 
 #			0
-			<offset><point>1.3,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,-7.5,0</text>			
 
-#			1
-			<offset><point>1.1,7.9</point>
-			<line>0,0,0,-0.8</line>
-			</offset>
-
-#			5
-			<offset><point>1.3,7.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
 		</shape>
 	</gate>	
-	<gate> <name>BD_DECODER_2x4_LOW_LE</name>
-		<caption>2x4 Decoder low active enable low active outputs</caption>
-		<logic_type>DECODER</logic_type>
-		<logic_param>INPUT_BITS 2</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-3,-1.5</point> 
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-3,-0.5</point> 
-		</input>
-		<input> <name>ENABLE</name>
-		          <point>-3,1.5</point> 
-				  <inverted>true</inverted>
-		</input>
-		<output> <name>OUT_0</name>
-		          <point>3,-1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_1</name>
-		          <point>3,-0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_2</name>
-		          <point>3,0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_3</name>
-		          <point>3,1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<shape>
-			<line>-2,2.5,2,2.5</line>
-			<line>2,2.5,2,-2.5</line>
-			<line>2,-2.5,-2,-2.5</line>
-			<line>-2,-2.5,-2,2.5</line>
-			
-			<circle>2.35,1.5,0.35,24</circle>
-			<circle>2.35,0.5,0.35,24</circle>
-			<circle>2.35,-0.5,0.35,24</circle>
-			<circle>2.35,-1.5,0.35,24</circle>
-
-#		      Lines for offset in other decoders
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-
-#			Decoder Input Lines
-			<line>-2,-1.5,-3,-1.5</line>
-			<line>-2,-0.5,-3,-0.5</line>
-
-#			Enable			
-			<line>-2.7,1.5,-3,1.5</line>
-			<circle>-2.35,1.5,0.35,24</circle>			
-			
-#			E
-			<offset><point>-1.7,1.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			0
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			0
-			<offset><point>1.3,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			3
-			<offset><point>1.3,1.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
-						
-		</shape>
-	</gate>	
-	<gate> <name>BH_DECODER_3x8_LOW_LE</name>
-		<caption>3x8 Decoder low active enable low active outputs</caption>
-		<logic_type>DECODER</logic_type>
-		<logic_param>INPUT_BITS 3</logic_param>
-		<input> <name>IN_0</name>
-		          <point>-3,-3.5</point> 
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-3,-2.5</point> 
-		</input>
-		<input> <name>IN_2</name>
-		          <point>-3,-1.5</point> 
-		</input>
-		<input> <name>ENABLE</name>
-		          <point>-3,3.5</point>
-				  <inverted>true</inverted>
-		</input>
-		<output> <name>OUT_0</name>
-		          <point>3,-3.5</point>
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_1</name>
-		          <point>3,-2.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_2</name>
-		          <point>3,-1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_3</name>
-		          <point>3,-0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_4</name>
-		          <point>3,0.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_5</name>
-		          <point>3,1.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_6</name>
-		          <point>3,2.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<output> <name>OUT_7</name>
-		          <point>3,3.5</point> 
-				  <inverted>true</inverted>
-		</output>
-		<shape>
-			<line>-2,4.5,2,4.5</line>
-			<line>2,4.5,2,-4.5</line>
-			<line>2,-4.5,-2,-4.5</line>
-			<line>-2,-4.5,-2,4.5</line>			
-			<line>-2,-1.5,-3,-1.5</line>
-			<line>-2,-2.5,-3,-2.5</line>
-			<line>-2,-3.5,-3,-3.5</line>
-			
-			<line>-2.7,3.5,-3,3.5</line>
-			<circle>-2.35,3.5,0.35,24</circle>
-			
-			<circle>2.35,3.5,0.35,24</circle>
-			<circle>2.35,2.5,0.35,24</circle>
-			<circle>2.35,1.5,0.35,24</circle>
-			<circle>2.35,0.5,0.35,24</circle>
-			<circle>2.35,-0.5,0.35,24</circle>
-			<circle>2.35,-1.5,0.35,24</circle>
-			<circle>2.35,-2.5,0.35,24</circle>
-			<circle>2.35,-3.5,0.35,24</circle>			
-
-#		      Lines for offset in other decoders
-			<line>2.7,-3.5,3,-3.5</line>
-			<line>2.7,-2.5,3,-2.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,2.5,3,2.5</line>
-			<line>2.7,3.5,3,3.5</line>
-			<line>2.7,3.5,3,3.5</line>
-
-#			E
-			<offset><point>-1.7,3.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			2
-			<offset><point>-1.7,-1.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			</offset>
-
-#			0
-			<offset><point>-1.7,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			0
-			<offset><point>1.3,-3.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
-#			7
-			<offset><point>1.3,3.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			</offset>
-
-		</shape>
-	</gate>
 	<gate> <name>BL_DECODER_4x16_LOW_LE</name>
 		<caption>4x16 Decoder low active enable low active outputs</caption>
 		<logic_type>DECODER</logic_type>
@@ -8174,11 +7536,10 @@
 				  <inverted>true</inverted>
 		</output>
 		<shape>
-			<line>2,8.5,2,-8.5</line>
-			<line>2,-8.5,-2,-8.5</line>
-			<line>-2,-8.5,-2,8.5</line>
-			<line>-2,8.5,2,8.5</line>
-			
+			<outline>2,8.5,2,-8.5</outline>
+			<outline>2,-8.5,-2,-8.5</outline>
+			<outline>-2,-8.5,-2,8.5</outline>
+			<outline>-2,8.5,2,8.5</outline>
 
 			<circle>2.35,7.5,0.35,24</circle>
 			<circle>2.35,6.5,0.35,24</circle>
@@ -8197,102 +7558,126 @@
 			<circle>2.35,-6.5,0.35,24</circle>
 			<circle>2.35,-7.5,0.35,24</circle>			
 
-#		      Lines for offset in other decoders
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-
-		      <offset><point>0,4</point>
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-			</offset>
-
-		      <offset><point>0,-4</point>
-			<line>2.7,1.5,3,1.5</line>
-			<line>2.7,0.5,3,0.5</line>
-			<line>2.7,-0.5,3,-0.5</line>
-			<line>2.7,-1.5,3,-1.5</line>
-			</offset>
-
-#			Top Half
 			<line>2.7,7.5,3,7.5</line>
 			<line>2.7,6.5,3,6.5</line>
-
-#			Bottom Half
+			<line>2.7,5.5,3,5.5</line>
+			<line>2.7,4.5,3,4.5</line>
+			<line>2.7,3.5,3,3.5</line>
+			<line>2.7,2.5,3,2.5</line>
+			<line>2.7,1.5,3,1.5</line>
+			<line>2.7,0.5,3,0.5</line>
+			<line>2.7,-0.5,3,-0.5</line>
+			<line>2.7,-1.5,3,-1.5</line>
+			<line>2.7,-2.5,3,-2.5</line>
+			<line>2.7,-3.5,3,-3.5</line>
+			<line>2.7,-4.5,3,-4.5</line>
+			<line>2.7,-5.5,3,-5.5</line>
 			<line>2.7,-6.5,3,-6.5</line>
 			<line>2.7,-7.5,3,-7.5</line>
 
 #			Select Line Pins
-		      <offset><point>-5,-6</point>
-			<line>2,1.5,3,1.5</line>
-			<line>2,0.5,3,0.5</line>
-			<line>2,-0.5,3,-0.5</line>
-			<line>2,-1.5,3,-1.5</line>
-			</offset>
+			<line>-3,-4.5,-2,-4.5</line>
+			<line>-3,-5.5,-2,-5.5</line>
+			<line>-3,-6.5,-2,-6.5</line>
+			<line>-3,-7.5,-2,-7.5</line>
 
 #			Enable	
 			<line>-2.7,7.5,-3,7.5</line>
 			<circle>-2.35,7.5,0.35,24</circle>			
 
 #			E
-			<offset><point>-1.7,7.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
-
-#			3
-			<offset><point>-1.7,-4.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.8</line>
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
+			<text>-1.5,7.5,E</text>
 
 #			0
-			<offset><point>-1.7,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-7.5,0</text>
 
 #			0
-			<offset><point>1.3,-7.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,-7.5,0</text>			
 
-#			1
-			<offset><point>1.1,7.9</point>
-			<line>0,0,0,-0.8</line>
-			</offset>
-
-#			5
-			<offset><point>1.3,7.9</point>
-			<line>0,0,0.4,0</line>
-			<line>0,0,0,-0.4</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			</offset>
 		</shape>
 	</gate>
+  <gate>
+     <name>CB_ENCODER_4x2</name>
+    <caption>4x2 Encoder no Enable</caption>
+    <logic_type>ENCODER</logic_type>
+    <logic_param>INPUT_BITS 4</logic_param>
+    <input> 
+      <name>IN_0</name>
+		  <point>-3,-2.5</point> 
+		</input>
+		<input> 
+      <name>IN_1</name>
+		  <point>-3,-1.5</point> 
+		</input>
+    <input>
+      <name>IN_2</name>
+      <point>-3,-0.5</point>
+    </input>
+    <input>
+      <name>IN_3</name>
+      <point>-3,0.5</point>
+    </input>
+		<output> <name>OUT_0</name>
+		          <point>3,-2.5</point> 
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-1.5</point> 
+		</output>
+    <output>
+      <name>VALID</name>
+      <point>3,-0.5</point>
+    </output>
+	<logic_param>PRIORITY true</logic_param>
+	<logic_param>PRIORITY_HIGH true</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority</label>
+				<varname>LOGIC PRIORITY</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority high</label>
+				<varname>LOGIC PRIORITY_HIGH</varname>
+			</param>
+		</param_dlg_data>
+		<shape>
+#     		body
+			<outline>-2,1.5,2,1.5</outline>
+			<outline>2,1.5,2,-3.5</outline>
+			<outline>2,-3.5,-2,-3.5</outline>
+			<outline>-2,-3.5,-2,1.5</outline>
+
+#		  Output
+			<line>2,-1.5,3,-1.5</line>
+			<line>2,-2.5,3,-2.5</line>
+      
+#     		Valid
+			<line>2, -0.5,3,-0.5</line>
+
+#			Input
+			<line>-2,-2.5,-3,-2.5</line>
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-0.5,-3,-0.5</line>
+			<line>-2,0.5,-3,0.5</line>
+
+#			V
+			<text>1.5,-0.5,V</text>
+
+#			0 of inputs
+			<text>-1.5,-2.5,0</text>
+
+#			0 of outputs
+			<text>1.5,-2.5,0</text>
+
+    </shape>
+  </gate>
 	<gate>
-    <name>CB_PRI_ENCODER_4x2</name>
-    <caption>4x2 Priority Encoder</caption>
-    <logic_type>PRI_ENCODER</logic_type>
+    <name>CB_ENCODER_4x2_EN</name>
+    <caption>4x2 Encoder High active Enable</caption>
+    <logic_type>ENCODER</logic_type>
     <logic_param>INPUT_BITS 4</logic_param>
     <input> 
       <name>IN_0</name>
@@ -8323,11 +7708,28 @@
       <name>VALID</name>
       <point>3,-0.5</point>
     </output>
+	<logic_param>PRIORITY true</logic_param>
+	<logic_param>PRIORITY_HIGH true</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority</label>
+				<varname>LOGIC PRIORITY</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority high</label>
+				<varname>LOGIC PRIORITY_HIGH</varname>
+			</param>
+		</param_dlg_data>
 		<shape>
-			<line>-2,3.5,2,3.5</line>
-			<line>2,3.5,2,-3.5</line>
-			<line>2,-3.5,-2,-3.5</line>
-			<line>-2,-3.5,-2,3.5</line>
+#     		body
+			<outline>-2,3.5,2,3.5</outline>
+			<outline>2,3.5,2,-3.5</outline>
+			<outline>2,-3.5,-2,-3.5</outline>
+			<outline>-2,-3.5,-2,3.5</outline>
 
 #		  Output
 			<line>2,-1.5,3,-1.5</line>
@@ -8346,52 +7748,218 @@
 			<line>-2,2.5,-3,2.5</line>
 			
 #			E
-			<offset><point>-1.7,2.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
+			<text>-1.5,2.5,E</text>
 
-#			VA
-			<offset><point>0.6,-0.2</point>
-			<line>0,0,0.2,-0.8</line>
-			<line>0.2,-0.8,0.4,0</line>
-			</offset>
-			<offset>
-			<point>1.2,-0.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.4,-0.4</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0,0,0,-0.8</line>
-			</offset>
+#			V
+			<text>1.5,-0.5,V</text>
 
 #			0 of inputs
-			<offset><point>-1.7,-2.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>-1.5,-2.5,0</text>
 
 #			0 of outputs
-			<offset><point>1.3,-2.1</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>
-			<line>0.4,-0.4,0.4,-0.8</line>
-			<line>0.4,-0.8,0,-0.8</line>
-			<line>0,-0.8,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
+			<text>1.5,-2.5,0</text>
+
+    </shape>
+  </gate>
+ 	<gate>
+    <name>CB_ENCODER_4x2_EN_LOW</name>
+    <caption>4x2 Encoder Low active Enable</caption>
+    <logic_type>ENCODER</logic_type>
+    <logic_param>INPUT_BITS 4</logic_param>
+    <input> 
+      <name>IN_0</name>
+		  <point>-3,-2.5</point> 
+		</input>
+		<input> 
+      <name>IN_1</name>
+		  <point>-3,-1.5</point> 
+		</input>
+    <input>
+      <name>IN_2</name>
+      <point>-3,-0.5</point>
+    </input>
+    <input>
+      <name>IN_3</name>
+      <point>-3,0.5</point>
+    </input>
+		<input> <name>ENABLE</name>
+		          <point>-3,2.5</point> 
+				  <inverted>true</inverted>
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>3,-2.5</point> 
+		</output>
+		<output> <name>OUT_1</name>
+		          <point>3,-1.5</point> 
+		</output>
+    <output>
+      <name>VALID</name>
+      <point>3,-0.5</point>
+    </output>
+	<logic_param>PRIORITY true</logic_param>
+	<logic_param>PRIORITY_HIGH true</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority</label>
+				<varname>LOGIC PRIORITY</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority high</label>
+				<varname>LOGIC PRIORITY_HIGH</varname>
+			</param>
+		</param_dlg_data>
+		<shape>
+#     		body
+			<outline>-2,3.5,2,3.5</outline>
+			<outline>2,3.5,2,-3.5</outline>
+			<outline>2,-3.5,-2,-3.5</outline>
+			<outline>-2,-3.5,-2,3.5</outline>
+
+#		  Output
+			<line>2,-1.5,3,-1.5</line>
+			<line>2,-2.5,3,-2.5</line>
+      
+#     		Valid
+			<line>2, -0.5,3,-0.5</line>
+
+#			Input
+			<line>-2,-2.5,-3,-2.5</line>
+			<line>-2,-1.5,-3,-1.5</line>
+			<line>-2,-0.5,-3,-0.5</line>
+			<line>-2,0.5,-3,0.5</line>
+
+#			Enable
+			<line>-2.7,2.5,-3,2.5</line>
+			<circle>-2.35,2.5,0.35,24</circle>
+			
+#			E
+			<text>-1.5,2.5,E</text>
+
+#			V
+			<text>1.5,-0.5,V</text>
+
+#			0 of inputs
+			<text>-1.5,-2.5,0</text>
+
+#			0 of outputs
+			<text>1.5,-2.5,0</text>
+			
     </shape>
   </gate>
   <gate>
-  <name>CC_PRI_ENCODER_8x3</name>
-  <caption>8x3 Priority Encoder</caption>
-  <logic_type>PRI_ENCODER</logic_type>
+  <name>CC_ENCODER_8x3</name>
+  <caption>8x3 Encoder no Enable</caption>
+  <logic_type>ENCODER</logic_type>
+  <logic_param>INPUT_BITS 8</logic_param>
+  <input>
+    <name>IN_0</name>
+    <point>-3,-4.5</point>
+  </input>
+  <input>
+    <name>IN_1</name>
+    <point>-3,-3.5</point>
+  </input>
+  <input>
+    <name>IN_2</name>
+    <point>-3,-2.5</point>
+  </input>
+  <input>
+    <name>IN_3</name>
+    <point>-3,-1.5</point>
+  </input>
+  <input>
+    <name>IN_4</name>
+    <point>-3,-0.5</point>
+  </input>
+  <input>
+    <name>IN_5</name>
+    <point>-3,0.5</point>
+  </input>
+  <input>
+    <name>IN_6</name>
+    <point>-3,1.5</point>
+  </input>
+  <input>
+    <name>IN_7</name>
+    <point>-3,2.5</point>
+  </input>
+  <output>
+    <name>OUT_0</name>
+    <point>3,-4.5</point>
+  </output>
+  <output>
+    <name>OUT_1</name>
+    <point>3,-3.5</point>
+  </output>
+  <output>
+    <name>OUT_2</name>
+    <point>3,-2.5</point>
+  </output>
+  <output>
+    <name>VALID</name>
+    <point>3,-1.5</point>
+  </output>
+	<logic_param>PRIORITY true</logic_param>
+	<logic_param>PRIORITY_HIGH true</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority</label>
+				<varname>LOGIC PRIORITY</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority high</label>
+				<varname>LOGIC PRIORITY_HIGH</varname>
+			</param>
+		</param_dlg_data>  
+  
+  <shape>
+    #     body
+    <outline>-2,3.5,2,3.5</outline>
+    <outline>2,3.5,2,-5.5</outline>
+    <outline>2,-5.5,-2,-5.5</outline>
+    <outline>-2,-5.5,-2,3.5</outline>
+
+    #		  outputs
+    <line>2,-4.5,3,-4.5</line>
+    <line>2,-3.5,3,-3.5</line>
+    <line>2,-2.5,3,-2.5</line>
+
+#     Valid
+    <line>2, -1.5,3,-1.5</line>
+
+    #			Encoder Input Lines
+    <line>-2,-4.5,-3,-4.5</line>
+    <line>-2,-3.5,-3,-3.5</line>
+    <line>-2,-2.5,-3,-2.5</line>
+    <line>-2,-1.5,-3,-1.5</line>
+    <line>-2,-0.5,-3,-0.5</line>
+    <line>-2, 0.5,-3, 0.5</line>
+    <line>-2, 1.5,-3, 1.5</line>
+    <line>-2, 2.5,-3, 2.5</line>
+
+#			V
+			 <text>1.5,-1.5,V</text>
+
+#			0 of inputs
+			<text>-1.5,-4.5,0</text>
+
+#			0 of outputs
+			<text>1.5,-4.5,0</text>
+
+  </shape>
+</gate>
+<gate>
+  <name>CC_ENCODER_8x3_EN</name>
+  <caption>8x3 Encoder High active Enable</caption>
+  <logic_type>ENCODER</logic_type>
   <logic_param>INPUT_BITS 8</logic_param>
   <input>
     <name>IN_0</name>
@@ -8445,13 +8013,146 @@
     <name>ENABLE</name>
     <point>-3,4.5</point>
   </input>
+	<logic_param>PRIORITY true</logic_param>
+	<logic_param>PRIORITY_HIGH true</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority</label>
+				<varname>LOGIC PRIORITY</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority high</label>
+				<varname>LOGIC PRIORITY_HIGH</varname>
+			</param>
+		</param_dlg_data>  
   
   <shape>
     #     body
-    <line>-2,5.5,2,5.5</line>
-    <line>2,5.5,2,-5.5</line>
-    <line>2,-5.5,-2,-5.5</line>
-    <line>-2,-5.5,-2,5.5</line>
+    <outline>-2,5.5,2,5.5</outline>
+    <outline>2,5.5,2,-5.5</outline>
+    <outline>2,-5.5,-2,-5.5</outline>
+    <outline>-2,-5.5,-2,5.5</outline>
+
+    #		  outputs
+    <line>2,-4.5,3,-4.5</line>
+    <line>2,-3.5,3,-3.5</line>
+    <line>2,-2.5,3,-2.5</line>
+
+#     Valid
+    <line>2, -1.5,3,-1.5</line>
+
+    #			Encoder Input Lines
+    <line>-2,-4.5,-3,-4.5</line>
+    <line>-2,-3.5,-3,-3.5</line>
+    <line>-2,-2.5,-3,-2.5</line>
+    <line>-2,-1.5,-3,-1.5</line>
+    <line>-2,-0.5,-3,-0.5</line>
+    <line>-2, 0.5,-3, 0.5</line>
+    <line>-2, 1.5,-3, 1.5</line>
+    <line>-2, 2.5,-3, 2.5</line>
+
+#			Enable
+    <line>-2,4.5,-3,4.5</line>
+
+#			E
+			<text>-1.5,4.5,E</text>
+
+#			V
+			<text>1.5,-1.5,V</text>
+
+#			0 of inputs
+			<text>-1.5,-4.5,0</text>
+
+#			0 of outputs
+			<text>1.5,-4.5,0</text>
+
+  </shape>
+</gate>
+<gate>
+  <name>CC_ENCODER_8x3_EN_LOW</name>
+  <caption>8x3 Encoder Low active Enable</caption>
+  <logic_type>ENCODER</logic_type>
+  <logic_param>INPUT_BITS 8</logic_param>
+  <input>
+    <name>IN_0</name>
+    <point>-3,-4.5</point>
+  </input>
+  <input>
+    <name>IN_1</name>
+    <point>-3,-3.5</point>
+  </input>
+  <input>
+    <name>IN_2</name>
+    <point>-3,-2.5</point>
+  </input>
+  <input>
+    <name>IN_3</name>
+    <point>-3,-1.5</point>
+  </input>
+  <input>
+    <name>IN_4</name>
+    <point>-3,-0.5</point>
+  </input>
+  <input>
+    <name>IN_5</name>
+    <point>-3,0.5</point>
+  </input>
+  <input>
+    <name>IN_6</name>
+    <point>-3,1.5</point>
+  </input>
+  <input>
+    <name>IN_7</name>
+    <point>-3,2.5</point>
+  </input>
+  <output>
+    <name>OUT_0</name>
+    <point>3,-4.5</point>
+  </output>
+  <output>
+    <name>OUT_1</name>
+    <point>3,-3.5</point>
+  </output>
+  <output>
+    <name>OUT_2</name>
+    <point>3,-2.5</point>
+  </output>
+  <output>
+    <name>VALID</name>
+    <point>3,-1.5</point>
+  </output>
+  <input>
+    <name>ENABLE</name>
+    <point>-3,4.5</point>
+	<inverted>true</inverted>
+  </input>
+	<logic_param>PRIORITY true</logic_param>
+	<logic_param>PRIORITY_HIGH true</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority</label>
+				<varname>LOGIC PRIORITY</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority high</label>
+				<varname>LOGIC PRIORITY_HIGH</varname>
+			</param>
+		</param_dlg_data>  
+  
+  <shape>
+    #     body
+    <outline>-2,5.5,2,5.5</outline>
+    <outline>2,5.5,2,-5.5</outline>
+    <outline>2,-5.5,-2,-5.5</outline>
+    <outline>-2,-5.5,-2,5.5</outline>
 
     #		  outputs
     <line>2,-4.5,3,-4.5</line>
@@ -8472,58 +8173,179 @@
     <line>-2, 2.5,-3, 2.5</line>
 
     #			Enable
-    <line>-2,4.5,-3,4.5</line>
+    <line>-2.7,4.5,-3,4.5</line>
+	<circle>-2.35,4.5,0.35,24</circle>
 
-			#			E
-			<offset><point>-1.7,4.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
+#			E
+			<text>-1.5,4.5,E</text>
 
-#			VA
-    <offset>
-      <point>0.6,-1.2</point>
-      <line>0,0,0.2,-0.8</line>
-      <line>0.2,-0.8,0.4,0</line>
-    </offset>
-    <offset>
-      <point>1.2,-1.2</point>
-      <line>0,0,0.4,0</line>
-      <line>0,-0.4,0.4,-0.4</line>
-      <line>0.4,0,0.4,-0.4</line>
-      <line>0.4,-0.4,0.4,-0.8</line>
-      <line>0,0,0,-0.8</line>
-    </offset>
+#			V
+			<text>1.5,-1.5,V</text>
 
-    #			0 of inputs
-    <offset>
-      <point>-1.7,-4.1</point>
-      <line>0,0,0.4,0</line>
-      <line>0.4,0,0.4,-0.4</line>
-      <line>0.4,-0.4,0.4,-0.8</line>
-      <line>0.4,-0.8,0,-0.8</line>
-      <line>0,-0.8,0,-0.4</line>
-      <line>0,-0.4,0,0</line>
-    </offset>
+#			0 of inputs
+			<text>-1.5,-4.5,0</text>
 
-    #			0 of outputs
-    <offset>
-      <point>1.3,-4.1</point>
-      <line>0,0,0.4,0</line>
-      <line>0.4,0,0.4,-0.4</line>
-      <line>0.4,-0.4,0.4,-0.8</line>
-      <line>0.4,-0.8,0,-0.8</line>
-      <line>0,-0.8,0,-0.4</line>
-      <line>0,-0.4,0,0</line>
-    </offset>
+#			0 of outputs
+			<text>1.5,-4.5,0</text>
+
   </shape>
 </gate>
 <gate>
-  <name>CD_PRI_ENCODER_16x4</name>
-  <caption>16x4 Priority Encoder</caption>
-  <logic_type>PRI_ENCODER</logic_type>
+  <name>CD_ENCODER_16x4</name>
+  <caption>16x4 Encoder no Enable</caption>
+  <logic_type>ENCODER</logic_type>
+  <logic_param>INPUT_BITS 16</logic_param>
+  <input>
+    <name>IN_0</name>
+    <point>-3,-8.5</point>
+  </input>
+  <input>
+    <name>IN_1</name>
+    <point>-3,-7.5</point>
+  </input>
+  <input>
+    <name>IN_2</name>
+    <point>-3,-6.5</point>
+  </input>
+  <input>
+    <name>IN_3</name>
+    <point>-3,-5.5</point>
+  </input>
+  <input>
+    <name>IN_4</name>
+    <point>-3,-4.5</point>
+  </input>
+  <input>
+    <name>IN_5</name>
+    <point>-3,-3.5</point>
+  </input>
+  <input>
+    <name>IN_6</name>
+    <point>-3,-2.5</point>
+  </input>
+  <input>
+    <name>IN_7</name>
+    <point>-3,-1.5</point>
+  </input>
+  <input>
+    <name>IN_8</name>
+    <point>-3,-0.5</point>
+  </input>
+  <input>
+    <name>IN_9</name>
+    <point>-3,0.5</point>
+  </input>
+  <input>
+    <name>IN_10</name>
+    <point>-3,1.5</point>
+  </input>
+  <input>
+    <name>IN_11</name>
+    <point>-3,2.5</point>
+  </input>
+  <input>
+    <name>IN_12</name>
+    <point>-3,3.5</point>
+  </input>
+  <input>
+    <name>IN_13</name>
+    <point>-3,4.5</point>
+  </input>
+  <input>
+    <name>IN_14</name>
+    <point>-3,5.5</point>
+  </input>
+  <input>
+    <name>IN_15</name>
+    <point>-3,6.5</point>
+  </input>
+  
+  <output>
+    <name>OUT_0</name>
+    <point>3,-8.5</point>
+  </output>
+  <output>
+    <name>OUT_1</name>
+    <point>3,-7.5</point>
+  </output>
+  <output>
+    <name>OUT_2</name>
+    <point>3,-6.5</point>
+  </output>
+  <output>
+    <name>OUT_3</name>
+    <point>3,-5.5</point>
+  </output>
+  <output>
+    <name>VALID</name>
+    <point>3,-4.5</point>
+  </output>   
+	<logic_param>PRIORITY true</logic_param>
+	<logic_param>PRIORITY_HIGH true</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority</label>
+				<varname>LOGIC PRIORITY</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority high</label>
+				<varname>LOGIC PRIORITY_HIGH</varname>
+			</param>
+		</param_dlg_data>  
+  <shape>
+    #     body
+    <outline>-2,7.5,2,7.5</outline>
+    <outline>2,7.5,2,-9.5</outline>
+    <outline>2,-9.5,-2,-9.5</outline>
+    <outline>-2,-9.5,-2,7.5</outline>
+
+    #		  outputs
+    <line>2,-8.5,3,-8.5</line>
+    <line>2,-7.5,3,-7.5</line>
+    <line>2,-6.5,3,-6.5</line>
+    <line>2,-5.5,3,-5.5</line>
+
+    #     Valid
+    <line>2, -4.5,3,-4.5</line>
+
+    #			Encoder Input Lines
+    <line>-2,-8.5,-3,-8.5</line>
+    <line>-2,-7.5,-3,-7.5</line>
+    <line>-2,-6.5,-3,-6.5</line>
+    <line>-2,-5.5,-3,-5.5</line>
+    <line>-2,-4.5,-3,-4.5</line>
+    <line>-2,-3.5,-3,-3.5</line>
+    <line>-2,-2.5,-3,-2.5</line>
+    <line>-2,-1.5,-3,-1.5</line>
+    
+    <line>-2,-0.5,-3,-0.5</line>
+    <line>-2, 0.5,-3, 0.5</line>
+    <line>-2, 1.5,-3, 1.5</line>
+    <line>-2, 2.5,-3, 2.5</line>
+    <line>-2, 3.5,-3, 3.5</line>
+    <line>-2, 4.5,-3, 4.5</line>
+    <line>-2, 5.5,-3, 5.5</line>
+    <line>-2, 6.5,-3, 6.5</line>
+
+#			V
+			<text>1.5,-4.5,V</text>
+
+#			0 of inputs
+			<text>-1.5,-8.5,0</text>
+
+#			0 of outputs
+			<text>1.5,-8.5,0</text>
+
+  </shape>
+</gate>
+<gate>
+  <name>CD_ENCODER_16x4_EN</name>
+  <caption>16x4 Encoder Highactive Enable</caption>
+  <logic_type>ENCODER</logic_type>
   <logic_param>INPUT_BITS 16</logic_param>
   <input>
     <name>IN_0</name>
@@ -8614,13 +8436,28 @@
     <name>ENABLE</name>
     <point>-3,8.5</point>
   </input>
-  
+	<logic_param>PRIORITY true</logic_param>
+	<logic_param>PRIORITY_HIGH true</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority</label>
+				<varname>LOGIC PRIORITY</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority high</label>
+				<varname>LOGIC PRIORITY_HIGH</varname>
+			</param>
+		</param_dlg_data>  
   <shape>
     #     body
-    <line>-2,9.5,2,9.5</line>
-    <line>2,9.5,2,-9.5</line>
-    <line>2,-9.5,-2,-9.5</line>
-    <line>-2,-9.5,-2,9.5</line>
+    <outline>-2,9.5,2,9.5</outline>
+    <outline>2,9.5,2,-9.5</outline>
+    <outline>2,-9.5,-2,-9.5</outline>
+    <outline>-2,-9.5,-2,9.5</outline>
 
     #		  outputs
     <line>2,-8.5,3,-8.5</line>
@@ -8654,49 +8491,181 @@
     <line>-2,8.5,-3,8.5</line>
 
 #			E
-			<offset><point>-1.7,8.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			</offset>
+			<text>-1.5,8.5,E</text>
 
-    #			VA
-    <offset>
-      <point>0.6,-4.2</point>
-      <line>0,0,0.2,-0.8</line>
-      <line>0.2,-0.8,0.4,0</line>
-    </offset>
-    <offset>
-      <point>1.2,-4.2</point>
-      <line>0,0,0.4,0</line>
-      <line>0,-0.4,0.4,-0.4</line>
-      <line>0.4,0,0.4,-0.4</line>
-      <line>0.4,-0.4,0.4,-0.8</line>
-      <line>0,0,0,-0.8</line>
-    </offset>
+#			V
+			<text>1.5,-4.5,V</text>
 
-    #			0 of inputs
-    <offset>
-      <point>-1.7,-8.1</point>
-      <line>0,0,0.4,0</line>
-      <line>0.4,0,0.4,-0.4</line>
-      <line>0.4,-0.4,0.4,-0.8</line>
-      <line>0.4,-0.8,0,-0.8</line>
-      <line>0,-0.8,0,-0.4</line>
-      <line>0,-0.4,0,0</line>
-    </offset>
+#			0 of inputs
+			<text>-1.5,-8.5,0</text>
 
-    #			0 of outputs
-    <offset>
-      <point>1.3,-8.1</point>
-      <line>0,0,0.4,0</line>
-      <line>0.4,0,0.4,-0.4</line>
-      <line>0.4,-0.4,0.4,-0.8</line>
-      <line>0.4,-0.8,0,-0.8</line>
-      <line>0,-0.8,0,-0.4</line>
-      <line>0,-0.4,0,0</line>
-    </offset>
+#			0 of outputs
+			<text>1.5,-8.5,0</text>
+
+  </shape>
+</gate>
+<gate>
+  <name>CD_ENCODER_16x4_EN_LOW</name>
+  <caption>16x4 Encoder Low active Enable</caption>
+  <logic_type>ENCODER</logic_type>
+  <logic_param>INPUT_BITS 16</logic_param>
+  <input>
+    <name>IN_0</name>
+    <point>-3,-8.5</point>
+  </input>
+  <input>
+    <name>IN_1</name>
+    <point>-3,-7.5</point>
+  </input>
+  <input>
+    <name>IN_2</name>
+    <point>-3,-6.5</point>
+  </input>
+  <input>
+    <name>IN_3</name>
+    <point>-3,-5.5</point>
+  </input>
+  <input>
+    <name>IN_4</name>
+    <point>-3,-4.5</point>
+  </input>
+  <input>
+    <name>IN_5</name>
+    <point>-3,-3.5</point>
+  </input>
+  <input>
+    <name>IN_6</name>
+    <point>-3,-2.5</point>
+  </input>
+  <input>
+    <name>IN_7</name>
+    <point>-3,-1.5</point>
+  </input>
+  <input>
+    <name>IN_8</name>
+    <point>-3,-0.5</point>
+  </input>
+  <input>
+    <name>IN_9</name>
+    <point>-3,0.5</point>
+  </input>
+  <input>
+    <name>IN_10</name>
+    <point>-3,1.5</point>
+  </input>
+  <input>
+    <name>IN_11</name>
+    <point>-3,2.5</point>
+  </input>
+  <input>
+    <name>IN_12</name>
+    <point>-3,3.5</point>
+  </input>
+  <input>
+    <name>IN_13</name>
+    <point>-3,4.5</point>
+  </input>
+  <input>
+    <name>IN_14</name>
+    <point>-3,5.5</point>
+  </input>
+  <input>
+    <name>IN_15</name>
+    <point>-3,6.5</point>
+  </input>
+  
+  <output>
+    <name>OUT_0</name>
+    <point>3,-8.5</point>
+  </output>
+  <output>
+    <name>OUT_1</name>
+    <point>3,-7.5</point>
+  </output>
+  <output>
+    <name>OUT_2</name>
+    <point>3,-6.5</point>
+  </output>
+  <output>
+    <name>OUT_3</name>
+    <point>3,-5.5</point>
+  </output>
+  <output>
+    <name>VALID</name>
+    <point>3,-4.5</point>
+  </output>   
+  <input>
+    <name>ENABLE</name>
+    <point>-3,8.5</point>
+	<inverted>true</inverted>
+  </input>
+	<logic_param>PRIORITY true</logic_param>
+	<logic_param>PRIORITY_HIGH true</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority</label>
+				<varname>LOGIC PRIORITY</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Priority high</label>
+				<varname>LOGIC PRIORITY_HIGH</varname>
+			</param>
+		</param_dlg_data>  
+  <shape>
+    #     body
+    <outline>-2,9.5,2,9.5</outline>
+    <outline>2,9.5,2,-9.5</outline>
+    <outline>2,-9.5,-2,-9.5</outline>
+    <outline>-2,-9.5,-2,9.5</outline>
+
+    #		  outputs
+    <line>2,-8.5,3,-8.5</line>
+    <line>2,-7.5,3,-7.5</line>
+    <line>2,-6.5,3,-6.5</line>
+    <line>2,-5.5,3,-5.5</line>
+
+    #     Valid
+    <line>2, -4.5,3,-4.5</line>
+
+    #			Encoder Input Lines
+    <line>-2,-8.5,-3,-8.5</line>
+    <line>-2,-7.5,-3,-7.5</line>
+    <line>-2,-6.5,-3,-6.5</line>
+    <line>-2,-5.5,-3,-5.5</line>
+    <line>-2,-4.5,-3,-4.5</line>
+    <line>-2,-3.5,-3,-3.5</line>
+    <line>-2,-2.5,-3,-2.5</line>
+    <line>-2,-1.5,-3,-1.5</line>
+    
+    <line>-2,-0.5,-3,-0.5</line>
+    <line>-2, 0.5,-3, 0.5</line>
+    <line>-2, 1.5,-3, 1.5</line>
+    <line>-2, 2.5,-3, 2.5</line>
+    <line>-2, 3.5,-3, 3.5</line>
+    <line>-2, 4.5,-3, 4.5</line>
+    <line>-2, 5.5,-3, 5.5</line>
+    <line>-2, 6.5,-3, 6.5</line>
+
+    #			Enable
+    <line>-2.7,8.5,-3,8.5</line>
+	<circle>-2.35,8.5,0.35,24</circle>
+
+#			E
+			<text>-1.5,8.5,E</text>
+
+#			V
+			<text>1.5,-4.5,V</text>
+
+#			0 of inputs
+			<text>-1.5,-8.5,0</text>
+
+#			0 of outputs
+			<text>1.5,-8.5,0</text>
+	
   </shape>
 </gate>
 </library>
@@ -8724,10 +8693,10 @@
 	
 		<shape>
 #			Box
-			<line>-3,2,3,2</line>
-			<line>3,2,3,-2</line>
-			<line>3,-2,-3,-2</line>
-			<line>-3,-2,-3,2</line>
+			<outline>-3,2,3,2</outline>
+			<outline>3,2,3,-2</outline>
+			<outline>3,-2,-3,-2</outline>
+			<outline>-3,-2,-3,2</outline>
 
 #			X and Y  Input
 			<line>-1,2,-1,3</line>
@@ -8831,10 +8800,10 @@
 	
 		<shape>
 #			Box
-			<line>-3,2,3,2</line>
-			<line>3,2,3,-2</line>
-			<line>3,-2,-3,-2</line>
-			<line>-3,-2,-3,2</line>
+			<outline>-3,2,3,2</outline>
+			<outline>3,2,3,-2</outline>
+			<outline>3,-2,-3,-2</outline>
+			<outline>-3,-2,-3,2</outline>
 
 #			X and Y  Input
 			<line>-1,2,-1,3</line>
@@ -8995,10 +8964,10 @@
 	
 		<shape>
 #			Box
-			<line>7,3,7,-3</line>
-			<line>7,-3,-7,-3</line>
-			<line>-7,-3,-7,3</line>
-			<line>-7,3,7,3</line>
+			<outline>7,3,7,-3</outline>
+			<outline>7,-3,-7,-3</outline>
+			<outline>-7,-3,-7,3</outline>
+			<outline>-7,3,7,3</outline>
 
 #			X Inputs
 			<line>-2,3,-2,4</line>
@@ -9268,10 +9237,10 @@
 	
 		<shape>
 #			Box
-			<line>10,3,10,-3</line>
-			<line>10,-3,-10,-3</line>
-			<line>-10,-3,-10,3</line>
-			<line>-10,3,10,3</line>
+			<outline>10,3,10,-3</outline>
+			<outline>10,-3,-10,-3</outline>
+			<outline>-10,-3,-10,3</outline>
+			<outline>-10,3,10,3</outline>
 
 #			X Inputs
 			<line>-2,3,-2,4</line>
@@ -9504,10 +9473,10 @@
 		
 		<shape>
 #			Box
-			<line>7,3,7,-3</line>
-			<line>7,-3,-7,-3</line>
-			<line>-7,-3,-7,3</line>
-			<line>-7,3,7,3</line>
+			<outline>7,3,7,-3</outline>
+			<outline>7,-3,-7,-3</outline>
+			<outline>-7,-3,-7,3</outline>
+			<outline>-7,3,7,3</outline>
 
 #			X Inputs
 			<line>-2,3,-2,4</line>
@@ -9681,10 +9650,10 @@
 		
 		<shape>
 #			Box
-			<line>11,3,11,-3</line>
-			<line>11,-3,-11,-3</line>
-			<line>-11,-3,-11,3</line>
-			<line>-11,3,11,3</line>
+			<outline>11,3,11,-3</outline>
+			<outline>11,-3,-11,-3</outline>
+			<outline>-11,-3,-11,3</outline>
+			<outline>-11,3,11,3</outline>
 
 #			X Inputs
 			<line>-2,3,-2,4</line>
@@ -9813,10 +9782,12 @@
 		</output>		
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+			
 			<line>-2,2,-3,2</line>
 			<line>-2.7,-2,-3,-2</line>
 			<line>2,2,3,2</line>
@@ -9902,10 +9873,12 @@
 		</output>		
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
 			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,2,3,2</line>
@@ -9961,7 +9934,7 @@
 		</shape>
 	</gate>
 	<gate> <name>A7_DLATCH_E</name>
-		<caption>D Latch Triestado</caption>
+		<caption>D Latch Tri-State</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
 		<logic_param>MAX_COUNT 1</logic_param>
@@ -9996,10 +9969,12 @@
 		</output>
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
 			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,2,3,2</line>
@@ -10092,12 +10067,13 @@
 		          <point>3,-2</point> 
 		</output>
 
-
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
 			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,2,3,2</line>
@@ -10189,10 +10165,12 @@
 		</output>
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
 			<line>-2.7,2,-3,2</line>
 			<line>-2.7,-2,-3,-2</line>
 			<line>2,2,3,2</line>
@@ -10288,10 +10266,12 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
 			<line>-2,2,-3,2</line>
 			<line>-2,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
@@ -10400,10 +10380,12 @@
 		</output>
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
 			<line>-2.7,2,-3,2</line>
 			<line>-2.7,-2,-3,-2</line>
 			<line>-2,0,-3,0</line>
@@ -10512,10 +10494,12 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
 			<line>-2.7,0,-3,0</line>
 			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
@@ -10627,10 +10611,12 @@
 		</output>
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
 			<line>-2.7,2,-3,2</line>
 			<line>-2.7,0,-3,0</line>
 			<line>-2.7,-2,-3,-2</line>			
@@ -10756,16 +10742,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -10865,16 +10852,18 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>2,-3,2,3</line>
+			<line>-2,2,-3,2</line>
 			<line>-2.7,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -10979,16 +10968,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -11093,16 +11083,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2.70,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -11183,16 +11174,17 @@
 		</output>
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,2,3,2</line>
@@ -11252,16 +11244,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -11336,16 +11329,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2.7,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -11394,7 +11388,7 @@
 
 		</shape>
 	</gate>
-	<gate> <name>AF_DFF_LOW</name>
+	<gate> <name>AF_DFF_LOW_CE</name>
 		<caption>D Flip Flop - Clock Enabled,Low Active Set/Reset</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
@@ -11448,24 +11442,25 @@
 
 #		QNOT
 		<output> <name>OUTINV_0</name>
-		          <point>3,-1</point> 
+		          <point>3,-2</point> 
 		</output>
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
 			<line>-2,-0.5,-1,0</line>
-			<line>-2,0,-3,0</line>
 			
+			<line>-2,0,-3,0</line>
+			<line>-2,2,-3,2</line>			
 			<line>-3,-2,-2,-2</line>
-			<line>2,-1,3,-1</line>
+			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
 			<line>0,3.7,0,4</line>
 			<line>0,-3.7,0,-4</line>
@@ -11513,7 +11508,7 @@
 			</offset>
 
 #			Q NOT
-			<offset><point>1.3,-0.6</point>
+			<offset><point>1.3,-1.6</point>
 			<line>0,0.1,0.4,0.1</line>
 			<line>0.1,0,0,-0.1</line>
 			<line>0,-0.1,0,-0.7</line>
@@ -11533,7 +11528,7 @@
 		</shape>
 	</gate>
 	<gate> <name>AG_DFF_LOW_E</name>
-		<caption>D Flip Flop - Low Active Set/Reset Triestado</caption>
+		<caption>D Flip Flop - Low Active Set/Reset Tri-State</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
 		<logic_param>NO_HOLD true</logic_param>
@@ -11591,18 +11586,18 @@
 				  <enable_input>OUTPUT_ENABLE</enable_input>
 		</output>
 
-
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
 			<line>-2,-0.5,-1,0</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
@@ -11688,7 +11683,6 @@
 		          <point>-3,-2</point> 
 		</input>
 
-
 #		Clock
 		<input> <name>CLOCK</name>
 		          <point>-3,0</point> 
@@ -11714,18 +11708,18 @@
 		          <point>3,-2</point> 
 		</output>
 
-
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
 			<line>-2,-0.5,-1,0</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
@@ -11808,16 +11802,17 @@
 		</output>
 		
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
-			<line>-2,-0.5,-1,0</line>
-			
+			<line>-2,-0.5,-1,0</line>			
+
+			<line>-2,2,-3,2</line>		
 			<line>-2,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,2,3,2</line>
@@ -11910,16 +11905,17 @@
 		</output>
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
 			<line>-2,-0.5,-1,0</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
@@ -12031,16 +12027,17 @@
 		</output>
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
 			<line>-2,-0.5,-1,0</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2.7,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
@@ -12154,16 +12151,17 @@
 		</output>
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
 			<line>-2,-0.5,-1,0</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2.7,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
@@ -12252,15 +12250,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
 			<line>-2,-0.5,-1,0</line>
+
+			<line>-2,2,-3,2</line>
 			<line>-2,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
@@ -12345,16 +12345,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
 			<line>-2,-0.5,-1,0</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2.7,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
@@ -12425,7 +12426,6 @@
 			</param>
 		</param_dlg_data>
 
-
 #		T
 		<input> <name>T</name>
 		          <point>-3,2</point> 
@@ -12461,16 +12461,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2.70,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -12569,16 +12570,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2.7,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -12676,16 +12678,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -12781,16 +12784,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -12859,16 +12863,17 @@
 		</output>
 		
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,2,3,2</line>
 			<line>0,-3,0,-4</line>
@@ -12919,18 +12924,18 @@
 		          <point>3,-2</point> 
 		</output>
 
-
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -12999,16 +13004,17 @@
 
 
 		<shape>
-			<line>2,3,-2,3</line>
-			<line>-2,3,-2,-3</line>
-			<line>-2,-3,2,-3</line>
-			<line>2,-3,2,3</line>
-			<line>-2,2,-3,2</line>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
 
 #			CLOCK
 			<line>-2,-1.5,-1,-2</line>
 			<line>-2,-2.5,-1,-2</line>
 
+			<line>-2,2,-3,2</line>
 			<line>-2.7,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
@@ -13080,6 +13086,11 @@
 				<label>Synchronous Load Pin</label>
 				<varname>LOGIC SYNC_LOAD</varname>
 			</param>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
 		</param_dlg_data>		
 
 #		L
@@ -13131,10 +13142,11 @@
 		</output>
 
 		<shape>
-			<line>-3,4,3,4</line>
-			<line>3,4,3,-3</line>
-			<line>3,-3,-3,-3</line>
-			<line>-3,-3,-3,4</line>
+#			Outline
+			<outline>-3,4,3,4</outline>
+			<outline>3,4,3,-3</outline>
+			<outline>3,-3,-3,-3</outline>
+			<outline>-3,-3,-3,4</outline>
 
 			<line>-1,4,-1,5</line>
 			<line>0,4,0,5</line>
@@ -13288,6 +13300,11 @@
 				<label>Synchronous Load Pin</label>
 				<varname>LOGIC SYNC_LOAD</varname>
 			</param>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
 		</param_dlg_data>
 
 
@@ -13356,10 +13373,11 @@
 		</output>
 
 		<shape>
-			<line>-3,4,3,4</line>
-			<line>3,4,3,-3</line>
-			<line>3,-3,-3,-3</line>
-			<line>-3,-3,-3,4</line>
+#			Outline
+			<outline>-3,4,3,4</outline>
+			<outline>3,4,3,-3</outline>
+			<outline>3,-3,-3,-3</outline>
+			<outline>-3,-3,-3,4</outline>
 
 			<line>-1,4,-1,5</line>
 			<line>0,4,0,5</line>
@@ -13517,6 +13535,11 @@
 				<label>Synchronous Load Pin</label>
 				<varname>LOGIC SYNC_LOAD</varname>
 			</param>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
 		</param_dlg_data>
 
 
@@ -13604,10 +13627,10 @@
 
 		<shape>
 # Box:
-			<line>-3,5,3,5</line>
-			<line>3,5,3,-4</line>
-			<line>3,-4,-3,-4</line>
-			<line>-3,-4,-3,5</line>
+			<outline>-3,5,3,5</outline>
+			<outline>3,5,3,-4</outline>
+			<outline>3,-4,-3,-4</outline>
+			<outline>-3,-4,-3,5</outline>
 
 			<line>-1,5,-1,6</line>
 			<line>0,5,0,6</line>
@@ -13781,6 +13804,11 @@
 				<label>Synchronous Load Pin</label>
 				<varname>LOGIC SYNC_LOAD</varname>
 			</param>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
 		</param_dlg_data>
 
 
@@ -13911,10 +13939,11 @@
 		</output>
 
 		<shape>
-			<line>-4,6.5,4,6.5</line>
-			<line>4,6.5,4,-6.5</line>
-			<line>4,-6.5,-4,-6.5</line>
-			<line>-4,-6.5,-4,6.5</line>
+#			Outline		
+			<outline>-4,6.5,4,6.5</outline>
+			<outline>4,6.5,4,-6.5</outline>
+			<outline>4,-6.5,-4,-6.5</outline>
+			<outline>-4,-6.5,-4,6.5</outline>
 
 #			Top Inputs
 			<line>-1,6.5,-1,7.5</line>
@@ -14046,7 +14075,7 @@
 		<caption>16-Bit Counting Register</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 16</logic_param>
-		<logic_param>MAX_COUNT 65536</logic_param>
+		<logic_param>MAX_COUNT 65535</logic_param>
 		<logic_param>SYNC_CLEAR true</logic_param>
 		<logic_param>SYNC_LOAD true</logic_param>
 		<gui_type>REGISTER</gui_type>
@@ -14057,7 +14086,7 @@
 				<type>INT</type>
 				<label>Maximum Count Value</label>
 				<varname>LOGIC MAX_COUNT</varname>
-				<range>1,65536</range>
+				<range>1,65535</range>
 			</param>
 			<param>
 				<type>BOOL</type>
@@ -14068,6 +14097,11 @@
 				<type>BOOL</type>
 				<label>Synchronous Load Pin</label>
 				<varname>LOGIC SYNC_LOAD</varname>
+			</param>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
 			</param>
 		</param_dlg_data>
 
@@ -14230,10 +14264,11 @@
 		</output>
 
 		<shape>
-			<line>-4,8.5,4,8.5</line>
-			<line>4,8.5,4,-8.5</line>
-			<line>4,-8.5,-4,-8.5</line>
-			<line>-4,-8.5,-4,8.5</line>
+#			outline
+			<outline>-4,8.5,4,8.5</outline>
+			<outline>4,8.5,4,-8.5</outline>
+			<outline>4,-8.5,-4,-8.5</outline>
+			<outline>-4,-8.5,-4,8.5</outline>
 
 #			Top Inputs
 			<line>-1,8.5,-1,9.5</line>
@@ -14378,8 +14413,14 @@
 		<logic_param>SYNC_LOAD false</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -1.4,-0.8,1.4,1.8</gui_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 		
-
 #		L
 		<input> <name>LOAD</name>
 		          <point>0,6</point> 
@@ -14442,10 +14483,11 @@
 		</output>
 
 		<shape>
-			<line>-3,5,3,5</line>
-			<line>3,5,3,-4</line>
-			<line>3,-4,-3,-4</line>
-			<line>-3,-4,-3,5</line>
+# Box:
+			<outline>-3,5,3,5</outline>
+			<outline>3,5,3,-4</outline>
+			<outline>3,-4,-3,-4</outline>
+			<outline>-3,-4,-3,5</outline>
 
 			<line>0,5,0,6</line>
 			<line>0,-4,0,-5</line>
@@ -14518,7 +14560,13 @@
 		<logic_param>SYNC_LOAD false</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-0.8,0.8,1.8</gui_param>
-		
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 
 #		L
 		<input> <name>LOAD</name>
@@ -14563,10 +14611,11 @@
 		</output>
 
 		<shape>
-			<line>-2,4,2,4</line>
-			<line>2,4,2,-3</line>
-			<line>2,-3,-2,-3</line>
-			<line>-2,-3,-2,4</line>
+#			outline
+			<outline>-2,4,2,4</outline>
+			<outline>2,4,2,-3</outline>
+			<outline>2,-3,-2,-3</outline>
+			<outline>-2,-3,-2,4</outline>
 
 			<line>0,4,0,5</line>
 			<line>0,-3,0,-4</line>
@@ -14631,6 +14680,13 @@
 		<logic_param>SYNC_LOAD false</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-0.8,0.8,1.8</gui_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 
 #		L
 		<input> <name>LOAD</name>
@@ -14661,10 +14717,11 @@
 		</output>
 
 		<shape>
-			<line>-2,4,2,4</line>
-			<line>2,4,2,-3</line>
-			<line>2,-3,-2,-3</line>
-			<line>-2,-3,-2,4</line>
+#			outline
+			<outline>-2,4,2,4</outline>
+			<outline>2,4,2,-3</outline>
+			<outline>2,-3,-2,-3</outline>
+			<outline>-2,-3,-2,4</outline>
 
 			<line>0,4,0,5</line>
 			<line>0,-3,0,-4</line>
@@ -14725,6 +14782,13 @@
 		<logic_param>SYNC_CLEAR false</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -1.4,-0.8,1.4,1.8</gui_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 
 #		CLOCK
 		<input> <name>CLOCK</name>
@@ -14788,10 +14852,11 @@
 		</output>
 
 		<shape>
-			<line>-3,5,3,5</line>
-			<line>3,5,3,-4</line>
-			<line>3,-4,-3,-4</line>
-			<line>-3,-4,-3,5</line>
+# Box:
+			<outline>-3,5,3,5</outline>
+			<outline>3,5,3,-4</outline>
+			<outline>3,-4,-3,-4</outline>
+			<outline>-3,-4,-3,5</outline>
 
 			<line>0,5,0,6</line>
 			<line>0,-4,0,-5</line>
@@ -14864,6 +14929,13 @@
 		<logic_param>SYNC_CLEAR false</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-0.8,0.8,1.8</gui_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 			
 #		CLOCK
 		<input> <name>CLOCK</name>
@@ -14908,10 +14980,11 @@
 		</output>
 
 		<shape>
-			<line>-2,4,2,4</line>
-			<line>2,4,2,-3</line>
-			<line>2,-3,-2,-3</line>
-			<line>-2,-3,-2,4</line>
+#			outline
+			<outline>-2,4,2,4</outline>
+			<outline>2,4,2,-3</outline>
+			<outline>2,-3,-2,-3</outline>
+			<outline>-2,-3,-2,4</outline>
 
 			<line>0,4,0,5</line>
 			<line>0,-3,0,-4</line>
@@ -14976,6 +15049,13 @@
 		<logic_param>SYNC_CLEAR false</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-0.8,0.8,1.8</gui_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 
 #		CLOCK
 		<input> <name>CLOCK</name>
@@ -15006,10 +15086,11 @@
 		</output>
 
 		<shape>
-			<line>-2,4,2,4</line>
-			<line>2,4,2,-3</line>
-			<line>2,-3,-2,-3</line>
-			<line>-2,-3,-2,4</line>
+#			outline
+			<outline>-2,4,2,4</outline>
+			<outline>2,4,2,-3</outline>
+			<outline>2,-3,-2,-3</outline>
+			<outline>-2,-3,-2,4</outline>
 
 			<line>0,4,0,5</line>
 			<line>0,-3,0,-4</line>
@@ -15070,6 +15151,13 @@
 		<logic_param>SYNC_LOAD true</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-0.8,0.8,1.8</gui_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 
 #		L
 		<input> <name>LOAD</name>
@@ -15088,29 +15176,30 @@
 
 #		BUS IN
 		<input> <name>IN_0</name>
-		          <point>-3,0</point> 
+		          <point>-3,0.5</point> 
 		</input>
 
 #		BUS OUT
 		<output> <name>OUT_0</name>
-		          <point>3,0</point> 
+		          <point>3,0.5</point> 
 		</output>
 
 		<shape>
-			<line>-2,4,2,4</line>
-			<line>2,4,2,-3</line>
-			<line>2,-3,-2,-3</line>
-			<line>-2,-3,-2,4</line>
+#			outline
+			<outline>-2,4,2,4</outline>
+			<outline>2,4,2,-3</outline>
+			<outline>2,-3,-2,-3</outline>
+			<outline>-2,-3,-2,4</outline>
 
 			<line>0,4,0,5</line>
 			<line>1,-3,1,-4</line>
 			<line>-1,-3,-1,-4</line>
 
 # Input Bus
-			<line>-2,0,-3,0</line>
+			<line>-2,0.5,-3,0.5</line>
 
 # Output Bus
-			<line>2,0,3,0</line>			
+			<line>2,0.5,3,0.5</line>			
 
 #			R
 			<offset><point>0.8,-1.9</point>
@@ -15145,6 +15234,13 @@
 		<logic_param>SYNC_LOAD true</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-0.8,0.8,1.8</gui_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 
 #		L
 		<input> <name>LOAD</name>
@@ -15180,10 +15276,11 @@
 		</output>
 
 		<shape>
-			<line>-2,4,2,4</line>
-			<line>2,4,2,-3</line>
-			<line>2,-3,-2,-3</line>
-			<line>-2,-3,-2,4</line>
+#			outline
+			<outline>-2,4,2,4</outline>
+			<outline>2,4,2,-3</outline>
+			<outline>2,-3,-2,-3</outline>
+			<outline>-2,-3,-2,4</outline>
 
 			<line>0,4,0,5</line>
 			<line>1,-3,1,-4</line>
@@ -15251,6 +15348,13 @@
 		<logic_param>SYNC_LOAD true</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-0.8,0.8,1.8</gui_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 		
 
 #		L
@@ -15301,10 +15405,11 @@
 		</output>
 
 		<shape>
-			<line>-2,4,2,4</line>
-			<line>2,4,2,-3</line>
-			<line>2,-3,-2,-3</line>
-			<line>-2,-3,-2,4</line>
+#			outline
+			<outline>-2,4,2,4</outline>
+			<outline>2,4,2,-3</outline>
+			<outline>2,-3,-2,-3</outline>
+			<outline>-2,-3,-2,4</outline>
 
 			<line>0,4,0,5</line>
 			<line>1,-3,1,-4</line>
@@ -15376,7 +15481,13 @@
 		<logic_param>SYNC_LOAD true</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -1.4,-0.8,1.4,1.8</gui_param>
-		
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
+		</param_dlg_data>
 
 #		L
 		<input> <name>LOAD</name>
@@ -15445,10 +15556,11 @@
 		</output>
 
 		<shape>
-			<line>-3,5,3,5</line>
-			<line>3,5,3,-4</line>
-			<line>3,-4,-3,-4</line>
-			<line>-3,-4,-3,5</line>
+# Box:
+			<outline>-3,5,3,5</outline>
+			<outline>3,5,3,-4</outline>
+			<outline>3,-4,-3,-4</outline>
+			<outline>-3,-4,-3,5</outline>
 
 			<line>0,5,0,6</line>
 			<line>1,-4,1,-5</line>
@@ -15540,6 +15652,11 @@
 				<label>Synchronous Load Pin</label>
 				<varname>LOGIC SYNC_LOAD</varname>
 			</param>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
 		</param_dlg_data>
 
 #		R
@@ -15612,10 +15729,11 @@
 		</output>
 
 		<shape>
-			<line>-4,2.5,4,2.5</line>
-			<line>4,2.5,4,-2.5</line>
-			<line>4,-2.5,-4,-2.5</line>
-			<line>-4,-2.5,-4,2.5</line>
+#			BODY
+			<outline>-4,2.5,4,2.5</outline>
+			<outline>4,2.5,4,-2.5</outline>
+			<outline>4,-2.5,-4,-2.5</outline>
+			<outline>-4,-2.5,-4,2.5</outline>
 
 #			SR IN
 			<line>-1.5,2.5,-1.5,3.5</line>
@@ -15775,16 +15893,21 @@
 		<gui_param>VALUE_BOX -1.6,-1.3,1.6,1.3</gui_param>
 
 		<param_dlg_data>
-		<param>
-		<type>BOOL</type>
-		<label>Synchronous Reset Pin</label>
-		<varname>LOGIC SYNC_CLEAR</varname>
-		</param>
-		<param>
-		<type>BOOL</type>
-		<label>Synchronous Load Pin</label>
-		<varname>LOGIC SYNC_LOAD</varname>
-		</param>
+			<param>
+				<type>BOOL</type>
+				<label>Synchronous Reset Pin</label>
+				<varname>LOGIC SYNC_CLEAR</varname>
+			</param>
+			<param>
+				<type>BOOL</type>
+				<label>Synchronous Load Pin</label>
+				<varname>LOGIC SYNC_LOAD</varname>
+			</param>
+			<param>
+				<type>BOOL</type>
+				<label>Hide display</label>
+				<varname>GUI HIDE_DISPLAY</varname>
+			</param>
 		</param_dlg_data>
 		
 #		R
@@ -15889,10 +16012,11 @@
 		</output>		
 
 		<shape>
-			<line>-6,2.5,6,2.5</line>
-			<line>6,2.5,6,-2.5</line>
-			<line>6,-2.5,-6,-2.5</line>
-			<line>-6,-2.5,-6,2.5</line>
+#			BODY
+			<outline>-6,2.5,6,2.5</outline>
+			<outline>6,2.5,6,-2.5</outline>
+			<outline>6,-2.5,-6,-2.5</outline>
+			<outline>-6,-2.5,-6,2.5</outline>
 
 #			SR IN
 			<line>-3.5,2.5,-3.5,3.5</line>
@@ -16113,10 +16237,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,4,4,4</line>
-			<line>4,4,4,-4</line>
-			<line>4,-4,-4,-4</line>
-			<line>-4,-4,-4,4</line>
+			<outline>-4,4,4,4</outline>
+			<outline>4,4,4,-4</outline>
+			<outline>4,-4,-4,-4</outline>
+			<outline>-4,-4,-4,4</outline>
 
 #			Address		
 			<line>-5,1.5,-4,1.5</line>
@@ -16154,7 +16278,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -16165,7 +16289,7 @@
 			</offset>
 
 #			O
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.1,-0.8,0.3,-0.8</line>
@@ -16177,7 +16301,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -16296,10 +16420,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,4,4,4</line>
-			<line>4,4,4,-4</line>
-			<line>4,-4,-4,-4</line>
-			<line>-4,-4,-4,4</line>
+			<outline>-4,4,4,4</outline>
+			<outline>4,4,4,-4</outline>
+			<outline>4,-4,-4,-4</outline>
+			<outline>-4,-4,-4,4</outline>
 
 #			Address		
 			<line>-5,1.5,-4,1.5</line>
@@ -16339,7 +16463,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -16350,7 +16474,7 @@
 			</offset>
 
 #			O
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.1,-0.8,0.3,-0.8</line>
@@ -16362,7 +16486,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -16493,10 +16617,10 @@
 
 		<shape>
 #			Box
-			<line>-4,6,4,6</line>
-			<line>4,6,4,-6</line>
-			<line>4,-6,-4,-6</line>
-			<line>-4,-6,-4,6</line>
+			<outline>-4,6,4,6</outline>
+			<outline>4,6,4,-6</outline>
+			<outline>4,-6,-4,-6</outline>
+			<outline>-4,-6,-4,6</outline>
 
 #			Address		
 			<line>-4,3.5,-5,3.5</line>
@@ -16542,7 +16666,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -16553,7 +16677,7 @@
 			</offset>
 
 #			O
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.1,-0.8,0.3,-0.8</line>
@@ -16565,7 +16689,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -16742,10 +16866,10 @@
 
 		<shape>
 #			Box
-			<line>-8,10,8,10</line>
-			<line>8,10,8,-10</line>
-			<line>8,-10,-8,-10</line>
-			<line>-8,-10,-8,10</line>
+			<outline>-8,10,8,10</outline>
+			<outline>8,10,8,-10</outline>
+			<outline>8,-10,-8,-10</outline>
+			<outline>-8,-10,-8,10</outline>
 
 #			Address		
 			<line>-8,-5.5,-9,-5.5</line>
@@ -16803,7 +16927,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -16814,7 +16938,7 @@
 			</offset>
 
 #			O
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.1,-0.8,0.3,-0.8</line>
@@ -16826,7 +16950,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -17022,10 +17146,10 @@
 
 		<shape>
 #			Box
-			<line>-8,10,8,10</line>
-			<line>8,10,8,-10</line>
-			<line>8,-10,-8,-10</line>
-			<line>-8,-10,-8,10</line>
+			<outline>-8,10,8,10</outline>
+			<outline>8,10,8,-10</outline>
+			<outline>8,-10,-8,-10</outline>
+			<outline>-8,-10,-8,10</outline>
 
 #			Address		
 			<line>-8,-7.5,-9,-7.5</line>
@@ -17087,7 +17211,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -17098,7 +17222,7 @@
 			</offset>
 
 #			O
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.1,-0.8,0.3,-0.8</line>
@@ -17110,7 +17234,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -17234,10 +17358,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,4,4,4</line>
-			<line>4,4,4,-4</line>
-			<line>4,-4,-4,-4</line>
-			<line>-4,-4,-4,4</line>
+			<outline>-4,4,4,4</outline>
+			<outline>4,4,4,-4</outline>
+			<outline>4,-4,-4,-4</outline>
+			<outline>-4,-4,-4,4</outline>
 
 #			Address		
 			<line>-5,1.5,-4,1.5</line>
@@ -17289,7 +17413,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -17300,7 +17424,7 @@
 			</offset>
 
 #			A
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.8</line>
 			<line>0,-0.1,0.1,0</line>
 			<line>0.4,-0.1,0.4,-0.8</line>
@@ -17310,7 +17434,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -17448,10 +17572,10 @@
 
 		<shape>
 #			Box
-			<line>-4,6,4,6</line>
-			<line>4,6,4,-6</line>
-			<line>4,-6,-4,-6</line>
-			<line>-4,-6,-4,6</line>
+			<outline>-4,6,4,6</outline>
+			<outline>4,6,4,-6</outline>
+			<outline>4,-6,-4,-6</outline>
+			<outline>-4,-6,-4,6</outline>
 
 #			Address		
 			<line>-4,3.5,-5,3.5</line>
@@ -17511,7 +17635,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -17522,7 +17646,7 @@
 			</offset>
 
 #			A
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.8</line>
 			<line>0,-0.1,0.1,0</line>
 			<line>0.4,-0.1,0.4,-0.8</line>
@@ -17532,7 +17656,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -17713,10 +17837,10 @@
 
 		<shape>
 #			Box
-			<line>-8,10,8,10</line>
-			<line>8,10,8,-10</line>
-			<line>8,-10,-8,-10</line>
-			<line>-8,-10,-8,10</line>
+			<outline>-8,10,8,10</outline>
+			<outline>8,10,8,-10</outline>
+			<outline>8,-10,-8,-10</outline>
+			<outline>-8,-10,-8,10</outline>
 
 #			Address		
 			<line>-8,-5.5,-9,-5.5</line>
@@ -17788,7 +17912,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -17799,7 +17923,7 @@
 			</offset>
 
 #			A
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.8</line>
 			<line>0,-0.1,0.1,0</line>
 			<line>0.4,-0.1,0.4,-0.8</line>
@@ -17809,7 +17933,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -18012,10 +18136,10 @@
 
 		<shape>
 #			Box
-			<line>-8,10,8,10</line>
-			<line>8,10,8,-10</line>
-			<line>8,-10,-8,-10</line>
-			<line>-8,-10,-8,10</line>
+			<outline>-8,10,8,10</outline>
+			<outline>8,10,8,-10</outline>
+			<outline>8,-10,-8,-10</outline>
+			<outline>-8,-10,-8,10</outline>
 
 #			Address		
 			<line>-8,-7.5,-9,-7.5</line>
@@ -18091,7 +18215,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -18102,7 +18226,7 @@
 			</offset>
 
 #			A
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.8</line>
 			<line>0,-0.1,0.1,0</line>
 			<line>0.4,-0.1,0.4,-0.8</line>
@@ -18112,7 +18236,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -18234,10 +18358,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,4,4,4</line>
-			<line>4,4,4,-4</line>
-			<line>4,-4,-4,-4</line>
-			<line>-4,-4,-4,4</line>
+			<outline>-4,4,4,4</outline>
+			<outline>4,4,4,-4</outline>
+			<outline>4,-4,-4,-4</outline>
+			<outline>-4,-4,-4,4</outline>
 
 #			Address		
 			<line>-5,1.5,-4,1.5</line>
@@ -18284,7 +18408,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -18295,7 +18419,7 @@
 			</offset>
 
 #			A
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.8</line>
 			<line>0,-0.1,0.1,0</line>
 			<line>0.4,-0.1,0.4,-0.8</line>
@@ -18305,7 +18429,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -18441,10 +18565,10 @@
 
 		<shape>
 #			Box
-			<line>-4,6,4,6</line>
-			<line>4,6,4,-6</line>
-			<line>4,-6,-4,-6</line>
-			<line>-4,-6,-4,6</line>
+			<outline>-4,6,4,6</outline>
+			<outline>4,6,4,-6</outline>
+			<outline>4,-6,-4,-6</outline>
+			<outline>-4,-6,-4,6</outline>
 
 #			Address		
 			<line>-4,3.5,-5,3.5</line>
@@ -18499,7 +18623,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -18510,7 +18634,7 @@
 			</offset>
 
 #			A
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.8</line>
 			<line>0,-0.1,0.1,0</line>
 			<line>0.4,-0.1,0.4,-0.8</line>
@@ -18520,7 +18644,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -18699,10 +18823,10 @@
 
 		<shape>
 #			Box
-			<line>-8,10,8,10</line>
-			<line>8,10,8,-10</line>
-			<line>8,-10,-8,-10</line>
-			<line>-8,-10,-8,10</line>
+			<outline>-8,10,8,10</outline>
+			<outline>8,10,8,-10</outline>
+			<outline>8,-10,-8,-10</outline>
+			<outline>-8,-10,-8,10</outline>
 
 #			Address		
 			<line>-8,-5.5,-9,-5.5</line>
@@ -18769,7 +18893,7 @@
 			</offset>
 
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -18780,7 +18904,7 @@
 			</offset>
 
 #			A
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.8</line>
 			<line>0,-0.1,0.1,0</line>
 			<line>0.4,-0.1,0.4,-0.8</line>
@@ -18790,7 +18914,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -18991,10 +19115,10 @@
 
 		<shape>
 #			Box
-			<line>-8,10,8,10</line>
-			<line>8,10,8,-10</line>
-			<line>8,-10,-8,-10</line>
-			<line>-8,-10,-8,10</line>
+			<outline>-8,10,8,10</outline>
+			<outline>8,10,8,-10</outline>
+			<outline>8,-10,-8,-10</outline>
+			<outline>-8,-10,-8,10</outline>
 
 #			Address		
 			<line>-8,-7.5,-9,-7.5</line>
@@ -19063,9 +19187,8 @@
 			<line>0.3,0,0.1,0</line>
 			<line>0.1,0,0,-0.1</line>
 			</offset>
-
 #			R
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.3,0</line>
 			<line>0,-0.4,0.3,-0.4</line>
@@ -19076,7 +19199,7 @@
 			</offset>
 
 #			A
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,-0.1,0,-0.8</line>
 			<line>0,-0.1,0.1,0</line>
 			<line>0.4,-0.1,0.4,-0.8</line>
@@ -19086,7 +19209,7 @@
 			</offset>
 
 #			M
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,0,0.2,-0.4</line>
 			<line>0.4,0,0.2,-0.4</line>
@@ -19179,10 +19302,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,1.5,4,1.5</line>
-			<line>4,1.5,4,-1.5</line>
-			<line>4,-1.5,-4,-1.5</line>
-			<line>-4,-1.5,-4,1.5</line>
+			<outline>-4,1.5,4,1.5</outline>
+			<outline>4,1.5,4,-1.5</outline>
+			<outline>4,-1.5,-4,-1.5</outline>
+			<outline>-4,-1.5,-4,1.5</outline>
 
 #			Address		
 			<line>-5,0.5,-4,0.5</line>
@@ -19205,13 +19328,13 @@
 			</offset>
 
 #			L
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,-0.8,0.4,-0.8</line>
 			</offset>
 
 #			U
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,0,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.4,0,0.4,-0.7</line>
@@ -19220,7 +19343,7 @@
 			</offset>
 
 #			T
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0.4,0</line>
 			<line>0.2,0,0.2,-0.8</line>
 			</offset>
@@ -19279,10 +19402,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,2,4,2</line>
-			<line>4,2,4,-2</line>
-			<line>4,-2,-4,-2</line>
-			<line>-4,-2,-4,2</line>
+			<outline>-4,2,4,2</outline>
+			<outline>4,2,4,-2</outline>
+			<outline>4,-2,-4,-2</outline>
+			<outline>-4,-2,-4,2</outline>
 
 #			Address		
 			<line>-5,1,-4,1</line>
@@ -19306,13 +19429,13 @@
 			</offset>
 
 #			L
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,-0.8,0.4,-0.8</line>
 			</offset>
 
 #			U
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,0,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.4,0,0.4,-0.7</line>
@@ -19321,7 +19444,7 @@
 			</offset>
 
 #			T
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0.4,0</line>
 			<line>0.2,0,0.2,-0.8</line>
 			</offset>
@@ -19387,10 +19510,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,2.5,4,2.5</line>
-			<line>4,2.5,4,-2.5</line>
-			<line>4,-2.5,-4,-2.5</line>
-			<line>-4,-2.5,-4,2.5</line>
+			<outline>-4,2.5,4,2.5</outline>
+			<outline>4,2.5,4,-2.5</outline>
+			<outline>4,-2.5,-4,-2.5</outline>
+			<outline>-4,-2.5,-4,2.5</outline>
 
 #			Address		
 			<line>-5,1.5,-4,1.5</line>
@@ -19415,13 +19538,13 @@
 			</offset>
 
 #			L
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,-0.8,0.4,-0.8</line>
 			</offset>
 
 #			U
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,0,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.4,0,0.4,-0.7</line>
@@ -19430,7 +19553,7 @@
 			</offset>
 
 #			T
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0.4,0</line>
 			<line>0.2,0,0.2,-0.8</line>
 			</offset>
@@ -19498,10 +19621,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,3,4,3</line>
-			<line>4,3,4,-3</line>
-			<line>4,-3,-4,-3</line>
-			<line>-4,-3,-4,3</line>
+			<outline>-4,3,4,3</outline>
+			<outline>4,3,4,-3</outline>
+			<outline>4,-3,-4,-3</outline>
+			<outline>-4,-3,-4,3</outline>
 
 #			Address		
 			<line>-5,2,-4,2</line>
@@ -19527,13 +19650,13 @@
 			</offset>
 
 #			L
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,-0.8,0.4,-0.8</line>
 			</offset>
 
 #			U
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,0,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.4,0,0.4,-0.7</line>
@@ -19542,7 +19665,7 @@
 			</offset>
 
 #			T
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0.4,0</line>
 			<line>0.2,0,0.2,-0.8</line>
 			</offset>
@@ -19612,10 +19735,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,3.5,4,3.5</line>
-			<line>4,3.5,4,-3.5</line>
-			<line>4,-3.5,-4,-3.5</line>
-			<line>-4,-3.5,-4,3.5</line>
+			<outline>-4,3.5,4,3.5</outline>
+			<outline>4,3.5,4,-3.5</outline>
+			<outline>4,-3.5,-4,-3.5</outline>
+			<outline>-4,-3.5,-4,3.5</outline>
 
 #			Address		
 			<line>-5,2.5,-4,2.5</line>
@@ -19642,13 +19765,13 @@
 			</offset>
 
 #			L
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,-0.8,0.4,-0.8</line>
 			</offset>
 
 #			U
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,0,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.4,0,0.4,-0.7</line>
@@ -19657,7 +19780,7 @@
 			</offset>
 
 #			T
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0.4,0</line>
 			<line>0.2,0,0.2,-0.8</line>
 			</offset>
@@ -19732,10 +19855,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,4,4,4</line>
-			<line>4,4,4,-4</line>
-			<line>4,-4,-4,-4</line>
-			<line>-4,-4,-4,4</line>
+			<outline>-4,4,4,4</outline>
+			<outline>4,4,4,-4</outline>
+			<outline>4,-4,-4,-4</outline>
+			<outline>-4,-4,-4,4</outline>
 
 #			Address		
 			<line>-5,3,-4,3</line>
@@ -19763,13 +19886,13 @@
 			</offset>
 
 #			L
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,-0.8,0.4,-0.8</line>
 			</offset>
 
 #			U
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,0,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.4,0,0.4,-0.7</line>
@@ -19778,7 +19901,7 @@
 			</offset>
 
 #			T
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0.4,0</line>
 			<line>0.2,0,0.2,-0.8</line>
 			</offset>
@@ -19856,10 +19979,10 @@
 		
 		<shape>
 #			Box
-			<line>-4,4.5,4,4.5</line>
-			<line>4,4.5,4,-4.5</line>
-			<line>4,-4.5,-4,-4.5</line>
-			<line>-4,-4.5,-4,4.5</line>
+			<outline>-4,4.5,4,4.5</outline>
+			<outline>4,4.5,4,-4.5</outline>
+			<outline>4,-4.5,-4,-4.5</outline>
+			<outline>-4,-4.5,-4,4.5</outline>
 
 #			Address		
 			<line>-5,3.5,-4,3.5</line>
@@ -19888,13 +20011,13 @@
 			</offset>
 
 #			L
-			<offset><point>-.6,0.2</point>
+			<offset><point>-.7,0.4</point>
 			<line>0,0,0,-0.8</line>
 			<line>0,-0.8,0.4,-0.8</line>
 			</offset>
 
 #			U
-			<offset><point>0,0.2</point>
+			<offset><point>-0.2,0.4</point>
 			<line>0,0,0,-0.7</line>
 			<line>0,-0.7,0.1,-0.8</line>
 			<line>0.4,0,0.4,-0.7</line>
@@ -19903,7 +20026,7 @@
 			</offset>
 
 #			T
-			<offset><point>.6,0.2</point>
+			<offset><point>.3,0.4</point>
 			<line>0,0,0.4,0</line>
 			<line>0.2,0,0.2,-0.8</line>
 			</offset>
@@ -22989,7 +23112,234 @@
 		</shape>
 	</gate>
 </library>
-<library> <name>Deprecated Components</name>
+<library> <name>Deprecated</name>
+	<gate> <name>@@_NOT_FOUND</name>
+		<caption></caption>
+		<shape>
+			<boldline>-1,-1,1,1</boldline>
+			<boldline>-1,1,1,-1</boldline>
+			<circle>0,0,1,24</circle>
+		</shape>
+	</gate>
+	<gate> <name>AF_MINI_INVERTER</name>
+		<caption>Mini Inverter</caption>
+		<logic_type>BUFFER</logic_type>
+		<input> <name>IN_0</name>
+		          <point>-0.5,0</point>
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>0.5,0</point>
+				<inverted>true</inverted>
+		</output>
+		<shape>			
+			<line>-0.5,0,-0.4,0</line>
+			<line>0.4,0,0.5,0</line>
+			<circle>0.3,0,0.1,24</circle>
+			<line>-0.4,0.4,-0.4,-0.4</line>
+			<line>-0.4,0.4,0.2,0</line>
+			<line>-0.4,-0.4,0.2,0</line>
+		</shape>
+	</gate>	
+	<gate> <name>EE_1_H</name>
+		<caption>(1)</caption>
+		<logic_type>DRIVER</logic_type>
+		<logic_param>OUTPUT_BITS 1</logic_param>
+		<logic_param>OUTPUT_NUM 1</logic_param>
+		<output> <name>OUT_0</name>
+		          <point>1,0.5</point>
+		</output>
+		<shape>
+			<circle>0,0.5,0.45,24</circle>
+			<line>0.45,0.5,1,0.5</line>
+			
+#			1
+			<offset><point>0,0.5</point>
+			<line>0,-0.3,0,0.3</line>
+			</offset>
+		</shape>
+	</gate>
+	<gate> <name>FF_0_H</name>
+		<caption>(0)</caption>
+		<logic_type>DRIVER</logic_type>
+		<logic_param>OUTPUT_BITS 1</logic_param>
+		<logic_param>OUTPUT_NUM 0</logic_param>
+		<output> <name>OUT_0</name>
+		          <point>1,0.5</point> 
+		</output>
+		<shape>
+			<circle>0,0.5,0.45,24</circle>
+			<line>0.45,0.5,1,0.5</line>
+
+#			0
+			<offset><point>0,0.5</point>
+			<line>-0.15,0.3,0.15,0.3</line>
+			<line>0.15,0.3,0.15,-0.3</line>
+			<line>0.15,-0.3,-0.15,-0.3</line>
+			<line>-0.15,-0.3,-0.15,0.3</line>
+			</offset>
+		</shape>
+	</gate>
+	<gate> <name>EE_1_V</name>
+		<caption>(1)</caption>
+		<logic_type>DRIVER</logic_type>
+		<logic_param>OUTPUT_BITS 1</logic_param>
+		<logic_param>OUTPUT_NUM 1</logic_param>
+		<output> <name>OUT_0</name>
+		          <point>0,-0.5</point>
+		</output>
+		<shape>
+			<circle>0,0.5,0.45,24</circle>
+			<line>0,0.05,0,-0.5</line>
+			
+#			1
+			<offset><point>0,0.5</point>
+			<line>0,-0.3,0,0.3</line>
+			</offset>
+		</shape>
+	</gate>
+	<gate> <name>FF_0_V</name>
+		<caption>(0)</caption>
+		<logic_type>DRIVER</logic_type>
+		<logic_param>OUTPUT_BITS 1</logic_param>
+		<logic_param>OUTPUT_NUM 0</logic_param>
+		<output> <name>OUT_0</name>
+		          <point>0,-0.5</point> 
+		</output>
+		<shape>
+			<circle>0,0.5,0.45,24</circle>
+			<line>0,0.05,0,-0.5</line>
+
+#			0
+			<offset><point>0,0.5</point>
+			<line>-0.15,0.3,0.15,0.3</line>
+			<line>0.15,0.3,0.15,-0.3</line>
+			<line>0.15,-0.3,-0.15,-0.3</line>
+			<line>-0.15,-0.3,-0.15,0.3</line>
+			</offset>
+		</shape>
+	</gate>	
+	<gate> <name>AH_MINI_BUFFER</name>
+		<caption>Mini Buffer</caption>
+		<logic_type>BUFFER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<logic_param>DEFAULT_DELAY 1</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Delay</label>
+				<varname>LOGIC DEFAULT_DELAY</varname>				
+				<range>1,1000</range>
+			</param>
+		</param_dlg_data>
+		<input> <name>IN_0</name>
+		          <point>-0.5,0</point>
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>0.5,0</point>
+		</output>
+		<shape>			
+			<line>-0.5,0,-0.4,0</line>
+			<line>0.2,0,0.5,0</line>
+			<line>-0.4,0.4,-0.4,-0.4</line>
+			<line>-0.4,0.4,0.2,0</line>
+			<line>-0.4,-0.4,0.2,0</line>
+		</shape>
+	</gate>
+	<gate> <name>AI_DELAY</name>
+		<caption>Big Delay</caption>
+		<logic_type>BUFFER</logic_type>
+		<logic_param>DEFAULT_DELAY 10</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Delay</label>
+				<varname>LOGIC DEFAULT_DELAY</varname>				
+				<range>1,1000</range>
+			</param>
+		</param_dlg_data>		
+		<logic_param>INPUT_BITS 1</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-3.00,0</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>2.5,0</point>
+		</output>
+		<shape>
+			<line>-3,0,-2,0</line>
+			<line>-2,2,-2,-2</line>
+			<line>-2,2,1.5,0</line>
+			<line>-2,-2,1.5,0</line>
+			<line>1.5,0,2.5,0</line>
+			
+			<line>-1.5,-0.5,-1,-0.5</line>
+			<line>-1,-0.5,-0.5,0.5</line>
+			<line>-0.5,0.5,0,0.5</line>		
+		</shape>
+	</gate>	
+	<gate> <name>AJ_SMALL_DELAY</name>
+		<caption>Delay</caption>
+		<logic_type>BUFFER</logic_type>
+		<logic_param>DEFAULT_DELAY 10</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Delay</label>
+				<varname>LOGIC DEFAULT_DELAY</varname>				
+				<range>1,1000</range>
+			</param>
+		</param_dlg_data>		
+		<logic_param>INPUT_BITS 1</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-2.00,0</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>2,0</point>
+		</output>
+		<shape>
+			<line>-2,0,-1,0</line>
+			<line>-1,0.9,-1,-0.9</line>
+			<line>-1,0.9,0.67,0</line>
+			<line>-1,-0.9,0.67,0</line>
+
+			<line>0.67,0,2,0</line>
+			
+			<line>-0.67,-0.33,-0.5,-0.33</line>
+			<line>-0.5,-0.33,-0.33,0.33</line>
+			<line>-0.33,0.33,-0.16,0.33</line>		
+		</shape>	
+	</gate>
+	<gate> <name>AK_SMALL_DELAY_S</name>
+		<caption>Small Delay</caption>
+		<logic_type>BUFFER</logic_type>
+		<logic_param>DEFAULT_DELAY 10</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Delay</label>
+				<varname>LOGIC DEFAULT_DELAY</varname>				
+				<range>1,1000</range>
+			</param>
+		</param_dlg_data>		
+		<logic_param>INPUT_BITS 1</logic_param>
+		<input> <name>IN_0</name>
+		          <point>-1,0</point> 
+		</input>
+		<output> <name>OUT_0</name>
+		          <point>1,0</point>
+		</output>
+		<shape>
+			<line>-1,0,-0.5,0</line>
+			<line>0.5,0,1,0</line>
+
+			<line>-0.5,0.4,0.5,0</line>
+			<line>-0.5,0.4,-0.5,-0.4</line>
+			<line>-0.5,-0.4,0.5,0</line>
+		
+			<line>-0.4,-0.2,-0.3,-0.2</line>
+			<line>-0.3,-0.2,-0.2,0.2</line>
+			<line>-0.2,0.2,-0.1,0.2</line>		
+		</shape>	
+	</gate>
 	<gate> <name>BI_INVERTER_4BIT</name>
 		<caption>4-Bit Inverter</caption>
 		<logic_type>BUFFER</logic_type>
@@ -23150,28 +23500,16 @@
 			<line>-2,1,-3,1</line>
 			<line>-2,0,-3,0</line>			
 			<line>-2,-1,-3,-1</line>
-			
-#			0
-			<offset><point>-2.7,-1.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>		
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>
-
+				
 # Output Lines:
 			<line>-1.5,-3,-1.5,-4</line>
 			<line>-0.5,-3,-0.5,-4</line>
 			<line>0.5,-3,0.5,-4</line>
 			<line>1.5,-3,1.5,-4</line>
+			
+			<circle>-2.5,-1.4,0.2,24</circle>
+			<circle>1.9,-3.5,0.2,24</circle>
 
-#			0
-			<offset><point>1.7,-3.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>		
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>			
 		</shape>
 	</gate>
 	<gate> <name>DD_KEYPAD_HEX</name>
@@ -23380,13 +23718,8 @@
 			<line>3.88,1.00,5.00,1.00</line>
 			<line>3.88,3.00,5.00,3.00</line>
 			
-#			0
-			<offset><point>4.2,-3.2</point>
-			<line>0,0,0.4,0</line>
-			<line>0.4,0,0.4,-0.4</line>		
-			<line>0.4,-0.4,0,-0.4</line>
-			<line>0,-0.4,0,0</line>
-			</offset>			
+			<circle>4.5,-3.4,0.2,24</circle>
+			
 		</shape>
 	</gate>
   <gate>
@@ -24601,6 +24934,144 @@
 			
 		</shape>
 	</gate>
+	<gate> <name>AF_DFF_LOW</name>
+		<caption>D Flip Flop - Clock Enabled,Low Active Set/Reset</caption>
+		<logic_type>REGISTER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<logic_param>NO_HOLD true</logic_param>
+		<logic_param>SYNC_LOAD true</logic_param>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Synchronous Set Pin</label>
+				<varname>LOGIC SYNC_SET</varname>
+			</param>
+			<param>
+				<type>BOOL</type>
+				<label>Synchronous Reset Pin</label>
+				<varname>LOGIC SYNC_CLEAR</varname>
+			</param>
+		</param_dlg_data>
+
+#		D
+		<input> <name>IN_0</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,0</point> 
+		</input>
+		
+#		Clock Enable
+		<input><name>CLOCK_ENABLE</name>
+			<point>-3,-2</point>
+		</input>
+
+#		SET
+		<input> <name>SET</name>
+		          <point>0,4</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+			<inverted>true</inverted>
+		</input>
+#		Q
+		<output> <name>OUT_0</name>
+		          <point>3,2</point> 
+		</output>
+
+#		QNOT
+		<output> <name>OUTINV_0</name>
+		          <point>3,-1</point> 
+		</output>
+
+
+		<shape>
+			<line>2,3,-2,3</line>
+			<line>-2,3,-2,-3</line>
+			<line>-2,-3,2,-3</line>
+			<line>2,-3,2,3</line>
+			<line>-2,2,-3,2</line>
+
+#			CLOCK
+			<line>-2,0.5,-1,0</line>
+			<line>-2,-0.5,-1,0</line>
+			<line>-2,0,-3,0</line>
+			
+			<line>-3,-2,-2,-2</line>
+			<line>2,-1,3,-1</line>
+			<line>2,2,3,2</line>
+			<line>0,3.7,0,4</line>
+			<line>0,-3.7,0,-4</line>
+
+#			D
+			<offset><point>-1.7,2.4</point>
+			<line>0,0,0,-0.8</line>
+			<line>0,0,0.2,0</line>
+			<line>0.2,0,0.4,-0.2</line>
+			<line>0,-0.8,0.2,-0.8</line>
+			<line>0.2,-0.8,0.4,-0.6</line>
+			<line>0.4,-0.2,0.4,-0.6</line>
+			</offset>
+
+#			C
+			<offset><point>-1.7,-1.6</point>
+			<line>0,-0.1,0.1,0</line>
+			<line>0.1,0,0.3,0</line>
+			<line>0.3,0,0.4,-0.1</line>
+			<line>0,-0.7,0.1,-0.8</line>
+			<line>0.1,-0.8,0.3,-0.8</line>
+			<line>0.3,-0.8,0.4,-0.7</line>
+			<line>0,-0.1,0,-0.7</line>
+			</offset>
+
+#			E
+			<offset><point>-1.1,-1.6</point>
+			<line>0,0,0,-0.8</line>
+			<line>0,0,0.4,0</line>
+			<line>0,-0.4,0.3,-0.4</line>
+			<line>0,-0.8,0.4,-0.8</line>
+			</offset>
+			
+#			Q
+			<offset><point>1.3,2.4</point>
+			<line>0.1,0,0,-0.1</line>
+			<line>0,-0.1,0,-0.7</line>
+			<line>0,-0.7,0.1,-0.8</line>
+			<line>0.1,-0.8,0.3,-0.8</line>
+			<line>0.3,-0.8,0.4,-0.7</line>
+			<line>0.4,-0.7,0.4,-0.1</line>
+			<line>0.4,-0.1,0.3,0</line>
+			<line>0.3,0,0.1,0</line>
+			<line>0.4,-0.8,0.2,-0.6</line>
+			</offset>
+
+#			Q NOT
+			<offset><point>1.3,-0.6</point>
+			<line>0,0.1,0.4,0.1</line>
+			<line>0.1,0,0,-0.1</line>
+			<line>0,-0.1,0,-0.7</line>
+			<line>0,-0.7,0.1,-0.8</line>
+			<line>0.1,-0.8,0.3,-0.8</line>
+			<line>0.3,-0.8,0.4,-0.7</line>
+			<line>0.4,-0.7,0.4,-0.1</line>
+			<line>0.4,-0.1,0.3,0</line>
+			<line>0.3,0,0.1,0</line>
+			<line>0.4,-0.8,0.2,-0.6</line>
+			</offset>
+			
+#			Low Active Portion
+			<circle>0,3.35,0.35,24</circle>
+			<circle>0,-3.35,0.35,24</circle>			
+			
+		</shape>
+	</gate>
 	<gate> <name>AA_RAM_4x4</name>
 		<caption>4x4 RAM</caption>
 		<logic_type>RAM</logic_type>
@@ -25742,3 +26213,4 @@
 		</shape>
 	</gate>
 </library>
+

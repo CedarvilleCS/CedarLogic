@@ -180,7 +180,6 @@ void guiWire::draw(bool color) {
 	GLint oldStipple = 0; // The old line stipple pattern, if needed.
 	GLint oldRepeat = 0;  // The old line stipple repeat pattern, if needed.
 	GLboolean lineStipple = false; // The old line stipple enable flag, if needed.
-	float degInRad;
 
 	if (this->selected && color) {
 		// Store the old line stipple pattern:
@@ -199,7 +198,7 @@ void guiWire::draw(bool color) {
 		bool unknown = false;
 		bool hiz = false;
 		float redness = 0;
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// Retouch some colors to get bettter monochrome bitmaps in clipboard
 		// Find color as a gradient base on decimal value.
 		// If there's a conflict, unknown, or hi_z, show that instead.
@@ -272,24 +271,41 @@ void guiWire::draw(bool color) {
 			glBegin(GL_TRIANGLE_FAN);
 			glVertex2f(0, 0);
 			for (int z = 0; z <= 360; z += 360 / POINTS_PER_VERTEX)
-			{
-				degInRad = z*DEG2RAD;
-				glVertex2f(cos(degInRad)*wxGetApp().appSettings.wireConnRadius, sin(degInRad)*wxGetApp().appSettings.wireConnRadius);
-			}
+				glVertex2f(cos(z*DEG2RAD)*wxGetApp().appSettings.wireConnRadius, sin(z*DEG2RAD)*wxGetApp().appSettings.wireConnRadius);
 			glEnd();
 		}
 		glTranslatef(-(*isectPoints)[i].x, -(*isectPoints)[i].y, 0.0);
 	}
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// To draw cross junctions
+	vector< GLPoint2f >* crossPoints = &(renderInfo.crossPoints);
+	for (unsigned int i = 0; i < crossPoints->size(); i++) {
+		// Draw the cross point:
+		glTranslatef((*crossPoints)[i].x, (*crossPoints)[i].y, 0.0);
+		if (!wxGetApp().doingBitmapExport)
+			glCallList(CEDAR_GLLIST_CROSSPOINT);
+		else {
+			glLineWidth(2);
+			glBegin(GL_LINES);
+			glVertex2f(wxGetApp().appSettings.wireConnRadius, wxGetApp().appSettings.wireConnRadius);
+			glVertex2f(-wxGetApp().appSettings.wireConnRadius, -wxGetApp().appSettings.wireConnRadius);
+			glVertex2f(-wxGetApp().appSettings.wireConnRadius, wxGetApp().appSettings.wireConnRadius);
+			glVertex2f(wxGetApp().appSettings.wireConnRadius, -wxGetApp().appSettings.wireConnRadius);
+			glEnd();
+			glLineWidth(1);
+		}
+		glTranslatef(-(*crossPoints)[i].x, -(*crossPoints)[i].y, 0.0);
+	}
+
 	if (wxGetApp().appSettings.wireConnVisible) {
 		vector< GLPoint2f >* vertexPoints = &(renderInfo.vertexPoints);
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// To identify components connetion points
 		// Usually junctions in the logic state color
 		// But now "display Wire Connections points" is only for reference
 		// Orange wireconnvisible
-		if (color)
-			glColor4f(1.0f, 0.7f, 0.0f, 1.0f);		// Orange
+		if (color) glColor4f(1.0f, 0.7f, 0.0f, 1.0f);		// Orange
 		for (unsigned int i = 0; i < vertexPoints->size(); i++) {
 			// Draw the connection point:			
 			glTranslatef((*vertexPoints)[i].x, (*vertexPoints)[i].y, 0.0);
@@ -300,17 +316,14 @@ void guiWire::draw(bool color) {
 				glVertex2f(0, 0);
 				
 				for (int z = 0; z <= 360; z += 360 / POINTS_PER_VERTEX)
-				{
-					degInRad = z*DEG2RAD;
-					glVertex2f(cos(degInRad)*wxGetApp().appSettings.wireConnRadius, sin(degInRad)*wxGetApp().appSettings.wireConnRadius);
-				}
+					glVertex2f(cos(z*DEG2RAD)*wxGetApp().appSettings.wireConnRadius, sin(z*DEG2RAD)*wxGetApp().appSettings.wireConnRadius);
 				glEnd();
 			}
 			glTranslatef(-(*vertexPoints)[i].x, -(*vertexPoints)[i].y, 0.0);
 		}
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Restore Black color
 	glColor4f(0.0, 0.0, 0.0, 1.0);
 
@@ -790,7 +803,6 @@ void guiWire::updateSegDrag(klsCollisionObject* mouse) {
 
 	this->calcBBox();
 	mouseCoords = mouse->getBBox();
-
 	generateRenderInfo();
 }
 
@@ -1138,7 +1150,7 @@ void guiWire::removeZeroLengthSegments() {
 	headSegment = segMap.begin()->first;
 }
 
-// Pedro Casanova (casanova@ujaen.es)  2020/04-10
+// Pedro Casanova (casanova@ujaen.es)  2020/04-11
 // Modified to puts junctions in component connections points
 // Display Wire Connections points is now only for reference
 // fill out some info to avoid loss of cycles in render loop
@@ -1154,6 +1166,7 @@ void guiWire::generateRenderInfo() {
 	renderInfo.vertexPoints.clear();
 	renderInfo.intersectPoints.clear();
 	renderInfo.lineSegments.clear();
+	renderInfo.crossPoints.clear();
 
 	// gate connection points
 	for (unsigned int i = 0; i < connectPoints.size(); i++) {
@@ -1162,14 +1175,14 @@ void guiWire::generateRenderInfo() {
 		y = Round(y);
 		renderInfo.vertexPoints.push_back(GLPoint2f(x, y));
 	}
-
+	
 	// lines and segment intersections
 	map < long, wireSegment >::iterator segWalk = segMap.begin();
 	while (segWalk != segMap.end()) {
-		xb = Round((segWalk->second).begin.x);
-		yb = Round((segWalk->second).begin.y);
-		xe = Round((segWalk->second).end.x);
-		ye = Round((segWalk->second).end.y);
+		xb = Round(segWalk->second.begin.x);
+		yb = Round(segWalk->second.begin.y);
+		xe = Round(segWalk->second.end.x);
+		ye = Round(segWalk->second.end.y);
 
 		glLine.begin = GLPoint2f(xb, yb);
 		glLine.end = GLPoint2f(xe, ye);
@@ -1177,91 +1190,161 @@ void guiWire::generateRenderInfo() {
 		renderInfo.lineSegments.push_back(glLine);
 
 		// Save the intersection points for non-elbows:
-		map < GLfloat, vector< long > >::iterator isectWalk = (segWalk->second).intersects.begin();
-		while (isectWalk != (segWalk->second).intersects.end()) {
-			if ((segWalk->second).isVertical()) {
-				if (isectWalk->first == (segWalk->second).begin.y || isectWalk->first == (segWalk->second).end.y) { isectWalk++; continue; }
+		map < GLfloat, vector< long > >::iterator isectWalk = segWalk->second.intersects.begin();
+		while (isectWalk != segWalk->second.intersects.end()) {
+			if (segWalk->second.isVertical()) {
+				if (isectWalk->first == segWalk->second.begin.y || isectWalk->first == segWalk->second.end.y) { isectWalk++; continue; }
 			}
 			else {
-				if (isectWalk->first == (segWalk->second).begin.x || isectWalk->first == (segWalk->second).end.x) { isectWalk++; continue; }
+				if (isectWalk->first == segWalk->second.begin.x || isectWalk->first == segWalk->second.end.x) { isectWalk++; continue; }
 			}
-			for (unsigned int i = 0; i < (isectWalk->second).size(); i++) {
-				x = ((segWalk->second).isVertical() ? (segWalk->second).begin.x : isectWalk->first);
-				y = ((segWalk->second).isVertical() ? isectWalk->first : (segWalk->second).begin.y);
-				if (!checkPointInList(x, y))
+			for (unsigned int i = 0; i < isectWalk->second.size(); i++) {
+				x = segWalk->second.isVertical() ? segWalk->second.begin.x : isectWalk->first;
+				y = segWalk->second.isVertical() ? isectWalk->first : segWalk->second.begin.y;
+				x = Round(x);
+				y = Round(y);
+				if (!checkPointInList(x, y, renderInfo.intersectPoints))
 					renderInfo.intersectPoints.push_back(GLPoint2f(x, y));
 			}
 			isectWalk++;
 		}
-
-		// Put juntions in components pins in the middle of the segment
+	
+		// Put junctions in components pins in the middle of the segment
 		for (unsigned int i = 0; i < renderInfo.vertexPoints.size(); i++)
 		{
-			xv = Round(renderInfo.vertexPoints[i].x);
-			yv = Round(renderInfo.vertexPoints[i].y);
-			if (yb == ye)			// Horizontal
-				if (xv > xb && xv < xe && yv == yb)
-					if (!checkPointInList(xv, yv))
-						renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
-			if (xb == xe)			// Vertical
+			xv = renderInfo.vertexPoints[i].x;
+			yv = renderInfo.vertexPoints[i].y;
+			if (segWalk->second.isVertical())
+			{
 				if (yv > yb && yv < ye && xv == xb)
-					if (!checkPointInList(xv, yv))
+					if (!checkPointInList(xv, yv, renderInfo.intersectPoints))
 						renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+			}
+			else
+			{
+				if (xv > xb && xv < xe && yv == yb)
+					if (!checkPointInList(xv, yv, renderInfo.intersectPoints))
+						renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+			}
 		}
 
 		segWalk++;
 	}
 
-	// Put juntions in components pins in the extrem of the segment
+	// Put junctions in components pins in the extrem of the segment
 	int* Nconex = new int[renderInfo.vertexPoints.size()];
-	for (unsigned int i = 0; i < renderInfo.vertexPoints.size(); i++)
-		Nconex[i] = 0;
 	for (unsigned int i = 0; i < renderInfo.vertexPoints.size(); i++)
 	{
 		xv = renderInfo.vertexPoints[i].x;
 		yv = renderInfo.vertexPoints[i].y;
+		Nconex[i] = 0;
 		for (unsigned int j = 0; j < renderInfo.vertexPoints.size(); j++)
 			if (i != j)
-				if ((xv == renderInfo.vertexPoints[j].x) && (yv == renderInfo.vertexPoints[j].y))
+				if ((xv == renderInfo.vertexPoints[j].x) && (yv == renderInfo.vertexPoints[j].y))	// two vertexPoints together
 					Nconex[i]++;
+
 		for (unsigned int j = 0; j < renderInfo.lineSegments.size(); j++)
 		{
 			xb = renderInfo.lineSegments[j].begin.x;
 			yb = renderInfo.lineSegments[j].begin.y;
 			xe = renderInfo.lineSegments[j].end.x;
 			ye = renderInfo.lineSegments[j].end.y;
+
 			if ((xb != xe) || (yb != ye))
 			{
 				if ((xv == xb) && (yv == yb))
 					Nconex[i]++;
 				else if ((xv == xe) && (yv == ye))
 					Nconex[i]++;
+				else if ((xb == xe) && (xv == xb) && (yv > yb) && (yv < ye))
+					Nconex[i]++;
+				else if ((yb == ye) && (yv == yb) && (xv > xb) && (xv < xe))
+					Nconex[i]++;
 			}
 		}
 	}
+
+	// Remove intersectPoints who are crossPoints  
 	for (unsigned int i = 0; i < renderInfo.vertexPoints.size(); i++)
 	{
 		xv = renderInfo.vertexPoints[i].x;
 		yv = renderInfo.vertexPoints[i].y;
-		if (Nconex[i]>1)
-			if (!checkPointInList(xv, yv))
-				renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+		if (Nconex[i])
+			for (unsigned int j = 0; j < connectPoints.size(); j++)
+			{
+				connectPoints[j].cGate->getHotspotCoords(connectPoints[j].connection, x, y);
+				x = Round(x);
+				y = Round(y);
+				if (x == xv && y == yv)
+				{
+					LibraryGate libGate;
+					wxGetApp().libParser.getGate(connectPoints[j].cGate->getLibraryGateName(), libGate);					
+					for (unsigned int k = 0; k < libGate.hotspots.size(); k++) {
+						if (libGate.hotspots[k].name == connectPoints[j].cGate->getHotspot(connectPoints[j].connection)->name) {
+							// Pedro Casanova (casanova@ujaen.es) 2020/04-11							
+							if (libGate.guiType == "PLD" && libGate.hotspots[k].isInput) {
+								// Force junction in all inputs of PLD gates
+								if (connectPoints[j].cGate->getGUIParam("CROSS_JUNCTION") == "true")
+								{
+									if (!checkPointInList(xv, yv, renderInfo.crossPoints))
+										renderInfo.crossPoints.push_back(GLPoint2f(xv, yv));
+								}
+								else
+								{
+									if (!checkPointInList(xv, yv, renderInfo.intersectPoints))
+										renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+								}
+							} else if (libGate.guiType == "WIRE" && libGate.hotspots[k].isInput && libGate.hotspots[k].name != "N_IN0" && libGate.hotspots[k].isInput && libGate.hotspots[k].name != ("N_IN"+to_string(libGate.hotspots.size()-1)) ) {
+								//_MSG("*************** %s", ("N_IN"+to_string(libGate.hotspots.size()-1)).c_str())
+								// Force junction in inputs of WIRE gates
+								if (!checkPointInList(xv, yv, renderInfo.intersectPoints))
+									if (!checkPointInList(xv, yv, renderInfo.crossPoints))
+										renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+							} else if (libGate.hotspots[k].ForceJunction) {
+								// Force junction if FORCE_JUNCTION input parameter
+								if (!checkPointInList(xv, yv, renderInfo.intersectPoints))
+									if (!checkPointInList(xv, yv, renderInfo.crossPoints))
+										renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+							} else if (Nconex[i] > 1) {
+								// Normal junction if two or more connections
+								if (!checkPointInList(xv, yv, renderInfo.intersectPoints))
+									if (!checkPointInList(xv, yv, renderInfo.crossPoints))
+										renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
+							}
+						}
+					}
+				}
+			}
 	}
 
 	delete Nconex;
-
+	
+	for (unsigned int i = 0; i < renderInfo.crossPoints.size(); i++)
+	{
+		vector<GLPoint2f>::iterator intersectionWalk = renderInfo.intersectPoints.begin();
+		unsigned int j = 0;
+		while (intersectionWalk != renderInfo.intersectPoints.end()) {
+			if ((intersectionWalk->x == renderInfo.crossPoints[i].x) && (intersectionWalk->y == renderInfo.crossPoints[i].y))
+			{
+				renderInfo.intersectPoints.erase(renderInfo.intersectPoints.begin() + j);
+				continue;
+			}
+			j++;
+			intersectionWalk++;
+		}
+	}
 }
 
-// Pedro Casanova (casanova@ujaen.es)  2020/04-10
-// To check if a point is yet in the intersectPoints list
-bool guiWire::checkPointInList(float x, float y) {
-	for (unsigned int i = 0; i < renderInfo.intersectPoints.size(); i++)
-		if ((x == renderInfo.intersectPoints[i].x) && (y == renderInfo.intersectPoints[i].y))
+// Pedro Casanova (casanova@ujaen.es)  2020/04-11
+// To check if a point is yet in the list
+bool guiWire::checkPointInList(float x, float y, vector<GLPoint2f> ListPoints) {
+	for (unsigned int i = 0; i < ListPoints.size(); i++)
+		if ((x == ListPoints[i].x) && (y == ListPoints[i].y))
 			return true;
 	return false;
 }
 
-// Pedro Casanova (casanova@ujaen.es)  2020/04-10
+// Pedro Casanova (casanova@ujaen.es)  2020/04-11
 // Round 0.1 precission
 float guiWire::Round(float v)
 {

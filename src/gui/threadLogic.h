@@ -16,6 +16,7 @@
 #include "wx/thread.h"
 #include "klsMessage.h"
 #include "../logic/logic_values.h"
+#include "GUICircuit.h"
 #include <fstream>
 #include <map>
 
@@ -26,7 +27,7 @@ class Circuit;
 class threadLogic : public wxThread
 {
 public:
-    threadLogic();
+    threadLogic(GUICircuit* theGUICircuit);	
 	
     // thread execution starts here
     virtual void *Entry();
@@ -43,6 +44,8 @@ public:
     
 private:
 	Circuit* cir;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	GUICircuit * GUIcir;
 	map < IDType, IDType >* logicIDs;
 	ofstream logfile;
 };

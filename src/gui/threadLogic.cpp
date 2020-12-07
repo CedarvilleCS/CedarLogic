@@ -23,7 +23,10 @@
 
 DECLARE_APP(MainApp)
 
-threadLogic::threadLogic() : wxThread() {
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Added theGUICircuit parameter
+threadLogic::threadLogic(GUICircuit* theGUICircuit) : wxThread() {
+	GUIcir = theGUICircuit;
 	return;
 }
 
@@ -33,8 +36,10 @@ void *threadLogic::Entry() {
 	logfile.open("logiclog.log");
 #endif
 	logicIDs = new map < IDType, IDType >;
-	
-	cir = new Circuit();
+		
+	cir = new Circuit(GUIcir);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	this->GUIcir->setCircuit((void*)cir);
 	while (!TestDestroy()) {
 		checkMessages();
 		wxThread::Sleep(1);
@@ -68,7 +73,9 @@ bool threadLogic::parseMessage(klsMessage::Message input) {
 	case klsMessage::MT_REINITIALIZE: {
 		// REINITIALIZE LOGIC CIRCUIT
 		delete cir;
-		cir = new Circuit();
+		cir = new Circuit(GUIcir);
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		this->GUIcir->setCircuit((void*)cir);
 		logicIDs->clear();
 		break;
 	}

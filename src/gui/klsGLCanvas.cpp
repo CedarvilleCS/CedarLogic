@@ -104,7 +104,7 @@ void klsGLCanvas::updateMiniMap() {
 }
 
 // Print the canvas contents to a bitmap:
-wxImage klsGLCanvas::renderToImage( unsigned long width, unsigned long height, unsigned long colorDepth, bool noColor ) {
+wxImage klsGLCanvas::renderToImage( unsigned long width, unsigned long height, unsigned long colorDepth, bool color ) {
 //WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
 // DIB Section OpenGL rendering.
 
@@ -170,7 +170,7 @@ wxImage klsGLCanvas::renderToImage( unsigned long width, unsigned long height, u
 		
 
 	// Do the rendering here.
-	klsGLCanvasRender( noColor );
+	klsGLCanvasRender( color );
 
 	// Flush the OpenGL buffer to make sure the rendering has happened:	
 	glFlush();
@@ -261,7 +261,7 @@ void klsGLCanvas::getViewport( GLPoint2f& p1, GLPoint2f& p2 ) {
 	p2.y = panY - (sz.GetHeight()*viewZoom);
 }
 
-void klsGLCanvas::klsGLCanvasRender( bool noColor ) {
+void klsGLCanvas::klsGLCanvasRender( bool color ) {
 	int w, h;
 	GetClientSize(&w, &h);
 
@@ -377,7 +377,7 @@ void klsGLCanvas::klsGLCanvasRender( bool noColor ) {
 	// Call subclassed Render():
 	glMatrixMode (GL_MODELVIEW);
 	glLoadIdentity ();
-	OnRender( noColor );
+	OnRender( color );
 }
 
 

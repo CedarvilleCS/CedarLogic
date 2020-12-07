@@ -22,6 +22,8 @@ using namespace std;
 #include "glfont2.h"
 using namespace glfont;
 
+#include "dbgmsg.h"
+
 //*******************************************************************
 //GLFont Class Implementation
 //*******************************************************************
@@ -100,6 +102,8 @@ bool GLFont::Create (const std::string &file_name, int tex)
 	return Create(file_name.c_str(), tex);
 }
 //*******************************************************************
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// New overload to load font from resource
 bool GLFont::Create(void* fontData, int tex)
 {
 	int num_chars, num_tex_bytes;
@@ -207,9 +211,8 @@ void GLFont::GetCharSize (int c, std::pair<int, int> *size)
 		//Retrieve character size
 		glfont_char = &header.chars[c - header.start_char];
 		size->first = (int)(glfont_char->dx * header.tex_width);
-		size->second = (int)(glfont_char->dy *
-			header.tex_height);
-	}
+		size->second = (int)(glfont_char->dy * header.tex_height);		
+	}	
 }
 //*******************************************************************
 int GLFont::GetCharWidth (int c)

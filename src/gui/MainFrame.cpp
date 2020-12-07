@@ -44,7 +44,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_MENU(wxID_REDO, MainFrame::OnRedo)
 	EVT_MENU(wxID_COPY, MainFrame::OnCopy)
 	EVT_MENU(wxID_PASTE, MainFrame::OnPaste)
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// For usability separate options
 	EVT_MENU(Copy_Color, MainFrame::OnCopyColor)
 	EVT_MENU(Copy_Greyscale, MainFrame::OnCopyGreyscale)
@@ -53,8 +53,11 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	
     EVT_MENU(View_Oscope, MainFrame::OnOscope)
     EVT_MENU(View_Gridline, MainFrame::OnViewGridline)
-    EVT_MENU(View_WireConn, MainFrame::OnViewWireConn)
-	EVT_MENU(View_ComponentColl, MainFrame::OnViewComponentCollisions)
+	EVT_MENU(View_WideOutline, MainFrame::OnViewWideOutline)
+	EVT_MENU(View_WireConn, MainFrame::OnViewWireConn)
+	EVT_MENU(View_ComponentColl, MainFrame::OnViewComponentCollision)
+	EVT_MENU(Mark_Deprecated, MainFrame::OnMarkDeprecated)
+	EVT_MENU(Adjust_Bitmap, MainFrame::OnAdjustBitmap)
     
 	EVT_TOOL(Tool_Pause, MainFrame::OnPause)
 	EVT_TOOL(Tool_Step, MainFrame::OnStep)
@@ -62,15 +65,18 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_TOOL(Tool_ZoomOut, MainFrame::OnZoomOut)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
 	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-	// GridLine, WireConn and wire width Added to the toolbar
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// GridLine, WireConn and WideOutlines Added to the toolbar
 	EVT_TOOL(View_Gridline, MainFrame::OnViewGridline)
+	EVT_TOOL(View_WideOutline, MainFrame::OnViewWideOutline)
 	EVT_TOOL(View_WireConn, MainFrame::OnViewWireConn)	
 	EVT_SCROLL(MainFrame::OnSlider)
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Eliminated
 	//EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
 	//EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
-	EVT_MENU(Help_DownloadLatestVersion, MainFrame::OnDownloadLatestVersion)
+	//EVT_MENU(Help_DownloadLatestVersion, MainFrame::OnDownloadLatestVersion)
 	
     //EVT_SIZE(MainFrame::OnSize)
     //EVT_MAXIMIZE(MainFrame::OnMaximize)
@@ -91,14 +97,14 @@ wxPrintData *g_printData = (wxPrintData*) NULL;
 
 
 MainFrame::MainFrame(const wxString& title, string cmdFilename)
-       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(1800,900))
+       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(1100,800))
 {
     // set the frame icon
     //SetIcon(wxICON(sample));
 	currentCanvas = nullptr;
 
 	// Set default locations
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Set default directory to "My Documents"
 	if (wxGetApp().appSettings.lastDir == "") {		
 		char myDocs[MAX_PATH]="";
@@ -128,14 +134,21 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     viewMenu->Append(View_Oscope, "&Oscope\tCtrl+G", "Show the Oscope");
     wxMenu *settingsMenu = new wxMenu;
     settingsMenu->AppendCheckItem(View_Gridline, "Display Gridlines", "Toggle gridline display");
-    settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// New menu setting
-	settingsMenu->AppendCheckItem(View_ComponentColl, "Display Display Components Collisions", "Toggle components collisions");
+	settingsMenu->AppendCheckItem(View_WideOutline, "Display Wide Outlines", "Toggle wide Outlines");
+    settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// New menu setting
+	settingsMenu->AppendCheckItem(View_ComponentColl, "Display Components Collisions", "Toggle components collisions");
+	settingsMenu->AppendCheckItem(Mark_Deprecated, "Mark deprecated components", "Toggle mark deprecated");
+	settingsMenu->AppendCheckItem(Adjust_Bitmap, "Adjust bitmap size", "Adjust bitmap size");
     viewMenu->AppendSeparator();
     viewMenu->AppendSubMenu(settingsMenu, "Settings");
     
     wxMenu *helpMenu = new wxMenu; // HELP MENU
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Eliminated. HelpFile is not updated to 2.x versions
     //helpMenu->Append(wxID_HELP_CONTENTS, "&Contents...\tF1", "Show Help system");
 	//helpMenu->AppendSeparator();
 	//helpMenu->Append(Help_ReportABug, "Report a bug...");
@@ -152,7 +165,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	editMenu->AppendSeparator();
 	editMenu->Append(wxID_COPY, "Copy\tCtrl+C", "Copy selection to clipboard");
 	editMenu->Append(wxID_PASTE, "Paste\tCtrl+V", "Paste selection from clipboard");
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Separate options for usability
 	wxMenu *CopyBitmapMenu = new wxMenu;
 	CopyBitmapMenu->Append(Copy_Color, "Copy Color Bitmap", "Copy color bitmap to clipboard");
@@ -163,7 +176,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 
     // now append the freshly created menu to the menu bar...
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
     menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
     menuBar->Append(editMenu, "&Edit");
@@ -173,7 +186,10 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     // set checkmarks on settings menu
     menuBar->Check(View_Gridline, wxGetApp().appSettings.gridlineVisible);
     menuBar->Check(View_WireConn, wxGetApp().appSettings.wireConnVisible);
+	menuBar->Check(View_WideOutline, wxGetApp().appSettings.wideOutline);
 	menuBar->Check(View_ComponentColl, wxGetApp().appSettings.componentCollVisible);
+	menuBar->Check(Mark_Deprecated, wxGetApp().appSettings.markDeprecated);
+	menuBar->Check(Adjust_Bitmap, wxGetApp().appSettings.adjustBitmap);
   
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
@@ -181,13 +197,9 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	//////////////////////////////////////////////////////////////////////////
     // parse a gate library
 	//////////////////////////////////////////////////////////////////////////
-#ifndef _PRODUCTION_
-	string libPath = wxGetApp().pathToExe + "cl_gatedefs.xml";
-	//WARNING( "just so you know argv[0] == " );
-	//WARNING( wxString(wxGetApp().argv[0]) );
-#else
-	string libPath = wxGetApp().appSettings.gateLibFile;
-#endif
+
+	string libPath = wxGetApp().appSettings.gateLibFile;	// User library
+
 	LibraryParse newLib(libPath);
 	wxGetApp().libParser = newLib;
 	
@@ -197,20 +209,21 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar = new wxToolBar(this, TOOLBAR_ID, wxPoint(0,0), wxDefaultSize, wxTB_HORIZONTAL|wxNO_BORDER| wxTB_FLAT);
 	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
 	// to read the bitmaps from file directly, without the use of a resource file.  KAS
-	string    bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "grid", "junction"};
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-// Number of button bitmaps
-#define N_BITMAPS 17
+	string bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "grid", "outline", "junction"};
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Number of button bitmaps
+	#define N_BITMAPS sizeof(bitmaps)/sizeof(bitmaps[0])
+
 	wxBitmap *bmp[N_BITMAPS];
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Bitmaps in Resources
 	for (int i = 0; i < N_BITMAPS; i++) {
 		bitmaps[i] = bitmaps[i] + ".bmp";
 		bmp[i] = new wxBitmap(bitmaps[i]);
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Deprecated, now in resources
 	/*	
 	for (int  i = 0; i < N_BITMAPS; i++) {
@@ -238,7 +251,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddSeparator();
 	toolBar->AddTool(Tool_Pause, "Pause/Resume", *bmp[9], "Pause/Resume", wxITEM_CHECK);
 	toolBar->AddTool(Tool_Step, "Step", *bmp[10], "Step");
-	timeStepModSlider = new wxSlider(toolBar, wxID_ANY, wxGetApp().timeStepMod, 1, 500, wxDefaultPosition, wxSize(125,-1), wxSL_HORIZONTAL|wxSL_AUTOTICKS);
+	timeStepModSlider = new wxSlider(toolBar, wxID_ANY, wxGetApp().timeStepMod/5, 0, 100, wxDefaultPosition, wxSize(125, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS);
 	ostringstream ossTimeStepMod;
 	ossTimeStepMod << wxGetApp().timeStepMod << "ms";
 	timeStepModVal = new wxStaticText(toolBar, wxID_ANY, (const wxChar *)ossTimeStepMod.str().c_str(), wxDefaultPosition, wxSize(45, -1), wxSUNKEN_BORDER | wxALIGN_RIGHT | wxST_NO_AUTORESIZE);  // added cast KAS
@@ -250,12 +263,13 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
 
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-	// Added buttons to enable/disable grid and connections points 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added buttons to enable/disable grid, wide Outlines and connections points 
 	// Added slider to select wireConnRadius
 	toolBar->AddSeparator();
 	toolBar->AddTool(View_Gridline, "Gridlines", *bmp[15], "Gridlines", wxITEM_CHECK);
-	toolBar->AddTool(View_WireConn, "Connection Points", *bmp[16], "Connection Points", wxITEM_CHECK);
+	toolBar->AddTool(View_WideOutline, "Wide Outlines", *bmp[16], "Wide Outlines", wxITEM_CHECK);
+	toolBar->AddTool(View_WireConn, "Connection Points", *bmp[17], "Connection Points", wxITEM_CHECK);
 	wireConnRadiusSlider = new wxSlider(toolBar, wxID_ANY, wxGetApp().appSettings.wireConnRadius * 40, 1, 12, wxDefaultPosition, wxSize(50, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS);
 	ostringstream ossWireConnRadius;
 	ossWireConnRadius << wxGetApp().appSettings.wireConnRadius * 1000 << "mils";
@@ -269,8 +283,9 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	SetToolBar(toolBar);
 
 	toolBar->ToggleTool(View_Gridline, wxGetApp().appSettings.gridlineVisible);
+	toolBar->ToggleTool(View_WideOutline, wxGetApp().appSettings.wideOutline);
 	toolBar->ToggleTool(View_WireConn, wxGetApp().appSettings.wireConnVisible);
-
+	
 	toolBar->Show(true);
 
 	//finished with the bitmaps, so we can release the pointers  KAS
@@ -286,10 +301,11 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	wxSize sz = this->GetClientSize();
 	
 	// now a gate palette for the library
-	gatePalette = new PaletteFrame(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
+	gatePalette = new PaletteFrame(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);	
 	leftPaneSizer->Add( gatePalette, wxSizerFlags(1).Expand().Border(wxALL, 0) );
 	leftPaneSizer->Show( gatePalette );
-	miniMap = new klsMiniMap(this, wxID_ANY, wxDefaultPosition, wxSize(130, 100));
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Wider to hold 4 columns of components
+	miniMap = new klsMiniMap(this, wxID_ANY, wxDefaultPosition, wxSize(170, 120));	// was 130x120
 	leftPaneSizer->Add( miniMap, wxSizerFlags(0).Expand().Border(wxALL, 0) );
 	mainSizer->Add( leftPaneSizer, wxSizerFlags(0).Expand().Border(wxALL, 0) );
 	
@@ -416,7 +432,7 @@ MainFrame::~MainFrame() {
 
 threadLogic *MainFrame::CreateThread()
 {
-	threadLogic *thread = new threadLogic();
+	threadLogic *thread = new threadLogic(gCircuit);
     if ( thread->Create() != wxTHREAD_NO_ERROR )
     {
         wxLogError("Can't create thread!");
@@ -477,7 +493,7 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	// Allow the user to save the file, unless we are in the midst of terminating the app!!, KAS 4/26/07	
 	if (commandProcessor->IsDirty() && !destroy) {
 		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// If cancel don't exit
 		switch (dialog.ShowModal()) {
 		case wxID_NO:
@@ -541,7 +557,7 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 
 	if (commandProcessor->IsDirty()) {
 		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// If cancel don't exit
 		switch (dialog.ShowModal()) {
 		case wxID_YES:
@@ -587,7 +603,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	currentCanvas->getCircuit()->setSimulate(false);
 	if (commandProcessor->IsDirty()) {
 		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 		// If cancel don't exit
 		switch (dialog.ShowModal()) {
 		case wxID_YES:
@@ -713,12 +729,36 @@ void MainFrame::OnViewWireConn(wxCommandEvent& event) {
 	if (currentCanvas != NULL) currentCanvas->Update();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// To show/hide Wide Outlines
+void MainFrame::OnViewWideOutline(wxCommandEvent& event) {
+	wxGetApp().appSettings.wideOutline = event.IsChecked();
+	menuBar->Check(View_WideOutline, wxGetApp().appSettings.wideOutline);
+	toolBar->ToggleTool(View_WideOutline, wxGetApp().appSettings.wideOutline);
+	if (currentCanvas != NULL) currentCanvas->Update();
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // To show/hide components collisions
-void MainFrame::OnViewComponentCollisions(wxCommandEvent& event) {
+void MainFrame::OnViewComponentCollision(wxCommandEvent& event) {
 	wxGetApp().appSettings.componentCollVisible = event.IsChecked();
 	if (currentCanvas != NULL) currentCanvas->Update();
 }
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Adjust bitmap size to image when copy asnd save
+void MainFrame::OnAdjustBitmap(wxCommandEvent& event) {
+	wxGetApp().appSettings.adjustBitmap = event.IsChecked();
+	if (currentCanvas != NULL) currentCanvas->Update();
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Mark Deprecated component in magenta
+void MainFrame::OnMarkDeprecated(wxCommandEvent& event) {
+	wxGetApp().appSettings.markDeprecated = event.IsChecked();
+	if (currentCanvas != NULL) currentCanvas->Update();
+}
+
 
 void MainFrame::OnTimer(wxTimerEvent& event) {
 	ostringstream oss;
@@ -827,7 +867,7 @@ void MainFrame::OnPaste(wxCommandEvent& event) {
 	currentCanvas->pasteBlockFromClipboard();
 }
 
-// Pedro Casanova(casanova@ujaen.es) 2020/04-10
+// Pedro Casanova(casanova@ujaen.es) 2020/04-11
 void MainFrame::OnCopyColor(wxCommandEvent& event) {
 	wxBitmap bitmap = getBitmap(false);
 	if (wxTheClipboard->Open()) {
@@ -836,7 +876,7 @@ void MainFrame::OnCopyColor(wxCommandEvent& event) {
 	}
 }
 
-// Pedro Casanova(casanova@ujaen.es) 2020/04-10
+// Pedro Casanova(casanova@ujaen.es) 2020/04-11
 void MainFrame::OnCopyGreyscale(wxCommandEvent& event) {
 	wxBitmap bitmap = getBitmap(false);
 	bitmap = wxBitmap(bitmap.ConvertToImage().ConvertToGreyscale());
@@ -846,9 +886,9 @@ void MainFrame::OnCopyGreyscale(wxCommandEvent& event) {
 	}
 }
 
-// Pedro Casanova(casanova@ujaen.es) 2020/04-10
+// Pedro Casanova(casanova@ujaen.es) 2020/04-11
 void MainFrame::OnCopyMonochrome(wxCommandEvent& event) {
-	wxBitmap bitmap = getBitmap(false, true);
+	wxBitmap bitmap = getBitmap(false, false);
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(bitmap));
 		wxTheClipboard->Close();
@@ -877,7 +917,7 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 		return;
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10	Added Monocrome vs GreyScale
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Added Monocrome vs GreyScale
 	bool showGreyscale = false;
 	if (!showColor)
 	{
@@ -899,7 +939,7 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 			bitmap = wxBitmap(bitmap.ConvertToImage().ConvertToGreyscale());
 	}
 	else
-			bitmap = getBitmap(showGrid, true);
+			bitmap = getBitmap(showGrid, false);
 
 
 	wxString caption = "Export Circuit";
@@ -931,64 +971,143 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-// Moved to edit menu
-/*void MainFrame::OnCopyToClipboard(wxCommandEvent& event) {
-	bool showGrid = false;
-	wxMessageDialog gridDialog(this, "Copy with Grid?", "Copy to Clipboard", wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
-	switch (gridDialog.ShowModal()) {
-	case wxID_YES:
-		showGrid = true;
-		break;
-	case wxID_CANCEL:
-		return;
-	}
-	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-	// Grey scale copy to clipboard
-	bool showColor = false;
-	wxMessageDialog colorDialog(this, "Copy with Color?", "Copy to Clipboard", wxYES_DEFAULT | wxYES_NO | wxCANCEL | wxICON_QUESTION);
-	switch (colorDialog.ShowModal()) {
-	case wxID_YES:
-		showColor = true;
-		break;
-	case wxID_CANCEL:
-		return;
-	}
-
-	wxBitmap bitmap = getBitmap(showGrid);
-	if (!showColor) {
-		bitmap = wxBitmap(bitmap.ConvertToImage().ConvertToGreyscale());	// Greyscale
-		//bitmap = wxBitmap(bitmap.ConvertToImage().ConvertToMono(255,255,255));	// monochrome
-	}
-
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxBitmapDataObject(bitmap));
-		wxTheClipboard->Close();
-	}
-}*/
-
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10		Added noColor
-wxBitmap MainFrame::getBitmap(bool withGrid, bool noColor) {
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11		Added color
+wxBitmap MainFrame::getBitmap(bool withGrid, bool color) {
 	bool gridlineVisible = wxGetApp().appSettings.gridlineVisible;
 	wxGetApp().appSettings.gridlineVisible = withGrid;
 	wxGetApp().doingBitmapExport = true;
 
 	// render the image
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Unselect all gates and wires
 	currentCanvas->unselectAllGates();
 	currentCanvas->unselectAllWires();
 
 	wxSize imageSize = currentCanvas->GetClientSize();
-	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth() * 2, imageSize.GetHeight() * 2, 32, noColor);
+	wxImage circuitImage = currentCanvas->renderToImage(imageSize.GetWidth() * 2, imageSize.GetHeight() * 2, 32, color);
 	wxBitmap circuitBitmap(circuitImage);
 
 	// restore grid display setting
 	wxGetApp().appSettings.gridlineVisible = gridlineVisible;
 	wxGetApp().doingBitmapExport = false;
 
-	return circuitBitmap;
+	if (!wxGetApp().appSettings.adjustBitmap)
+		return circuitBitmap;
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// if AdjustBitmap is true then cut external blank areas of image
+
+	wxImage image = circuitBitmap.ConvertToImage();
+	unsigned char* pix = image.GetData();
+	int FirstLine = 0;
+	int LastLine = image.GetHeight() - 1;
+	int FirstCol = 0;
+	int LastCol = image.GetWidth() - 1;
+	int baseORG;
+	int baseDEST;
+	bool Blank = true;
+	for (int y = 0; y < image.GetHeight(); y++)
+	{
+		if (Blank)
+		{
+			for (int x = 0; x < image.GetWidth(); x++)
+			{
+				baseORG = 3 * (y * image.GetWidth() + x);
+				if (pix[baseORG] != 255 || pix[baseORG + 1] != 255 || pix[baseORG + 2] != 255)
+				{
+					FirstLine = y;
+					Blank = false;
+					break;
+				}
+			}
+		}
+		else break;
+	}
+	Blank = true;
+	for (int y = image.GetHeight()-1; y>=0; y--)
+	{
+		if (Blank)
+		{			
+			for (int x = 0; x < image.GetWidth(); x++)
+			{
+				baseORG = 3 * (y * image.GetWidth() + x);
+				if (pix[baseORG] != 255 || pix[baseORG + 1] != 255 || pix[baseORG + 2] != 255)
+				{
+					LastLine = y;
+					Blank = false;
+					break;
+				}
+			}
+		}
+		else break;
+	}	
+	Blank = true;
+	for (int x = 0; x < image.GetWidth(); x++)
+	{
+		if (Blank)
+		{
+			for (int y = 0; y < image.GetHeight(); y++)
+			{
+				baseORG = 3 * (y * image.GetWidth() + x);
+				if (pix[baseORG] != 255 || pix[baseORG + 1] != 255 || pix[baseORG + 2] != 255)
+				{
+					FirstCol = x;
+					Blank = false;
+					break;
+				}
+			}
+		}
+		else break;
+	}	
+	Blank = true;
+	for (int x = image.GetWidth()-1; x>=0; x--)
+	{
+		if (Blank)
+		{
+			for (int y = 0; y < image.GetHeight(); y++)
+			{
+				baseORG = 3 * (y * image.GetWidth() + x);
+				if (pix[baseORG] != 255 || pix[baseORG + 1] != 255 || pix[baseORG + 2] != 255)
+				{
+					LastCol = x;
+					Blank = false;
+					break;
+				}
+			}
+		}
+		else break;
+	}
+
+	FirstLine -= 10;
+	if (FirstLine < 0) FirstLine = 0;
+	LastLine += 10;
+	if (LastLine > image.GetHeight()) LastLine = image.GetHeight() - 1;
+	FirstCol -= 10;
+	if (FirstCol < 0) FirstCol = 0;
+	LastCol += 10;
+	if (LastCol > image.GetWidth()) LastCol = image.GetWidth() - 1;
+
+	unsigned char* pixOut = new unsigned char[3 * (LastCol - FirstCol + 1) * (LastLine - FirstLine + 1)];
+
+	wxImage imageOut;
+	imageOut = wxImage(LastCol - FirstCol + 1, LastLine - FirstLine + 1);
+	
+	for (int y = FirstLine; y <= LastLine; y++)
+		for (int x = FirstCol; x <= LastCol; x++)
+		{
+			baseORG = 3 * (y * image.GetWidth() + x);
+			baseDEST = 3 * ((y - FirstLine) * imageOut.GetWidth() + (x - FirstCol));
+			for (int k=0;k<3;k++)
+				pixOut[baseDEST+k] = pix[baseORG+k];
+		}
+		
+	imageOut.SetData(pixOut);
+
+	wxBitmap bitmapOut;
+
+	bitmapOut = wxBitmap(imageOut);
+
+	return bitmapOut;
 }
 
 void MainFrame::OnPause(wxCommandEvent& event) {
@@ -1025,10 +1144,11 @@ void MainFrame::OnHelpContents(wxCommandEvent& event) {
 	wxGetApp().helpController->DisplayContents();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // Any slider scroll
-void MainFrame::OnSlider(wxScrollEvent& event) {	
-	wxGetApp().timeStepMod = timeStepModSlider->GetValue();
+void MainFrame::OnSlider(wxScrollEvent& event) {
+	wxGetApp().timeStepMod = 5*timeStepModSlider->GetValue();
+	if (!wxGetApp().timeStepMod) wxGetApp().timeStepMod = 1;
 	ostringstream ossTimeStepMod;
 	ossTimeStepMod << wxGetApp().timeStepMod << "ms";
 	timeStepModVal->SetLabel((const wxChar *)ossTimeStepMod.str().c_str()); // KAS
@@ -1053,9 +1173,11 @@ void MainFrame::saveSettingsFile() {
 	string settingsIni = wxGetApp().pathToExe + "settings.ini";
 
 	ofstream iniFile(settingsIni.c_str(), ios::out);
-	iniFile << "GateLib=" << wxGetApp().appSettings.gateLibFile.substr(numCharAbsolute) << endl;
-	iniFile << "HelpFile=" << wxGetApp().appSettings.helpFile.substr(numCharAbsolute) << endl;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	iniFile << "GateLib=" << wxGetApp().appSettings.gateLibFile << endl;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Help is obsolete
+	//iniFile << "HelpFile=" << wxGetApp().appSettings.helpFile.substr(numCharAbsolute) << endl;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Now in resources
 	if (wxGetApp().appSettings.textFontFile=="res")
 		iniFile << "TextFont=" << "res" << endl;
@@ -1069,13 +1191,16 @@ void MainFrame::saveSettingsFile() {
 	iniFile << "RefreshRate=" << wxGetApp().appSettings.refreshRate << endl;
 	iniFile << "LastDirectory=" << lastDirectory.c_str() << endl;
 	iniFile << "GridlineVisible=" << wxGetApp().appSettings.gridlineVisible << endl;
-	iniFile << "WireConnVisible=" << wxGetApp().appSettings.wireConnVisible << endl;	
+	iniFile << "WideOutline=" << wxGetApp().appSettings.wideOutline << endl;
+	iniFile << "WireConnVisible=" << wxGetApp().appSettings.wireConnVisible << endl;
 	iniFile << "ComponentCollVisible=" << wxGetApp().appSettings.componentCollVisible << endl;
-	iniFile << "WireConnRadius=" << wxGetApp().appSettings.wireConnRadius << endl;
+	iniFile << "AdjustBitmap=" << wxGetApp().appSettings.adjustBitmap << endl;
+	iniFile << "MarkDeprecated=" << wxGetApp().appSettings.markDeprecated << endl;
+	iniFile << "WireConnRadius=" << wxGetApp().appSettings.wireConnRadius << endl;	
 	iniFile.close();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // Settings in windows register
 void MainFrame::saveSettingsReg() {
 
@@ -1087,12 +1212,12 @@ void MainFrame::saveSettingsReg() {
 	{
 		Value_S = VERSION_TITLE();
 		RegSetValue(hKey, "", REG_SZ, Value_S.c_str(), 0);
-		Value_S = wxGetApp().appSettings.gateLibFile.substr(numCharAbsolute);
+		Value_S = wxGetApp().appSettings.gateLibFile;
 		RegSetValueEx(hKey, "GateLib", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
-		Value_S = wxGetApp().appSettings.helpFile.substr(numCharAbsolute);
-		RegSetValueEx(hKey, "HelpFile", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
-		Value_S = wxGetApp().appSettings.textFontFile;
-		RegSetValueEx(hKey, "TextFont", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
+		//Value_S = wxGetApp().appSettings.helpFile.substr(numCharAbsolute);
+		//RegSetValueEx(hKey, "HelpFile", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
+		//Value_S = wxGetApp().appSettings.textFontFile;
+		//RegSetValueEx(hKey, "TextFont", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
 		Value_S = lastDirectory;
 		RegSetValueEx(hKey, "LastDirectory", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
 		Value = this->GetSize().GetWidth();
@@ -1113,8 +1238,14 @@ void MainFrame::saveSettingsReg() {
 		RegSetValueEx(hKey, "GridLineVisible", 0, REG_DWORD, (BYTE*)&Value, 4);
 		Value = (wxGetApp().appSettings.wireConnVisible==true) ? 1 : 0;
 		RegSetValueEx(hKey, "WireConnVisible", 0, REG_DWORD, (BYTE*)&Value, 4);
+		Value = (wxGetApp().appSettings.wideOutline == true) ? 1 : 0;
+		RegSetValueEx(hKey, "WideOutline", 0, REG_DWORD, (BYTE*)&Value, 4);		
 		Value = (wxGetApp().appSettings.componentCollVisible==true) ? 1 : 0;
 		RegSetValueEx(hKey, "ComponentCollVisible", 0, REG_DWORD, (BYTE*)&Value, 4);
+		Value = (wxGetApp().appSettings.adjustBitmap == true) ? 1 : 0;
+		RegSetValueEx(hKey, "AdjustBitmap", 0, REG_DWORD, (BYTE*)&Value, 4);
+		Value = (wxGetApp().appSettings.markDeprecated == true) ? 1 : 0;
+		RegSetValueEx(hKey, "MarkDeprecated", 0, REG_DWORD, (BYTE*)&Value, 4);
 		RegCloseKey(hKey);
 	}
 }

@@ -12,7 +12,6 @@ cmdMergeWire::cmdMergeWire(GUICanvas* gCanvas, GUICircuit* gCircuit,
 	this->wireIds = wireIds;
 	this->wid1 = wid1;
 	this->wid2 = wid2;
-	_MSG0("MERGE")	//##
 }
 
 cmdMergeWire::cmdMergeWire(const std::string &def) :

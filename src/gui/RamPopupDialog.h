@@ -3,7 +3,7 @@
 
 #include <wx/grid.h>
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // Change dimensions
 #define RAM_TITLE "Ram Info"
 #define RAM_WIDTH 700
@@ -24,7 +24,7 @@ class GUICircuit;
 class RamPopupDialog : public wxDialog{
 public:
  	/** Constructor. Creates a new RamPopupDialog */
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// bitsInAddress eliminated, got it from paramaeters
 	RamPopupDialog( guiGateRAM* newM_ramGuiGate, GUICircuit* newGUICircuit );
 
@@ -32,7 +32,7 @@ public:
 	void OnBtnClose( wxCommandEvent& event );
 	void OnBtnLoad( wxCommandEvent& event );
 	void OnBtnSave( wxCommandEvent& event );
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Added Clear Button
 	void OnBtnClear( wxCommandEvent& event );
 	void OnBtnEdit( wxCommandEvent& event );
@@ -54,7 +54,7 @@ private:
     wxButton* closeBtn;
     wxButton* loadBtn;
     wxButton* saveBtn;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// Added Clear Button
 	wxButton* clearBtn;
     wxCheckBox* hexOrDecCB;

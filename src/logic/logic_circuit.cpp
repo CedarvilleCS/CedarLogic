@@ -21,9 +21,12 @@ ofstream* logiclog;
 #endif
 
 
-
-Circuit::Circuit()
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Add theGUICircuit param
+Circuit::Circuit(GUICircuit * theGUICircuit)
 {
+	ourGUICircuit = theGUICircuit;
+
 	// Set time to begin starting:
 	systemTime = 0;
 	
@@ -58,7 +61,7 @@ void Circuit::stepOnlyGates(){
 	// recalculate correctly:	
 	ID_SET< IDType >::iterator updateGate = gateUpdateList.begin();
 	while( updateGate != gateUpdateList.end() ) {
-		gateList[*updateGate]->updateGate( *updateGate, this );
+		gateList[*updateGate]->updateGate( *updateGate, this, ourGUICircuit);
 		updateGate++;
 	}
 	gateUpdateList.clear();
@@ -72,7 +75,7 @@ void Circuit::step(ID_SET< IDType > *changedWires)
 	// Basically just loop through the things in polledGates and call updateGate() on them.
 	ID_SET< IDType >::iterator gateToPoll = polledGates.begin();
 	while (gateToPoll != polledGates.end()) {
-		gateList[*gateToPoll]->updateGate(*gateToPoll, this);
+		gateList[*gateToPoll]->updateGate(*gateToPoll, this, ourGUICircuit);
 		gateToPoll++;
 	}
 
@@ -162,7 +165,7 @@ void Circuit::step(ID_SET< IDType > *changedWires)
 	while (changedGatesIterator != changedGates.end()) {
 		GATE_PTR myGate = gateList[*changedGatesIterator];
 
-		myGate->updateGate(*changedGatesIterator, this);
+		myGate->updateGate(*changedGatesIterator, this, ourGUICircuit);	
 
 		changedGatesIterator++;
 	}
@@ -202,9 +205,9 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_MUX );
 		} else if( type == "DECODER" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_DECODER );
-		} else if (type == "PRI_ENCODER") {
-			gateList[thisGateID] = GATE_PTR( new Gate_PRI_ENCODER );
-		} else if (type == "BUSEND") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-10	Changed from BUS_END
+		} else if (type == "ENCODER") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-07	Change from PRI_ENCODER
+			gateList[thisGateID] = GATE_PTR( new Gate_ENCODER );
+		} else if (type == "BUSEND") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Changed from BUS_END
 			gateList[thisGateID] = GATE_PTR( new Gate_BUSEND(this) );
 		} else if( type == "CLOCK" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_CLOCK );
@@ -228,7 +231,7 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_RAM );
 		} else if( type == "REGISTER" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_REGISTER );
-		} else if( ( type == "TO" ) || ( type == "FROM" ) || (type == "LINK") ) {	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+		} else if( ( type == "TO" ) || ( type == "FROM" ) || (type == "LINK") ) {	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 			gateList[thisGateID] = GATE_PTR( new Gate_JUNCTION( this ) );
 		} else if( type == "TGATE" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_T( this ) );
@@ -236,8 +239,10 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_NODE( this ) );
 		} else if( type == "EQUIVALENCE" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_EQUIVALENCE );
-		} else if( type == "Pauseulator" ){
-			gateList[thisGateID] = GATE_PTR( new Gate_pauseulator() );
+		} else if (type == "Pauseulator") {
+			gateList[thisGateID] = GATE_PTR(new Gate_pauseulator());
+		} else if (type == "PLD_AND") {
+			gateList[thisGateID] = GATE_PTR(new Gate_PLD_AND());
 		} else {
 			WARNING( "Circuit::newGate() - Invalid logic type!" );
 		}
@@ -444,7 +449,7 @@ IDType Circuit::connectGateOutput( IDType gateID, const string &gateOutputID, ID
 	// Send an event putting the output's value on the wire.
 	(gateList[gateID])->resendLastEvent( gateID, gateOutputID, this );
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 	// To manage bidirectional outputs in RAM and REGISTER
 	if ((gateList[gateID])->getParameter("BIDIRECTIONAL_DATA") == "true") {
 		if ((gateList[gateID])->getParameter("DATA_BITS") != "") {								// Gate_RAM
@@ -672,7 +677,14 @@ void Circuit::setGateOutputParameter( IDType gateID, const string & outputID, co
 
 void Circuit::addUpdateParam(IDType gateID, const string & paramName) {
 	paramUpdateList.push_back(changedParam(gateID, paramName));
-};
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+void Circuit::UpdateGate(IDType gateID) {
+	if (gateList.find(gateID) != gateList.end()) 
+		gateList[gateID]->updateGate(gateID, this, ourGUICircuit);
+	return;
+}
 
 vector < changedParam > Circuit::getParamUpdateList() {
 	return paramUpdateList;

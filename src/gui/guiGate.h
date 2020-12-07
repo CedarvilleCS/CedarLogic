@@ -33,6 +33,9 @@ class guiWire;
 
 #include "RamPopupDialog.h"
 
+#include "GUICircuit.h"
+#include "../logic/logic_circuit.h"
+
 using namespace std;
 
 #define GATE_HOTSPOT_THICKNESS 0.05
@@ -85,14 +88,18 @@ protected:
 
 class guiGate : public klsCollisionObject {
 public:
-	guiGate();
+	guiGate();	
 	virtual ~guiGate();
 	void setID(long nid) { gateID = nid; };
 	unsigned long getID() { return gateID; };
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	void setGUICircuit(GUICircuit* theGUICircuit) { ourGUICircuit = theGUICircuit; };
 
 protected:
 	string libName;
 	string libGateName;
+	GUICircuit* ourGUICircuit = NULL;
+
 public:
 	void setLibraryName( string nLibName, string nLibGateName ) {
 		libName = nLibName;
@@ -136,7 +143,9 @@ public:
 
 	void declareInput(string name) { isInput[name] = true; };
 	void declareOutput(string name) { isInput[name] = false; };
-	virtual void draw(bool color = true);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added drawPalette to do not draw wide outlines in palette
+	virtual void draw(bool color = true, bool drawPalette = false);
 	void setGLcoords( float x, float y, bool noUpdateWires = false );
 	void getGLcoords( float &x, float &y );
 	
@@ -160,6 +169,10 @@ public:
 
 	// Insert a line in the line list.
 	void insertLine( float x1, float y1, float x2, float y2, int w = 1 );
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Lines with offset for rotate chars
+	void insertOffLine(float x0, float y0, float x1, float y1, float x2, float y2, int w = 1);
 
 	// Recalculate the bounding box, based on the lines that are included alredy:
 	virtual void calcBBox( void );
@@ -252,10 +265,13 @@ protected:
 	// Model space bounding box:
 	klsBBox modelBBox;
 	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
-	// Now use vector line instead of vertices to contain w
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Now use lines instead of vertices to contain width
 	//vector<GLPoint2f> vertices;
 	vector<lgLine> lines;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Lines with offset for rotate chars
+	vector<lgOffLine> offlines;
 
 	// map i/o name to hotspot coord
 	map< string, gateHotspot* > hotspots;
@@ -268,10 +284,27 @@ protected:
 	map< string, string > lparams;  // Logic params
 };
 
+class guiGatePLD : public guiGate {
+public:
+	guiGatePLD();
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
+
+	void setGUIParam(string paramName, string value);
+
+protected:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Cross in gate for PLD
+	GLPoint2f renderInfo_crossPoint;
+};
+
 class guiGateTOGGLE : public guiGate {
 public:
 	guiGateTOGGLE();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 	
 	void setGUIParam( string paramName, string value );
 	void setLogicParam( string paramName, string value );
@@ -288,7 +321,9 @@ protected:
 class guiGateKEYPAD : public guiGate {
 public:
 	guiGateKEYPAD();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 	void setLogicParam( string paramName, string value );
 	
 	// Toggle the output button on and off:
@@ -302,7 +337,9 @@ private:
 class guiGateREGISTER : public guiGate {
 public:
 	guiGateREGISTER();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 	void setGUIParam( string paramName, string value );
 	void setLogicParam( string paramName, string value );
 protected:
@@ -312,31 +349,44 @@ protected:
 	bool renderInfo_drawBlue;
 	int renderInfo_numDigitsToShow;
 	string renderInfo_currentValue;
-	bool disp_BCD;	// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+	bool display_BCD;	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	bool hide_display;	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 };
 
 class guiGatePULSE : public guiGate {
 public:
-	guiGatePULSE() : guiGate() {
-		// Set the default CLICK box:
-		// Format is: "minx miny maxx maxy"
-		setGUIParam( "CLICK_BOX", "-0.76,-0.76,0.76,0.76" );
-
-		// Default to single pulse width:
-		setGUIParam( "PULSE_WIDTH", "1" );
-	};
+	guiGatePULSE();
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	void setGUIParam(string paramName, string value);
 	
 	klsMessage::Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y );
+
+protected:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// CLICK_BOX limits
+	GLLine2f renderInfo_clickBox;
+
 };
 
 
 class guiGateLED : public guiGate {
 public:
 	guiGateLED();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 	void setGUIParam( string paramName, string value );
 protected:
 	GLLine2f renderInfo_ledBox;
+};
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// For wires
+class guiGateWIRE : public guiGate {
+public:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 };
 
 
@@ -346,7 +396,9 @@ protected:
 class guiLabel : public guiGate {
 public:
 	guiLabel();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 
 	// Recalculate the label's bounding box:
 	void calcBBox( void );
@@ -371,14 +423,16 @@ private:
 };
 
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // Modified to permit variable labes size.
 // ************************ TO/FROM gate *************************
 class guiTO_FROM : public guiGate {
 public:
 	guiTO_FROM();
 
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 
 	// Recalculate the gate's bounding box:
 	void calcBBox( void );
@@ -408,7 +462,7 @@ private:
 // ************************ RAM gate ****************************
 
 //*************************************************
-// Pedro Casanova (casanova@ujaen.es) 2020/04-10
+// Pedro Casanova (casanova@ujaen.es) 2020/04-11
 // Modified to limit data size values.
 //Edit by Joshua Lansford 12/25/2006
 //I am creating a guiGate for the RAM so that

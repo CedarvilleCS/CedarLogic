@@ -5,7 +5,7 @@ project(CedarLogic)
 
 set(CEDARLOGIC_MAJOR 2)
 set(CEDARLOGIC_MINOR 4)
-set(CEDARLOGIC_PATCH 0)
+set(CEDARLOGIC_PATCH 1)
 
 add_definitions(
 	-DCEDARLOGIC_MAJOR=${CEDARLOGIC_MAJOR}
@@ -21,6 +21,7 @@ set(Sources
 	resources.rc
 	src/version.cpp
 	src/version.h
+	src/settings_values.h
 	src/dbgmsg.h
 	src/gui/autoSaveThread.cpp
 	src/gui/autoSaveThread.h
@@ -216,6 +217,10 @@ target_compile_definitions(CedarLogic
 ###
 
 copy_resources(CedarLogic res)
+add_custom_command(TARGET CedarLogic POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E
+        copy_directory "${CMAKE_SOURCE_DIR}/InstFiles" "$(Configuration)"
+        COMMENT "Copying InstFiles to $(Configuration) directory...")		
 vs_source_groups(src ${Sources})
 
 
@@ -225,7 +230,8 @@ vs_source_groups(src ${Sources})
 
 install(TARGETS CedarLogic RUNTIME DESTINATION ".")
 
-install_resources(res)
+install(FILES "${CMAKE_SOURCE_DIR}/InstFiles/LICENSE.txt" DESTINATION ".")
+install(FILES "${CMAKE_SOURCE_DIR}/InstFiles/UserLib_Example.xml" DESTINATION ".")
 
 set(CPACK_PACKAGE_NAME "CedarLogic")
 # This exceptionally weird line is hard to understand even with the documentation.
@@ -234,21 +240,25 @@ set(CPACK_PACKAGE_NAME "CedarLogic")
 # Also, the combination of CMAKE and NSIS requires quadruple backslashes sometimes :(
 # UPDATE: You can change 'bin' to '.' by setting  CPACK_NSIS_EXECUTABLES_DIRECTORY.
 set(CPACK_PACKAGE_EXECUTABLES ..\\\\CedarLogic "CedarLogic" ..\\\\Uninstall "Uninstall CedarLogic")
-set(CPACK_PACKAGE_VENDOR "Cedarville University")
+set(CPACK_PACKAGE_VENDOR "CedarLogic")
 set(CPACK_PACKAGE_VERSION_MAJOR "${CEDARLOGIC_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${CEDARLOGIC_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${CEDARLOGIC_PATCH}")
-set(CPACK_PACKAGE_ICON ${CMAKE_SOURCE_DIR}/cmake\\\\InstallSmall.bmp)
-set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/res/LICENSE.txt)
-set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/cmake\\\\icon.ico)
-set(CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP ${CMAKE_SOURCE_DIR}/cmake\\\\InstallLarge.bmp)
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "CedarLogic")
+set(CPACK_PACKAGE_ICON ${CMAKE_SOURCE_DIR}/cmake/cpack\\\\InstallSmall.bmp)
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/InstFiles/LICENSE.txt)
+set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/res\\\\icon.ico)
+set(CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP ${CMAKE_SOURCE_DIR}/cmake/cpack\\\\InstallLarge.bmp)
 set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
     "!include \\\"${CMAKE_SOURCE_DIR}/cmake/cpack\\\\FileAssociation.nsh\\\"
-    \\\${registerExtension} \\\"$INSTDIR\\\\CedarLogic.exe\\\" \\\".cdl\\\" \\\"CedarLogic Project\\\""
+    \\\${registerExtension} \\\"$INSTDIR\\\\CedarLogic.exe\\\" \\\".cdl\\\" \\\"CedarLogic\\\"
+    !include \\\"${CMAKE_SOURCE_DIR}/cmake/cpack\\\\RegUninstallIcon.nsh\\\"
+    \\\${regUninstallIcon} \\\"CedarLogic\\\" \\\"$INSTDIR\\\\CedarLogic.exe\\\""
 )
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS
-    "\\\${unregisterExtension} \\\".cdl\\\" \\\"CedarLogic Project\\\""
+    "\\\${unregisterExtension} \\\".cdl\\\" \\\"CedarLogic\\\""
 )
 
 include(CPack)
