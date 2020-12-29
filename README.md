@@ -14,7 +14,7 @@ In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonr
 ### Original Developers
  - [Dr. Keith Shomper](https://www.cedarville.edu/Academic-Schools-and-Departments/Engineering-and-Computer-Science/Faculty/Faculty/Shomper-Keith.aspx) 
  - [Matt Lewellyn](https://github.com/guruofgentoo)
- - [Benjamin Sprague](https://sourceforge.net/u/realmadsci/profile/)
+ - [Benjamin Sprague](https://github.com/realmadsci)
  - [Dr. Clint Kohl](https://www.cedarville.edu/Academic-Schools-and-Departments/Engineering-and-Computer-Science/Faculty/Faculty/Kohl-Clinton.aspx)
  
  
@@ -22,13 +22,13 @@ In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonr
 ## Getting Ready to Compile
 **TODO:** Automate build process so this is antiquated (infrastructure as code)
 
-1. Install `Visual Studio 2015` or newer.
+1. Install `Visual Studio 2015` or newer. `Visual Studio 2019 Community Edition` is known to work as well.
 
 2. Download [wxWidgets 2.8.12](https://github.com/wxWidgets/wxWidgets/releases/download/v2.8.12/wxMSW-2.8.12-Setup.exe) source for windows.
 
 3. Run wxWidgets source installer.
 
-4. Set windows environment variable `WXWIN` to point to your wxWidgets directory.
+4. (Optional) Set windows environment variable `WXWIN` to point to your wxWidgets directory.
 
 5. Edit `%WXWIN%\include\wx\msw\setup.h` so that `wxUSE_GLCANVAS` is `1` instead of `0`.
 
@@ -46,7 +46,9 @@ In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonr
 
 2. Next, go to the root of the git repo.
 
-3. Run `mkdir build && cd build && cmake .. "Visual Studio 15 2017"`.
+3. Run `mkdir build && cd build`
+
+3. Run `cmake .. -A Win32` (If you did not set the windows environment variable earlier, also add `-Dwxwin=C:/wxWidgets-2.8.12` to set `wxwin` variable to the base of the wxWidgets install path).
 
 4. There is now a visual studio solution in the `build` directory. Open the solution file.
 
