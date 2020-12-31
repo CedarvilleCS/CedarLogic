@@ -1,0 +1,219 @@
+<library> <name>User Library</name>
+	<gate> <name>@AL_COUNT4</name>
+		<caption>4-Bit Up/Down Counter</caption>
+		<logic_type>REGISTER</logic_type>
+		<logic_param>INPUT_BITS 4</logic_param>
+		<logic_param>MAX_COUNT 15</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+		<logic_param>SYNC_LOAD false</logic_param>
+		<gui_type>REGISTER</gui_type>
+		<gui_param>VALUE_BOX 0,0,0,0</gui_param>
+
+#		R
+		<input> <name>CLEAR</name>
+		          <point>-1.5,-3</point> 
+		</input>
+		
+#		CLOCK
+		<input> <name>CLOCK</name>
+		          <point>-0.5,-3</point> 
+		</input>		
+		
+#		E
+		<input> <name>COUNT_ENABLE</name>
+				  <inverted>true</inverted>
+		          <point>0.5,-3</point> 
+		</input>
+
+#		D/U
+		<input> <name>COUNT_UP</name>
+		          <point>1.5,-3</point> 
+		</input>				
+
+#		BUS OUT
+		<output> <name>OUT_0</name>
+		          <point>-1.5,3</point> 
+		</output>
+
+		<output> <name>OUT_1</name>
+		          <point>-0.5,3</point> 
+		</output>
+		<output> <name>OUT_2</name>
+		          <point>0.5,3</point> 
+		</output>
+
+		<output> <name>OUT_3</name>
+		          <point>1.5,3</point> 
+		</output>
+
+		<shape>
+			<outline>-3,-2,-3,2</outline>
+			<outline>-3,2,3,2</outline>
+			<outline>3,2,3,-2</outline>
+			<outline>3,-2,-3,-2</outline>
+
+			<line>-1.5,-2,-1.5,-3</line>
+			<line>-0.5,-2,-0.5,-3</line>
+			<line>0.5,-2,0.5,-3</line>			
+			<line>1.5,-2,1.5,-3</line>
+			
+			<line>-1.5,2,-1.5,3</line>
+			<line>-0.5,2,-0.5,3</line>
+			<line>0.5,2,0.5,3</line>			
+			<line>1.5,2,1.5,3</line>			
+			
+#			R
+			<offset><point>-1.7,-0.9</point>
+			<line>0,0,0,-0.8</line>
+			<line>0,0,0.3,0</line>
+			<line>0,-0.4,0.3,-0.4</line>
+			<line>0.3,0,0.4,-0.1</line>
+			<line>0.4,-0.1,0.4,-0.3</line>
+			<line>0.4,-0.3,0.3,-0.4</line>
+			<line>0.2,-0.4,0.4,-0.8</line>		
+			</offset>
+
+#			C
+			<offset><point>-0.7,-0.9</point>
+			<line>0,-0.1,0.1,0</line>
+			<line>0.1,0,0.3,0</line>
+			<line>0.3,0,0.4,-0.1</line>
+			<line>0,-0.7,0.1,-0.8</line>
+			<line>0.1,-0.8,0.3,-0.8</line>
+			<line>0.3,-0.8,0.4,-0.7</line>
+			<line>0,-0.1,0,-0.7</line>
+			</offset>
+			
+#			~E
+			<offset><point>0.3,-0.9</point>			
+			<line>0,0,0,-0.8</line>
+			<line>0,0,0.4,0</line>
+			<line>0,-0.4,0.3,-0.4</line>
+			<line>0,-0.8,0.4,-0.8</line>
+			<line>0,0.1,0.4,0.1</line>			
+			</offset>
+
+#			~D
+			<offset><point>1.1,-0.9</point>
+			<line>0,0,0,-0.8</line>
+			<line>0,0,0.2,0</line>
+			<line>0.2,0,0.4,-0.2</line>
+			<line>0,-0.8,0.2,-0.8</line>
+			<line>0.2,-0.8,0.4,-0.6</line>
+			<line>0.4,-0.2,0.4,-0.6</line>
+			<line>0,0.1,0.4,0.1</line>
+			</offset>
+			
+#			/
+			<offset><point>1.6,-0.9</point>
+			<line>0,-0.8,0.2,0</line>
+			</offset>			
+
+#			U
+			<offset><point>1.9,-0.9</point>
+			<line>0,0,0,-0.7</line>
+			<line>0,-0.7,0.1,-0.8</line>
+			<line>0.4,0,0.4,-0.7</line>
+			<line>0.3,-0.8,0.4,-0.7</line>
+			<line>0.1,-0.8,0.3,-0.8</line>
+			</offset>
+			
+#			Q
+			<offset><point>-1.8,1.7</point>
+			<line>0.1,0,0,-0.1</line>
+			<line>0,-0.1,0,-0.7</line>
+			<line>0,-0.7,0.1,-0.8</line>
+			<line>0.1,-0.8,0.3,-0.8</line>
+			<line>0.3,-0.8,0.4,-0.7</line>
+			<line>0.4,-0.7,0.4,-0.1</line>
+			<line>0.4,-0.1,0.3,0</line>
+			<line>0.3,0,0.1,0</line>
+			<line>0.4,-0.8,0.2,-0.6</line>
+			</offset>
+			
+#			A
+			<offset><point>-1.3,1.3</point>
+			<line>0,-0.1,0,-0.6</line>
+			<line>0,-0.1,0.1,0</line>
+			<line>0.3,-0.1,0.3,-0.6</line>
+			<line>0.2,0,0.3,-0.1</line>
+			<line>0.1,0,0.2,0</line>
+			<line>0,-0.3,0.3,-0.3</line>
+			</offset>
+			
+#			Q
+			<offset><point>-0.8,1.7</point>
+			<line>0.1,0,0,-0.1</line>
+			<line>0,-0.1,0,-0.7</line>
+			<line>0,-0.7,0.1,-0.8</line>
+			<line>0.1,-0.8,0.3,-0.8</line>
+			<line>0.3,-0.8,0.4,-0.7</line>
+			<line>0.4,-0.7,0.4,-0.1</line>
+			<line>0.4,-0.1,0.3,0</line>
+			<line>0.3,0,0.1,0</line>
+			<line>0.4,-0.8,0.2,-0.6</line>
+			</offset>			
+
+#			B
+			<offset><point>-0.3,1.3</point>
+			<line>0,0,0,-0.6</line>
+			<line>0,0,0.2,0</line>
+			<line>0,-0.3,0.2,-0.3</line>
+			<line>0,-0.6,0.2,-0.6</line>
+			<line>0.2,0,0.3,-0.1</line>
+			<line>0.3,-0.2,0.2,-0.3</line>
+			<line>0.2,-0.3,0.3,-0.4</line>
+			<line>0.3,-0.5,0.2,-0.6</line>
+			<line>0.3,-0.1,0.3,-0.2</line>
+			<line>0.3,-0.4,0.3,-0.5</line>
+			</offset>
+			
+#			Q
+			<offset><point>0.2,1.7</point>
+			<line>0.1,0,0,-0.1</line>
+			<line>0,-0.1,0,-0.7</line>
+			<line>0,-0.7,0.1,-0.8</line>
+			<line>0.1,-0.8,0.3,-0.8</line>
+			<line>0.3,-0.8,0.4,-0.7</line>
+			<line>0.4,-0.7,0.4,-0.1</line>
+			<line>0.4,-0.1,0.3,0</line>
+			<line>0.3,0,0.1,0</line>
+			<line>0.4,-0.8,0.2,-0.6</line>
+			</offset>
+			
+#			C
+			<offset><point>0.7,1.3</point>
+			<line>0,-0.1,0.1,0</line>
+			<line>0.1,0,0.2,0</line>
+			<line>0.2,0,0.3,-0.1</line>
+			<line>0,-0.5,0.1,-0.6</line>
+			<line>0.1,-0.6,0.2,-0.6</line>
+			<line>0.2,-0.6,0.3,-0.5</line>
+			<line>0,-0.1,0,-0.5</line>
+			</offset>
+			
+#			Q
+			<offset><point>1.2,1.7</point>
+			<line>0.1,0,0,-0.1</line>
+			<line>0,-0.1,0,-0.7</line>
+			<line>0,-0.7,0.1,-0.8</line>
+			<line>0.1,-0.8,0.3,-0.8</line>
+			<line>0.3,-0.8,0.4,-0.7</line>
+			<line>0.4,-0.7,0.4,-0.1</line>
+			<line>0.4,-0.1,0.3,0</line>
+			<line>0.3,0,0.1,0</line>
+			<line>0.4,-0.8,0.2,-0.6</line>
+			</offset>
+
+#			D
+			<offset><point>1.7,1.3</point>
+			<line>0,0,0,-0.6</line>
+			<line>0,0,0.2,0</line>
+			<line>0.2,0,0.3,-0.2</line>
+			<line>0,-0.6,0.2,-0.6</line>
+			<line>0.2,-0.6,0.3,-0.4</line>
+			<line>0.3,-0.2,0.3,-0.4</line>
+			</offset>
+		</shape>
+	</gate>
+</library>

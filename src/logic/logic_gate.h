@@ -31,7 +31,7 @@ struct GateInput {
 	bool inverted;
 	bool pullup;
 	bool pulldown;
-	bool forcejunction;		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	bool forcejunction;		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 
 	GateInput() : wireID(ID_NONE), inverted(false), pullup(false), pulldown(false), forcejunction(false) {};
 };
@@ -52,7 +52,7 @@ class Gate
 {
 public:
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Added theGUICircuit parameter
 	// Update the gate's outputs:
 	void updateGate( IDType myID, Circuit * theCircuit, GUICircuit  * theGUICircuit );
@@ -202,7 +202,7 @@ protected:
 		this->outputList[outputID].inverted = newInv;
 	};
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Force the junction in input:
 	void  setInputForceJunction(string inputID, bool newPU = false) {
 		if (inputList.find(inputID) == inputList.end()) {
@@ -255,7 +255,7 @@ protected:
 	// "busName_x" and return their states as a vector.
 	vector< StateType > getInputBusState( string busName );
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Get the wire states of a bus of output named "busName_0" through
 	// "busName_x" and return their states as a vector.
 	vector< StateType > Gate::getOutputBusWireState(string busName);
@@ -301,7 +301,7 @@ protected:
 	// A temporary pointer to the Circuit object, used for getting wire states, time info,
 	// and for sending events from gate outputs:
 	Circuit* ourCircuit = NULL;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	GUICircuit* ourGUICircuit = NULL;
 	
 	// A temporary ID used during updates, which represents this gate's ID in the Circuit.
@@ -460,15 +460,15 @@ protected:
 
 	// The clock pin had a triggering edge and clocking is enabled,
 	// or the register isn't synched to a clock.
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// syncSignal added to permit set and clear
 	bool hasClockEdge(bool syncSignal);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Bidirectional data lines
 	bool bidirectionalDATA;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Carry out on overflow, not in min/max
 	bool CoOnOverflow;
 
@@ -510,13 +510,13 @@ public:
 	// Set the parameters:
 	bool setParameter( string paramName, string value );
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Get the parameters
 	string getParameter(string paramName);
 
 private:
 	TimeType pulseRemaining;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	TimeType pulseWidth;
 	bool High_Z;
 };
@@ -668,7 +668,7 @@ protected:
 	bool syncSet, syncClear;
 };
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Similar to JKFF
 // ******************* T Flip Flop Gate *********************
 //NOTE: For all inputs, UNKNOWN states are interpreted as 0.
@@ -729,11 +729,11 @@ public:
 protected:
 	unsigned long dataBits;
 	unsigned long addressBits;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Sync and Async write
 	bool syncWR;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Bidirectional data lines
 	bool bidirectionalDATA;
 

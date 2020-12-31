@@ -231,7 +231,7 @@ vs_source_groups(src ${Sources})
 install(TARGETS CedarLogic RUNTIME DESTINATION ".")
 
 install(FILES "${CMAKE_SOURCE_DIR}/InstFiles/LICENSE.txt" DESTINATION ".")
-install(FILES "${CMAKE_SOURCE_DIR}/InstFiles/UserLib_Example.xml" DESTINATION ".")
+install(FILES "${CMAKE_SOURCE_DIR}/InstFiles/UserLib.xml" DESTINATION ".")
 
 set(CPACK_PACKAGE_NAME "CedarLogic")
 # This exceptionally weird line is hard to understand even with the documentation.

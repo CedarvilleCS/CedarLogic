@@ -69,7 +69,7 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	
 	if (ggt == "REGISTER")
 		newGate = (guiGate*)(new guiGateREGISTER());
-	else if (ggt == "TO" || ggt == "FROM" || ggt == "LINK")		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	else if (ggt == "TO" || ggt == "FROM" || ggt == "LINK")		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		newGate = (guiGate*)(new guiTO_FROM());
 	else if (ggt == "LABEL")
 		newGate = (guiGate*)(new guiLabel());
@@ -85,8 +85,10 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 		newGate = (guiGate*)(new guiGatePULSE());
 	else if (ggt == "RAM")
 		newGate = (guiGate*)(new guiGateRAM());
-	else if (ggt == "PLD")
+	else if (ggt == "PLD")										// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		newGate = (guiGate*)(new guiGatePLD());
+	else if (ggt == "BUSEND")									// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		newGate = (guiGate*)(new guiGateBUSEND());
 	else
 		newGate = new guiGate();
 
@@ -97,7 +99,7 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 		lgLine tempLine = gateDef.shape[i];
 		newGate->insertLine(tempLine.x1, tempLine.y1, tempLine.x2, tempLine.y2, tempLine.w);
 	}
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Lines with offset for rotate chars
 	for (unsigned int i = 0; i < gateDef.Offshape.size(); i++) {
 		lgOffLine tempLine = gateDef.Offshape[i];

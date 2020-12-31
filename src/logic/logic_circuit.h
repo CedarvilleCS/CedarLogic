@@ -134,7 +134,7 @@ public:
 	// sent to the GUI from the logic core:
 	void addUpdateParam(IDType gateID, const string &paramName);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	void UpdateGate(IDType gateID);	
 
 	vector < changedParam > getParamUpdateList();
@@ -169,7 +169,7 @@ public:
 	ID_MAP< string, IDType >* getJunctionIDs();
 	ID_MAP< string, unsigned long >* getJunctionUseCounter();
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	GUICircuit* ourGUICircuit;
 
 

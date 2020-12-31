@@ -45,7 +45,7 @@ void defineGLLists() {
 		glEnd();
 	glEndList();
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Cross junction
 	glNewList(CEDAR_GLLIST_CROSSPOINT, GL_COMPILE);
 		glLineWidth(2);

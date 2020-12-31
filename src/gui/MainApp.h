@@ -30,7 +30,7 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // To search "My Documents" directory
 #include <shlobj.h>
 
@@ -40,7 +40,7 @@ using namespace std;
 
 struct ApplicationSettings {
 	string gateLibFile;
-	string textFontFile = "res";		// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Font is now in resources 
+	string textFontFile = "res";		// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Font is now in resources 
 	string helpFile;
 	string lastDir;
 	unsigned int mainFrameWidth;
@@ -56,7 +56,7 @@ struct ApplicationSettings {
 	bool adjustBitmap;
 	bool markDeprecated;
 	float wireConnRadius;	
-	bool settingsInReg = true;			// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Settings in register
+	bool settingsInReg = true;			// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Settings in register
 };
 
 class MainApp : public wxApp {
@@ -120,7 +120,7 @@ public:
 	
 private:
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Settings now in windows register
 	void loadSettingsFile(void);
 	void loadSettingsReg(void);

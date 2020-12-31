@@ -26,7 +26,7 @@ PaletteFrame::PaletteFrame( wxWindow *parent, wxWindowID id, const wxPoint &pos,
 	paletteSizer = new wxBoxSizer( wxVERTICAL );
 	map < string, map < string, LibraryGate > >::iterator libWalk = wxGetApp().libraries.begin();
 	while (libWalk != wxGetApp().libraries.end()) {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Library "Deprecated" does not show
 		if (libWalk->first!="Deprecated")
 			strings.Add((const wxChar *)((libWalk->first).c_str())); // KAS

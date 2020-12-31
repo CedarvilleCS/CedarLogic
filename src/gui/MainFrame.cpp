@@ -36,15 +36,17 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(wxID_SAVE, MainFrame::OnSave)
     EVT_MENU(wxID_SAVEAS, MainFrame::OnSaveAs)
 	EVT_MENU(File_Export, MainFrame::OnExportBitmap)
-	// Pedro Casanova (casanova@ujaen.es) 2020705
+	// Pedro Casanova (casanova@ujaen.es) 2020-/04-12
+	// Select user library
+	EVT_MENU(Select_Library, MainFrame::OnSelectLibrary)
+	// Pedro Casanova (casanova@ujaen.es) 2020-/04-12
 	// Moved to edit menu
-	//EVT_MENU(File_ClipCopy, MainFrame::OnCopyToClipboard)
-	
+	//EVT_MENU(File_ClipCopy, MainFrame::OnCopyToClipboard)	
 	EVT_MENU(wxID_UNDO, MainFrame::OnUndo)
 	EVT_MENU(wxID_REDO, MainFrame::OnRedo)
 	EVT_MENU(wxID_COPY, MainFrame::OnCopy)
 	EVT_MENU(wxID_PASTE, MainFrame::OnPaste)
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// For usability separate options
 	EVT_MENU(Copy_Color, MainFrame::OnCopyColor)
 	EVT_MENU(Copy_Greyscale, MainFrame::OnCopyGreyscale)
@@ -65,14 +67,14 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_TOOL(Tool_ZoomOut, MainFrame::OnZoomOut)
 	EVT_TOOL(Tool_Lock, MainFrame::OnLock)
 	EVT_TOOL(Tool_NewTab, MainFrame::OnNewTab)
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// GridLine, WireConn and WideOutlines Added to the toolbar
 	EVT_TOOL(View_Gridline, MainFrame::OnViewGridline)
 	EVT_TOOL(View_WideOutline, MainFrame::OnViewWideOutline)
 	EVT_TOOL(View_WireConn, MainFrame::OnViewWireConn)	
 	EVT_SCROLL(MainFrame::OnSlider)
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Eliminated
 	//EVT_MENU(Help_ReportABug, MainFrame::OnReportABug)
 	//EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
@@ -104,7 +106,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	currentCanvas = nullptr;
 
 	// Set default locations
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Set default directory to "My Documents"
 	if (wxGetApp().appSettings.lastDir == "") {		
 		char myDocs[MAX_PATH]="";
@@ -124,7 +126,11 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	fileMenu->Append(wxID_SAVEAS, "Save &As", "Save circuit");
 	fileMenu->AppendSeparator();
 	fileMenu->Append(File_Export, "Export to Image");
-	// Pedro Casanova (casanova@ujaen.es) 2020705
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Select user library
+	fileMenu->AppendSeparator();
+	fileMenu->Append(Select_Library, "Select User Library");
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Moved to edit menu
 	//fileMenu->Append(File_ClipCopy, "Copy Canvas to Clipboard");
 	fileMenu->AppendSeparator();
@@ -134,20 +140,20 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     viewMenu->Append(View_Oscope, "&Oscope\tCtrl+G", "Show the Oscope");
     wxMenu *settingsMenu = new wxMenu;
     settingsMenu->AppendCheckItem(View_Gridline, "Display Gridlines", "Toggle gridline display");
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// New menu setting
 	settingsMenu->AppendCheckItem(View_WideOutline, "Display Wide Outlines", "Toggle wide Outlines");
     settingsMenu->AppendCheckItem(View_WireConn, "Display Wire Connection Points", "Toggle wire connection points");
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// New menu setting
 	settingsMenu->AppendCheckItem(View_ComponentColl, "Display Components Collisions", "Toggle components collisions");
-	settingsMenu->AppendCheckItem(Mark_Deprecated, "Mark deprecated components", "Toggle mark deprecated");
-	settingsMenu->AppendCheckItem(Adjust_Bitmap, "Adjust bitmap size", "Adjust bitmap size");
+	settingsMenu->AppendCheckItem(Mark_Deprecated, "Mark Deprecated Components", "Toggle mark deprecated");
+	settingsMenu->AppendCheckItem(Adjust_Bitmap, "Adjust Bitmap Size", "Adjust bitmap size");
     viewMenu->AppendSeparator();
     viewMenu->AppendSubMenu(settingsMenu, "Settings");
     
     wxMenu *helpMenu = new wxMenu; // HELP MENU
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Eliminated. HelpFile is not updated to 2.x versions
     //helpMenu->Append(wxID_HELP_CONTENTS, "&Contents...\tF1", "Show Help system");
 	//helpMenu->AppendSeparator();
@@ -165,7 +171,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	editMenu->AppendSeparator();
 	editMenu->Append(wxID_COPY, "Copy\tCtrl+C", "Copy selection to clipboard");
 	editMenu->Append(wxID_PASTE, "Paste\tCtrl+V", "Paste selection from clipboard");
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Separate options for usability
 	wxMenu *CopyBitmapMenu = new wxMenu;
 	CopyBitmapMenu->Append(Copy_Color, "Copy Color Bitmap", "Copy color bitmap to clipboard");
@@ -176,7 +182,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 
     // now append the freshly created menu to the menu bar...
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
     menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
     menuBar->Append(editMenu, "&Edit");
@@ -210,20 +216,20 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	// formerly, we were using a resource file to associate the toolbar bitmaps to the program.  I modified the code
 	// to read the bitmaps from file directly, without the use of a resource file.  KAS
 	string bitmaps[] = {"new", "open", "save", "undo", "redo", "copy", "paste", "print", "help", "pause", "step", "zoomin", "zoomout", "locked", "newtab", "grid", "outline", "junction"};
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Number of button bitmaps
 	#define N_BITMAPS sizeof(bitmaps)/sizeof(bitmaps[0])
 
 	wxBitmap *bmp[N_BITMAPS];
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Bitmaps in Resources
 	for (int i = 0; i < N_BITMAPS; i++) {
 		bitmaps[i] = bitmaps[i] + ".bmp";
 		bmp[i] = new wxBitmap(bitmaps[i]);
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Deprecated, now in resources
 	/*	
 	for (int  i = 0; i < N_BITMAPS; i++) {
@@ -263,7 +269,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
 
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Added buttons to enable/disable grid, wide Outlines and connections points 
 	// Added slider to select wireConnRadius
 	toolBar->AddSeparator();
@@ -304,7 +310,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	gatePalette = new PaletteFrame(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);	
 	leftPaneSizer->Add( gatePalette, wxSizerFlags(1).Expand().Border(wxALL, 0) );
 	leftPaneSizer->Show( gatePalette );
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Wider to hold 4 columns of components
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Wider to hold 4 columns of components
 	miniMap = new klsMiniMap(this, wxID_ANY, wxDefaultPosition, wxSize(170, 120));	// was 130x120
 	leftPaneSizer->Add( miniMap, wxSizerFlags(0).Expand().Border(wxALL, 0) );
 	mainSizer->Add( leftPaneSizer, wxSizerFlags(0).Expand().Border(wxALL, 0) );
@@ -493,7 +499,7 @@ void MainFrame::OnClose(wxCloseEvent& event) {
 	// Allow the user to save the file, unless we are in the midst of terminating the app!!, KAS 4/26/07	
 	if (commandProcessor->IsDirty() && !destroy) {
 		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// If cancel don't exit
 		switch (dialog.ShowModal()) {
 		case wxID_NO:
@@ -557,7 +563,7 @@ void MainFrame::OnNew(wxCommandEvent& event) {
 
 	if (commandProcessor->IsDirty()) {
 		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// If cancel don't exit
 		switch (dialog.ShowModal()) {
 		case wxID_YES:
@@ -603,7 +609,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	currentCanvas->getCircuit()->setSimulate(false);
 	if (commandProcessor->IsDirty()) {
 		wxMessageDialog dialog( this, "Circuit has not been saved.  Would you like to save it?", "Save Circuit", wxYES_DEFAULT|wxYES_NO|wxCANCEL|wxICON_QUESTION);
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// If cancel don't exit
 		switch (dialog.ShowModal()) {
 		case wxID_YES:
@@ -729,7 +735,7 @@ void MainFrame::OnViewWireConn(wxCommandEvent& event) {
 	if (currentCanvas != NULL) currentCanvas->Update();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // To show/hide Wide Outlines
 void MainFrame::OnViewWideOutline(wxCommandEvent& event) {
 	wxGetApp().appSettings.wideOutline = event.IsChecked();
@@ -738,21 +744,21 @@ void MainFrame::OnViewWideOutline(wxCommandEvent& event) {
 	if (currentCanvas != NULL) currentCanvas->Update();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // To show/hide components collisions
 void MainFrame::OnViewComponentCollision(wxCommandEvent& event) {
 	wxGetApp().appSettings.componentCollVisible = event.IsChecked();
 	if (currentCanvas != NULL) currentCanvas->Update();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Adjust bitmap size to image when copy asnd save
 void MainFrame::OnAdjustBitmap(wxCommandEvent& event) {
 	wxGetApp().appSettings.adjustBitmap = event.IsChecked();
 	if (currentCanvas != NULL) currentCanvas->Update();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Mark Deprecated component in magenta
 void MainFrame::OnMarkDeprecated(wxCommandEvent& event) {
 	wxGetApp().appSettings.markDeprecated = event.IsChecked();
@@ -847,6 +853,7 @@ gCircuit->setCurrentCanvas(currentCanvas);
 currentCanvas->setMinimap(miniMap);
 currentCanvas->SetFocus();
 currentCanvas->Update();
+
 }
 
 void MainFrame::OnUndo(wxCommandEvent& event) {
@@ -917,7 +924,7 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 		return;
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Added Monocrome vs GreyScale
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Added Monocrome vs GreyScale
 	bool showGreyscale = false;
 	if (!showColor)
 	{
@@ -971,14 +978,35 @@ void MainFrame::OnExportBitmap(wxCommandEvent& event) {
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11		Added color
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Select user library
+void MainFrame::OnSelectLibrary(wxCommandEvent& event) {
+	handlingEvent = true;
+
+	wxString caption = "Select a library";
+	wxString wildcard = "Library files (*.xml)|*.xml";
+	wxString defaultFilename = "";
+	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	dialog.SetPath(wxGetApp().appSettings.gateLibFile);
+
+	if (dialog.ShowModal() == wxID_OK)
+		if (wxGetApp().appSettings.gateLibFile != dialog.GetPath())
+		{
+			wxGetApp().appSettings.gateLibFile = dialog.GetPath();
+			wxMessageBox("You must restart CedarLogic to load the selected library.", "Select User Library", wxOK);
+		}
+
+	handlingEvent = false;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12		Added color
 wxBitmap MainFrame::getBitmap(bool withGrid, bool color) {
 	bool gridlineVisible = wxGetApp().appSettings.gridlineVisible;
 	wxGetApp().appSettings.gridlineVisible = withGrid;
 	wxGetApp().doingBitmapExport = true;
 
 	// render the image
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Unselect all gates and wires
 	currentCanvas->unselectAllGates();
 	currentCanvas->unselectAllWires();
@@ -994,7 +1022,7 @@ wxBitmap MainFrame::getBitmap(bool withGrid, bool color) {
 	if (!wxGetApp().appSettings.adjustBitmap)
 		return circuitBitmap;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// if AdjustBitmap is true then cut external blank areas of image
 
 	wxImage image = circuitBitmap.ConvertToImage();
@@ -1144,7 +1172,7 @@ void MainFrame::OnHelpContents(wxCommandEvent& event) {
 	wxGetApp().helpController->DisplayContents();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Any slider scroll
 void MainFrame::OnSlider(wxScrollEvent& event) {
 	wxGetApp().timeStepMod = 5*timeStepModSlider->GetValue();
@@ -1174,10 +1202,10 @@ void MainFrame::saveSettingsFile() {
 
 	ofstream iniFile(settingsIni.c_str(), ios::out);
 	iniFile << "GateLib=" << wxGetApp().appSettings.gateLibFile << endl;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Help is obsolete
 	//iniFile << "HelpFile=" << wxGetApp().appSettings.helpFile.substr(numCharAbsolute) << endl;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Now in resources
 	if (wxGetApp().appSettings.textFontFile=="res")
 		iniFile << "TextFont=" << "res" << endl;
@@ -1200,7 +1228,7 @@ void MainFrame::saveSettingsFile() {
 	iniFile.close();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Settings in windows register
 void MainFrame::saveSettingsReg() {
 

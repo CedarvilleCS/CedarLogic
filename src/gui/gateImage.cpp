@@ -212,7 +212,7 @@ void gateImage::renderMap() {
 	glLoadIdentity ();
 	glColor4f( 0, 0, 0, 1 );
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Do not draw wide outlines in Palette
 	if (m_gate != NULL) m_gate->draw(true,true);
 }

@@ -35,13 +35,13 @@ Gate::Gate()
 	defaultDelay = DEFAULT_GATE_DELAY;
 	myID = ID_NONE;
 	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Only one OUTPUT_ENABLE
 	// Declare default ENABLE pins, so that any gate can
 	// link them to its outputs:
 	//declareInputBus("ENABLE", 8);	// Dejamos el BUS por compatibilidad (ENABLE_0 .. ENABLE_7)
 	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To permit OUTPUT_ENABLE
 	declareInput("OUTPUT_ENABLE");
 	
@@ -55,7 +55,7 @@ Gate::~Gate()
 
 
 // Update the gate's outputs:
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added theGUICircuit parameter
 void Gate::updateGate( IDType myID, Circuit * theCircuit, GUICircuit * theGUICircuit )
 {
@@ -236,18 +236,18 @@ bool Gate::setInputParameter( string inputID, string paramName, string value ) {
 		// Set the input inverted state:
 		setInputInverted(inputID, (temp == "TRUE"));
 		return true;
-	} else if (paramName == "PULL_UP") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "PULL_UP") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		iss >> temp;
 		// Set the input pull-up state:		
 		setInputPullUp(inputID, (temp == "TRUE"));
 		return true;
-	} else if (paramName == "PULL_DOWN") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "PULL_DOWN") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		iss >> temp;
 		// Set the input pull-down state:
 		setInputPullDown(inputID, (temp == "TRUE"));
 		return true;
 	}
-	else if (paramName == "FORCE_JUNCTION") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	else if (paramName == "FORCE_JUNCTION") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		iss >> temp;
 		// Set the input force-junction state:
 		setInputForceJunction(inputID, (temp == "TRUE"));
@@ -350,11 +350,11 @@ StateType Gate::getInputState( string inputID ) {
 	// If the input is connected, get the input value:
 	if( inputList[inputID].wireID != ID_NONE ) {
 		theState = ourCircuit->getWireState( inputList[inputID].wireID );		
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Pull-up and Pull-down inputs
 		if (theState != CONFLICT)
 		{
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// In case HI_Z or UNKNOWN pullup/pulldown must be considered
 			if (theState != ZERO && theState != ONE) {
 				if (inputList[inputID].pullup)
@@ -366,7 +366,7 @@ StateType Gate::getInputState( string inputID ) {
 	} else {
 		// If the input is not connected, then return
 		// high-impedance as the "value" for the input.
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Pull-up and Pull-down inputs
 		if (inputList[inputID].pullup)
 			theState = ONE;
@@ -402,7 +402,7 @@ vector< StateType > Gate::getInputBusState( string busName ) {
 	return inStates;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // To use bidirectional bus
 // Get the wire states of a bus of output named "busName_0" through
 // "busName_x" and return their states as a vector.
@@ -444,7 +444,7 @@ vector< bool > Gate::groupInputStates( void ) {
 		}
 		else
 		{
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// This function is never called
 			// For unconnected inputs with pullup or pulldown this must be necesary
 			if ((inputs->second).pullup == true)
@@ -717,7 +717,7 @@ void Gate_PASS::gateProcess( void ) {
 	}
 
 	setOutputBusState("OUT", outputStates);
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To manage dual outputs
 	setOutputBusState("OUTINV", outputStates);
 }
@@ -732,7 +732,7 @@ bool Gate_PASS::setParameter( string paramName, string value ) {
 		// Declare the output pins:
 		if( inBits > 0 ) {
 			declareOutputBus( "OUT", inBits );
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Declare the inverted output pins:
 			declareOutputBus( "OUTINV", inBits);
 			// Make all of the OUTINV pins inverted:
@@ -842,7 +842,7 @@ void Gate_PLD_AND::gateProcess(void) {
 	for (unsigned long i = 0; i < inBits; i++) {
 		if (inputStates[i] == ZERO) {
 			outState = ZERO;
-			break; // A single ZERO input will force the gate to ZERO./
+			break; // A single ZERO input will force the gate to ZERO.
 		}
 		else if (inputStates[i] == ONE) {
 			// A ONE does nothing, since we assume ONE first.
@@ -852,7 +852,7 @@ void Gate_PLD_AND::gateProcess(void) {
 		}
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// If FORCE_ZERO output is always ZERO
 	if(forceZero)
 		outState = ZERO;
@@ -975,7 +975,7 @@ Gate_REGISTER::Gate_REGISTER() : Gate_PASS() {
 	declareInput("SET");
 	declareInput("LOAD");
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Control Set - Clear
 	declareInput("CONTROL"); // Favors "yes" if not connected!
 
@@ -988,7 +988,7 @@ Gate_REGISTER::Gate_REGISTER() : Gate_PASS() {
 	declareInput("SHIFT_LEFT"); // Favors "left" if not connected!
 	declareInput("CARRY_IN");
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// For shift and count
 	declareInput("COUNT_UP_SHIFT_LEFT"); // Favors "up and "left" if not connected!
 
@@ -1012,11 +1012,11 @@ Gate_REGISTER::Gate_REGISTER() : Gate_PASS() {
 	currentValue = 0;
 	maxCount = 0;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Bidirectional Data
 	bidirectionalDATA = false;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Carry out on overfow, not on max/min
 	CoOnOverflow = false;
 
@@ -1042,7 +1042,7 @@ void Gate_REGISTER::gateProcess( void ) {
 	// an update message to the GUI:
 	unsigned long oldCurrentValue = currentValue;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Register functions managed by opcode
 	// 000: NOP, 001: LOAD, 010: INC, 011: DEC
 	// 100: SLL, 101: SRL, 110: ROL, 111:ROR
@@ -1053,14 +1053,14 @@ void Gate_REGISTER::gateProcess( void ) {
 
 	// Update outBus and currentValue based on the input states.
 	if( getInputState("CLEAR") == ONE ) {
-		if (getInputState("CONTROL") != ZERO)	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		if (getInputState("CONTROL") != ZERO)	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			if (hasClockEdge(syncClear)) {		// Control Set - Clear and async Clear
 				// Clear.
 				currentValue = 0;
 				if (CoOnOverflow) carryOut = ONE;		//## Review
 			}
 	} else if( getInputState("SET") == ONE ) {
-		if (getInputState("CONTROL") != ZERO)	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		if (getInputState("CONTROL") != ZERO)	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			if (hasClockEdge(syncSet)) {		// Control Set - Clear and async Set
 				// Set.
 				vector< StateType > allOnes( inBits, ONE );
@@ -1068,7 +1068,7 @@ void Gate_REGISTER::gateProcess( void ) {
 				if (CoOnOverflow) carryOut = ONE;		//## Review
 			}
 	} else if( getInputState("LOAD") == ONE || OPcode == 1) {
-		if (hasClockEdge(syncLoad)) {		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		if (hasClockEdge(syncLoad)) {		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Load.
 			vector< StateType > inputBus = getInputBusState("IN");
 			for( unsigned long i = 0; i < inputBus.size(); i++ ) {
@@ -1097,7 +1097,7 @@ void Gate_REGISTER::gateProcess( void ) {
 			}
 		} 
 
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// if CO_ON_OVERFLOW Carry out when count pass fom max to zero or zero to max
 		// if not CO_ON_OVERFLOW Carry out when count is zero or max
 		// Set the carry out bit, regardless of the clock edge:
@@ -1191,7 +1191,7 @@ void Gate_REGISTER::gateProcess( void ) {
 		
 		if( disableHold ) {
 		// Otherwise, load in what is on the input pins:
-			if (hasClockEdge(syncLoad)) {		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			if (hasClockEdge(syncLoad)) {		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 				// Load.
 				vector< StateType > inputBus = getInputBusState("IN");
 				for( unsigned long i = 0; i < inputBus.size(); i++ ) {
@@ -1204,7 +1204,7 @@ void Gate_REGISTER::gateProcess( void ) {
 		}
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Only one time is better than in each case how it was
 	// It is necesary to permit asynchronous ENABLE
 	// Send the value to the bus:
@@ -1245,9 +1245,8 @@ void Gate_REGISTER::gateProcess( void ) {
 			}
 		}
 		// Update the GUI's knowledge of our unknown outputs state, if it has changed:
-		if( oldUO != unknownOutputs ) {
+		if( oldUO != unknownOutputs )
 			listChangedParam("UNKNOWN_OUTPUTS");
-		}
 	}
 
 	// Update the GUI's knowledge of our current value, if it has changed:
@@ -1297,13 +1296,13 @@ bool Gate_REGISTER::setParameter( string paramName, string value ) {
 
 		disableHold = (setVal == "true");
 		return false;
-	} else if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		string bidirectionalDATAVal;						// Bidirectional data lines
 		iss >> bidirectionalDATAVal;
 
 		bidirectionalDATA = (bidirectionalDATAVal == "true");
 		return false;
-	} else if (paramName == "CO_ON_OVERFLOW") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "CO_ON_OVERFLOW") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		string CoOnOverflowVal;								// Carry out on overfow, not on max/min
 		iss >> CoOnOverflowVal;
 
@@ -1313,7 +1312,7 @@ bool Gate_REGISTER::setParameter( string paramName, string value ) {
 	return Gate_PASS::setParameter(paramName, value);
 
 	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// INPUTS_BITS in Gate_PASS::setParameter to set IN, OUT and OUTINV 
 }
 
@@ -1336,26 +1335,26 @@ string Gate_REGISTER::getParameter( string paramName ) {
 	} else if (paramName == "SYNC_CLEAR") {
 		oss << (syncClear ? "true" : "false");
 		return oss.str();
-	} else if (paramName == "SYNC_LOAD") {					// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "SYNC_LOAD") {					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		oss << (syncLoad ? "true" : "false");				// It was omitted
 		return oss.str();
-	} else if (paramName == "NO_HOLD") {					// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "NO_HOLD") {					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		oss << (disableHold ? "true" : "false");			// It was omitted
 		return oss.str();
-	} else if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		oss << (bidirectionalDATA ? "true" : "false");		// Bidirectional data lines
 		return oss.str();
-	} else if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		oss << (CoOnOverflow ? "true" : "false");			// Carry out on overfow, not on max/min
 		return oss.str();
 	} else {
 		return Gate_PASS::getParameter( paramName );
 	}
 }
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // syncSignal added to permit set and clear
 bool Gate_REGISTER::hasClockEdge(bool syncSignal) {
-	return isRisingEdge("CLOCK") && getInputState("CLOCK_ENABLE") != ZERO || !syncSignal;	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	return isRisingEdge("CLOCK") && getInputState("CLOCK_ENABLE") != ZERO || !syncSignal;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 }
 
 // **************************** END Register GATE ***********************************
@@ -1426,7 +1425,7 @@ string Gate_CLOCK::getParameter( string paramName ) {
 
 Gate_PULSE::Gate_PULSE() : Gate() {
 	pulseRemaining = 0;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Set the PULSE_WIDTH parameter:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Set the PULSE_WIDTH parameter:
 	High_Z = false;
 	setParameter("PULSE_WIDTH", "1");
 	
@@ -1438,7 +1437,7 @@ Gate_PULSE::Gate_PULSE() : Gate() {
 // Handle gate events:
 void Gate_PULSE::gateProcess( void ) {
 	// The output is ONE if there is pulse remaining, and ZERO otherwise:
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11			Normally Z if High_Z is true
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12			Normally Z if High_Z is true
 	setOutputState("OUT_0", (pulseRemaining > 0) ? ONE : (High_Z ? HI_Z : ZERO) , 0);
 
 	if( pulseRemaining != 0 ) pulseRemaining--;
@@ -1452,13 +1451,13 @@ bool Gate_PULSE::setParameter( string paramName, string value ) {
 		iss >> pulseRemaining;
 		return false; // It's a polled gate, so don't update it otherwise or the pulse count will be wrong.
 	} else if (paramName == "PULSE_WIDTH") {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Set the PULSE_WIDTH parameter:
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Set the PULSE_WIDTH parameter:
 		iss >> pulseWidth;
 		if (High_Z)							// Generate a pulse
 			pulseRemaining = pulseWidth;
 		return false;
 	} else 	if (paramName == "HIGH_Z") {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Set the HIGH_Z parameter:
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Set the HIGH_Z parameter:
 		string setVal;
 		iss >> setVal;
 		High_Z = (setVal == "true");
@@ -1470,7 +1469,7 @@ bool Gate_PULSE::setParameter( string paramName, string value ) {
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Get the parameters:
 string Gate_PULSE::getParameter(string paramName) {
 	ostringstream oss;
@@ -1567,7 +1566,7 @@ Gate_DECODER::Gate_DECODER() : Gate_N_INPUT() {
 	//Josh Edit 4/6/2007
 	declareInput("ENABLE");
 	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11       for chip 74138
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12       for chip 74138
 	declareInput("ENABLE_A");
 
 	//Josh Edit 10/3/2007
@@ -1620,7 +1619,7 @@ void Gate_DECODER::gateProcess( void ) {
 	bool enabled = true;
 	
 	//by testing for ZERO instead of one, we let a floating enable be enabling.
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// ENABLE_A, ENABLE_B y ENABLE_C for chip 74138
 	if( getInputState("ENABLE") == ZERO || getInputState("ENABLE_A") == ZERO  || getInputState("ENABLE_B") == ZERO ||
 	    getInputState("ENABLE_C") == ZERO ){
@@ -1648,7 +1647,7 @@ bool Gate_DECODER::setParameter( string paramName, string value ) {
 		if (inBits > 0) {
 			// The number of output bits is the power of 2 of the
 			// number of input bits.
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Replaced: pow(inBits, 2.0) by pow(2.0, inBits)  (It was wrong!)
 			outBits = (unsigned long)ceil(pow(2.0, inBits));
 			declareOutputBus("OUT", outBits);
@@ -2167,7 +2166,7 @@ string Gate_JKFF::getParameter( string paramName ) {
 
 // **************************** END JK Flip Flop GATE ***********************************
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Similar to JKFF
 // ******************* T Flip Flop Gate *********************
 
@@ -2267,7 +2266,7 @@ string Gate_TFF::getParameter(string paramName) {
 Gate_RAM::Gate_RAM( ) : Gate() {
 
 	// Declare the stationary pins:
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Uppercase
 	declareInput( "WRITE_CLOCK", true );
 	declareInput( "WRITE_ENABLE" );
@@ -2280,10 +2279,10 @@ Gate_RAM::Gate_RAM( ) : Gate() {
 	setParameter( "DATA_BITS", "0" );
 	
 	// Set the default settings:
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Sync and Async Write	
 	syncWR = true;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Bidirectional data lines	
 	bidirectionalDATA = false;
 
@@ -2298,7 +2297,7 @@ void Gate_RAM::gateProcess( void ) {
 	if( (addressBits == 0) || (dataBits == 0) ) return;
 
 	unsigned long address = bus_to_ulong( getInputBusState("ADDRESS") );
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Bidirectional BUS, no DATA_IN pins nedeed
 	unsigned long dataIn;
 	if (bidirectionalDATA)
@@ -2324,13 +2323,13 @@ void Gate_RAM::gateProcess( void ) {
     }
 //End of Edit************************************************************
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// WRITE_ENABLE Now uppercase
 	if (getInputState("WRITE_ENABLE") == ONE) {
 		// HI_Z all of the data outputs:
 		vector< StateType > allHI_Z( dataBits, HI_Z );
 		setOutputBusState( "DATA_OUT", allHI_Z );
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// WRITE_CLOCK Now Uppercase
 			if ((isRisingEdge("WRITE_CLOCK") && syncWR) || !syncWR) {
 			// Write to the RAM.
@@ -2357,7 +2356,7 @@ void Gate_RAM::gateProcess( void ) {
 //***********************************************************************
 //Edit by Joshua Lansford 4/22/06
 //Purpose of edit:  This allerts the pop-up when ever an address has changed
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// To permit ENABLE without BUS
 		// ENABLE_0 now is OUTPUT_ENABLE
 		// if ((getInputState("OUTPUT_ENABLE") == ONE)|| (getInputState("ENABLE_0") == ONE)) {
@@ -2373,12 +2372,12 @@ void Gate_RAM::gateProcess( void ) {
 // Set the parameters:
 bool Gate_RAM::setParameter( string paramName, string value ) {
 	istringstream iss(value);
-	if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-11 
+	if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-12 
 		string bidirectionalDATAVal;					// Bidirectional data lines
 		iss >> bidirectionalDATAVal;
 
 		bidirectionalDATA = (bidirectionalDATAVal == "true");
-	} else if (paramName == "SYNC_WR") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "SYNC_WR") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		string syncWRVal;								// Sync asnd Async Write
 		iss >> syncWRVal;
 		
@@ -2403,7 +2402,7 @@ bool Gate_RAM::setParameter( string paramName, string value ) {
 			declareOutputBus( "DATA_OUT", dataBits );
 		}
 	} else if (paramName == "CLEAR_MEMORY") {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Added Clear Button
 		memory.clear();
 		flushGuiMemory = true;
@@ -2465,10 +2464,10 @@ bool Gate_RAM::setParameter( string paramName, string value ) {
 // Set the parameters:
 string Gate_RAM::getParameter( string paramName ) {	
 	ostringstream oss;
-	if (paramName == "BIDIRECTIONAL_DATA") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	if (paramName == "BIDIRECTIONAL_DATA") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		oss << (bidirectionalDATA ? "true" : "false");		// Bidirectional data lines
 		return oss.str();
-	} else if (paramName == "SYNC_WR") {					// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	} else if (paramName == "SYNC_WR") {					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		oss << syncWR;										// Asynchronus Write
 		return oss.str();
 	} else if( paramName == "ADDRESS_BITS" ) {
@@ -2985,7 +2984,7 @@ Gate_NODE::Gate_NODE( Circuit *newCircuit ) : Gate() {
 	// The Junction is always connected:
 	myCircuit->setJunctionState( junctionID, true );
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Not necesary at all
 	// Declare the gate inputs and output:
 	/*
@@ -3107,7 +3106,7 @@ bool Gate_BUSEND::setParameter(string paramName, string value) {
 
 			// Declare inputs and outputs for connect/disconnect routines.
 			declareInputBus("IN", busWidth);
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Add second connection point to buses
 			declareInputBus("OUT", busWidth);		// For compatibility
 			declareInputBus("CNA", busWidth);		// Connection A

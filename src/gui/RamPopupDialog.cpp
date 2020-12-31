@@ -23,7 +23,7 @@ using namespace std;
 
 DECLARE_APP(MainApp)
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // bitsInAddress eliminated, got it from paramaeters
 
 RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM, GUICircuit* newGUICircuit )
@@ -42,7 +42,7 @@ RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM, GUICircuit* newGUIC
 	istringstream datass(m_guiGateRAM->getLogicParam("DATA_BITS"));
 	datass >> bitsInData;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// bitsInAddress from parameters
 	istringstream adrss(m_guiGateRAM->getLogicParam("ADDRESS_BITS"));
 	adrss >> bitsInAddress;
@@ -50,7 +50,7 @@ RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM, GUICircuit* newGUIC
 	wxBoxSizer* topSizer = new wxBoxSizer( wxVERTICAL );
 	wxBoxSizer* buttonSizer = new wxBoxSizer( wxHORIZONTAL );
 	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Added Clear Button
 	clearBtn = new wxButton( this, wxID_CLEAR);	
 	closeBtn = new wxButton( this, wxID_CLOSE );
@@ -112,7 +112,7 @@ void RamPopupDialog::OnBtnSave( wxCommandEvent& event ){
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added Clear Button
 void RamPopupDialog::OnBtnClear(wxCommandEvent& event) {
 	gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "CLEAR_MEMORY", NULL)));
@@ -166,7 +166,7 @@ virtualGrid::virtualGrid (int addrSize, int dSize, guiGateRAM* newM_ramGuiGate, 
 	gUICircuit = newGUICircuit;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Calcualte to permit from 1 bit
 int virtualGrid::GetNumberRows () {
 	if (addressSize < 4)
@@ -175,7 +175,7 @@ int virtualGrid::GetNumberRows () {
 		return (int)pow((float)2, (int)addressSize) / 16;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Calcualte to permit from 1 bit
 int virtualGrid::GetNumberCols () {
 	if (addressSize < 4)
@@ -192,13 +192,13 @@ wxString virtualGrid::GetValue (int row, int col) {
 	ostringstream stream;
 		
 	unsigned long data = m_guiGateRAM->getValueAt( row*16 + col );
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Adjust to data size
 	data = data & ((int)pow((float)2, (int)dataSize) - 1);
 	if (hexOrDecCB->IsChecked()) {
 		stream << dec << data;
 	} else {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Adjust to data size
 		stream << hex << uppercase << setw ( (dataSize + 3) / 4 ) << setfill ( '0' ) << data;
 	}
@@ -266,7 +266,7 @@ void virtualGrid::SetAttr(wxGridCellAttr* attr, int row, int col) {
 wxString virtualGrid::GetRowLabelValue(int row) {
 	//set row titles
 	ostringstream stream;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Adjust to address size
 	stream << "0x" << hex << uppercase << setw( addressSize / 4 - 1 ) << setfill( '0' ) << row << 'X';
 	return (const wxChar *)stream.str().c_str(); // KAS

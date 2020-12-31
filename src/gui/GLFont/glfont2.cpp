@@ -102,7 +102,7 @@ bool GLFont::Create (const std::string &file_name, int tex)
 	return Create(file_name.c_str(), tex);
 }
 //*******************************************************************
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // New overload to load font from resource
 bool GLFont::Create(void* fontData, int tex)
 {

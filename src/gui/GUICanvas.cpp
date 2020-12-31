@@ -153,7 +153,7 @@ void GUICanvas::OnRender( bool color ) {
 	// Draw the gates:
 	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while( thisGate != gateList.end() ) {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Deprecated components are show in magenta color
 		if (color && (thisGate->second)->getLibraryName()=="Deprecated" && wxGetApp().appSettings.markDeprecated)
 			glColor4f(1.0f, 0.0f, 1.0f, 1.0f);		// Magenta
@@ -226,12 +226,12 @@ void GUICanvas::OnRender( bool color ) {
 	}
 
 	// Collisions
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Components collisions are not a problem. Sometines it prevents components from being together
 	// It is now an application setting: ComponentCollVisible (menu and settings.ini)
 	if(wxGetApp().appSettings.componentCollVisible) {
 		// Draw the alpha-blended selection box over top of the overlap:
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11		Added color
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12		Added color
 		if (color)
 			glColor4f(0.4f, 0.1f, 0.0f, 0.3f);			// Brown
 		else
@@ -356,7 +356,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 		//"(isLockedShiftDown()||event.ControlDown())"
 		//************************************
 		
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Now permit drag from wires and hotspot
 		if ((*hit)->getType() == COLL_WIRE) {
 			guiWire* hitWire = ((guiWire*)(*hit));
@@ -374,7 +374,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 					hitWire->select();
 				}				
 				
-				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	It was ControlDown Only
+				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	It was ControlDown Only
 				// ControlDown or ShiftDownto drag connection
 				if ((event.ShiftDown() || event.ControlDown()) && !(this->isLocked())) {
 					if (hotspotHighlight.size() == 0)
@@ -585,20 +585,18 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 					newParams["angle"] = ossAngle.str();
 					gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
 				} else {
-					// Pedro Casanova (casanova@ujaen.es) 2020/04-11
-					// Shift or Control and mouseRightDown to change "mirror" GUI param in MUX, DECODER, ENCODER, BUFFER and BUSEND gates
-					if ((hitGate->getLogicType() == "BUSEND") || (hitGate->getLogicType() == "MUX") || (hitGate->getLogicType() == "DECODER") || (hitGate->getLogicType() == "ENCODER") || (hitGate->getLogicType() == "BUFFER" && hitGate->getHotspotList().size()>2)) {
-						if (newParams["mirror"] == "true")
-							newParams["mirror"] = "false";
-						else
-							newParams["mirror"] = "true";
-						gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
-					}
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+					// Shift or Control and mouseRightDown to change "mirror" GUI param
+					if (newParams["mirror"] == "true")
+						newParams["mirror"] = "false";
+					else
+						newParams["mirror"] = "true";
+					gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
 				}
 
 			}
 			hit++;
-		}				
+		}
 	}
 	Refresh();
 }
@@ -890,9 +888,8 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 				if ((*hit)->getType() == COLL_GATE) {
 					guiGate* hitGate = ((guiGate*)(*hit));*/					
 					guiGate* hitGate = gateList[preMove[0].id];
-					// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 					// To permit single click in lock mode
-					//if (!((event.ShiftDown() || event.ControlDown())) && ((event.LeftUp() && currentDragState == DRAG_SELECTION) || event.LeftDClick())) {
 					if (!(event.ShiftDown() || event.ControlDown()) && ((event.LeftUp() && currentDragState == DRAG_SELECTION)) || (event.LeftUp() && this->isLocked() || event.LeftDClick())) {
 						// Check for toggle switch
 						float x, y;
@@ -923,7 +920,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 			IDType wireID1, wireID2;
 			bool twoWires = false;
 			
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// We can grag from gates and from wires
 			// Oh yeah, we only drag from gates... FALSE
 
@@ -1005,7 +1002,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 				}
 			}
 			if (twoWires) {
-				// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 				// Connection between two diferents wires
 				command = createWireConnectionCommand(wireID1, wireID2);
 			}
@@ -1500,7 +1497,7 @@ klsCommand * GUICanvas::createGateConnectionCommand(IDType gate1Id, const string
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Connect two diferents wires
 // Delete the second wire and creates connections between wire1 and each hotspot of wire2
 // Exists a problem: wire2 changes shape

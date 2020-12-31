@@ -58,7 +58,7 @@ bool cmdCreateGate::Do() {
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Nedeed only for inputs
 			// Send the isPullUp message:
 			if (libGate.hotspots[i].isPullUp) {
@@ -67,7 +67,7 @@ bool cmdCreateGate::Do() {
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Nedeed only for inputs
 			// Send the isPullDown message:
 			if (libGate.hotspots[i].isPullDown) {
@@ -76,7 +76,7 @@ bool cmdCreateGate::Do() {
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Nedeed only for inputs
 			// Send the ForceJunction message:
 			if (libGate.hotspots[i].ForceJunction) {
@@ -85,7 +85,7 @@ bool cmdCreateGate::Do() {
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Nedeed only for outputs
 			// Send the logicEInput message:
 			if (libGate.hotspots[i].logicEInput != "") {

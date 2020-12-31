@@ -24,7 +24,7 @@
 using namespace std;
 
 struct lgHotspot {
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To permit pull-up, pull-down and forceJunction inputs
 	lgHotspot(string nName = "", bool nIsInput = true, float nX = 0, float nY = 0, bool nIsInverted = false, bool nIsPullUp = false, bool nIsPullDown = false, bool nForceJunction = false, string nEInput = "", int busLines = 1) : name(nName), isInput(nIsInput), x(nX), y(nY), isInverted(nIsInverted), isPullUp(nIsPullUp), isPullDown(nIsPullDown), ForceJunction(nForceJunction), logicEInput(nEInput), busLines(busLines) {};
 	string name;
@@ -38,7 +38,7 @@ struct lgHotspot {
 	int busLines;
 };
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // parameter w added for linewidth (default=1)
 struct lgLine {
 	lgLine(float nX1 = 0, float nY1 = 0, float nX2 = 0, float nY2 = 0, int nW = 1) : x1(nX1), x2(nX2), y1(nY1), y2(nY2), w(nW) {}
@@ -46,12 +46,17 @@ struct lgLine {
 	int w;
 };
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Lines with offset for rotate chars
 struct lgOffLine {
-	lgOffLine(lgLine nLine = lgLine(), float nX0 = 0, float nY0 = 0) : Line(nLine), x0(nX0), y0(nY0) {}
+	lgOffLine(lgLine nLine = lgLine(), float nX0 = 0, float nY0 = 0) : Line(nLine), x0(nX0), y0(nY0) {
+	 x1 = x0 + nLine.x1; y1 = y0 + nLine.y1;
+	 x2 = x0 + nLine.x2; y2 = y0 + nLine.y2;
+	}
 	lgLine Line;
 	float x0, y0;
+	float x1, y1;
+	float x2, y2;
 };
 
 struct lgDlgParam {
@@ -73,7 +78,7 @@ struct LibraryGate {
 	string logicType; // Note: If a gate has no logic type, then logicType="".
 	vector < lgHotspot > hotspots;
 	vector < lgLine > shape;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Lines with offset for rotate chars
 	vector < lgOffLine > Offshape;
 	vector < lgDlgParam > dlgParams; // The parameters to be listed in the "settings dialog".
@@ -92,11 +97,11 @@ public:
 	// Added by Colin Broberg 11/16/16 -- need to make this a public function so that I can use it for dynamic gates
 	void addGate(string libName, LibraryGate newGate);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// New command to generate text shapes
 	bool parseTextObject(LibraryGate* newGate);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Lines with offset for rotate chars
 	bool parseShapeText(XMLParser* Parse, string type, LibraryGate* newGate, int stringType, double cenX = 0.0, double cenY = 0.0, double dX = 0.0, double dY = 0.0, double Scale = 1.0);
 

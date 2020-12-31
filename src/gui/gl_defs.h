@@ -31,7 +31,7 @@ struct GLLine2f {
 #define EQUALRANGE 0.00125
 
 #define CEDAR_GLLIST_CONNECTPOINT 1024
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // To draw cross junctions
 #define CEDAR_GLLIST_CROSSPOINT 1025
 

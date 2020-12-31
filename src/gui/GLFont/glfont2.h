@@ -53,7 +53,7 @@ public:
 	//Creates the glFont
 	bool Create (const char *file_name, int tex);
 	bool Create (const std::string &file_name, int tex);
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// New overload to load font from resource
 	bool Create (void* fontData, int tex);
 

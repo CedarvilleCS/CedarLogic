@@ -59,7 +59,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	// of CedarLogic from opening new, incompatable files.
 	if (firstTag == "version") {
 		std::string versionNumber = mParse->readTagValue("version");
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Compare version number only "x.y.z"
 		// originally it was: "x.y.z | DATE - TIME"
 		if (versionNumber.find(" ") >= 0)
@@ -74,7 +74,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 				"If this circuit does not operate correctily close CedarLogic without saving."				
 				, "Version Error!");
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Can continue if no incompatibility (don't quit)
 			//return gCanvases;
 		}
@@ -99,7 +99,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 			gCanvases.push_back(gCanvas);
 		}
 		else {
-			gCanvas = gCanvases[(int)pageNum];			
+			gCanvas = gCanvases[(int)pageNum];
 		}
 		
 		string pageTag = temp;
@@ -118,7 +118,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 				char dump;
 				iss >> topLeft.x >> dump >> topLeft.y >> dump >> bottomRight.x >> dump >> bottomRight.y;
 				gCanvas->setViewport(topLeft, bottomRight);
-
+				gCanvas->getViewport(topLeft, bottomRight);
 				mParse->readCloseTag();
 			}
 			else if (temp == "gate") {
@@ -152,19 +152,19 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 							//Thus no warning needs to be given.
 							type = "AM_RAM_16x16";
 						}
-						// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Some names are changed for alfabetic order
 						if (type == "CA_SMALL_TGATE") type = "TA_SMALL_TGATE";
 						if (type == "AI_INVERTER_4BIT") type = "BI_INVERTER_4BIT";				
 
-						// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Names are changed becuse now the encoder can chage priority type (none. high and low)
 						if (type == "CB_PRI_ENCODER_4x2") type = "CB_ENCODER_4x2_EN";
 						if (type == "CC_PRI_ENCODER_8x3") type = "CC_ENCODER_8x3_EN";
 						if (type == "CD_PRI_ENCODER_16x4") type = "CD_ENCODER_16x4_EN";
 						if (type == "HO_JUNC_00") type = "HP_JUNC_00";
 
-						// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Not necesary to deprecate, components are now in library
 						/* else if (type == "AA_DFF") {
 							wxMessageBox("The High Active Reset D flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
@@ -226,12 +226,23 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						istringstream iss(paramData);
 						iss >> x;
 						getline(iss, y, '\n');
-						// Pedro casanova (casanova@ujaen.es) 2020/04-11		PULSE_WITH now is a logic param
-						if (x == "PULSE_WIDTH")
-							temp = "lparam";
-						pParam = new parameter(x, y.substr(1,y.size()-1), (temp == "gparam"));
-						params.push_back(*pParam);
-						delete pParam;
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+						// Do not load these gui params, they are obtained from the library
+						if (x != "ROTATE")
+							if (x != "CROSS_POINT")
+								if (x != "LED_BOX")
+									if (x != "VALUE_BOX")
+										if (x != "CLICK_BOX")
+											if (x.substr(0, 11) != "KEYPAD_BOX_")
+											{
+												// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+												// PULSE_WITH now is a logic param
+												if (x == "PULSE_WIDTH")
+													temp = "lparam";
+												pParam = new parameter(x, y.substr(1, y.size() - 1), (temp == "gparam"));
+												params.push_back(*pParam);
+												delete pParam;
+											}
 					}
 					// ADD OTHER TAGS FOR GATE HERE
 					// ALSO MODIFY parseGateToSend
@@ -273,14 +284,17 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	istringstream issb(ID);
 	issb >> id;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To avoid crash when a gate does not exist
 	LibraryGate libGate;
+	wxGetApp().libParser.getGate(type, libGate);
 	if (!wxGetApp().libParser.getGate(type, libGate))
 	{
 		wxMessageBox("Component not found!\nGate name:" + type, "Not found Error!");
 		type = "@@_NOT_FOUND";
 		wxGetApp().libParser.getGate(type, libGate);
+		inputs.clear();
+		outputs.clear();
 	}
 
 	if (libGate.logicType.size() > 0)
@@ -294,7 +308,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	if (newGate == NULL) return; // IN CASE OF ERROR
 	gCanvas->insertGate(id, newGate, x, y);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To avoid crash when a gate does not exist
 	if (type == "@@_NOT_FOUND")	return;
 	
@@ -318,7 +332,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Nedeed only for inputs
 			// Send the isPullUp message:
 			if (libGate.hotspots[i].isPullUp) {
@@ -327,7 +341,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Nedeed only for inputs
 			// Send the isPullDown message:
 			if (libGate.hotspots[i].isPullDown) {
@@ -336,7 +350,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Nedeed only for inputs
 			// Send the ForceJunction message:
 			if (libGate.hotspots[i].ForceJunction) {
@@ -345,7 +359,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 				}
 			}
 
-			// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Nedeed only for outputs
 			// Send the logicEInput message:
 			if (libGate.hotspots[i].logicEInput != "") {
@@ -485,6 +499,31 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 	// The second label has a link to the download for the latest version of CedarLogic.
 	// I acknowledge that this is a hack...
 	// Versions of CedarLogic 2.0 and newer have a <version> tag.
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Changed
+	*ossCircuit << R"===(
+<circuit>
+<CurrentPage>0</CurrentPage>
+<page 0>
+<PageViewport>-32.95,39.6893,61.95,-63.2229</PageViewport>
+<gate>
+<ID>2</ID>
+<type>AA_LABEL</type>
+<position>14.5,-13</position>
+<gparam>LABEL_TEXT Go to https://cedar.to/vjyQw7 to download the latest version!</gparam>
+<gparam>TEXT_HEIGHT 2</gparam></gate>
+<gate>
+<ID>3</ID>
+<type>AA_LABEL</type>
+<position>14.5,-9.5</position>
+<gparam>LABEL_TEXT Error: This file was made with a newer version of CedarLogic!</gparam>
+<gparam>TEXT_HEIGHT 2</gparam></gate></page 0>
+</circuit>
+<throw_away></throw_away>
+
+	)===";
+
+/*
 	*ossCircuit << R"===(
 <circuit>
 <CurrentPage>0</CurrentPage>
@@ -508,7 +547,7 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 <throw_away></throw_away>
 
 	)===";
-
+*/
 	mParse = new XMLParser(ossCircuit);
 
 	mParse->openTag("version");
@@ -537,7 +576,7 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 		mParse->openTag("PageViewport");
 		oss.str("");
 		oss.clear();
-		GLPoint2f topLeft, bottomRight;
+		GLPoint2f topLeft, bottomRight;		
 		glc[i]->getViewport(topLeft, bottomRight);
 		oss << topLeft.x << "," << topLeft.y << "," << bottomRight.x << "," << bottomRight.y;
 		mParse->writeTag("PageViewport", oss.str());

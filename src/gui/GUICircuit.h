@@ -40,7 +40,7 @@ public:
 
     virtual ~GUICircuit();
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	void setCircuit(void* theCircuit) { ourCircuit = theCircuit; };
 
 	// Reinit circuit
@@ -88,7 +88,7 @@ public:
 	int lastTimeMod;
 	int lastNumSteps;
 	int lastTime;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	void* ourCircuit = NULL;
 	
 private:

@@ -22,7 +22,9 @@ guiGate::guiGate() : klsCollisionObject(COLL_GATE) {
 	myX = 1.0;
 	myY = 1.0;
 	selected = false;
-	gparams["angle"] = "0.0";
+	gparams["angle"] = "0";
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	gparams["mirror"] = "false";
 }
 
 guiGate::~guiGate(){
@@ -75,19 +77,10 @@ void guiGate::updateBBoxes( bool noUpdateWires ) {
 	glTranslatef(x, y, 0);
 	glRotatef( angle, 0.0, 0.0, 1.0);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
-	// Eliminated, now in "mirror" param
-	// Modified by Colin 1/16/17 to allow for mirroring of bus ends
-	/*if ((angle == 180 || angle == 270) && this->getGUIType() == "BUSEND") {
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// "mirror" GUI param 
+	if (gparams["mirror"] == "true")
 		glScalef(1, -1, 1);
-	}*/
-
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
-	// "mirror" GUI param in MUX, DECODER, ENCODER, BUFFER and BUSEND gates
-	if ((getLogicType() == "BUSEND") || (getLogicType() == "MUX") || (getLogicType() == "DECODER") || (getLogicType() == "ENCODER") || (getLogicType() == "BUFFER" && getHotspotList().size() > 2)) {
-		if (gparams["mirror"] == "true")
-			glScalef(1, -1, 1);
-	}
 
 	// Read the forward matrix into the member variable:
 	glGetDoublev( GL_MODELVIEW_MATRIX, mModel );
@@ -121,16 +114,27 @@ void guiGate::finalizeWirePlacements() {
 	updateConnectionMerges();
 }
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Added Rotate
 // Convert model->world coordinates:
-GLPoint2f guiGate::modelToWorld( GLPoint2f c ) {
+GLPoint2f guiGate::modelToWorld( GLPoint2f c, bool Rotate ) {
 
 	// Perform a matrix-vector multiply to get the point coordinates in world-space:
-	GLfloat x = c.x * mModel[0] + c.y * mModel[4] + 1.0*mModel[12];
-	GLfloat y = c.x * mModel[1] + c.y * mModel[5] + 1.0*mModel[13];
+
+	GLfloat x = mModel[12];
+	GLfloat y = mModel[13];
+
+	if (Rotate) {
+		// Perform a matrix-vector multiply to get the point coordinates in world-space:
+		x += c.x * mModel[0] + c.y * mModel[4];
+		y += c.x * mModel[1] + c.y * mModel[5];
+	} else {
+		x += c.x;
+		y += c.y;
+	}
 
 	return GLPoint2f( x, y );
 }
-
 
 void guiGate::addConnection(string c, guiWire* obj) {
 	connections[c] = obj;
@@ -146,7 +150,7 @@ bool guiGate::isConnected(string c) {
 	return (connections.find(c) != connections.end());
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
 void guiGate::draw(bool color, bool drawPalette) {
 
@@ -169,7 +173,7 @@ void guiGate::draw(bool color, bool drawPalette) {
 		glLineStipple(1, 0x9999);
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Now use lines instead of vertices
 	// Draw fine, wide, out and bus lines	
 
@@ -216,19 +220,9 @@ void guiGate::draw(bool color, bool drawPalette) {
 		}
 	glEnd();
 
-	// Draw the bus lines:
-	glLineWidth(4);
-	glBegin(GL_LINES);
-	for (unsigned int i = 0; i < lines.size(); i++)
-		if (lines[i].w == 10) {
-			glVertex2f(lines[i].x1, lines[i].y1);
-			glVertex2f(lines[i].x2, lines[i].y2);
-		}
-	glEnd();
-
 	glLineWidth(1);
 
-	//####		
+	//####
 	/*
 	// Put 0,0 cross
 	{
@@ -270,7 +264,7 @@ void guiGate::draw(bool color, bool drawPalette) {
 
 	//####    */
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Draw text
 	istringstream iss(gparams["angle"]);
 	GLfloat angle;
@@ -289,13 +283,13 @@ void guiGate::draw(bool color, bool drawPalette) {
 		float x2 = offlines[i].Line.x2;
 		float y2 = offlines[i].Line.y2;
 
-		float x1p = x0 + (x1 * cos(angle*DEG2RAD) - y1 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
-		float y1p = y0 + (x1 * sin(angle*DEG2RAD) + y1 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
-		float x2p = x0 + (x2 * cos(angle*DEG2RAD) - y2 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
-		float y2p = y0 + (x2 * sin(angle*DEG2RAD) + y2 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
+		offlines[i].x1 = x0 + (x1 * cos(angle*DEG2RAD) - y1 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+		offlines[i].y1 = y0 + (x1 * sin(angle*DEG2RAD) + y1 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
+		offlines[i].x2 = x0 + (x2 * cos(angle*DEG2RAD) - y2 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+		offlines[i].y2 = y0 + (x2 * sin(angle*DEG2RAD) + y2 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
 
-		glVertex2f(x1p, y1p);
-		glVertex2f(x2p, y2p);
+		glVertex2f(offlines[i].x1, offlines[i].y1);
+		glVertex2f(offlines[i].x2, offlines[i].y2);
 	}
 
 	glEnd();
@@ -350,14 +344,14 @@ bool guiGate::clickSelect( GLfloat x, GLfloat y ) {
 }
 
 // Insert a line in the line list.
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Parameter w added for linewidth (default=1)
 // Now use lines instead of vertices
 void guiGate::insertLine( float x1, float y1, float x2, float y2, int w) {
 	lines.push_back(lgLine(x1, y1, x2, y2, w));
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Lines with offset for rotate chars
 void guiGate::insertOffLine(float x0, float y0, float x1, float y1, float x2, float y2, int w) {
 	offlines.push_back(lgOffLine(lgLine(x1, y1, x2, y2, w),x0,y0));
@@ -365,7 +359,7 @@ void guiGate::insertOffLine(float x0, float y0, float x1, float y1, float x2, fl
 
 
 // Recalculate the bounding box, based on the lines that are included already:
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Now use lines instead of vertices
 void guiGate::calcBBox( void ) {
 	modelBBox.reset();
@@ -373,6 +367,14 @@ void guiGate::calcBBox( void ) {
 	for (unsigned int i = 0; i < lines.size(); i++) {
 		modelBBox.addPoint(GLPoint2f(lines[i].x1, lines[i].y1));
 		modelBBox.addPoint(GLPoint2f(lines[i].x2, lines[i].y2));
+	}
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Add text lines
+	//####
+	for (unsigned int i = 0; i < offlines.size(); i++) {
+		modelBBox.addPoint(GLPoint2f(offlines[i].x1, offlines[i].y1));
+		modelBBox.addPoint(GLPoint2f(offlines[i].x2, offlines[i].y2));
 	}
 
 	// Recalculate the world-space bbox:
@@ -502,6 +504,17 @@ void guiGate::saveGate(XMLParser* xparse) {
 	}
 	map< string, string >::iterator pParams = gparams.begin();
 	while (pParams != gparams.end()) {
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Avoid to save some gparams 
+		if (pParams->first == "angle" && (pParams->second == "0" || pParams->second == "0.0")) { pParams++; continue; }
+		if (pParams->first == "mirror" && pParams->second != "true") { pParams++; continue; }
+		if (pParams->first == "ROTATE") { pParams++; continue; }
+		if (pParams->first == "CROSS_POINT") { pParams++; continue; }
+		if (pParams->first == "LED_BOX") { pParams++; continue; }
+		if (pParams->first == "VALUE_BOX") { pParams++; continue; }		
+		if (pParams->first == "CLICK_BOX") { pParams++; continue; }		
+		if (pParams->first.substr(0, 11) == "KEYPAD_BOX_") { pParams++; continue; }
+		
 		xparse->openTag("gparam");
 		oss.str("");
 		oss << pParams->first << " " << pParams->second;
@@ -551,35 +564,14 @@ void guiGate::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ) {
 }
 
 void guiGate::setGUIParam(string paramName, string value) {
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
-	// "mirror" GUI param in MUX, DECODER, ENCODER, BUFFER and BUSEND gates
-	if (paramName == "mirror")
-		if ((getLogicType() == "BUSEND") || (getLogicType() == "MUX") || (getLogicType() == "DECODER") || (getLogicType() == "ENCODER") || (getLogicType() == "BUFFER" && getHotspotList().size() > 2))
-		{
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// "mirror" GUI param 
+	if (paramName == "mirror") {
 			if (value != "true" && value != "false")
 				return;
-		}
-		else
-			return;
+	}
 
 	gparams[paramName] = value;
-
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
-	// For compatibility with old BUSEND 
-	if (paramName == "angle") {
-		if (getLogicType() == "BUSEND") {
-			if ((gparams["mirror"] != "true") && (gparams["mirror"] != "false")) {
-				if (value == "180" || value == "270")
-					gparams["mirror"] = "true";
-				else
-					gparams["mirror"] = "false";
-			}
-		}
-		else if ((getLogicType() == "MUX") || (getLogicType() == "DECODER") || (getLogicType() == "ENCODER") || (getLogicType() == "BUFFER" && getHotspotList().size() > 2)) {
-			if ((gparams["mirror"] != "true") && (gparams["mirror"] != "false"))
-				gparams["mirror"] = "false";
-		}
-	}
 
 	if (paramName == "angle" || paramName == "mirror") {
 		// Update the matrices and bounding box:
@@ -588,8 +580,77 @@ void guiGate::setGUIParam(string paramName, string value) {
 	}
 }
 
+// *********************** guiGateBUSEND *************************
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+void guiGateBUSEND::draw(bool color, bool drawPalette) {
+
+	guiGate::draw(color, drawPalette);
+
+	if (!drawPalette) {
+		if (color) {
+			bool conflict = false;
+			bool unknown = false;
+			bool hiz = false;
+			float redness = 0;
+			map< string, guiWire* >::iterator theCnk = connections.begin();
+			if (theCnk != connections.end()) {
+				for (int i = 0; i < (int)theCnk->second->getState().size(); i++) {
+					switch ((theCnk->second)->getState()[i]) {
+					case ZERO:
+						break;
+					case ONE:
+						redness += pow(2, i);					// For buses red scale
+						break;
+					case HI_Z:
+						hiz = true;
+						break;
+					case UNKNOWN:
+						unknown = true;
+						break;
+					case CONFLICT:
+						conflict = true;
+						break;
+					}
+				}
+				redness /= pow(2, theCnk->second->getState().size()) - 1;			// For buses red scale
+			}
+			else
+				hiz = true;
+			
+			if (conflict) {		// cyan
+				glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+			}
+			else if (unknown) {	// blue
+				glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+			}
+			else if (hiz) {		// green
+				glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+			}
+			else {				// red or black
+				glColor4f(redness, 0.0f, 0.0f, 1.0f);		// For buses red scale
+			}
+		}
+	}
+
+	// Draw the bus lines:
+	glLineWidth(4);
+	glBegin(GL_LINES);
+	for (unsigned int i = 0; i < lines.size(); i++)
+		if (lines[i].w == 10) {
+			glVertex2f(lines[i].x1, lines[i].y1);
+			glVertex2f(lines[i].x2, lines[i].y2);
+		}
+	glEnd();
+	glLineWidth(1);
+
+	// Set the color back to black:
+	glColor4f(0, 0, 0, 1.0);
+}
+
+
 // *********************** guiGatePLD *************************
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 guiGatePLD::guiGatePLD() {
 	guiGate();
 
@@ -597,7 +658,7 @@ guiGatePLD::guiGatePLD() {
 	setGUIParam("CROSS_POINT", "0,0");
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
 void guiGatePLD::draw(bool color, bool drawPalette) {
 
@@ -622,7 +683,7 @@ void guiGatePLD::draw(bool color, bool drawPalette) {
 }
 
 void guiGatePLD::setGUIParam(string paramName, string value) {
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// <CROSS_JUNCTION> cross junctions in inputs for PLD devices (LAND & LOR gates)
 	if (paramName == "CROSS_JUNCTION")
 		if (this->getLogicType() == "PLD_AND" || this->getLogicType() == "OR")
@@ -633,7 +694,7 @@ void guiGatePLD::setGUIParam(string paramName, string value) {
 		else
 			return;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// <CROSS_POINT> point to draw cross junctions in gate for PLD devices (LAND gates)
 	if (paramName == "CROSS_POINT") {
 		if (this->getLogicType() == "PLD_AND")
@@ -666,7 +727,7 @@ guiGateTOGGLE::guiGateTOGGLE() {
 	// on the GUI side.
 	setLogicParam( "OUTPUT_NUM", "0" );
 	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Set the default CLICK box:
 	renderInfo_clickBox.begin.x = 0;
 	renderInfo_clickBox.begin.y = 0;
@@ -674,14 +735,14 @@ guiGateTOGGLE::guiGateTOGGLE() {
 	renderInfo_clickBox.end.y = 0;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
 void guiGateTOGGLE::draw(bool color, bool drawPalette) {
 	// Draw the default lines:
 	guiGate::draw(color, drawPalette);
 	
 	// Add the rectangle: Inner Square
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11		Added Black for color=false
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		Added Black for color=false
 	if (color)
 		glColor4f((float)renderInfo_outputNum, 0.0, 0.0, 1.0);
 	else
@@ -715,7 +776,7 @@ void guiGateTOGGLE::setLogicParam( string paramName, string value ) {
 klsMessage::Message_SET_GATE_PARAM* guiGateTOGGLE::checkClick( GLfloat x, GLfloat y ) {
 	klsBBox toggleButton;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Return if CLICK_BOX does not exist
 	if (gparams.find("CLICK_BOX") == gparams.end())
 		return NULL;
@@ -760,24 +821,63 @@ guiGateKEYPAD::guiGateKEYPAD() {
 	//	param values are of type "minx,miny,maxx,maxy"
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
 void guiGateKEYPAD::draw(bool color, bool drawPalette) {
 	// Position the gate at its x and y coordinates:
 	glLoadMatrixd(mModel);
 	
-	// Add the rectangle - this is a highlight so needs done before main gate draw:
-	glColor4f( 0.0, 0.4f, 1.0, 0.3f );
+	if (color) {
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// To draw inner square when text is rotated and not rotated	
+		GLfloat Color[4];
+		glGetFloatv(GL_CURRENT_COLOR, Color);
+		glColor4f(0.0, 0.4f, 1.0, 0.3f);
 
-	//Inner Square
-	if (color) glRectd  ( renderInfo_valueBox.begin.x, renderInfo_valueBox.begin.y, 
-			renderInfo_valueBox.end.x, renderInfo_valueBox.end.y ) ;
-	
-	// Set the color back to the old color:
-	glColor4f( 0.0, 0.0, 0.0, 1.0 );
+		float x1 = renderInfo_valueBox.begin.x;
+		float y1 = renderInfo_valueBox.begin.y;
+		float x2 = renderInfo_valueBox.end.x;
+		float y2 = renderInfo_valueBox.end.y;
+
+		// Rotate only appears in old KEYPAD style and must be always true
+		if (gparams.find("ROTATE") == gparams.end()) {
+			istringstream iss(gparams["angle"]);
+			GLfloat angle;
+			iss >> angle;
+			bool mirror = false;
+			if (gparams.find("mirror") != gparams.end())
+				mirror = gparams["mirror"] == "true" ? true : false;
+
+			float x1p = (x1 * cos(angle*DEG2RAD) - y1 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+			float y1p = (x1 * sin(angle*DEG2RAD) + y1 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
+			float x2p = (x2 * cos(angle*DEG2RAD) - y2 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+			float y2p = (x2 * sin(angle*DEG2RAD) + y2 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
+
+			x1 = x1p;
+			y1 = y1p;
+			x2 = x2p;
+			y2 = y2p;
+		}
+
+		// Add the rectangle - this is a highlight so needs done before main gate draw:
+		glRectd(x1, y1, x2, y2);
+
+		// Set the color back to the old color:
+		glColor4f(Color[0], Color[1], Color[2], Color[3]);
+	}
 
 	// Draw the default lines:
 	guiGate::draw(color, drawPalette);
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Parameter ROTATE for old style KEYPAD can only be true
+void guiGateKEYPAD::setGUIParam(string paramName, string value) {
+	if (paramName == "ROTATE") {
+		if (value != "true")
+			return;
+	}
+	guiGate::setGUIParam(paramName, value);
 }
 
 void guiGateKEYPAD::setLogicParam( string paramName, string value ) {
@@ -833,11 +933,20 @@ klsMessage::Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick( GLfloat x, GLfloa
 		GLdouble maxy = 0.5;
 		char dump;
 		iss >> minx >> dump >> miny >> dump >> maxx >> dump >> maxy;
-		
-		keyButton.addPoint( modelToWorld( GLPoint2f( minx, miny ) ) );
-		keyButton.addPoint( modelToWorld( GLPoint2f( minx, maxy ) ) );
-		keyButton.addPoint( modelToWorld( GLPoint2f( maxx, miny ) ) );
-		keyButton.addPoint( modelToWorld( GLPoint2f( maxx, maxy ) ) );
+
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Rotate only appears in old KEYPAD style and must be always true
+		if (gparams.find("ROTATE") == gparams.end()) {
+			keyButton.addPoint(modelToWorld(GLPoint2f(minx, miny), false));
+			keyButton.addPoint(modelToWorld(GLPoint2f(minx, maxy), false));
+			keyButton.addPoint(modelToWorld(GLPoint2f(maxx, miny), false));
+			keyButton.addPoint(modelToWorld(GLPoint2f(maxx, maxy), false));
+		} else {
+			keyButton.addPoint(modelToWorld(GLPoint2f(minx, miny)));
+			keyButton.addPoint(modelToWorld(GLPoint2f(minx, maxy)));
+			keyButton.addPoint(modelToWorld(GLPoint2f(maxx, miny)));
+			keyButton.addPoint(modelToWorld(GLPoint2f(maxx, maxy)));
+		}
 	
 		if (keyButton.contains( GLPoint2f( x, y ) )) {
 			// Retrieve the value of the box
@@ -871,7 +980,7 @@ guiGateREGISTER::guiGateREGISTER() {
 	// on the GUI side.
 	renderInfo_numDigitsToShow = 1;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Set default VALUE_BOX
 	renderInfo_valueBox.begin.x = 0;
 	renderInfo_valueBox.begin.y = 0;
@@ -882,11 +991,11 @@ guiGateREGISTER::guiGateREGISTER() {
 
 	setLogicParam( "CURRENT_VALUE", "0" );
 	setLogicParam( "UNKNOWN_OUTPUTS", "false" );
-	display_BCD = false;		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
-	hide_display = false;	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	display_BCD = false;		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	hide_display = false;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
 void guiGateREGISTER::draw(bool color, bool drawPalette) {
 	// Draw the default lines:
@@ -906,7 +1015,7 @@ void guiGateREGISTER::draw(bool color, bool drawPalette) {
 	glVertex2f(renderInfo_valueBox.end.x, renderInfo_valueBox.begin.y);
 	glEnd();
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11		Added Black for color=false
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		Added Black for color=false
 	if (color)
 	{
 		// Draw the number in red (or blue if inputs are not all sane)
@@ -920,76 +1029,134 @@ void guiGateREGISTER::draw(bool color, bool drawPalette) {
 	glGetFloatv(GL_LINE_WIDTH, &lineWidthOld);
 	glLineWidth(2.0);
 
+	istringstream iss(gparams["angle"]);
+	GLfloat angle;
+	iss >> angle;
+	bool mirror = false;
+	if (gparams.find("mirror") != gparams.end())
+		mirror = gparams["mirror"] == "true" ? true : false;
+
 	// THESE ARE ALL SEVEN SEGMENTS WITH DIFFERENTIAL COORDS.  USE THEM FOR EACH DIGIT VALUE FOR EACH DIGIT
 	//		AND INCREMENT CURRENTDIGIT.  CURRENTDIGIT=0 IS MSB.
 	glBegin(GL_LINES);
 	for (unsigned int currentDigit = 0; currentDigit < renderInfo_currentValue.size(); currentDigit++) {
 		char c = renderInfo_currentValue[currentDigit];
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11		An eight if color=false
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12		An eight if color=false
 		if (!color)
 			c = 8;
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
-		// En el display BCD los dígitos mayores de 9 no se presentan
-		if (display_BCD == true)
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Rotate display to show always correct
+
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Don´t show from A to F if display_BCD is false
+		if (c <= '9' || !display_BCD)
 		{
-			if (c == '0' || c == '2' || c == '3' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TOP
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.88462));
+			double x0, y0, x1, x2, y1, y2;
+			if (angle == 180 || angle == 270)
+			{
+				x0 = renderInfo_valueBox.begin.x + diffx * (renderInfo_currentValue.size() - currentDigit);
+				y0 = renderInfo_valueBox.begin.y + diffy;
 			}
-			if (c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '8' || c == '9') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5)); // MID
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			else
+			{
+				x0 = renderInfo_valueBox.begin.x + diffx * currentDigit;
+				y0 = renderInfo_valueBox.begin.y;
 			}
-			if (c == '0' || c == '2' || c == '3' || c == '5' || c == '6' || c == '8') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BOTTOM
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.11538));
+			if (c != '1' && c != '4' && c != 'B' && c != 'D') {											// TOP
+				x1 = (diffx*0.1875);
+				y1 = (diffy*0.88462);
+				x2 = (diffx*0.8125);
+				y2 = (diffy*0.88462);
+				if (mirror) {
+					y1 = diffy - y1;	y2 = diffy - y2;
+				}
+				if (angle == 180 || angle == 270) {
+					x1 *= -1;	y1 *= -1;	x2 *= -1;	y2 *= -1;
+				}
+				glVertex2f(x0 + x1, y0 + y1);
+				glVertex2f(x0 + x2, y0 + y2);
 			}
-			if (c == '0' || c == '4' || c == '5' || c == '6' || c == '8' || c == '9') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TL
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5));
+			if (c != '0' && c != '1' && c != '7' && c != 'C') {											// MIDLE
+				x1 = (diffx*0.1875);
+				y1 = (diffy*0.5);
+				x2 = (diffx*0.8125);
+				y2 = (diffy*0.5);
+				if (mirror) {
+					y1 = diffy - y1;	y2 = diffy - y2;
+				}
+				if (angle == 180 || angle == 270) {
+					x1 *= -1;	y1 *= -1;	x2 *= -1;	y2 *= -1;
+				}
+				glVertex2f(x0 + x1, y0 + y1);
+				glVertex2f(x0 + x2, y0 + y2);
 			}
-			if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '7' || c == '8' || c == '9') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TR
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			if (c != '1' && c != '4' && c != '7' && c != '9' && c != 'A' && c != 'F') {					// BOTTOM
+				x1 = (diffx*0.1875);
+				y1 = (diffy*0.11538);
+				x2 = (diffx*0.8125);
+				y2 = (diffy*0.11538);
+				if (mirror) {
+					y1 = diffy - y1;	y2 = diffy - y2;
+				}
+				if (angle == 180 || angle == 270) {
+					x1 *= -1;	y1 *= -1;	x2 *= -1;	y2 *= -1;
+				}
+				glVertex2f(x0 + x1, y0 + y1);
+				glVertex2f(x0 + x2, y0 + y2);
 			}
-			if (c == '0' || c == '2' || c == '6' || c == '8') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BL
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5));
+			if (c != '1' && c != '2' && c != '3' && c != '7' && c != 'D') {								// TL
+				x1 = (diffx*0.1875);
+				y1 = (diffy*0.88462);
+				x2 = (diffx*0.1875);
+				y2 = (diffy*0.5);
+				if (mirror) {
+					y1 = diffy - y1;	y2 = diffy - y2;
+				}
+				if (angle == 180 || angle == 270) {
+					x1 *= -1;	y1 *= -1;	x2 *= -1;	y2 *= -1;
+				}
+				glVertex2f(x0 + x1, y0 + y1);
+				glVertex2f(x0 + x2, y0 + y2);
 			}
-			if (c == '0' || c == '1' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BR
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			if (c != '5' && c != '6' && c != 'B' && c != 'C' && c != 'E' && c != 'F') {					// TR
+				x1 = (diffx*0.8125);
+				y1 = (diffy*0.88462);
+				x2 = (diffx*0.8125);
+				y2 = (diffy*0.5);
+				if (mirror) {
+					y1 = diffy - y1;	y2 = diffy - y2;
+				}
+				if (angle == 180 || angle == 270) {
+					x1 *= -1;	y1 *= -1;	x2 *= -1;	y2 *= -1;
+				}
+				glVertex2f(x0 + x1, y0 + y1);
+				glVertex2f(x0 + x2, y0 + y2);
 			}
-		}
-		else
-		{
-			if (c != '1' && c != '4' && c != 'B' && c != 'D') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TOP
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.88462));
+			if (c != '1' && c != '3' && c != '4' && c != '5' && c != '7' && c != '9') {					// BL
+				x1 = (diffx*0.1875);
+				y1 = (diffy*0.11538);
+				x2 = (diffx*0.1875);
+				y2 = (diffy*0.5);
+				if (mirror) {
+					y1 = diffy - y1;	y2 = diffy - y2;
+				}
+				if (angle == 180 || angle == 270) {
+					x1 *= -1;	y1 *= -1;	x2 *= -1;	y2 *= -1;
+				}
+				glVertex2f(x0 + x1, y0 + y1);
+				glVertex2f(x0 + x2, y0 + y2);
 			}
-			if (c != '0' && c != '1' && c != '7' && c != 'C') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5)); // MID
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
-			}
-			if (c != '1' && c != '4' && c != '7' && c != '9' && c != 'A' && c != 'F') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BOTTOM
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.11538));
-			}
-			if (c != '1' && c != '2' && c != '3' && c != '7' && c != 'D') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TL
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5));
-			}
-			if (c != '5' && c != '6' && c != 'B' && c != 'C' && c != 'E' && c != 'F') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.88462)); // TR
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
-			}
-			if (c != '1' && c != '3' && c != '4' && c != '5' && c != '7' && c != '9') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BL
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.1875), renderInfo_valueBox.begin.y + (diffy*0.5));
-			}
-			if (c != '2' && c != 'C' && c != 'E' && c != 'F') {
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.11538)); // BR
-				glVertex2f(renderInfo_valueBox.begin.x + (diffx*currentDigit) + (diffx*0.8125), renderInfo_valueBox.begin.y + (diffy*0.5));
+			if (c != '2' && c != 'C' && c != 'E' && c != 'F') {											// BR
+				x1 = (diffx*0.8125);
+				y1 = (diffy*0.11538);
+				x2 = (diffx*0.8125);
+				y2 = (diffy*0.5);
+				if (mirror) {
+					y1 = diffy - y1;	y2 = diffy - y2; }
+				if (angle == 180 || angle == 270) {
+					x1 *= -1;	y1 *= -1;	x2 *= -1;	y2 *= -1; }
+				glVertex2f(x0 + x1, y0 + y1);
+				glVertex2f(x0 + x2, y0 + y2);
 			}
 		}
 	}
@@ -1038,10 +1205,10 @@ void guiGateREGISTER::setGUIParam( string paramName, string value ) {
 		renderInfo_diffx = renderInfo_valueBox.end.x - renderInfo_valueBox.begin.x;
 		renderInfo_diffy = renderInfo_valueBox.end.y - renderInfo_valueBox.begin.y;
 	}
-	else if (paramName == "BCD") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	else if (paramName == "BCD") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		display_BCD = (value == "true");
 	}
-	else if (paramName == "HIDE_DISPLAY") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	else if (paramName == "HIDE_DISPLAY") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		hide_display = (value == "true");
 	}
 	guiGate::setGUIParam(paramName, value);
@@ -1054,19 +1221,15 @@ void guiGateREGISTER::setGUIParam( string paramName, string value ) {
 
 guiGatePULSE::guiGatePULSE() {
 	guiGate();
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Set the default CLICK box:
 	renderInfo_clickBox.begin.x = 0;
 	renderInfo_clickBox.begin.y = 0;
 	renderInfo_clickBox.end.x = 0;
 	renderInfo_clickBox.end.y = 0;
-
-	// Default to single pulse width:
-	// Pedro casanova (casanova@ujaen.es) 2020/04-11		PULSE_WITH now is a logic param
-	//setLogicParam( "PULSE_WIDTH", "1" );
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Set CLICK_BOX param
 void guiGatePULSE::setGUIParam(string paramName, string value) {
 	if (paramName == "CLICK_BOX") {
@@ -1083,7 +1246,7 @@ void guiGatePULSE::setGUIParam(string paramName, string value) {
 klsMessage::Message_SET_GATE_PARAM* guiGatePULSE::checkClick( GLfloat x, GLfloat y ) {
 	klsBBox pulseButton;
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Return if CLICK_BOX does not exis
 	if (gparams.find("CLICK_BOX") == gparams.end())
 		return NULL;
@@ -1103,7 +1266,7 @@ klsMessage::Message_SET_GATE_PARAM* guiGatePULSE::checkClick( GLfloat x, GLfloat
 	pulseButton.addPoint( modelToWorld( GLPoint2f( maxx, maxy ) ) );
 
 	if (pulseButton.contains( GLPoint2f( x, y ) )) {
-		// Pedro casanova (casanova@ujaen.es) 2020/04-11		PULSE_WITH now is a logic param
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12		PULSE_WITH now is a logic param
 		return new klsMessage::Message_SET_GATE_PARAM(getID(), "PULSE", getLogicParam("PULSE_WIDTH"));
 	} else return NULL;
 }
@@ -1120,7 +1283,7 @@ guiGateLED::guiGateLED() {
 	renderInfo_ledBox.end  = { 0,0 };
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
 void guiGateLED::draw(bool color, bool drawPalette) {
 	StateType outputState = HI_Z;
@@ -1134,7 +1297,7 @@ void guiGateLED::draw(bool color, bool drawPalette) {
 	if( theCnk != connections.end() ) {
 		outputState = (theCnk->second)->getState()[0];
 	}
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11		Added Black for color=false
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		Added Black for color=false
 	// Retouch some colors to get bettter monochrome bitmaps in clipboard
 	if (color)
 		switch( outputState ) {
@@ -1174,7 +1337,9 @@ void guiGateLED::setGUIParam( string paramName, string value ) {
 	guiGate::setGUIParam(paramName, value);
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// ********************************** guiWIRE ***********************************
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
 void guiGateWIRE::draw(bool color, bool drawPalette) {
 	StateType outputState = HI_Z;
@@ -1188,7 +1353,7 @@ void guiGateWIRE::draw(bool color, bool drawPalette) {
 
 	// Retouch some colors to get bettter monochrome bitmaps in clipboard
 	if (!drawPalette) {
-		if (color)
+		if (color) {
 			if (this->getLibraryName() == "Deprecated" && wxGetApp().appSettings.markDeprecated) {
 				glColor4f(1.0f, 0.0f, 1.0f, 1.0f);				// Magenta
 			}
@@ -1211,6 +1376,7 @@ void guiGateWIRE::draw(bool color, bool drawPalette) {
 					break;
 				}
 			}
+		}
 		else
 			glColor4f(0, 0, 0, 1.0);							// Black
 		}
@@ -1226,7 +1392,6 @@ void guiGateWIRE::draw(bool color, bool drawPalette) {
 
 // ********************************** guiLabel ***********************************
 
-
 guiLabel::guiLabel() {
 	guiGate();
 	// Set default parameters:
@@ -1234,7 +1399,7 @@ guiLabel::guiLabel() {
 	setGUIParam( "TEXT_HEIGHT", "2.0" );
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
 void guiLabel::draw(bool color, bool drawPalette) {
 	// Position the gate at its x and y coordinates:
@@ -1300,7 +1465,7 @@ void guiLabel::calcBBox( void ) {
 }
 
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Modified to permit variable labes size (LINK).
 // ************************ TO/FROM gate *************************
 guiTO_FROM::guiTO_FROM() {
@@ -1312,7 +1477,7 @@ guiTO_FROM::guiTO_FROM() {
 
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
 void guiTO_FROM::draw(bool color, bool drawPalette) {
 	// Draw the lines for this gate:
@@ -1335,8 +1500,8 @@ void guiTO_FROM::draw(bool color, bool drawPalette) {
 	//isn't that exciting.
 	//This will rotate the text around
 	//before it is printed
-	if( this->getGUIParam( "angle" ) == "180" ||
-	    this->getGUIParam( "angle" ) ==  "90" ){
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		Changed 90 to 270 to rotate same as Label
+	if( this->getGUIParam( "angle" ) == "180" || this->getGUIParam( "angle" ) ==  "270" ){
 		
 		//scoot the label over
 		GLbox textBBox = theText.getBoundingBox();
@@ -1347,16 +1512,16 @@ void guiTO_FROM::draw(bool color, bool drawPalette) {
 			direction = +1;
 		} else if (getGUIType() == "FROM") {
 			direction = -1;
-		} else if (getGUIType() == "LINK") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		} else if (getGUIType() == "LINK") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			direction =+1;
 		}
 		glTranslatef(direction * (textWidth + offx), 0, 0);
 		
 		//and spin it around
-		glRotatef( 180, 0.0, 0.0, 1.0);
+		glRotatef( 180, 0.0, 0.0, 1.0);		
 	}
 	//End of Edit*********************
-	
+
 	// Draw the text:
 	theText.draw();
 }
@@ -1380,7 +1545,7 @@ void guiTO_FROM::setLogicParam( string paramName, string value ) {
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // A custom setParam function is required because
 // the object must resize it's bounding box 
 // each time the TEXT_HEIGHT parameter is set.
@@ -1423,7 +1588,7 @@ void guiTO_FROM::calcBBox( void ) {
 	// Get the text's bounding box:	
 	GLbox textBBox = theText.getBoundingBox();
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// LINK text is now variable
 
 	float dx = fabs(textBBox.right - textBBox.left) / 2.0f;
@@ -1447,7 +1612,7 @@ void guiTO_FROM::calcBBox( void ) {
 		modelBBox.addPoint(tL);
 		theText.setPosition(tL.x + 0.2f, dy + offy);
 	}
-	else if (getGUIType() == "LINK") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	else if (getGUIType() == "LINK") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		GLPoint2f bR = modelBBox.getBottomRight();
 		bR.x += textWidth+offx;
 		bR.y -= 1.1f * textHeight / 2.0f;
@@ -1462,7 +1627,7 @@ void guiTO_FROM::calcBBox( void ) {
 }
 
 // ************************ RAM gate ****************************
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Modified to limit data size values.
 //*************************************************
 //Edit by Joshua Lansford 12/25/2006

@@ -140,11 +140,11 @@ private:
 
 	void generateRenderInfo();
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To check if a point is yet in the list
 	bool guiWire::checkPointInList(float x, float y, vector<GLPoint2f> ListPoints);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Round 0.1 precission
 	float guiWire::Round(float v);
 

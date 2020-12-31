@@ -92,7 +92,7 @@ bool MainApp::OnInit()
     return true;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Not used, now in windows register
 void MainApp::loadSettingsFile() {
 
@@ -113,7 +113,7 @@ void MainApp::loadSettingsFile() {
 		}
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To make test this is a problem
 #ifndef _PRODUCTION_
 	if (pathToExe.find("Debug") != string::npos || pathToExe.find("Release") != string::npos) {
@@ -125,12 +125,12 @@ void MainApp::loadSettingsFile() {
 	ifstream iniFile( settingsIni.c_str(), ios::in );
 	if (!iniFile) {
 		// set defaults
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// cl_gatedefs.xm in Resources, added extern UserLib.xml
 		appSettings.gateLibFile = pathToExe + DEFAULT_GATELIBFILE;
-		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		//appSettings.helpFile = pathToExe + "KLS_Logic.chm";
-		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		if (appSettings.textFontFile != "res")
 			appSettings.textFontFile = pathToExe + DEFAULT_TEXTFONTFILE;
 		appSettings.mainFrameWidth = DEFAULT_MAINFRAMEWIDTH;
@@ -139,13 +139,13 @@ void MainApp::loadSettingsFile() {
 		appSettings.mainFrameTop = DEFAULT_MAINFRAMETOP;
 		appSettings.timePerStep = timeStepMod = DEFAULT_TIMEPERSTEP;		// ms
 		appSettings.refreshRate = DEFAULT_REFRESHRATE;						// ms
-		appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(was 0.18)
+		appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(was 0.18)
 		appSettings.gridlineVisible = DEFAULT_GRIDLINEVISIBLE;		
-		appSettings.wireConnVisible = DEFAULT_WIRECONNVISIBLE;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Changed to false)
-		appSettings.wideOutline = DEFAULT_WIDEOUTLINE;						// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
-		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
-		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
-		appSettings.markDeprecated = DEFAULT_MARKDEPRECATED;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
+		appSettings.wireConnVisible = DEFAULT_WIRECONNVISIBLE;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Changed to false)
+		appSettings.wideOutline = DEFAULT_WIDEOUTLINE;						// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
+		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
+		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
+		appSettings.markDeprecated = DEFAULT_MARKDEPRECATED;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
 	} else {
 		// load from the file
 		string line;
@@ -154,12 +154,12 @@ void MainApp::loadSettingsFile() {
 		int pos = line.find('=',0);
 		appSettings.gateLibFile = line.substr(pos+1,line.size()-(pos+1));
 		// helpFile
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Obsolete
 		//getline(iniFile, line, '\n');
 		//pos = line.find('=',0);
 		//appSettings.helpFile = pathToExe + line.substr(pos+1,line.size()-(pos+1));
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Now in resources
 		// textFontFile
 		getline(iniFile, line, '\n');
@@ -222,14 +222,14 @@ void MainApp::loadSettingsFile() {
         line = line.substr(pos+1,line.size()-(pos+1));
         istringstream issWireConnVisible(line);
         issWireConnVisible >> appSettings.wireConnVisible;
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Wide Outlines Visible
 		getline(iniFile, line, '\n');
 		pos = line.find('=', 0);
 		line = line.substr(pos + 1, line.size() - (pos + 1));
 		istringstream isswideOutline(line);
 		isswideOutline >> appSettings.wideOutline;
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Component Collision Visible
 		getline(iniFile, line, '\n');
 		pos = line.find('=', 0);
@@ -254,7 +254,7 @@ void MainApp::loadSettingsFile() {
 		line = line.substr(pos + 1, line.size() - (pos + 1));
 		istringstream issRadius(line);
 		issRadius >> appSettings.wireConnRadius;
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Change the min value from 0.18 to 0.05, default 0.1
 		if (appSettings.wireConnRadius < 0.025f || appSettings.wireConnRadius > 0.3f) appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;
 
@@ -263,7 +263,7 @@ void MainApp::loadSettingsFile() {
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Settings in windows register
 void MainApp::loadSettingsReg() {
 
@@ -284,7 +284,7 @@ void MainApp::loadSettingsReg() {
 		}
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To make test this is a problem
 #ifndef _PRODUCTION_
 	if (pathToExe.find("Debug") != string::npos || pathToExe.find("Release") != string::npos) {
@@ -308,7 +308,7 @@ void MainApp::loadSettingsReg() {
 				else
 					appSettings.gateLibFile = pathToExe + DEFAULT_GATELIBFILE;
 				Length = MAX_PATH;
-				// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 				// There is no helpfile
 				/*if (RegQueryValueEx(hKey, "HelpFile", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
 					appSettings.helpFile = pathToExe + Value_C;
@@ -319,7 +319,7 @@ void MainApp::loadSettingsReg() {
 					appSettings.lastDir = Value_C;
 				else
 				{
-					// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 					// Set default directory to "My Documents"
 					char myDocs[MAX_PATH] = "";
 					SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, SHGFP_TYPE_CURRENT, myDocs);
@@ -385,12 +385,12 @@ void MainApp::loadSettingsReg() {
 	}
 	if (newVersion) {
 		// set defaults
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// cl_gatedefs.xm in Resources, added extern UserLib.xml
 		appSettings.gateLibFile = pathToExe + DEFAULT_GATELIBFILE;
-		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		//appSettings.helpFile = pathToExe + "KLS_Logic.chm";
-		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		if (appSettings.textFontFile != "res")
 			appSettings.textFontFile = pathToExe + DEFAULT_TEXTFONTFILE;
 		appSettings.mainFrameWidth = DEFAULT_MAINFRAMEWIDTH;
@@ -399,16 +399,16 @@ void MainApp::loadSettingsReg() {
 		appSettings.mainFrameTop = DEFAULT_MAINFRAMETOP;
 		appSettings.timePerStep = timeStepMod = DEFAULT_TIMEPERSTEP;		// ms
 		appSettings.refreshRate = DEFAULT_REFRESHRATE;						// ms
-		appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(was 0.18)
+		appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(was 0.18)
 		appSettings.gridlineVisible = DEFAULT_GRIDLINEVISIBLE;
-		appSettings.wireConnVisible = DEFAULT_WIRECONNVISIBLE;				// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Changed to false)
-		appSettings.wideOutline = DEFAULT_WIDEOUTLINE;						// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)
-		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)		
-		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-11	(Addded)		
+		appSettings.wireConnVisible = DEFAULT_WIRECONNVISIBLE;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Changed to false)
+		appSettings.wideOutline = DEFAULT_WIDEOUTLINE;						// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
+		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)		
+		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)		
 	}
 
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// .CDL extension file association
 	// Not necesary, made by the installer in HKCR
 /*	if (RegOpenKey(HKEY_CURRENT_USER, "Software\\Classes\\.cdl", &hKey) != ERROR_SUCCESS)

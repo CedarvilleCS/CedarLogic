@@ -198,7 +198,7 @@ void guiWire::draw(bool color) {
 		bool unknown = false;
 		bool hiz = false;
 		float redness = 0;
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Retouch some colors to get bettter monochrome bitmaps in clipboard
 		// Find color as a gradient base on decimal value.
 		// If there's a conflict, unknown, or hi_z, show that instead.
@@ -277,7 +277,7 @@ void guiWire::draw(bool color) {
 		glTranslatef(-(*isectPoints)[i].x, -(*isectPoints)[i].y, 0.0);
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To draw cross junctions
 	vector< GLPoint2f >* crossPoints = &(renderInfo.crossPoints);
 	for (unsigned int i = 0; i < crossPoints->size(); i++) {
@@ -300,7 +300,7 @@ void guiWire::draw(bool color) {
 
 	if (wxGetApp().appSettings.wireConnVisible) {
 		vector< GLPoint2f >* vertexPoints = &(renderInfo.vertexPoints);
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// To identify components connetion points
 		// Usually junctions in the logic state color
 		// But now "display Wire Connections points" is only for reference
@@ -323,7 +323,7 @@ void guiWire::draw(bool color) {
 		}
 	}
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Restore Black color
 	glColor4f(0.0, 0.0, 0.0, 1.0);
 
@@ -1281,7 +1281,7 @@ void guiWire::generateRenderInfo() {
 					wxGetApp().libParser.getGate(connectPoints[j].cGate->getLibraryGateName(), libGate);					
 					for (unsigned int k = 0; k < libGate.hotspots.size(); k++) {
 						if (libGate.hotspots[k].name == connectPoints[j].cGate->getHotspot(connectPoints[j].connection)->name) {
-							// Pedro Casanova (casanova@ujaen.es) 2020/04-11							
+							// Pedro Casanova (casanova@ujaen.es) 2020/04-12							
 							if (libGate.guiType == "PLD" && libGate.hotspots[k].isInput) {
 								// Force junction in all inputs of PLD gates
 								if (connectPoints[j].cGate->getGUIParam("CROSS_JUNCTION") == "true")

@@ -21,7 +21,7 @@ ofstream* logiclog;
 #endif
 
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Add theGUICircuit param
 Circuit::Circuit(GUICircuit * theGUICircuit)
 {
@@ -207,7 +207,7 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_DECODER );
 		} else if (type == "ENCODER") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-07	Change from PRI_ENCODER
 			gateList[thisGateID] = GATE_PTR( new Gate_ENCODER );
-		} else if (type == "BUSEND") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-11	Changed from BUS_END
+		} else if (type == "BUSEND") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Changed from BUS_END
 			gateList[thisGateID] = GATE_PTR( new Gate_BUSEND(this) );
 		} else if( type == "CLOCK" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_CLOCK );
@@ -231,7 +231,7 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_RAM );
 		} else if( type == "REGISTER" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_REGISTER );
-		} else if( ( type == "TO" ) || ( type == "FROM" ) || (type == "LINK") ) {	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		} else if( ( type == "TO" ) || ( type == "FROM" ) || (type == "LINK") ) {	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			gateList[thisGateID] = GATE_PTR( new Gate_JUNCTION( this ) );
 		} else if( type == "TGATE" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_T( this ) );
@@ -449,7 +449,7 @@ IDType Circuit::connectGateOutput( IDType gateID, const string &gateOutputID, ID
 	// Send an event putting the output's value on the wire.
 	(gateList[gateID])->resendLastEvent( gateID, gateOutputID, this );
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To manage bidirectional outputs in RAM and REGISTER
 	if ((gateList[gateID])->getParameter("BIDIRECTIONAL_DATA") == "true") {
 		if ((gateList[gateID])->getParameter("DATA_BITS") != "") {								// Gate_RAM
@@ -679,7 +679,7 @@ void Circuit::addUpdateParam(IDType gateID, const string & paramName) {
 	paramUpdateList.push_back(changedParam(gateID, paramName));
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 void Circuit::UpdateGate(IDType gateID) {
 	if (gateList.find(gateID) != gateList.end()) 
 		gateList[gateID]->updateGate(gateID, this, ourGUICircuit);

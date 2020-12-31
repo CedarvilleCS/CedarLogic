@@ -44,7 +44,7 @@ public:
     
 private:
 	Circuit* cir;
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	GUICircuit * GUIcir;
 	map < IDType, IDType >* logicIDs;
 	ofstream logfile;

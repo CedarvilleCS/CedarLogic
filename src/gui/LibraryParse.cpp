@@ -18,7 +18,7 @@
 DECLARE_APP(MainApp)
 
 LibraryParse::LibraryParse(string fileName) {
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// cl_gatedefs.xml now is in resources
 	// You can add a new file (UserLib.xml as default name) with new componentes
 	HANDLE hResLib = FindResource(NULL, "CL_GATEDEFS.XML", "BIN");
@@ -84,7 +84,7 @@ void LibraryParse::parseFile() {
 					hsName = "";
 					x1 = y1 = 0.0;
 					string isInverted = "false";
-					// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 					// To permit pull-up and pull-down inputs
 					string isPullUp = "false";
 					string isPullDown = "false";
@@ -97,7 +97,7 @@ void LibraryParse::parseFile() {
 						if (temp == "") break;
 						if( temp == "name" ) {
 							hsName = mParse->readTagValue("name");
-							// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+							// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 							// Convert to uppercase
 							for (unsigned long cnt = 0; cnt < hsName.length(); cnt++)
 								hsName[cnt]=toupper(hsName[cnt]);
@@ -245,7 +245,7 @@ void LibraryParse::parseFile() {
 					mParse->readCloseTag();
 				} else if (temp == "caption") {
 					newGate.caption = mParse->readTagValue("caption");
-					// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 					//## What's that?
 					/*if (newGate.caption == "Inverter" && (time(0) % 1001 == 0)) { // Easter egg, rename inverters once in a while :)
 						newGate.caption = "Santa Hat (Inverter)";
@@ -262,13 +262,28 @@ void LibraryParse::parseFile() {
 	} while (true); // end file
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+#define SCALE_NORMAL 1.0			// Scale for normal text
+#define SCALE_SUB_SUPER 2.0/3.0		// Scale for substring and superstring
+#define SCALE_SMALL 2.0/3.0			// Scale for small text
+#define SCALE_SMALLER 1.0/3.0		// Scale for smaller text
+#define SCALE_BIG 1.5				// Scale for big text
+#define SCALE_BIGGER 2.5			// Scale for bigger text
+#define CHAR_HEIGHT 0.8				// Heigh of every digit
+#define CHAR_BLANK_H 0.1			// Blank space to the top and the bottom of every digit
+#define CHAR_WIDTH 0.4				// Width of every digit
+#define CHAR_BLANK_W 0.05			// Blank space to the left and the right of every digit
+
+#define CHAR_HEIGHT_TOTAL (CHAR_HEIGHT + 2 * CHAR_BLANK_H)
+#define CHAR_WIDTH_TOTAL (CHAR_WIDTH + 2 * CHAR_BLANK_W)
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // <text> to generate text shapes (only numbers and ucase letters)
 bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 	string temp;
 	char dump;
 	double cenX = 0.0, cenY = 0.0;
 	double dX = 0.0, dY = 0.0;
+	double dX0 = 0;
 	temp = mParse->readTagValue("text");
 	mParse->readCloseTag();
 	string charCode = "";	
@@ -287,32 +302,85 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 	bool Negate = false;
 	int stringType = 0;
 	double Scale = 1.0;
-
+	dY = CHAR_HEIGHT / 2;
 	for (unsigned int i = 0; i < charCode.size(); i++)
 	{
-		if ((char)charCode.c_str()[i] != '~' && (char)charCode.c_str()[i] != '_' && (char)charCode.c_str()[i] != '^' && (char)charCode.c_str()[i] != '$')
-			dX -= 0.25;
-		if ((char)charCode.c_str()[i] == '_' || (char)charCode.c_str()[i] == '^')
-			dX += 0.25 * 2.0 / 3.0;													// Substring and Superstring
-		if ((char)charCode.c_str()[i] == '$')
-			dX += 0; // 0.25 * 2.0 / 3.0;											// Small
+		char c = (char)charCode.c_str()[i];
+		if (c != '~' && c != '_' && c != '^' && c != '$' && c != '&' && c != '@' && c != '%' && c != '!') {
+			dX -= CHAR_WIDTH_TOTAL / 2 * Scale;
+			Scale = SCALE_NORMAL;
+		} else {
+			switch (c) {
+			case '_':
+			case '^':
+				// Substring and Superstring
+				Scale = SCALE_SUB_SUPER;
+				break;
+			case '$':
+				// Small
+				Scale = SCALE_SMALL;
+				break;
+			case '&':
+				// Smaller
+				Scale = SCALE_SMALLER;
+				break;
+			case '@':
+				// Big
+				Scale = SCALE_BIG;
+				break;
+			case '%':
+				// Bigger
+				Scale = SCALE_BIGGER;
+				break;
+			case '!':
+				if (dX<dX0)
+					dX0 = dX;
+				dX = 0;
+				dY += CHAR_HEIGHT_TOTAL/2.0 * Scale;
+				break;
+			}
+		}
 	}
-
-	dY = 0.4;
-
+	if (dX0!=0)
+		dX = dX0;
+	Scale = SCALE_NORMAL;
 	for (unsigned int i = 0; i < charCode.size(); i++)
-	{		
-		if ((char)charCode.c_str()[i] == '~') {					// Negate
+	{
+		switch (charCode.c_str()[i]) {
+		case '~':
+			// Negate
 			Negate = true;
 			continue;
-		} else if ((char)charCode.c_str()[i] == '_') {			// Substring
+		case '_':
+			// Substring
 			stringType = 1;
+			Scale = SCALE_SUB_SUPER;
 			continue;
-		} else if ((char)charCode.c_str()[i] == '^') {			// Superstring
+		case '^':
+			// Superstring
 			stringType = -1;
+			Scale = SCALE_SUB_SUPER;
 			continue;
-		} else if ((char)charCode.c_str()[i] == '$') {			// Small
-			Scale = 2.0 / 3.0;
+		case '$':
+			// Small
+			Scale = SCALE_SMALL;
+			continue;
+		case '&':
+			// Smaller
+			Scale = SCALE_SMALLER;
+			continue;
+		case '@':
+			// Big
+			Scale = SCALE_BIG;
+			continue;
+		case '%':
+			// Bigger
+			Scale = SCALE_BIGGER;
+			continue;
+		case '!':
+			// New Line
+			dX = dX0;
+			dY -= CHAR_HEIGHT_TOTAL * Scale;
 			continue;
 		}
 
@@ -326,25 +394,23 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 			parseShapeText(charParse, temp, newGate, stringType, cenX, cenY, dX, dY, Scale);
 		} while (!charParse->isCloseTag(charParse->getCurrentIndex()));
 
-		if (stringType)
-			dX += 1.0 / 3.0;
-		else
-			dX += 1.0 / 2.0 * Scale;
+		dX += CHAR_WIDTH_TOTAL * Scale;
 
 		Negate = false;
 		stringType = 0;
-		Scale = 1.0;
+		Scale = SCALE_NORMAL;
 	}
 
 	return true;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Lines with offset for rotate chars
 // stringType: -1=superstring, 0=normal, 1=substring
-// Scale: 1.0=normal, other=small
+// Scale: 1=normal, 2/3=sub and super, 2/3=small, 1.5=big, 2.5=bigger
 bool LibraryParse::parseShapeText(XMLParser* Parse, string type, LibraryGate* newGate, int stringType, double cenX, double cenY, double dX, double dY, double Scale) {
 	double x1, y1, x2, y2;
+	double factor;
 	char dump;
 	string temp;
 
@@ -353,35 +419,34 @@ bool LibraryParse::parseShapeText(XMLParser* Parse, string type, LibraryGate* ne
 		Parse->readCloseTag();
 		istringstream iss(temp);
 		iss >> x1 >> dump >> y1 >> dump >> x2 >> dump >> y2;
-		if (!stringType) {
-			// Normal and small string
 
-			x1 *= Scale;
-			y1 *= Scale;
-			x2 *= Scale;
-			y2 *= Scale;
+		x1 += CHAR_BLANK_W;
+		x2 += CHAR_BLANK_W;
 
-			double w = x2 - x1;
-			double h = y2 - y1;
+		x1 *= Scale;
+		y1 *= Scale;
+		x2 *= Scale;
+		y2 *= Scale;
 
-			x1 += 0.2 * (1 - Scale);
-			x2 = x1 + w;
-			y1 -= 0.4 * (1 - Scale);
-			y2 = y1 + h;
-			newGate->Offshape.push_back(lgOffLine(lgLine(x1 + dX + 0.05, y1 + dY, x2 + dX + 0.05, y2 + dY), cenX, cenY));
-		} else {
-			x1 *= 2.0 / 3.0;
-			y1 *= 2.0 / 3.0;
-			x2 *= 2.0 / 3.0;
-			y2 *= 2.0 / 3.0;
-			if (stringType > 0) {
-				// Substring
-				newGate->Offshape.push_back(lgOffLine(lgLine(x1 + dX + 0.05, y1 + dY - 1.0 / 3.0, x2 + dX + 0.05, y2 + dY - 1.0 / 3.0), cenX, cenY));
-			} else {
-				// Superstring
-				newGate->Offshape.push_back(lgOffLine(lgLine(x1 + dX + 0.05, y1 + dY + 1.0 / 15.0, x2 + dX + 0.05, y2 + dY + 1.0 / 15.0), cenX, cenY));
-			}
+		switch (stringType) {
+		case 0:
+			factor = -CHAR_HEIGHT / 2;
+			break;
+		case 1:
+			// Substring
+			factor = -1.0;
+			break;
+		case -1:
+			// Superstring
+			factor = 0.2;
+			break;
 		}
+
+		y1 += (1 - Scale) * factor;
+		y2 += (1 - Scale) * factor;
+
+		newGate->Offshape.push_back(lgOffLine(lgLine(x1 + dX, y1 + dY, x2 + dX, y2 + dY), cenX, cenY));
+
 		return true;
 	}
 	return false; // Invalid type.
@@ -503,25 +568,91 @@ stringstream LibraryParse::getXMLChar(char ch, bool Negate) {
 		XMLstring << "<line>0,0,0.4,0</line><line>0,-0.8,0.4,-0.8</line><line>0,-0.8,0.4,0</line>";
 		break;
 	case 'a':
-		XMLstring << "<line>0,-0.8,0.4,-0.8</line><line>0.4,-0.8,0.4,-0.4</line><line>0.4,-0.4,0,-0.4</line><line>0,-0.8,0,-0.6.</line><line>0,-0.6,0.4,-0.6.</line>";
+		XMLstring << "<line>0,-.5,.1,-.4</line><line>.1,-.4,.3,-.4</line><line>.3,-.4,.4,-.5</line><line>.4,-.5,.4,-.8</line><line>.4,-.6,.1,-.6</line><line>.1,-.6,0,-.7</line><line>0,-.7,.1,-.8</line><line>.1,-.8,.3,-.8</line><line>.3,-.8,.4,-.7</line>";
 		break;
 	case 'b':
-		XMLstring << "<line>0,0,0,-0.8</line><line>0,-0.8,0.4,-0.8</line><line>0.4,-0.8,0.4,-0.4</line><line>0.4,-0.4,0,-0.4.</line>";
+		XMLstring << "<line>0,0,0,-.8</line><line>0,-.5,.1,-.4</line><line>.1,-.4,.3,-.4</line><line>.3,-.4,.4,-.5</line><line>.4,-.5,.4,-.7</line><line>.4,-.7,.3,-.8</line><line>.3,-.8,.1,-.8</line><line>.1,-.8,0,-.7</line>";
 		break;
 	case 'c':
-		XMLstring << "<line>0.4,-0.4,0,-0.4</line><line>0,-0.4,0,-0.8</line><line>0,-0.8,0.4,-0.8</line>";
+		XMLstring << "<line>.4,-.5,.3,-.4</line><line>.3,-.4,.1,-.4</line><line>.1,-.4,0,-.5</line><line>0,-.5,0,-.7</line><line>0,-.7,.1,-.8</line><line>.1,-.8,.3,-.8</line><line>.3,-.8,.4,-.7</line>";
 		break;
 	case 'd':
-		XMLstring << "<line>0.4,0,0.4,-0.8</line><line>0.4,-0.8,0,-0.8</line><line>0,-0.8,0,-0.4</line><line>0,-0.4,0.4,-0.4</line>";
+		XMLstring << "<line>.4,-.5,.3,-.4</line><line>.3,-.4,.1,-.4</line><line>.1,-.4,0,-.5</line><line>0,-.5,0,-.7</line><line>0,-.7,.1,-.8</line><line>.1,-.8,.3,-.8</line><line>.3,-.8,.4,-.7</line><line>.4,0,.4,-.8</line>";
 		break;
 	case 'e':
-		XMLstring << "<line>0.4,-0.4,0,-0.4</line><line>0,-0.4,0,-0.8</line><line>0,-0.8,0.4,-0.8</line><line>0.4,-0.4,0.4,-0.6</line><line>0.4,-0.6,0,-0.6</line>";
+		XMLstring << "<line>.0,-.6,.3,-.6</line><line>.3,-.6,.4,-.5</line><line>.4,-.5,.3,-.4</line><line>.3,-.4,.1,-.4</line><line>.1,-.4,0,-.5</line><line>0,-.5,0,-.7</line><line>0,-.7,.1,-.8</line><line>.1,-.8,.3,-.8</line><line>.3,-.8,.4,-.7</line>";
 		break;
 	case 'f':
-		XMLstring << "<line>0.3,0,0.1,0</line><line>0.1,0,0,-0.1</line><line>0,-0.1,0,-0.8</line><line>0.2,-0.4,0,-0.4</line>";
+		XMLstring << "<line>0.4,-.1,0.3,0</line><line>0.3,0,0.1,0</line><line>0.1,0,0,-0.1</line><line>0,-0.1,0,-0.8</line><line>0.2,-0.4,0,-0.4</line>";
 		break;
 	case 'g':
-		XMLstring << "<line>0,-0.4,0.4,-0.4</line><line>0.4,-0.4,0.4,-0.9</line><line>0.4,-0.7,0,-0.7</line><line>0,-0.7,0,-0.4</line><line>0.4,-0.9,0,-0.9</line>";
+		XMLstring << "<line>.4,-.7,.1,-.7</line><line>.1,-.7,0,-.6</line><line>0,-.6,0,-.5</line><line>0,-.5,.1,-.4</line><line>.1,-.4,.3,-.4</line><line>.3,-.4,.4,-.5</line><line>.4,-.5,.4,-.8</line><line>.4,-.8,.3,-.9</line><line>.3,-.9,.1,-.9</line><line>.1,-.9,0,-.8</line>";
+		break;
+	case 'h':
+		XMLstring << "<line>0,0,0,-.8</line><line>0,-.5,.1,-.4</line><line>.1,-.4,.3,-.4</line><line>.3,-.4,.4,-.5</line><line>.4,-.5,.4,-.8</line>";
+		break;
+	case 'i':
+		XMLstring << "<line>.2,-.4,.2,-.7</line><line>.2,-.7,.3,-.8</line><line>.3,-.8,.4,-.7</line><line>.19,-.29,.19,-.31</line><line>.19,-.31,.21,-.31</line><line>.21,-.31,.21,-.29</line><line>.21,-.29,.19,-.29</line>";
+		break;
+	case 'j':
+		XMLstring << "<line>.2,-.4,.2,-.8</line><line>.2,-.8,.1,-.9</line><line>.1,-.9,0,-.8</line><line>.19,-.29,.19,-.31</line><line>.19,-.31,.21,-.31</line><line>.21,-.31,.21,-.29</line><line>.21,-.29,.19,-.29</line>";
+		break;
+	case 'k':
+		XMLstring << "<line>0,0,0,-.8</line><line>0,-.4,.3,-.8</line><line>0,-.4,.2,-.2</line>";
+		break;
+	case 'l':
+		XMLstring << "<line>.1,0,.1,-.7</line><line>.1,-.7,.2,-.8</line><line>.2,-.8,.3,-.8</line><line>.3,-.8,.4,-.7</line>";
+		break;
+	case 'm':
+		XMLstring << "<line>0,-.8,0,-.4</line><line>0,-.5,.1,-.4</line><line>.1,-.4,.2,-.5</line><line>.2,-.5,.2,-.8</line><line>.2,-.5,.3,-.4</line><line>.3,-.4,.4,-.5</line><line>.4,-.5,.4,-.8</line>";
+		break;
+	case 'n':
+		XMLstring << "<line>0,-.4,0,-.8</line><line>0,-.5,.1,-.4</line><line>.1,-.4,.3,-.4</line><line>.3,-.4,.4,-.5</line><line>.4,-.5,.4,-.8</line>";
+		break;
+	case 'o':
+		XMLstring << "<line>0,-.5,.1,-.4</line><line>.1,-.4,.3,-.4</line><line>.3,-.4,.4,-.5</line><line>.4,-.5,.4,-.7</line><line>.4,-.7,.3,-.8</line><line>.3,-.8,.1,-.8</line><line>.1,-.8,0,-.7</line><line>0,-.7,0,-.5</line>";
+		break;
+	case 'p':
+		XMLstring << "<line>0,-.9,0,-.4</line><line>0,-.5,.1,-.4</line><line>.1,-.4,.3,-.4</line><line>.3,-.4,.4,-.5</line><line>.4,-.5,.4,-.6</line><line>.4,-.6,.3,-.7</line><line>.3,-.7,.1,-.7</line><line>.1,-.7,0,-.6</line>";
+		break;
+	case 'q':
+		XMLstring << "<line>.4,-.5,.3,-.4</line><line>.3,-.4,.1,-.4</line><line>.1,-.4,0,-.5</line><line>0,-.5,0,-.6</line><line>0,-.6,.1,-.7</line><line>.1,-.7,.3,-.7</line><line>.3,-.7,.4,-.6</line><line>.4,-.4,.4,-.9</line>";
+		break;
+	case 'r':
+		XMLstring << "<line>0,-.8,0,-.4</line><line>0,-.5,.1,-.4</line><line>.1,-.4,.3,-.4</line><line>.3,-.4,.4,-.5</line>";
+		break;
+	case 's':
+		XMLstring << "<line>.4,-.4,.1,-.4</line><line>.1,-.4,0,-.5</line><line>0,-.5,.1,-.6</line><line>.1,-.6,.3,-.6</line><line>.3,-.6,.4,-.7</line><line>.4,-.7,.3,-.8</line><line>.3,-.8,0,-.8</line>";
+		break;
+	case 't':
+		XMLstring << "<line>.1,0,.1,-.7</line><line>.1,-.7,.2,-.8</line><line>.2,-.8,.3,-.8</line><line>.3,-.8,.4,-.7</line><line>0,-.2,.2,-.2</line>";
+		break;
+	case 'u':
+		XMLstring << "<line>0,-.4,0,-.7</line><line>0,-.7,.1,-.8</line><line>.1,-.8,.3,-.8</line><line>.3,-.8,.4,-.7</line><line>.4,-.4,.4,-.8</line>";
+		break;
+	case 'v':
+		XMLstring << "<line>0,-.4,.2,-.8</line><line>.2,-.8,.4,-.4</line>";
+		break;
+	case 'w':
+		XMLstring << "<line>0,-.4,.1,-.8</line><line>.1,-.8,.2,-.6</line><line>.2,-.6,.3,-.8</line><line>.3,-.8,.4,-.4</line>";
+		break;
+	case 'x':
+		XMLstring << "<line>0,-.4,.4,-.8</line><line>0,-.8,.4,-.4</line>";
+		break;
+	case 'y':
+		XMLstring << "<line>0,-.9,.1,-.9</line><line>.1,-.9,.4,-.4</line><line>0,-.4,.2,-.7</line>";
+		break;
+	case 'z':
+		XMLstring << "<line>0,-.4,.4,-.4</line><line>.4,-.4,0,-.8</line><line>0,-.8,.4,-.8</line>";
+		break;
+	case '=':
+		XMLstring << "<line>0,0,0.4,0</line><line>0,-0.2,0.4,-0.2</line>";
+		break;
+	case '>':
+		XMLstring << "<line>0,0,0.4,-0.2</line><line>0,-0.4,0.4,-0.2</line>";
+		break;
+	case '<':
+		XMLstring << "<line>0.4,0,0,-0.2</line><line>0.4,-0.4,0,-0.2</line>";
 		break;
 	}
 
@@ -547,7 +678,7 @@ bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double o
 		newGate->shape.push_back(lgLine(x1, y1, x2, y2));
 		return true;
 	} else if (type == "wideline") {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Wide lines
 		temp = mParse->readTagValue("wideline");
 		mParse->readCloseTag();
@@ -560,7 +691,7 @@ bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double o
 		newGate->shape.push_back(lgLine(x1, y1, x2, y2, 2));
 		return true;
 	} else if (type == "boldline") {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Wide lines
 		temp = mParse->readTagValue("boldline");
 		mParse->readCloseTag();
@@ -573,7 +704,7 @@ bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double o
 		newGate->shape.push_back(lgLine(x1, y1, x2, y2, 3));
 		return true;
 	} else if (type == "outline") {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// outlines
 		temp = mParse->readTagValue("outline");
 		mParse->readCloseTag();
@@ -586,7 +717,7 @@ bool LibraryParse::parseShapeObject( string type, LibraryGate* newGate, double o
 		newGate->shape.push_back(lgLine(x1, y1, x2, y2, 5));
 		return true;
 	} else if (type == "busline") {
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// bus lines for BUSEND
 		temp = mParse->readTagValue("busline");
 		mParse->readCloseTag();
