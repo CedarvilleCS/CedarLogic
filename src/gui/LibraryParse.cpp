@@ -645,15 +645,6 @@ stringstream LibraryParse::getXMLChar(char ch, bool Negate) {
 	case 'z':
 		XMLstring << "<line>0,-.4,.4,-.4</line><line>.4,-.4,0,-.8</line><line>0,-.8,.4,-.8</line>";
 		break;
-	case '=':
-		XMLstring << "<line>0,0,0.4,0</line><line>0,-0.2,0.4,-0.2</line>";
-		break;
-	case '>':
-		XMLstring << "<line>0,0,0.4,-0.2</line><line>0,-0.4,0.4,-0.2</line>";
-		break;
-	case '<':
-		XMLstring << "<line>0.4,0,0,-0.2</line><line>0.4,-0.4,0,-0.2</line>";
-		break;
 	}
 
 	return XMLstring;

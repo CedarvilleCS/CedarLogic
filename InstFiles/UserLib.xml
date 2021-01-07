@@ -7,7 +7,7 @@
 		<logic_param>SYNC_CLEAR false</logic_param>
 		<logic_param>SYNC_LOAD false</logic_param>
 		<gui_type>REGISTER</gui_type>
-		<gui_param>VALUE_BOX 0,0,0,0</gui_param>
+		<gui_param>HIDE_DISPLAY true</gui_param>
 
 #		R
 		<input> <name>CLEAR</name>
@@ -25,7 +25,7 @@
 		          <point>0.5,-3</point> 
 		</input>
 
-#		D/U
+#		DU
 		<input> <name>COUNT_UP</name>
 		          <point>1.5,-3</point> 
 		</input>				
@@ -63,157 +63,29 @@
 			<line>1.5,2,1.5,3</line>			
 			
 #			R
-			<offset><point>-1.7,-0.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.3,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0.3,0,0.4,-0.1</line>
-			<line>0.4,-0.1,0.4,-0.3</line>
-			<line>0.4,-0.3,0.3,-0.4</line>
-			<line>0.2,-0.4,0.4,-0.8</line>		
-			</offset>
+			<text>-1.5,-1.4,R</text>
 
 #			C
-			<offset><point>-0.7,-0.9</point>
-			<line>0,-0.1,0.1,0</line>
-			<line>0.1,0,0.3,0</line>
-			<line>0.3,0,0.4,-0.1</line>
-			<line>0,-0.7,0.1,-0.8</line>
-			<line>0.1,-0.8,0.3,-0.8</line>
-			<line>0.3,-0.8,0.4,-0.7</line>
-			<line>0,-0.1,0,-0.7</line>
-			</offset>
+			<text>-0.5,-1.4,C</text>
 			
 #			~E
-			<offset><point>0.3,-0.9</point>			
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.4,0</line>
-			<line>0,-0.4,0.3,-0.4</line>
-			<line>0,-0.8,0.4,-0.8</line>
-			<line>0,0.1,0.4,0.1</line>			
-			</offset>
+			<text>0.5,-1.4,~E</text>
 
-#			~D
-			<offset><point>1.1,-0.9</point>
-			<line>0,0,0,-0.8</line>
-			<line>0,0,0.2,0</line>
-			<line>0.2,0,0.4,-0.2</line>
-			<line>0,-0.8,0.2,-0.8</line>
-			<line>0.2,-0.8,0.4,-0.6</line>
-			<line>0.4,-0.2,0.4,-0.6</line>
-			<line>0,0.1,0.4,0.1</line>
-			</offset>
+#			~DU
+			<text>1.5,-1.4,~DU</text>
+				
+#			QA
+			<text>-1.5,1.4,Q_A</text>
 			
-#			/
-			<offset><point>1.6,-0.9</point>
-			<line>0,-0.8,0.2,0</line>
-			</offset>			
+#			QB
+			<text>-0.5,1.4,Q_B</text>
+			
+#			QC
+			<text>0.5,1.4,Q_C</text>
+			
+#			QD
+			<text>1.5,1.4,Q_D</text>
 
-#			U
-			<offset><point>1.9,-0.9</point>
-			<line>0,0,0,-0.7</line>
-			<line>0,-0.7,0.1,-0.8</line>
-			<line>0.4,0,0.4,-0.7</line>
-			<line>0.3,-0.8,0.4,-0.7</line>
-			<line>0.1,-0.8,0.3,-0.8</line>
-			</offset>
-			
-#			Q
-			<offset><point>-1.8,1.7</point>
-			<line>0.1,0,0,-0.1</line>
-			<line>0,-0.1,0,-0.7</line>
-			<line>0,-0.7,0.1,-0.8</line>
-			<line>0.1,-0.8,0.3,-0.8</line>
-			<line>0.3,-0.8,0.4,-0.7</line>
-			<line>0.4,-0.7,0.4,-0.1</line>
-			<line>0.4,-0.1,0.3,0</line>
-			<line>0.3,0,0.1,0</line>
-			<line>0.4,-0.8,0.2,-0.6</line>
-			</offset>
-			
-#			A
-			<offset><point>-1.3,1.3</point>
-			<line>0,-0.1,0,-0.6</line>
-			<line>0,-0.1,0.1,0</line>
-			<line>0.3,-0.1,0.3,-0.6</line>
-			<line>0.2,0,0.3,-0.1</line>
-			<line>0.1,0,0.2,0</line>
-			<line>0,-0.3,0.3,-0.3</line>
-			</offset>
-			
-#			Q
-			<offset><point>-0.8,1.7</point>
-			<line>0.1,0,0,-0.1</line>
-			<line>0,-0.1,0,-0.7</line>
-			<line>0,-0.7,0.1,-0.8</line>
-			<line>0.1,-0.8,0.3,-0.8</line>
-			<line>0.3,-0.8,0.4,-0.7</line>
-			<line>0.4,-0.7,0.4,-0.1</line>
-			<line>0.4,-0.1,0.3,0</line>
-			<line>0.3,0,0.1,0</line>
-			<line>0.4,-0.8,0.2,-0.6</line>
-			</offset>			
-
-#			B
-			<offset><point>-0.3,1.3</point>
-			<line>0,0,0,-0.6</line>
-			<line>0,0,0.2,0</line>
-			<line>0,-0.3,0.2,-0.3</line>
-			<line>0,-0.6,0.2,-0.6</line>
-			<line>0.2,0,0.3,-0.1</line>
-			<line>0.3,-0.2,0.2,-0.3</line>
-			<line>0.2,-0.3,0.3,-0.4</line>
-			<line>0.3,-0.5,0.2,-0.6</line>
-			<line>0.3,-0.1,0.3,-0.2</line>
-			<line>0.3,-0.4,0.3,-0.5</line>
-			</offset>
-			
-#			Q
-			<offset><point>0.2,1.7</point>
-			<line>0.1,0,0,-0.1</line>
-			<line>0,-0.1,0,-0.7</line>
-			<line>0,-0.7,0.1,-0.8</line>
-			<line>0.1,-0.8,0.3,-0.8</line>
-			<line>0.3,-0.8,0.4,-0.7</line>
-			<line>0.4,-0.7,0.4,-0.1</line>
-			<line>0.4,-0.1,0.3,0</line>
-			<line>0.3,0,0.1,0</line>
-			<line>0.4,-0.8,0.2,-0.6</line>
-			</offset>
-			
-#			C
-			<offset><point>0.7,1.3</point>
-			<line>0,-0.1,0.1,0</line>
-			<line>0.1,0,0.2,0</line>
-			<line>0.2,0,0.3,-0.1</line>
-			<line>0,-0.5,0.1,-0.6</line>
-			<line>0.1,-0.6,0.2,-0.6</line>
-			<line>0.2,-0.6,0.3,-0.5</line>
-			<line>0,-0.1,0,-0.5</line>
-			</offset>
-			
-#			Q
-			<offset><point>1.2,1.7</point>
-			<line>0.1,0,0,-0.1</line>
-			<line>0,-0.1,0,-0.7</line>
-			<line>0,-0.7,0.1,-0.8</line>
-			<line>0.1,-0.8,0.3,-0.8</line>
-			<line>0.3,-0.8,0.4,-0.7</line>
-			<line>0.4,-0.7,0.4,-0.1</line>
-			<line>0.4,-0.1,0.3,0</line>
-			<line>0.3,0,0.1,0</line>
-			<line>0.4,-0.8,0.2,-0.6</line>
-			</offset>
-
-#			D
-			<offset><point>1.7,1.3</point>
-			<line>0,0,0,-0.6</line>
-			<line>0,0,0.2,0</line>
-			<line>0.2,0,0.3,-0.2</line>
-			<line>0,-0.6,0.2,-0.6</line>
-			<line>0.2,-0.6,0.3,-0.4</line>
-			<line>0.3,-0.2,0.3,-0.4</line>
-			</offset>
 		</shape>
 	</gate>
 </library>

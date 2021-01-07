@@ -145,25 +145,36 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						//gate type of the outdated gate
 						//to a new gate type that is supported
 						//without crashing the program.
-						if( type == "AM_RAM_16x16_Single_Port" ){
-							//there is no different between these two types.
-							//the AM_RAM_16x16_Single_Port was an experiment
-							//before we converted all the gates.
-							//Thus no warning needs to be given.
-							type = "AM_RAM_16x16";
-						}
+						if( type == "AM_RAM_16x16_Single_Port" ) type = "AM_RAM_16x16";
+
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Some names are changed for alfabetic order
-						if (type == "CA_SMALL_TGATE") type = "TA_SMALL_TGATE";
-						if (type == "AI_INVERTER_4BIT") type = "BI_INVERTER_4BIT";				
+						else if (type == "CA_SMALL_TGATE") type = "TA_SMALL_TGATE";
+						else if (type == "AI_INVERTER_4BIT") type = "BI_INVERTER_4BIT";				
 
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-						// Names are changed becuse now the encoder can chage priority type (none. high and low)
-						if (type == "CB_PRI_ENCODER_4x2") type = "CB_ENCODER_4x2_EN";
-						if (type == "CC_PRI_ENCODER_8x3") type = "CC_ENCODER_8x3_EN";
-						if (type == "CD_PRI_ENCODER_16x4") type = "CD_ENCODER_16x4_EN";
-						if (type == "HO_JUNC_00") type = "HP_JUNC_00";
+						// Names are changed becuse now the encoder can chage priority type (none, high and low)
+						else if (type == "CB_PRI_ENCODER_4x2") type = "CB_ENCODER_4x2_EN";
+						else if (type == "CC_PRI_ENCODER_8x3") type = "CC_ENCODER_8x3_EN";
+						else if (type == "CD_PRI_ENCODER_16x4") type = "CD_ENCODER_16x4_EN";
+						else if (type == "HO_JUNC_00") type = "HP_JUNC_00";
 
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+						// Change names because change clock pin position
+						else if (type == "AA_DFF") type = "AB_DFF";
+						else if (type == "AE_DFF_LOW") type = "AC_DFF_LOW";
+						else if (type == "AE_DFF_LOW_NT") type = "AD_DFF_LOW_NT";
+						else if (type == "AF_DFF_LOW") type = "AF_DFF_CE_LOW";
+						else if (type == "AF_DFF_LOW_CE") type = "AF_DFF_CE_LOW";
+
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+
+						else if (type == "DE_KEYPAD_HEX2") type = "DD_KEYPAD_HEX";
+						else if (type == "DF_KEYPAD_DEC2") type = "DF_KEYPAD_DEC";
+						else if (type == "DF_KEYPAD_OCT2") type = "DF_KEYPAD_OCT";
+						else if (type == "DG_KEYPAD_QUA2") type = "DG_KEYPAD_QUA";
+						else if (type == "DH_KEYPAD_BIN2") type = "DH_KEYPAD_BIN";
+									
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Not necesary to deprecate, components are now in library
 						/* else if (type == "AA_DFF") {
@@ -228,7 +239,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						getline(iss, y, '\n');
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Do not load these gui params, they are obtained from the library
-						if (x != "ROTATE")
+						if (x != "ROTATE_KEYPAD_BOX")
 							if (x != "CROSS_POINT")
 								if (x != "LED_BOX")
 									if (x != "VALUE_BOX")
@@ -286,6 +297,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To avoid crash when a gate does not exist
+	// Experimental, can give problems with orfans hotspots
 	LibraryGate libGate;
 	wxGetApp().libParser.getGate(type, libGate);
 	if (!wxGetApp().libParser.getGate(type, libGate))

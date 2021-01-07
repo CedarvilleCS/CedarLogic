@@ -273,7 +273,7 @@ protected:
 	vector<lgLine> lines;
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Lines with offset for rotate chars
-	vector<lgOffLine> offlines;
+	vector<lgOffLine> txtlines;
 
 	// map i/o name to hotspot coord
 	map< string, gateHotspot* > hotspots;

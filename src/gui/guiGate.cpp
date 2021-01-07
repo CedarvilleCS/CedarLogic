@@ -222,8 +222,9 @@ void guiGate::draw(bool color, bool drawPalette) {
 
 	glLineWidth(1);
 
-	//####
-	/*
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	/* // Uncommnet to show cross
+
 	// Put 0,0 cross
 	{
 		GLfloat Color[4];
@@ -239,8 +240,6 @@ void guiGate::draw(bool color, bool drawPalette) {
 		glColor4f(Color[0], Color[1], Color[2], Color[3]);
 	}
 
-
-	//####
 	// Put offset cross	
 	{
 		GLfloat Color[4];
@@ -248,9 +247,9 @@ void guiGate::draw(bool color, bool drawPalette) {
 		glColor4f(1.0, 0.0, 1.0, 1.0);
 		glLineWidth(1);
 		glBegin(GL_LINES);
-		for (unsigned int i = 0; i < offlines.size(); i++) {
-			float cenX = offlines[i].x0;
-			float cenY = offlines[i].y0;
+		for (unsigned int i = 0; i < txtlines.size(); i++) {
+			float cenX = txtlines[i].x0;
+			float cenY = txtlines[i].y0;
 
 			glVertex2f(cenX, cenY + wxGetApp().appSettings.wireConnRadius);
 			glVertex2f(cenX, cenY - wxGetApp().appSettings.wireConnRadius);
@@ -262,7 +261,7 @@ void guiGate::draw(bool color, bool drawPalette) {
 		glColor4f(Color[0], Color[1], Color[2], Color[3]);
 	}
 
-	//####    */
+	//    */
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Draw text
@@ -274,22 +273,22 @@ void guiGate::draw(bool color, bool drawPalette) {
 		mirror = gparams["mirror"] == "true" ? true : false;
 
 	glBegin(GL_LINES);
-	for (unsigned int i = 0; i < offlines.size(); i++)
+	for (unsigned int i = 0; i < txtlines.size(); i++)
 	{
-		float x0 = offlines[i].x0;
-		float y0 = offlines[i].y0;
-		float x1 = offlines[i].Line.x1;
-		float y1 = offlines[i].Line.y1;
-		float x2 = offlines[i].Line.x2;
-		float y2 = offlines[i].Line.y2;
+		float x0 = txtlines[i].x0;
+		float y0 = txtlines[i].y0;
+		float x1 = txtlines[i].Line.x1;
+		float y1 = txtlines[i].Line.y1;
+		float x2 = txtlines[i].Line.x2;
+		float y2 = txtlines[i].Line.y2;
 
-		offlines[i].x1 = x0 + (x1 * cos(angle*DEG2RAD) - y1 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
-		offlines[i].y1 = y0 + (x1 * sin(angle*DEG2RAD) + y1 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
-		offlines[i].x2 = x0 + (x2 * cos(angle*DEG2RAD) - y2 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
-		offlines[i].y2 = y0 + (x2 * sin(angle*DEG2RAD) + y2 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
+		txtlines[i].x1 = x0 + (x1 * cos(angle*DEG2RAD) - y1 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+		txtlines[i].y1 = y0 + (x1 * sin(angle*DEG2RAD) + y1 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
+		txtlines[i].x2 = x0 + (x2 * cos(angle*DEG2RAD) - y2 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+		txtlines[i].y2 = y0 + (x2 * sin(angle*DEG2RAD) + y2 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
 
-		glVertex2f(offlines[i].x1, offlines[i].y1);
-		glVertex2f(offlines[i].x2, offlines[i].y2);
+		glVertex2f(txtlines[i].x1, txtlines[i].y1);
+		glVertex2f(txtlines[i].x2, txtlines[i].y2);
 	}
 
 	glEnd();
@@ -354,7 +353,7 @@ void guiGate::insertLine( float x1, float y1, float x2, float y2, int w) {
 // Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Lines with offset for rotate chars
 void guiGate::insertOffLine(float x0, float y0, float x1, float y1, float x2, float y2, int w) {
-	offlines.push_back(lgOffLine(lgLine(x1, y1, x2, y2, w),x0,y0));
+	txtlines.push_back(lgOffLine(lgLine(x1, y1, x2, y2, w),x0,y0));
 }
 
 
@@ -371,10 +370,9 @@ void guiGate::calcBBox( void ) {
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Add text lines
-	//####
-	for (unsigned int i = 0; i < offlines.size(); i++) {
-		modelBBox.addPoint(GLPoint2f(offlines[i].x1, offlines[i].y1));
-		modelBBox.addPoint(GLPoint2f(offlines[i].x2, offlines[i].y2));
+	for (unsigned int i = 0; i < txtlines.size(); i++) {
+		modelBBox.addPoint(GLPoint2f(txtlines[i].x1, txtlines[i].y1));
+		modelBBox.addPoint(GLPoint2f(txtlines[i].x2, txtlines[i].y2));
 	}
 
 	// Recalculate the world-space bbox:
@@ -505,15 +503,15 @@ void guiGate::saveGate(XMLParser* xparse) {
 	map< string, string >::iterator pParams = gparams.begin();
 	while (pParams != gparams.end()) {
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// Avoid to save some gparams 
+		// Avoid to save some gparams, they are obtained from the library
 		if (pParams->first == "angle" && (pParams->second == "0" || pParams->second == "0.0")) { pParams++; continue; }
-		if (pParams->first == "mirror" && pParams->second != "true") { pParams++; continue; }
-		if (pParams->first == "ROTATE") { pParams++; continue; }
-		if (pParams->first == "CROSS_POINT") { pParams++; continue; }
-		if (pParams->first == "LED_BOX") { pParams++; continue; }
-		if (pParams->first == "VALUE_BOX") { pParams++; continue; }		
-		if (pParams->first == "CLICK_BOX") { pParams++; continue; }		
-		if (pParams->first.substr(0, 11) == "KEYPAD_BOX_") { pParams++; continue; }
+		else if (pParams->first == "mirror" && pParams->second != "true") { pParams++; continue; }
+		else if (pParams->first == "ROTATE_KEYPAD_BOX") { pParams++; continue; }
+		else if (pParams->first == "CROSS_POINT") { pParams++; continue; }
+		else if (pParams->first == "LED_BOX") { pParams++; continue; }
+		else if (pParams->first == "VALUE_BOX") { pParams++; continue; }		
+		else if (pParams->first == "CLICK_BOX") { pParams++; continue; }		
+		else if (pParams->first.substr(0, 11) == "KEYPAD_BOX_") { pParams++; continue; }
 		
 		xparse->openTag("gparam");
 		oss.str("");
@@ -839,8 +837,8 @@ void guiGateKEYPAD::draw(bool color, bool drawPalette) {
 		float x2 = renderInfo_valueBox.end.x;
 		float y2 = renderInfo_valueBox.end.y;
 
-		// Rotate only appears in old KEYPAD style and must be always true
-		if (gparams.find("ROTATE") == gparams.end()) {
+		// ROTATE_KEYPAD_BOX only appears in old KEYPAD style and must be always true
+		if (gparams.find("ROTATE_KEYPAD_BOX") == gparams.end()) {
 			istringstream iss(gparams["angle"]);
 			GLfloat angle;
 			iss >> angle;
@@ -871,9 +869,10 @@ void guiGateKEYPAD::draw(bool color, bool drawPalette) {
 }
 
 // Pedro Casanova (casanova@ujaen.es) 2020/04-12
-// Parameter ROTATE for old style KEYPAD can only be true
+// Parameter ROTATE_KEYPAD_BOX for old style KEYPAD can only be true
+// Indicate if KEYPAD_BOX_ areas must rotate
 void guiGateKEYPAD::setGUIParam(string paramName, string value) {
-	if (paramName == "ROTATE") {
+	if (paramName == "ROTATE_KEYPAD_BOX") {
 		if (value != "true")
 			return;
 	}
@@ -935,8 +934,8 @@ klsMessage::Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick( GLfloat x, GLfloa
 		iss >> minx >> dump >> miny >> dump >> maxx >> dump >> maxy;
 
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// Rotate only appears in old KEYPAD style and must be always true
-		if (gparams.find("ROTATE") == gparams.end()) {
+		// ROTATE_KEYPAD_BOX only appears in old KEYPAD style and must be always true
+		if (gparams.find("ROTATE_KEYPAD_BOX") == gparams.end()) {
 			keyButton.addPoint(modelToWorld(GLPoint2f(minx, miny), false));
 			keyButton.addPoint(modelToWorld(GLPoint2f(minx, maxy), false));
 			keyButton.addPoint(modelToWorld(GLPoint2f(maxx, miny), false));

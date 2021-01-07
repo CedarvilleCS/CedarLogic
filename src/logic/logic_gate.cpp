@@ -1304,7 +1304,7 @@ bool Gate_REGISTER::setParameter( string paramName, string value ) {
 		return false;
 	} else if (paramName == "CO_ON_OVERFLOW") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		string CoOnOverflowVal;								// Carry out on overfow, not on max/min
-		iss >> CoOnOverflowVal;
+		iss >> CoOnOverflowVal;								// Experimental, not finished
 
 		CoOnOverflow = (CoOnOverflowVal == "true");
 		return false;
