@@ -54,6 +54,8 @@ void CircuitParse::loadFile(string fileName) {
 vector<GUICanvas*> CircuitParse::parseFile() {
 
 	string firstTag = mParse->readTag();
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found
+	bool notFound = false; 
 
 	// CedarLogic 2.0 and up has version information to keep old versions
 	// of CedarLogic from opening new, incompatable files.
@@ -149,32 +151,18 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Some names are changed for alfabetic order
-						else if (type == "CA_SMALL_TGATE") type = "TA_SMALL_TGATE";
-						else if (type == "AI_INVERTER_4BIT") type = "BI_INVERTER_4BIT";				
-
-						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-						// Names are changed becuse now the encoder can chage priority type (none, high and low)
-						else if (type == "CB_PRI_ENCODER_4x2") type = "CB_ENCODER_4x2_EN";
-						else if (type == "CC_PRI_ENCODER_8x3") type = "CC_ENCODER_8x3_EN";
-						else if (type == "CD_PRI_ENCODER_16x4") type = "CD_ENCODER_16x4_EN";
-						else if (type == "HO_JUNC_00") type = "HP_JUNC_00";
-
-						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-						// Change names because change clock pin position
+						else if (type == "CA_SMALL_TGATE") type = "TA_TGATE";
 						else if (type == "AA_DFF") type = "AB_DFF";
 						else if (type == "AE_DFF_LOW") type = "AC_DFF_LOW";
 						else if (type == "AE_DFF_LOW_NT") type = "AD_DFF_LOW_NT";
 						else if (type == "AF_DFF_LOW") type = "AF_DFF_CE_LOW";
-						else if (type == "AF_DFF_LOW_CE") type = "AF_DFF_CE_LOW";
 
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-
-						else if (type == "DE_KEYPAD_HEX2") type = "DD_KEYPAD_HEX";
-						else if (type == "DF_KEYPAD_DEC2") type = "DF_KEYPAD_DEC";
-						else if (type == "DF_KEYPAD_OCT2") type = "DF_KEYPAD_OCT";
-						else if (type == "DG_KEYPAD_QUA2") type = "DG_KEYPAD_QUA";
-						else if (type == "DH_KEYPAD_BIN2") type = "DH_KEYPAD_BIN";
-									
+						// Names are changed becuse now the encoder can chage priority type (none, low and high)
+						else if (type == "CB_PRI_ENCODER_4x2") type = "CB_ENCODER_4x2_EN";
+						else if (type == "CC_PRI_ENCODER_8x3") type = "CC_ENCODER_8x3_EN";
+						else if (type == "CD_PRI_ENCODER_16x4") type = "CD_ENCODER_16x4_EN"; 
+												
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Not necesary to deprecate, components are now in library
 						/* else if (type == "AA_DFF") {
@@ -197,7 +185,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						temp = mParse->readTag(); // get input ID
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
-						// pedro casanova (casasanova@ujaen.es) 2020/04-11
+						// pedro casanova (casasanova@ujaen.es) 2020/04-12
 						// Convert to uppercase and rename
 						for (unsigned long cnt = 0; cnt < gc->connectionID.length(); cnt++)
 							gc->connectionID[cnt] = toupper(gc->connectionID[cnt]);
@@ -218,7 +206,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
-						// pedro casanova (casasanova@ujaen.es) 2020/04-11
+						// pedro casanova (casasanova@ujaen.es) 2020/04-12
 						// Convert to uppercase
 						for (unsigned long cnt = 0; cnt < gc->connectionID.length(); cnt++)
 							gc->connectionID[cnt] = toupper(gc->connectionID[cnt]);
@@ -239,28 +227,30 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						getline(iss, y, '\n');
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Do not load these gui params, they are obtained from the library
-						if (x != "ROTATE_KEYPAD_BOX")
-							if (x != "CROSS_POINT")
-								if (x != "LED_BOX")
-									if (x != "VALUE_BOX")
-										if (x != "CLICK_BOX")
-											if (x.substr(0, 11) != "KEYPAD_BOX_")
-											{
-												// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-												// PULSE_WITH now is a logic param
-												if (x == "PULSE_WIDTH")
-													temp = "lparam";
-												pParam = new parameter(x, y.substr(1, y.size() - 1), (temp == "gparam"));
-												params.push_back(*pParam);
-												delete pParam;
-											}
+						if (x != "CROSS_POINT")
+							if (x != "LED_BOX")
+								if (x != "VALUE_BOX")
+									if (x != "CLICK_BOX")
+										if (x.substr(0, 11) != "KEYPAD_BOX_")
+										{
+											// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+											// PULSE_WITH now is a logic param
+											if (x == "PULSE_WIDTH")
+												temp = "lparam";
+											pParam = new parameter(x, y.substr(1, y.size() - 1), (temp == "gparam"));
+											params.push_back(*pParam);
+											delete pParam;
+										}
 					}
 					// ADD OTHER TAGS FOR GATE HERE
 					// ALSO MODIFY parseGateToSend
 					mParse->readCloseTag(); // </>
 				} while (!mParse->isCloseTag(mParse->getCurrentIndex()));
 				mParse->readCloseTag(); // >gate
-				parseGateToSend(type, ID, position, inputs, outputs, params);
+				if (parseGateToSend(type, ID, position, inputs, outputs, params)) {
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found
+					notFound = true;
+				}
 			}
 			else if (temp == "wire") {
 				//**********************************
@@ -282,31 +272,49 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	}
 
 	gCanvas->getCircuit()->getOscope()->UpdateMenu();
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found
+	if (notFound) {
+		wxMessageBox("One or more components has not been found in library.\n\n"
+			"Double click on it to see original component name\n\n"
+			"When you save this circuit information about connections of these components will be lost.\n\n"
+			, "Not found Error!");
+	}
 	return gCanvases;
 }
 
-void CircuitParse::parseGateToSend(string type, string ID, string position, vector < gateConnector > &inputs, vector < gateConnector > &outputs, vector < parameter > &params) {
+bool CircuitParse::parseGateToSend(string type, string ID, string position, vector < gateConnector > &inputs, vector < gateConnector > &outputs, vector < parameter > &params) {
 	// If no library was loaded, then don't try to make a gate from one
-	if (wxGetApp().libraries.size() == 0) return;
+	if (wxGetApp().libraries.size() == 0) return true;
 	ostringstream oss;
 	// Check the gate ID to see if it is taken
 	long id;
 	float x, y;
+	string orgName;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found
+	bool notFound = false;
 	istringstream issb(ID);
 	issb >> id;
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To avoid crash when a gate does not exist
-	// Experimental, can give problems with orfans hotspots
+	// Can give problems with orfans hotspots
+	// Must right click on them to unconnect or use Shift/Control click to connect
 	LibraryGate libGate;
-	wxGetApp().libParser.getGate(type, libGate);
-	if (!wxGetApp().libParser.getGate(type, libGate))
-	{
-		wxMessageBox("Component not found!\nGate name:" + type, "Not found Error!");
-		type = "@@_NOT_FOUND";
-		wxGetApp().libParser.getGate(type, libGate);
-		inputs.clear();
-		outputs.clear();
+	if (!wxGetApp().libParser.getGate(type, libGate)) {
+		if (type.substr(0, 3) == "@@_") {
+			wxGetApp().libParser.CreateDynamicGate(type);
+		}
+		if (!wxGetApp().libParser.getGate(type, libGate)) {
+			//wxMessageBox("Component not found!\nGate name:" + type, "Not found Error!");
+			notFound = true;
+			orgName = type;
+			type = "@@_NOT_FOUND";
+			wxGetApp().libParser.getGate(type, libGate);
+			inputs.clear();
+			outputs.clear();
+			notFoundGates.push_back(id);
+		}
 	}
 
 	if (libGate.logicType.size() > 0)
@@ -317,12 +325,15 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	issa.str(position.substr(position.find(",")+1,position.size()-position.find(",")-1));
 	issa >> y;
 	guiGate* newGate = gCanvas->getCircuit()->createGate( type, id, true );
-	if (newGate == NULL) return; // IN CASE OF ERROR
+	if (newGate == NULL) return true; // IN CASE OF ERROR
 	gCanvas->insertGate(id, newGate, x, y);
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To avoid crash when a gate does not exist
-	if (type == "@@_NOT_FOUND")	return;
+	if (notFound) {
+		newGate->setGUIParam("ORIGINAL_NAME", orgName);
+		return true;
+	}
 	
 	for (unsigned int i = 0; i < params.size(); i++) {
 		if (!(params[i].isGUI)) {
@@ -403,6 +414,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 
 		gCanvas->insertWire(wire);
 	}
+	return false;
 }
 
 //********************************
@@ -465,7 +477,7 @@ void CircuitParse::parseWireToSend( void ) {
 								mParse->readCloseTag();
 							} else if (temp == "name") {
 								hsName = mParse->readTagValue("name");
-								// pedro casanova (casasanova@ujaen.es) 2020/04-11
+								// pedro casanova (casasanova@ujaen.es) 2020/04-12
 								// Convert to uppercase and rename
 								for (unsigned long cnt = 0; cnt < hsName.length(); cnt++)
 									hsName[cnt] = toupper(hsName[cnt]);
@@ -474,9 +486,21 @@ void CircuitParse::parseWireToSend( void ) {
 								mParse->readCloseTag();
 							}
 						}
-						wireConnection nwc; nwc.gid = GID; nwc.connection = hsName;
-						nwc.cGate = (*(gCanvas->getCircuit()->getGates()))[GID];
-						newSeg.connections.push_back( nwc );
+						// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+						// Not found gates don´t connect
+						bool notFound = false;
+						for (unsigned int i = 0; i < notFoundGates.size(); i++) {
+							if (GID == notFoundGates[i]) {
+								notFound = true;
+								break;
+							}
+						}
+						if (!notFound)
+						{
+							wireConnection nwc; nwc.gid = GID; nwc.connection = hsName;
+							nwc.cGate = (*(gCanvas->getCircuit()->getGates()))[GID];
+							newSeg.connections.push_back(nwc);
+						}
 						mParse->readCloseTag();
 					} else if (temp == "intersection") {
 						// intersections have intersection point and id

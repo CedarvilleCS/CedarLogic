@@ -44,7 +44,6 @@ float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2) {
 	}
 }
 
-
 guiWire::guiWire() : klsCollisionObject(COLL_WIRE) {
 	selected = false;
 	setVerticalBar = true;
@@ -1150,7 +1149,7 @@ void guiWire::removeZeroLengthSegments() {
 	headSegment = segMap.begin()->first;
 }
 
-// Pedro Casanova (casanova@ujaen.es)  2020/04-11
+// Pedro Casanova (casanova@ujaen.es)  2020/04-12
 // Modified to puts junctions in component connections points
 // Display Wire Connections points is now only for reference
 // fill out some info to avoid loss of cycles in render loop
@@ -1295,7 +1294,6 @@ void guiWire::generateRenderInfo() {
 										renderInfo.intersectPoints.push_back(GLPoint2f(xv, yv));
 								}
 							} else if (libGate.guiType == "WIRE" && libGate.hotspots[k].isInput && libGate.hotspots[k].name != "N_IN0" && libGate.hotspots[k].isInput && libGate.hotspots[k].name != ("N_IN"+to_string(libGate.hotspots.size()-1)) ) {
-								//_MSG("*************** %s", ("N_IN"+to_string(libGate.hotspots.size()-1)).c_str())
 								// Force junction in inputs of WIRE gates
 								if (!checkPointInList(xv, yv, renderInfo.intersectPoints))
 									if (!checkPointInList(xv, yv, renderInfo.crossPoints))
@@ -1335,24 +1333,12 @@ void guiWire::generateRenderInfo() {
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es)  2020/04-11
+// Pedro Casanova (casanova@ujaen.es)  2020/04-12
 // To check if a point is yet in the list
 bool guiWire::checkPointInList(float x, float y, vector<GLPoint2f> ListPoints) {
 	for (unsigned int i = 0; i < ListPoints.size(); i++)
 		if ((x == ListPoints[i].x) && (y == ListPoints[i].y))
 			return true;
 	return false;
-}
-
-// Pedro Casanova (casanova@ujaen.es)  2020/04-11
-// Round 0.1 precission
-float guiWire::Round(float v)
-{
-	float retVal;
-	if (v<0)
-		retVal = -int(-v * 10.0f + 0.5f) / 10.0f;
-	else
-		retVal = int(v * 10.0f + 0.5f) / 10.0f;
-	return retVal;
 }
 

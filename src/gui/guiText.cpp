@@ -87,6 +87,7 @@ GLbox guiText::getBoundingBox( void ) {
 	tempBox.right = size.first*scale[0];
 	tempBox.top = -size.second*0.1667*scale[1];
 	tempBox.bottom = -size.second*0.8333*scale[1];
+
 	return tempBox;
 }
 

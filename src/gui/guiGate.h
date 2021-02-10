@@ -32,6 +32,8 @@ class guiWire;
 #include "wx/docview.h"
 
 #include "RamPopupDialog.h"
+#include "FSMParamDialog.h"
+#include "CMBParamDialog.h"
 
 #include "GUICircuit.h"
 #include "../logic/logic_circuit.h"
@@ -116,7 +118,7 @@ public:
 
 	string getLogicType();
 	string getGUIType();
-	
+
 	//****************************************************************
 	//Edit by Joshua Lansford 12/25/2006
 	//I made the doParamsDialog method below virtual
@@ -131,6 +133,10 @@ public:
 	//	processor object to assign the setparameters command to.  gc is
 	//	a GUICircuit pointer
 	virtual void doParamsDialog( void* gc, wxCommandProcessor* wxcmd );
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Show gate propierties
+	virtual void doPropsDialog();
+
 	// Set and get param virtual functions, simply assigns a string
 	virtual void setGUIParam(string paramName, string value);
 	virtual string getGUIParam( string paramName ) { return gparams[paramName]; };
@@ -172,7 +178,7 @@ public:
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Lines with offset for rotate chars
-	void insertOffLine(float x0, float y0, float x1, float y1, float x2, float y2, int w = 1);
+	void insertTextLine(float x0, float y0, float x1, float y1, float x2, float y2, int w = 1);
 
 	// Recalculate the bounding box, based on the lines that are included alredy:
 	virtual void calcBBox( void );
@@ -273,7 +279,7 @@ protected:
 	vector<lgLine> lines;
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Lines with offset for rotate chars
-	vector<lgOffLine> txtlines;
+	vector<lgOffLine> textLines;
 
 	// map i/o name to hotspot coord
 	map< string, gateHotspot* > hotspots;
@@ -534,6 +540,56 @@ private:
 };
 //End of edit
 
+// ************************ FSM gate ****************************
+
+//*************************************************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+//I am creating a guiGate for the FSM so that
+//the FSM can have its own special pop-up window
+class guiGateFSM : public guiGate {
+public:
+	guiGateFSM();
+
+	// Function to show the gate's parameters dialog, takes the command
+	//	processor object to assign the setparameters command to.  gc is
+	//	a GUICircuit pointer
+	virtual void doParamsDialog(void* gc, wxCommandProcessor* wxcmd);
+	virtual void saveGateTypeSpecifics(XMLParser* xparse);
+
+	//Destructor for cleaning up private vars
+	virtual ~guiGateFSM();
+
+private:
+	//The pop-up dialog
+	FSMParamDialog* fsmParamDialog;
+
+};
+//*************************************************
+
+// ************************ CMB gate ****************************
+
+//*************************************************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+//I am creating a guiGate for the CMB so that
+//the CMB can have its own special pop-up window
+class guiGateCMB : public guiGate {
+public:
+	guiGateCMB();
+
+	// Function to show the gate's parameters dialog, takes the command
+	//	processor object to assign the setparameters command to.  gc is
+	//	a GUICircuit pointer
+	virtual void doParamsDialog(void* gc, wxCommandProcessor* wxcmd);
+	virtual void saveGateTypeSpecifics(XMLParser* xparse);
+
+	//Destructor for cleaning up private vars
+	virtual ~guiGateCMB();
+
+private:
+	//The pop-up dialog
+	CMBParamDialog* cmbParamDialog;
+
+};
 //*************************************************
 
 #endif /*GUIGATE_H_*/

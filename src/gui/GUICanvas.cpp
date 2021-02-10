@@ -322,20 +322,28 @@ void GUICanvas::OnRender( bool color ) {
 
 void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	GLPoint2f m = getMouseCoords();
-	bool handled = false;
+
 	// If I am in a paste operation then mouse-up is all I am concerned with
 	if (isWithinPaste) return;
-	
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Alt + MouseDown
+/*	if (event.AltDown()) {
+		return;
+	}*/
+
+	bool handled = false;
+
 	// Update the mouse collision object
 	klsBBox mBox;
 	float delta = MOUSE_HOVER_DELTA * getZoom();
-	mBox.addPoint( m );
-	mBox.extendTop( delta );
-	mBox.extendBottom( delta );
-	mBox.extendLeft( delta );
-	mBox.extendRight( delta );
-	mouse->setBBox( mBox );
-	
+	mBox.addPoint(m);
+	mBox.extendTop(delta);
+	mBox.extendBottom(delta);
+	mBox.extendLeft(delta);
+	mBox.extendRight(delta);
+	mouse->setBBox(mBox);
+
 	// Do a collision detection on all first-level objects.
 	// The map collisionChecker.overlaps now contains
 	// all of the objects involved in any collisions.
@@ -344,8 +352,8 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	// Loop through all objects hit by the mouse
 	//	Favor wires over gates
 	CollisionGroup hitThings = mouse->getOverlaps();
-	CollisionGroup::iterator hit = hitThings.begin();	
-	while( hit != hitThings.end() && !handled ) {
+	CollisionGroup::iterator hit = hitThings.begin();
+	while (hit != hitThings.end() && !handled) {
 		//*************************************
 		//Edit by Joshua Lansford 3/16/07
 		//It has been requested by students that a ctrl
@@ -355,7 +363,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 		//everywere it appears in this file with
 		//"(isLockedShiftDown()||event.ControlDown())"
 		//************************************
-		
+
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Now permit drag from wires and hotspot
 		if ((*hit)->getType() == COLL_WIRE) {
@@ -365,15 +373,15 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 			if (hitWire->hover(m.x, m.y, WIRE_HOVER_SCREEN_DELTA * getZoom())) {
 				hitWire->select();
 				// ControlDown or ShiftDown to unselect gate or wire
-				if ((event.ShiftDown() || event.ControlDown()) && wasSelected) 
+				if ((event.ShiftDown() || event.ControlDown()) && wasSelected)
 					hitWire->unselect();
 				// Nor ControlDown neither ShiftDown to unselect all
 				if (!(event.ShiftDown() || event.ControlDown())) {
 					unselectAllWires();
 					unselectAllGates();
 					hitWire->select();
-				}				
-				
+				}
+
 				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	It was ControlDown Only
 				// ControlDown or ShiftDownto drag connection
 				if ((event.ShiftDown() || event.ControlDown()) && !(this->isLocked())) {
@@ -391,27 +399,28 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 						currentConnectionSource.connection = hotspotHighlight;
 					}
 					currentDragState = DRAG_CONNECT;
-				} else {
+				}
+				else {
 					// Nor ControlDown neither ShiftDown to drag wire segment
 					if (!(event.ShiftDown() || event.ControlDown())) {
 						if (hotspotHighlight.size() == 0)
 						{
-							//##
-							_MSG("wireID: %lld", hitWire->getID())	//##
-							guiWire *wire = wireList[hitWire->getID()];
+							//####
+							_MSGGUI("wireID: %lld", hitWire->getID())	//####
+								guiWire *wire = wireList[hitWire->getID()];
 							vector<wireConnection> conn(wire->getConnections());
 							for (int i = 0; i < (int)conn.size(); i++) {
-								_MSG("... gateID: %d (%s)", conn[i].gid, conn[i].connection.c_str());	//##
+								_MSGGUI("... gateID: %d (%s)", conn[i].gid, conn[i].connection.c_str());	//####
 							}
 							map< long, wireSegment > segm(wire->getSegmentMap());
 							for (int i = 0; i < (int)segm.size(); i++) {
-								_MSG("... segmenID: %d (%s) (%1.1f,%1.1f)-(%1.1f,%1.1f)", segm[i].id, segm[i].isVertical() ? "V" : "H", segm[i].begin.x, segm[i].begin.y, segm[i].end.x, segm[i].end.y);	//##
+								_MSGGUI("... segmenID: %d (%s) (%1.1f,%1.1f)-(%1.1f,%1.1f)", segm[i].id, segm[i].isVertical() ? "V" : "H", segm[i].begin.x, segm[i].begin.y, segm[i].end.x, segm[i].end.y);	//####
 							}
-							//##
+							//####
 						}
 						else
-							_MSG("wireID: %lld gateID: %d (%s) (%f,%f)", hitWire->getID(), hotspotGate, hotspotHighlight.c_str(), m.x, m.y)	//##
-						wireHoverID = hitWire->getID();
+							_MSGGUI("wireID: %lld gateID: %d (%s) (%f,%f)", hitWire->getID(), hotspotGate, hotspotHighlight.c_str(), m.x, m.y)	//####
+							wireHoverID = hitWire->getID();
 						if (wireList[wireHoverID]->startSegDrag(snapMouse) && !(this->isLocked())) {
 							currentDragState = DRAG_WIRESEG;
 						}
@@ -429,7 +438,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	if (hotspotHighlight.size() > 0 && currentDragState == DRAG_NONE && !(this->isLocked())) {
 		// Start dragging a new wire:
 		//gateList[hotspotGate]->select();
-		_MSG("gateID: %d (%s)", hotspotGate, hotspotHighlight.c_str())	//##
+		_MSGGUI("gateID: %d (%s)", hotspotGate, hotspotHighlight.c_str())	//####
 		unselectAllGates();
 		unselectAllWires();
 		handled = true; // Don't worry about checking other events in this proc
@@ -441,7 +450,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 
 	// Now check gate collisions
 	hit = hitThings.begin();
-	while( hit != hitThings.end() && !handled ) {
+	while (hit != hitThings.end() && !handled) {
 		if ((*hit)->getType() == COLL_GATE) {
 			guiGate* hitGate = ((guiGate*)(*hit));
 			bool wasSelected = hitGate->isSelected();
@@ -451,32 +460,31 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 			else if ((event.ShiftDown() || event.ControlDown()) && !wasSelected) {
 				hitGate->select(); // Add gate to selection
 			}
-			else if (!(event.ShiftDown()||event.ControlDown()) && !wasSelected) { 
+			else if (!(event.ShiftDown() || event.ControlDown()) && !wasSelected) {
 				// Begin new selection group
 				unselectAllGates();
 				unselectAllWires();
 				hitGate->select();
 			}
 			if (!(event.ShiftDown() || event.ControlDown()) && !(this->isLocked())) {
-				_MSG("gateID: %d %s", hitGate->getID(), hitGate->getLibraryGateName().c_str())	//##
+				_MSGGUI("gateID: %d %s", hitGate->getID(), hitGate->getLibraryGateName().c_str())	//####
 				currentDragState = DRAG_SELECTION; // Start dragging
 			}
 			handled = true;
 		}
 		hit++;
 	}
-
 	// If I am not in a selection group and I haven't handled a selection then unselect everything
-	if (!handled && !((event.ShiftDown()||event.ControlDown()))) {
+	if (!handled && !((event.ShiftDown() || event.ControlDown()))) {
 		unselectAllGates();
 		unselectAllWires();
 	}
-	
-	if (!handled) { 
+
+	if (!handled) {
 		// Otherwise initialize drag select
 		currentDragState = DRAG_SELECT;
 	}
-	
+
 	// Show the updates
 	Refresh();
 
@@ -489,7 +497,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 		if ((thisGate->second)->isSelected()) {
 			// Push back the gate's id, xy pos, angle, and select flag
 			preMove.push_back(GateState((thisGate->first), 0, 0, (thisGate->second)->isSelected()));
-			(thisGate->second)->getGLcoords(preMove[preMove.size()-1].x, preMove[preMove.size()-1].y);
+			(thisGate->second)->getGLcoords(preMove[preMove.size() - 1].x, preMove[preMove.size() - 1].y);
 			selectedGates.push_back((thisGate->first));
 		}
 		thisGate++;
@@ -559,46 +567,53 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 		while( hit != hitThings.end()) {
 			if ((*hit)->getType() == COLL_GATE) {
 				guiGate* hitGate = ((guiGate*)(*hit));
-				// BEGIN WORKAROUND
-				//	Gates that have connections cannot be rotated without sacrificing wire sanity
-				map < string, GLPoint2f > gateHotspots = hitGate->getHotspotList();
-				map < string, GLPoint2f >::iterator ghsWalk = gateHotspots.begin();
-				bool gateConnected = false;
-				while ( ghsWalk !=  gateHotspots.end() ) {
-					if ( hitGate->isConnected( ghsWalk->first ) ) {
-						gateConnected = true;
-						break;
-					}
-					ghsWalk++;
+				if (event.AltDown()) {
+					hitGate->doPropsDialog();
 				}
-				if ( gateConnected ) { hit++; continue; }
-				// END WORKAROUND
-				map < string, string > newParams(*(hitGate->getAllGUIParams()));
-				if (!(event.ShiftDown() || event.ControlDown())) {
-					istringstream issAngle(newParams["angle"]);
-					GLfloat angle;
-					issAngle >> angle;
-					angle += 90.0;
-					if (angle >= 360.0) angle -= 360.0;
-					ostringstream ossAngle;
-					ossAngle << angle;
-					newParams["angle"] = ossAngle.str();
-					gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
-				} else {
-					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-					// Shift or Control and mouseRightDown to change "mirror" GUI param
-					if (newParams["mirror"] == "true")
-						newParams["mirror"] = "false";
-					else
-						newParams["mirror"] = "true";
-					gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
+				else {
+					// BEGIN WORKAROUND
+					//	Gates that have connections cannot be rotated without sacrificing wire sanity
+					map < string, GLPoint2f > gateHotspots = hitGate->getHotspotList();
+					map < string, GLPoint2f >::iterator ghsWalk = gateHotspots.begin();
+					bool gateConnected = false;
+					while ( ghsWalk !=  gateHotspots.end() ) {
+						if ( hitGate->isConnected( ghsWalk->first ) ) {
+							gateConnected = true;
+							break;
+						}
+						ghsWalk++;
+					}
+					if ( gateConnected ) { hit++; continue; }
+					// END WORKAROUND
+
+					map < string, string > newParams(*(hitGate->getAllGUIParams()));
+					if (!(event.ShiftDown() || event.ControlDown())) {
+						istringstream issAngle(newParams["angle"]);
+						GLfloat angle;
+						issAngle >> angle;
+						angle += 90.0;
+						if (angle >= 360.0) angle -= 360.0;
+						ostringstream ossAngle;
+						ossAngle << angle;
+						newParams["angle"] = ossAngle.str();
+						gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
+					}
+					else {
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+						// Shift or Control and mouseRightDown to change "mirror" GUI param
+						if (newParams["mirror"] == "true")
+							newParams["mirror"] = "false";
+						else
+							newParams["mirror"] = "true";
+						gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
+					}
 				}
 
 			}
 			hit++;
 		}
 	}
-	Refresh();
+	Refresh();	
 }
 
 void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool CtrlDown ) {
@@ -694,7 +709,7 @@ void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool Ct
 			guiGate* hitGate = ((guiGate*)(*hit));
 			
 			// Update the hotspot hover variables:
-			if( hotspotHighlight.size() == 0 ) {
+			if( hotspotHighlight.size() == 0 ) {				
 				if (currentDragState != DRAG_NEWGATE || hitGate->getID() != newDragGate->getID()) hotspotHighlight = hitGate->checkHotspots( m.x, m.y, HOTSPOT_SCREEN_DELTA * getZoom() );
 				if( hotspotHighlight.size() > 0 ) {
 					if (currentDragState != DRAG_NEWGATE || hitGate->getID() != newDragGate->getID()) hotspotGate = hitGate->getID();
@@ -857,22 +872,33 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 
 	// If dragging a new gate then 
 	if (currentDragState == DRAG_NEWGATE) {
-		int newGID = gCircuit->getNextAvailableGateID();
-		float nx, ny;
-		newDragGate->getGLcoords(nx, ny);
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		// Midified to create dynamics gates
+		if (newDragGate->getLibraryGateName().substr(0, 2) == "%_") {			
+			newDragGate->doParamsDialog(gCircuit, gCircuit->GetCommandProcessor());
+		} else {
+			int newGID = gCircuit->getNextAvailableGateID();
+			float nx, ny;
+			newDragGate->getGLcoords(nx, ny);
+			creategatecommand = new cmdCreateGate(this, gCircuit, newGID, newDragGate->getLibraryGateName(), nx, ny);
+			gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatecommand);
+			cmdSetParams setgateparams(gCircuit, newGID, paramSet((*(gCircuit->getGates()))[newGID]->getAllGUIParams(), (*(gCircuit->getGates()))[newGID]->getAllLogicParams()));
+			setgateparams.Do();
+			gateList[newGID]->select();
+			selectedGates.push_back(newGID);
+		}
+
 		gCircuit->getGates()->erase(newDragGate->getID());
-		creategatecommand = new cmdCreateGate( this, gCircuit, newGID, newDragGate->getLibraryGateName(), nx, ny );
-		gCircuit->GetCommandProcessor()->Submit( (wxCommand*)creategatecommand );
+
 		collisionChecker.removeObject( newDragGate );
 		// Only now do a collision detection on all first-level objects since the new gate is in.
 		// The map collisionChecker.overlaps now contains
 		// all of the objects involved in any collisions.
 		collisionChecker.update();
-		cmdSetParams setgateparams( gCircuit, newGID, paramSet((*(gCircuit->getGates()))[newGID]->getAllGUIParams(), (*(gCircuit->getGates()))[newGID]->getAllLogicParams()));
-		setgateparams.Do();
+		//cmdSetParams setgateparams( gCircuit, newGID, paramSet((*(gCircuit->getGates()))[newGID]->getAllGUIParams(), (*(gCircuit->getGates()))[newGID]->getAllLogicParams()));
+		//setgateparams.Do();
 		delete newDragGate;
-		gateList[newGID]->select();
-		selectedGates.push_back(newGID);
+
 	}
 	else {
 		// Do a collision detection on all first-level objects.
@@ -890,7 +916,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 					guiGate* hitGate = gateList[preMove[0].id];
 					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 					// To permit single click in lock mode
-					if (!(event.ShiftDown() || event.ControlDown()) && ((event.LeftUp() && currentDragState == DRAG_SELECTION)) || (event.LeftUp() && this->isLocked() || event.LeftDClick())) {
+					if ((!(event.ShiftDown() || event.ControlDown()) && (event.LeftUp() && currentDragState == DRAG_SELECTION)) || ((event.LeftUp() && this->isLocked()) || event.LeftDClick())) {
 						// Check for toggle switch
 						float x, y;
 						hitGate->getGLcoords(x,y);
@@ -903,7 +929,9 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 							}
 						}
 						if (event.LeftDClick() && !handled) {
-							hitGate->doParamsDialog(gCircuit, gCircuit->GetCommandProcessor());
+							if (!(event.ShiftDown() || event.ControlDown())) {
+								hitGate->doParamsDialog(gCircuit, gCircuit->GetCommandProcessor());
+							}
 							currentDragState = DRAG_NONE;
 							// setparams command will handle oscope update
 							handled = true;
@@ -1525,7 +1553,7 @@ klsCommand * GUICanvas::createWireConnectionCommand(IDType wireId1, IDType wireI
 		}
 	}
 	return nullptr;*/
-	//##
+	//####
 
 
 	// Make sure not already connected.
@@ -1537,7 +1565,7 @@ klsCommand * GUICanvas::createWireConnectionCommand(IDType wireId1, IDType wireI
 	// Get the correct number of new, unique wire ids.
 	for (int i = 0; i < (int)wireIds.size(); i++) {
 		wireIds[i] = gCircuit->getNextAvailableWireID();
-		_MSG("WID: %lld", wireIds[i])	//##
+		_MSGGUI("WID: %lld", wireIds[i])	//####
 	}
 
 	cmdMergeWire* mergeWire =
@@ -1551,3 +1579,4 @@ klsCommand * GUICanvas::createWireConnectionCommand(IDType wireId1, IDType wireI
 		return nullptr;
 	}
 }
+

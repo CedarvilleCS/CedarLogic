@@ -121,11 +121,12 @@ public:
 	void OnMouseDown( wxMouseEvent& event ) {
 		if( event.LeftDown() || event.LeftDClick() ) {
 			mouseLeftDown( event );
-		} else if( event.RightDown() || event.RightDClick() ) {
-			mouseRightDown( event );
+		} else if (event.RightDown() || event.RightDClick()) {
+			mouseRightDown(event);
 		}
 	};
-    void mouseLeftDown(wxMouseEvent& event);
+
+	void mouseLeftDown(wxMouseEvent& event);
     void mouseRightDown(wxMouseEvent& event);
 
     void OnMouseUp(wxMouseEvent& event);

@@ -55,10 +55,15 @@ private:
 	vector< GUICanvas* > gCanvases;
 	GUICanvas* gCanvas;
 	
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found return true
 	// Takes the pieces of gate info found in parseFile and implements them
-	void parseGateToSend(string type, string ID, string position, vector < gateConnector > &inputs, vector < gateConnector > &outputs, vector < parameter > &params);
+	bool parseGateToSend(string type, string ID, string position, vector < gateConnector > &inputs, vector < gateConnector > &outputs, vector < parameter > &params);
 	// Parses, builds, and sets a wire's information (shape, id, etc)
 	void parseWireToSend( void );
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Not found gates list
+	vector <long> notFoundGates;
 };
 
 #endif /*CIRCUITPARSE_H_*/

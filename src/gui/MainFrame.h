@@ -101,7 +101,7 @@ public:
 	void OnRedo(wxCommandEvent& event);
 	void OnCopy(wxCommandEvent& event);
 	void OnPaste(wxCommandEvent& event);
-	// Pedro Casanova(casanova@ujaen.es) 2020/04-11
+	// Pedro Casanova(casanova@ujaen.es) 2020/04-12
 	// Separate options to copy bitmap to clipboard
 	void OnCopyColor(wxCommandEvent& event);
 	void OnCopyGreyscale(wxCommandEvent& event);

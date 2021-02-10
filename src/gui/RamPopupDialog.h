@@ -8,11 +8,8 @@
 #define RAM_TITLE "Ram Info"
 #define RAM_WIDTH 700
 #define RAM_HEIGHT 500
-#define LIST_WIDTH 180
-#define LIST_HEIGHT 600
-#define RAM_X_POS 20
+#define RAM_X_POS 30
 #define RAM_Y_POS 30
-
 
 #include "MainApp.h"
 

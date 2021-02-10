@@ -34,6 +34,14 @@
 // To search "My Documents" directory
 #include <shlobj.h>
 
+// Pedro Casanova (casanova@ujaen.es) 2020/01-02
+// Functions used in some modules
+bool chkDigits(string number);
+bool chkHexDigits(string* number, bool uppercase = false);
+bool chkBits(string* bits, bool uppercase = false);
+float Round_half(float v);
+float Round(float v);
+
 class MainFrame;
 
 using namespace std;

@@ -5,7 +5,7 @@ project(CedarLogic)
 
 set(CEDARLOGIC_MAJOR 2)
 set(CEDARLOGIC_MINOR 4)
-set(CEDARLOGIC_PATCH 1)
+set(CEDARLOGIC_PATCH 2)
 
 add_definitions(
 	-DCEDARLOGIC_MAJOR=${CEDARLOGIC_MAJOR}
@@ -69,6 +69,10 @@ set(Sources
 	src/gui/PaletteFrame.h
 	src/gui/paramDialog.cpp
 	src/gui/paramDialog.h
+	src/gui/CMBParamDialog.cpp	
+	src/gui/CMBParamDialog.h	
+	src/gui/FSMParamDialog.cpp	
+	src/gui/FSMParamDialog.h	
 	src/gui/RamPopupDialog.cpp
 	src/gui/RamPopupDialog.h
 	src/gui/threadLogic.cpp
@@ -83,6 +87,8 @@ set(Sources
 	src/gui/command/cmdConnectWire.h
 	src/gui/command/cmdCreateGate.cpp
 	src/gui/command/cmdCreateGate.h
+	src/gui/command/cmdCreateGateStruct.cpp
+	src/gui/command/cmdCreateGateStruct.h
 	src/gui/command/cmdCreateWire.cpp
 	src/gui/command/cmdCreateWire.h
 	src/gui/command/cmdDeleteGate.cpp

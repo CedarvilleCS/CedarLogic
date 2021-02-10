@@ -22,6 +22,9 @@ class guiGate;
 class XMLParser;
 
 float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2);
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Round 0.1 precision
+float Round(float v);
 
 struct glWireRenderInfo {
 	vector< GLPoint2f > vertexPoints;
@@ -143,10 +146,6 @@ private:
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To check if a point is yet in the list
 	bool guiWire::checkPointInList(float x, float y, vector<GLPoint2f> ListPoints);
-
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	// Round 0.1 precission
-	float guiWire::Round(float v);
 
 	// Store the tree in a non-pointered way for easy copy
 	map < long, wireSegment > segMap;

@@ -75,7 +75,7 @@ void guiGate::updateBBoxes( bool noUpdateWires ) {
 	// Set up the forward matrix:
 	glLoadIdentity();
 	glTranslatef(x, y, 0);
-	glRotatef( angle, 0.0, 0.0, 1.0);
+	glRotatef( angle, 0, 0, 1);
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// "mirror" GUI param 
@@ -223,10 +223,9 @@ void guiGate::draw(bool color, bool drawPalette) {
 	glLineWidth(1);
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	/* // Uncommnet to show cross
-
+	// Uncommnet to show cross
 	// Put 0,0 cross
-	{
+	/*{
 		GLfloat Color[4];
 		glGetFloatv(GL_CURRENT_COLOR, Color);
 		glColor4f(0.0, 1.0, 1.0, 1.0);
@@ -247,9 +246,9 @@ void guiGate::draw(bool color, bool drawPalette) {
 		glColor4f(1.0, 0.0, 1.0, 1.0);
 		glLineWidth(1);
 		glBegin(GL_LINES);
-		for (unsigned int i = 0; i < txtlines.size(); i++) {
-			float cenX = txtlines[i].x0;
-			float cenY = txtlines[i].y0;
+		for (unsigned int i = 0; i < textLines.size(); i++) {
+			float cenX = textLines[i].x0;
+			float cenY = textLines[i].y0;
 
 			glVertex2f(cenX, cenY + wxGetApp().appSettings.wireConnRadius);
 			glVertex2f(cenX, cenY - wxGetApp().appSettings.wireConnRadius);
@@ -273,22 +272,22 @@ void guiGate::draw(bool color, bool drawPalette) {
 		mirror = gparams["mirror"] == "true" ? true : false;
 
 	glBegin(GL_LINES);
-	for (unsigned int i = 0; i < txtlines.size(); i++)
+	for (unsigned int i = 0; i < textLines.size(); i++)
 	{
-		float x0 = txtlines[i].x0;
-		float y0 = txtlines[i].y0;
-		float x1 = txtlines[i].Line.x1;
-		float y1 = txtlines[i].Line.y1;
-		float x2 = txtlines[i].Line.x2;
-		float y2 = txtlines[i].Line.y2;
+		float x0 = textLines[i].x0;
+		float y0 = textLines[i].y0;
+		float x1 = textLines[i].Line.x1;
+		float y1 = textLines[i].Line.y1;
+		float x2 = textLines[i].Line.x2;
+		float y2 = textLines[i].Line.y2;
 
-		txtlines[i].x1 = x0 + (x1 * cos(angle*DEG2RAD) - y1 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
-		txtlines[i].y1 = y0 + (x1 * sin(angle*DEG2RAD) + y1 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
-		txtlines[i].x2 = x0 + (x2 * cos(angle*DEG2RAD) - y2 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
-		txtlines[i].y2 = y0 + (x2 * sin(angle*DEG2RAD) + y2 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
+		textLines[i].x1 = x0 + (x1 * cos(angle*DEG2RAD) - y1 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+		textLines[i].y1 = y0 + (x1 * sin(angle*DEG2RAD) + y1 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
+		textLines[i].x2 = x0 + (x2 * cos(angle*DEG2RAD) - y2 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+		textLines[i].y2 = y0 + (x2 * sin(angle*DEG2RAD) + y2 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
 
-		glVertex2f(txtlines[i].x1, txtlines[i].y1);
-		glVertex2f(txtlines[i].x2, txtlines[i].y2);
+		glVertex2f(textLines[i].x1, textLines[i].y1);
+		glVertex2f(textLines[i].x2, textLines[i].y2);
 	}
 
 	glEnd();
@@ -352,8 +351,8 @@ void guiGate::insertLine( float x1, float y1, float x2, float y2, int w) {
 
 // Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Lines with offset for rotate chars
-void guiGate::insertOffLine(float x0, float y0, float x1, float y1, float x2, float y2, int w) {
-	txtlines.push_back(lgOffLine(lgLine(x1, y1, x2, y2, w),x0,y0));
+void guiGate::insertTextLine(float x0, float y0, float x1, float y1, float x2, float y2, int w) {
+	textLines.push_back(lgOffLine(lgLine(x1, y1, x2, y2, w),x0,y0));
 }
 
 
@@ -370,9 +369,10 @@ void guiGate::calcBBox( void ) {
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Add text lines
-	for (unsigned int i = 0; i < txtlines.size(); i++) {
-		modelBBox.addPoint(GLPoint2f(txtlines[i].x1, txtlines[i].y1));
-		modelBBox.addPoint(GLPoint2f(txtlines[i].x2, txtlines[i].y2));
+	// Must be review
+	for (unsigned int i = 0; i < textLines.size(); i++) {
+		modelBBox.addPoint(GLPoint2f(textLines[i].x1, textLines[i].y1));
+		modelBBox.addPoint(GLPoint2f(textLines[i].x2, textLines[i].y2));
 	}
 
 	// Recalculate the world-space bbox:
@@ -505,14 +505,17 @@ void guiGate::saveGate(XMLParser* xparse) {
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Avoid to save some gparams, they are obtained from the library
 		if (pParams->first == "angle" && (pParams->second == "0" || pParams->second == "0.0")) { pParams++; continue; }
-		else if (pParams->first == "mirror" && pParams->second != "true") { pParams++; continue; }
-		else if (pParams->first == "ROTATE_KEYPAD_BOX") { pParams++; continue; }
-		else if (pParams->first == "CROSS_POINT") { pParams++; continue; }
-		else if (pParams->first == "LED_BOX") { pParams++; continue; }
-		else if (pParams->first == "VALUE_BOX") { pParams++; continue; }		
-		else if (pParams->first == "CLICK_BOX") { pParams++; continue; }		
-		else if (pParams->first.substr(0, 11) == "KEYPAD_BOX_") { pParams++; continue; }
-		
+		if (pParams->first == "mirror" && pParams->second != "true") { pParams++; continue; }
+		if (pParams->first == "HIDE_DISPLAY" && pParams->second != "true") { pParams++; continue; }
+		if (pParams->first == "BCD" && pParams->second != "true") { pParams++; continue; }		
+		if (pParams->first == "ORIGINAL_NAME" && pParams->second == "") { pParams++; continue; }		
+		if (pParams->first == "CROSS_POINT") { pParams++; continue; }
+		if (pParams->first == "LED_BOX") { pParams++; continue; }
+		if (pParams->first == "VALUE_BOX") { pParams++; continue; }		
+		if (pParams->first == "CLICK_BOX") { pParams++; continue; }
+		if (pParams->first == "LENGTH") { pParams++; continue; }
+		if (pParams->first.substr(0, 11) == "KEYPAD_BOX_") { pParams++; continue; }
+	
 		xparse->openTag("gparam");
 		oss.str("");
 		oss << pParams->first << " " << pParams->second;
@@ -530,6 +533,20 @@ void guiGate::saveGate(XMLParser* xparse) {
 				lg.dlgParams[i].name == pParams->first) found = true;
 		}
 		if (found) { pParams++; continue; }
+		// Pedro Casanova (casanova@ujaen.es) 2021-01
+		// Avoid to save some lparams, they are obtained from the library
+		if (pParams->first == "DEFAULT_DELAY" && pParams->second == "1") { pParams++; continue; }
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		// State: param saved in saveGateTypeSpecifics to short them		
+		if (pParams->first.substr(0, 6) == "State:") { pParams++; continue; }
+		if (pParams->first.substr(0, 9) == "Function:") { pParams++; continue; }
+		if (pParams->first == "CURRENT_STATE" && pParams->second == "") { pParams++; continue; }
+		if (pParams->first == "CLEAR_FSM") { pParams++; continue; }
+
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Avoid to save some lparams, they are obtained from the library
+		// if (pParams->first == "xxx") { pParams++; continue; }
+
 		xparse->openTag("lparam");
 		oss.str("");
 		oss << pParams->first << " " << pParams->second;
@@ -554,11 +571,32 @@ void guiGate::saveGate(XMLParser* xparse) {
 	xparse->closeTag("gate");	
 }
 
-void guiGate::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ) {
+void guiGate::doParamsDialog(void* gCircuit, wxCommandProcessor* wxcmd) {
 	if (wxGetApp().libraries[libName][libGateName].dlgParams.size() == 0) return;
-	paramDialog myDialog("Parameters", gc, this, wxcmd);
+	paramDialog myDialog("Parameters", gCircuit, this, wxcmd);
 	myDialog.SetFocus();
 	myDialog.ShowModal();
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Show gate propierties
+void guiGate::doPropsDialog() {
+	ostringstream oss;	
+	if (this->getLibraryGateName() == "@@_NOT_FOUND" && gparams.find("ORIGINAL_NAME") != gparams.end())
+		oss << "Component not found\nOriginal name:\t" << this->getGUIParam("ORIGINAL_NAME") << "\n";
+	else
+	{
+		string Prop;
+		oss << "Library:\t\t" << this->getLibraryName() << "\n";
+		oss << "Name:\t\t" << this->getLibraryGateName() << "\n";
+		Prop = this->getLogicType();
+		if (Prop != "")
+			oss << "Logic type:\t" << Prop << "\n";
+		Prop = this->getGUIType();
+		if (Prop != "")
+			oss << "GUI type:\t\t" << Prop << "\n";
+	}
+	wxMessageBox(oss.str(), "Properties");
 }
 
 void guiGate::setGUIParam(string paramName, string value) {
@@ -827,7 +865,7 @@ void guiGateKEYPAD::draw(bool color, bool drawPalette) {
 	
 	if (color) {
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// To draw inner square when text is rotated and not rotated	
+		// To draw inner square when gate is rotated
 		GLfloat Color[4];
 		glGetFloatv(GL_CURRENT_COLOR, Color);
 		glColor4f(0.0, 0.4f, 1.0, 0.3f);
@@ -837,28 +875,21 @@ void guiGateKEYPAD::draw(bool color, bool drawPalette) {
 		float x2 = renderInfo_valueBox.end.x;
 		float y2 = renderInfo_valueBox.end.y;
 
-		// ROTATE_KEYPAD_BOX only appears in old KEYPAD style and must be always true
-		if (gparams.find("ROTATE_KEYPAD_BOX") == gparams.end()) {
-			istringstream iss(gparams["angle"]);
-			GLfloat angle;
-			iss >> angle;
-			bool mirror = false;
-			if (gparams.find("mirror") != gparams.end())
-				mirror = gparams["mirror"] == "true" ? true : false;
+		// To rotate digits
+		istringstream iss(gparams["angle"]);
+		GLfloat angle;
+		iss >> angle;
+		bool mirror = false;
+		if (gparams.find("mirror") != gparams.end())
+			mirror = gparams["mirror"] == "true" ? true : false;
 
-			float x1p = (x1 * cos(angle*DEG2RAD) - y1 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
-			float y1p = (x1 * sin(angle*DEG2RAD) + y1 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
-			float x2p = (x2 * cos(angle*DEG2RAD) - y2 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
-			float y2p = (x2 * sin(angle*DEG2RAD) + y2 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
-
-			x1 = x1p;
-			y1 = y1p;
-			x2 = x2p;
-			y2 = y2p;
-		}
+		float x1p = (x1 * cos(angle*DEG2RAD) - y1 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+		float y1p = (x1 * sin(angle*DEG2RAD) + y1 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
+		float x2p = (x2 * cos(angle*DEG2RAD) - y2 * sin(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1);
+		float y2p = (x2 * sin(angle*DEG2RAD) + y2 * cos(angle*DEG2RAD)) * ((angle == 90 || angle == 270) ? -1 : 1) * (mirror ? -1 : 1);
 
 		// Add the rectangle - this is a highlight so needs done before main gate draw:
-		glRectd(x1, y1, x2, y2);
+		glRectd(x1p, y1p, x2p, y2p);
 
 		// Set the color back to the old color:
 		glColor4f(Color[0], Color[1], Color[2], Color[3]);
@@ -1400,7 +1431,8 @@ guiLabel::guiLabel() {
 
 // Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Added drawPalette to do not draw wide outlines in palette
-void guiLabel::draw(bool color, bool drawPalette) {
+void guiLabel::draw(bool color, bool drawPalette) {	
+
 	// Position the gate at its x and y coordinates:
 	glLoadMatrixd(mModel);
 	
@@ -1412,8 +1444,18 @@ void guiLabel::draw(bool color, bool drawPalette) {
 		theText.setColor( 0.0, 0.0, 0.0, 1.0 );
 	}
 	
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	if (this->getGUIParam("angle") == "180" || this->getGUIParam("angle") == "270") {
+		glRotatef(180, 0.0, 0.0, 1.0);
+	}
+
+	if (this->getGUIParam("mirror") == "true")
+		glScalef(1, -1, 1);
+
 	// Draw the text:
 	theText.draw();
+
+	guiGate::draw(color, drawPalette);
 }
 
 // A custom setParam function is required because
@@ -1452,8 +1494,10 @@ void guiLabel::setGUIParam( string paramName, string value ) {
 
 void guiLabel::calcBBox( void ) {
 	GLbox textBBox = theText.getBoundingBox();
-	float dx = fabs(textBBox.right-textBBox.left)/2.;
-	float dy = fabs(textBBox.top-textBBox.bottom)/2.;
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// To center vertically 0.75 instead of 0.5
+	float dx = fabs(textBBox.right - textBBox.left) * 0.5f;
+	float dy = fabs(textBBox.top - textBBox.bottom) * 0.75f;
 	theText.setPosition(-dx, +dy);
 	modelBBox.reset();
 	modelBBox.addPoint( GLPoint2f(textBBox.left-dx, textBBox.bottom+dy) );
@@ -1498,27 +1542,40 @@ void guiTO_FROM::draw(bool color, bool drawPalette) {
 	//Upside down text on tos and froms
 	//isn't that exciting.
 	//This will rotate the text around
-	//before it is printed
+	//before it is printed		
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		Changed 90 to 270 to rotate same as Label
-	if( this->getGUIParam( "angle" ) == "180" || this->getGUIParam( "angle" ) ==  "270" ){
-		
-		//scoot the label over
-		GLbox textBBox = theText.getBoundingBox();
-		GLdouble textWidth = textBBox.right - textBBox.left;
-		float offx = fabs(textBBox.top - textBBox.bottom) * 0.5 / 1.5;
-		int direction = 0;
-		if( getGUIType() == "TO" ) {
-			direction = +1;
-		} else if (getGUIType() == "FROM") {
-			direction = -1;
-		} else if (getGUIType() == "LINK") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-			direction =+1;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		TO, FROM and LINK are diferent
+
+	float translate=0;
+	float rotate=0;
+	GLbox textBBox = theText.getBoundingBox();
+	GLdouble textWidth = textBBox.right - textBBox.left;
+	float offx = fabs(textBBox.top - textBBox.bottom) * 0.5 * 0.675;
+	if (getGUIType() == "TO") {
+		if (this->getGUIParam("angle") == "180" || this->getGUIParam("angle") == "270") {
+			translate = textWidth + offx + 0.2;
+			rotate = 180;
 		}
-		glTranslatef(direction * (textWidth + offx), 0, 0);
-		
-		//and spin it around
-		glRotatef( 180, 0.0, 0.0, 1.0);		
+	} else if (getGUIType() == "FROM") {
+		if (this->getGUIParam("angle") == "180" || this->getGUIParam("angle") == "270") {
+			translate = -(textWidth + offx);
+			rotate = 180;
+		} else {
+			translate = -0.2f;
+		}
+	} else if (getGUIType() == "LINK") {
+		if (this->getGUIParam("angle") == "180" || this->getGUIParam("angle") == "270") {
+			translate = textWidth + offx + 0.2;
+			rotate = 180;
+		}
 	}
+
+	glTranslatef(translate, 0, 0);
+	glRotatef(rotate, 0, 0, 1);
+
+	if (this->getGUIParam("mirror") == "true")
+		glScalef(1, -1, 1);
+
 	//End of Edit*********************
 
 	// Draw the text:
@@ -1646,11 +1703,12 @@ guiGateRAM::~guiGateRAM(){
 }
 
 
-void guiGateRAM::doParamsDialog( void* gc, wxCommandProcessor* wxcmd ){
+void guiGateRAM::doParamsDialog(void* gCircuit, wxCommandProcessor* wxcmd){
 	if( ramPopupDialog == NULL ){
-		ramPopupDialog = new RamPopupDialog( this, (GUICircuit*)gc );
+		ramPopupDialog = new RamPopupDialog( this, (GUICircuit*)gCircuit );
 		ramPopupDialog->updateGridDisplay();
 	}
+	ramPopupDialog->SetFocus();
 	ramPopupDialog->Show( true );
 }
 
@@ -1743,3 +1801,153 @@ long guiGateRAM::getLastRead(){
 //End of edit
 //*************************************************
 
+// ************************ FSM gate ****************************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+guiGateFSM::guiGateFSM() {
+	guiGate();
+	fsmParamDialog = NULL;
+}
+
+guiGateFSM::~guiGateFSM() {
+	//Destroy is how you 'delete' wxwidget objects
+	if (fsmParamDialog != NULL) {
+		fsmParamDialog->Destroy();
+		fsmParamDialog = NULL;
+	}
+}
+
+void guiGateFSM::doParamsDialog(void* gCircuit, wxCommandProcessor* wxcmd) {
+	if (fsmParamDialog == NULL) {
+		fsmParamDialog = new FSMParamDialog(this, (GUICircuit*)gCircuit, wxcmd);
+	}
+	
+	map <string, string>* logicParams = getAllLogicParams();
+	map <string, string>::iterator lparamsWalk = logicParams->begin();
+	unsigned int nStates=0;
+	while (lparamsWalk != logicParams->end()) {
+		if ((lparamsWalk->first).substr(0, 6) == "State:")
+			if (lparamsWalk->second != "")
+				nStates++;
+				
+		lparamsWalk++;
+	}
+	
+	fsmParamDialog->stateTX->Clear();
+
+	for (unsigned int i = 0; i < nStates; i++)
+	{
+		ostringstream oss;
+		oss << "State:" << i;
+		string value = logicParams->find(oss.str())->second;
+		if (value!="")
+			*fsmParamDialog->stateTX << value << "\n";
+	}
+	
+	fsmParamDialog->SetFocus();
+	fsmParamDialog->ShowModal();
+}
+
+void guiGateFSM::saveGateTypeSpecifics(XMLParser* xparse) {
+
+	map <string, string>* logicParams = getAllLogicParams();
+	map <string, string>::iterator lparamsWalk = logicParams->begin();
+	unsigned int nStates = 0;
+	while (lparamsWalk != logicParams->end()) {
+		if ((lparamsWalk->first).substr(0, 6) == "State:")
+			if (lparamsWalk->second != "")
+				nStates++;
+
+		lparamsWalk++;
+	}
+
+	for (unsigned int i = 0; i < nStates; i++)
+	{
+		ostringstream oss;
+		oss << "State:" << i;
+		string value = logicParams->find(oss.str())->second;
+		if (value != "") {
+			xparse->openTag("lparam");
+			oss << " " << value;
+			xparse->writeTag("lparam", oss.str());
+			xparse->closeTag("lparam");
+		}
+	}
+
+}
+
+//*************************************************
+
+// ************************ CMB gate ****************************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+guiGateCMB::guiGateCMB() {
+	guiGate();
+	cmbParamDialog = NULL;
+}
+
+guiGateCMB::~guiGateCMB() {
+	//Destroy is how you 'delete' wxwidget objects
+	if (cmbParamDialog != NULL) {
+		cmbParamDialog->Destroy();
+		cmbParamDialog = NULL;
+	}
+}
+
+void guiGateCMB::doParamsDialog(void* gCircuit, wxCommandProcessor* wxcmd) {
+	if (cmbParamDialog == NULL) {
+		cmbParamDialog = new CMBParamDialog(this, (GUICircuit*)gCircuit, wxcmd);
+	}
+
+	map <string, string>* logicParams = getAllLogicParams();
+	map <string, string>::iterator lparamsWalk = logicParams->begin();
+	unsigned int nFunctions = 0;
+	while (lparamsWalk != logicParams->end()) {
+		if ((lparamsWalk->first).substr(0, 9) == "Function:")
+			if (lparamsWalk->second != "")
+				nFunctions++;
+		lparamsWalk++;
+	}
+
+	cmbParamDialog->functionTX->Clear();
+
+	for (unsigned int i = 0; i < nFunctions; i++)
+	{
+		ostringstream oss;
+		oss << "Function:" << i;
+		string value = logicParams->find(oss.str())->second;
+		if (value != "")
+			*cmbParamDialog->functionTX << value << "\n";
+	}
+
+	cmbParamDialog->SetFocus();
+	cmbParamDialog->ShowModal();
+}
+
+void guiGateCMB::saveGateTypeSpecifics(XMLParser* xparse) {
+
+	map <string, string>* logicParams = getAllLogicParams();
+	map <string, string>::iterator lparamsWalk = logicParams->begin();
+	unsigned int nStates = 0;
+	while (lparamsWalk != logicParams->end()) {
+		if ((lparamsWalk->first).substr(0, 9) == "Function:")
+			if (lparamsWalk->second != "")
+				nStates++;
+
+		lparamsWalk++;
+	}
+
+	for (unsigned int i = 0; i < nStates; i++)
+	{
+		ostringstream oss;
+		oss << "Function:" << i;
+		string value = logicParams->find(oss.str())->second;
+		if (value != "") {
+			xparse->openTag("lparam");
+			oss << " " << value;
+			xparse->writeTag("lparam", oss.str());
+			xparse->closeTag("lparam");
+		}
+	}
+
+}
+
+//*************************************************

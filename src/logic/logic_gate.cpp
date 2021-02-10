@@ -39,7 +39,7 @@ Gate::Gate()
 	// Only one OUTPUT_ENABLE
 	// Declare default ENABLE pins, so that any gate can
 	// link them to its outputs:
-	//declareInputBus("ENABLE", 8);	// Dejamos el BUS por compatibilidad (ENABLE_0 .. ENABLE_7)
+	//declareInputBus("ENABLE", 8);
 	
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To permit OUTPUT_ENABLE
@@ -329,7 +329,7 @@ void Gate::declareOutput( string name ) {
 
 // Get the current time in the simulation:
 TimeType Gate::getSimTime( void ) {	
-	_MSGNC((ourCircuit != NULL), "ASSERT END 1")
+	_MSGNC(ourCircuit != NULL, "ASSERT END 1")	//####
 	assert(ourCircuit != NULL);
 	
 	return ourCircuit->getSystemTime();
@@ -337,13 +337,13 @@ TimeType Gate::getSimTime( void ) {
 	
 // Check the state of the named input and return it.
 StateType Gate::getInputState( string inputID ) {
-	_MSGNC((ourCircuit != NULL), "ASSERT END 2")
+	_MSGNC(ourCircuit != NULL, "ASSERT END 2")	//####
 	assert(ourCircuit != NULL);
 	StateType theState;
 
 	if(inputList.find(inputID) == inputList.end()) {
 		WARNING("Gate::getInputState() - Invalid input name.");
-		_MSGNC(false, "ASSERT END 3")
+		_MSGNC(false, "ASSERT END 3")	//####
 		assert( false );
 		return ZERO;
 	}
@@ -429,7 +429,7 @@ vector< StateType > Gate::getOutputBusWireState(string busName) {
 
 // Get the types of inputs that are represented.
 vector< bool > Gate::groupInputStates( void ) {
-	_MSGNC((ourCircuit != NULL), "ASSERT END 4")
+	_MSGNC(ourCircuit != NULL, "ASSERT END 4")	//####
 	assert(ourCircuit != NULL);
 
 	vector< bool > groupedInputs(NUM_STATES, false);
@@ -461,7 +461,7 @@ vector< bool > Gate::groupInputStates( void ) {
 	
 // Compare the "this" state with the "last" state and say if this is a rising or falling edge. 
 bool Gate::isRisingEdge( string name ) {
-	_MSGNC((ourCircuit != NULL), "ASSERT END 5")
+	_MSGNC(ourCircuit != NULL, "ASSERT END 5")	//####
 	assert(ourCircuit != NULL);
 	
 	if( edgeTriggeredLastState.find( name ) == edgeTriggeredLastState.end() ) {
@@ -481,7 +481,7 @@ bool Gate::isRisingEdge( string name ) {
 
 
 bool Gate::isFallingEdge( string name ) {
-	_MSGNC((ourCircuit != NULL), "ASSERT END 6")
+	_MSGNC(ourCircuit != NULL, "ASSERT END 6")	//####
 	assert(ourCircuit != NULL);
 	
 	if( edgeTriggeredLastState.find( name ) == edgeTriggeredLastState.end() ) {
@@ -504,12 +504,12 @@ bool Gate::isFallingEdge( string name ) {
 // really send the event. Also, log the last sent event so that it can be 
 // repeated later if necessary. 
 void Gate::setOutputState( string outID, StateType newState, TimeType delay ) {
-	_MSGNC((ourCircuit != NULL), "ASSERT END 7")
+	_MSGNC(ourCircuit != NULL, "ASSERT END 7")	//####
 	assert( ourCircuit != NULL );
 
 	if(outputList.find(outID) == outputList.end()) {
 		WARNING("Gate::setOutputState() - Invalid output name.");
-		_MSGNC(false, "ASSERT END 8")
+		_MSGNC(false, "ASSERT END 8")	//####
 		assert( false );
 		return;
 	}
@@ -586,10 +586,8 @@ void Gate::listChangedParam( string paramName ) {
 	//instead of waiting until next gate step
 	
 	if(ourCircuit != NULL){
-	
 		// Send the update param to the Circuit:
-		ourCircuit->addUpdateParam( this->myID, paramName );
-		
+		ourCircuit->addUpdateParam( this->myID, paramName );		
 	}else{
 		changedParamWaitingList.push_back( paramName );	
 	}
@@ -1057,7 +1055,7 @@ void Gate_REGISTER::gateProcess( void ) {
 			if (hasClockEdge(syncClear)) {		// Control Set - Clear and async Clear
 				// Clear.
 				currentValue = 0;
-				if (CoOnOverflow) carryOut = ONE;		//## Review
+				if (CoOnOverflow) carryOut = ONE;		//#### Review
 			}
 	} else if( getInputState("SET") == ONE ) {
 		if (getInputState("CONTROL") != ZERO)	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
@@ -1065,10 +1063,10 @@ void Gate_REGISTER::gateProcess( void ) {
 				// Set.
 				vector< StateType > allOnes( inBits, ONE );
 				currentValue = bus_to_ulong(allOnes);
-				if (CoOnOverflow) carryOut = ONE;		//## Review
+				if (CoOnOverflow) carryOut = ONE;		//#### Review
 			}
 	} else if( getInputState("LOAD") == ONE || OPcode == 1) {
-		if (hasClockEdge(syncLoad)) {		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		if (hasClockEdge(syncLoad)) {			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Load.
 			vector< StateType > inputBus = getInputBusState("IN");
 			for( unsigned long i = 0; i < inputBus.size(); i++ ) {
@@ -1304,7 +1302,7 @@ bool Gate_REGISTER::setParameter( string paramName, string value ) {
 		return false;
 	} else if (paramName == "CO_ON_OVERFLOW") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		string CoOnOverflowVal;								// Carry out on overfow, not on max/min
-		iss >> CoOnOverflowVal;								// Experimental, not finished
+		iss >> CoOnOverflowVal;								//## Test (Experimental, not finished)
 
 		CoOnOverflow = (CoOnOverflowVal == "true");
 		return false;
@@ -1566,12 +1564,11 @@ Gate_DECODER::Gate_DECODER() : Gate_N_INPUT() {
 	//Josh Edit 4/6/2007
 	declareInput("ENABLE");
 	
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-12       for chip 74138
-	declareInput("ENABLE_A");
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12       chip 74138 is deprecated
 
 	//Josh Edit 10/3/2007
-	declareInput("ENABLE_B");
-	declareInput("ENABLE_C");
+	//declareInput("ENABLE_B");
+	//declareInput("ENABLE_C");
 
 	// One output:
 	declareOutput("OUT");
@@ -1619,10 +1616,11 @@ void Gate_DECODER::gateProcess( void ) {
 	bool enabled = true;
 	
 	//by testing for ZERO instead of one, we let a floating enable be enabling.
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	// ENABLE_A, ENABLE_B y ENABLE_C for chip 74138
-	if( getInputState("ENABLE") == ZERO || getInputState("ENABLE_A") == ZERO  || getInputState("ENABLE_B") == ZERO ||
-	    getInputState("ENABLE_C") == ZERO ){
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12       chip 74138 is deprecated
+	// ENABLE_B y ENABLE_C for chip 74138
+	//if( getInputState("ENABLE") == ZERO || getInputState("ENABLE_B") == ZERO || getInputState("ENABLE_C") == ZERO ){
+
+	if (getInputState("ENABLE") == ZERO) {
 	    	enabled = false;
 	}
 	
@@ -1686,14 +1684,13 @@ Gate_ENCODER::Gate_ENCODER() : Gate_N_INPUT() {
 	declareOutput("OUT");
 	declareOutput("VALID");
 
-	// Pedro Casanova (casanova@ujan.es) 2020/04-11
-	// Set Params, by default true for compatibility with PRI_ENCODER
-	setParameter("PRIORITY", "true");
-	setParameter("PRIORITY_HIGH", "true");
+	// Pedro Casanova (casanova@ujan.es) 2020/04-12
+	// Set Params, by default high for compatibility with PRI_ENCODER
+	setParameter("PRIORITY", "high");
 }
 
 
-// Pedro Casanova (casanova@ujan.es) 2020/04-11
+// Pedro Casanova (casanova@ujan.es) 2020/04-12
 // Now permit none. low and high priority
 // Handle gate events:
 void Gate_ENCODER::gateProcess(void) {
@@ -1714,9 +1711,25 @@ void Gate_ENCODER::gateProcess(void) {
 	}
 
 	if (enabled) {
-		if (Priority)
+		if (Priority=="none")
 		{
-			if (PriorityHigh)
+			int nHigh = 0;
+			for (unsigned int i = 0; i < inBus.size(); i++)
+				if (inBus[i] == ONE) nHigh++;
+			if (nHigh == 1) {
+				isValid = true;
+				for (unsigned int i = 0; i < inBus.size(); i++) {
+					if (inBus[i] == ONE) {
+						outBus = ulong_to_bus(i, outBusSize);
+						break;
+					}
+				}
+			}
+
+		}
+		else
+		{
+			if (Priority=="high")
 			{
 				// Loop through input bits from MSB to LSB to find active
 				for (int i = inBus.size() - 1; i >= 0; i--) {
@@ -1742,22 +1755,6 @@ void Gate_ENCODER::gateProcess(void) {
 			if (inNum != 0) {
 				isValid = true;
 			}
-		}
-		else
-		{
-			int nHigh = 0;
-			for (unsigned int i = 0; i < inBus.size(); i++)
-				if (inBus[i] == ONE) nHigh++;
-			if (nHigh == 1) {
-				isValid = true;
-				for (unsigned int i = 0; i < inBus.size(); i++) {
-					if (inBus[i] == ONE) {
-						outBus = ulong_to_bus(i, outBusSize);
-						break;
-					}
-				}
-			}
-
 		}
 	}
 
@@ -1795,15 +1792,8 @@ bool Gate_ENCODER::setParameter(string paramName, string value) {
 		// anything is connected anyhow!
 		// Also, allow the Gate_N_INPUT class to change the number of inputs:
 		return Gate_N_INPUT::setParameter(paramName, value);
-	} else if (paramName == "PRIORITY") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-07
-		string setVal;
-		iss >> setVal;
-		Priority = (setVal == "true");
-		return true;
-	} else if (paramName == "PRIORITY_HIGH") {	// Pedro Casanova (casanova@ujaen.es) 2020/04-07
-		string setVal;
-		iss >> setVal;
-		PriorityHigh = (setVal == "true");
+	} else if (paramName == "PRIORITY") {	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		iss >> Priority;
 		return true;
 	} else {
 		return Gate_N_INPUT::setParameter(paramName, value);
@@ -1816,12 +1806,7 @@ bool Gate_ENCODER::setParameter(string paramName, string value) {
 string Gate_ENCODER::getParameter(string paramName) {
 	ostringstream oss;
 	if (paramName == "PRIORITY") {
-		oss << (Priority ? "true" : "false");
-		return oss.str();
-	}
-	if (paramName == "PRIORITY_HIGH") {
-		oss << (PriorityHigh ? "true" : "false");
-		return oss.str();
+		return Priority;
 	}
 	else {
 		return Gate::getParameter(paramName);
@@ -2270,6 +2255,10 @@ Gate_RAM::Gate_RAM( ) : Gate() {
 	// Uppercase
 	declareInput( "WRITE_CLOCK", true );
 	declareInput( "WRITE_ENABLE" );
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Added ENABLE input
+	declareInput("ENABLE");
 	
 	// NOTE: None of the other pins are declared in advance!
 	// They are created in setParameter, because they depend on the RAM's size!
@@ -2291,12 +2280,12 @@ Gate_RAM::Gate_RAM( ) : Gate() {
 
 
 // Handle gate events:
-void Gate_RAM::gateProcess( void ) {
-	
-	// Don't do the process unless there are address and data lines declared!
-	if( (addressBits == 0) || (dataBits == 0) ) return;
+void Gate_RAM::gateProcess(void) {
 
-	unsigned long address = bus_to_ulong( getInputBusState("ADDRESS") );
+	// Don't do the process unless there are address and data lines declared!
+	if ((addressBits == 0) || (dataBits == 0)) return;
+
+	unsigned long address = bus_to_ulong(getInputBusState("ADDRESS"));
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Bidirectional BUS, no DATA_IN pins nedeed
 	unsigned long dataIn;
@@ -2305,69 +2294,77 @@ void Gate_RAM::gateProcess( void ) {
 	else
 		dataIn = bus_to_ulong(getInputBusState("DATA_IN"));
 
-//***********************************************************************
-//Edit by Joshua Lansford 12/31/06
-//Purpose of edit:  When the logic gate loads from a file, it is not
-//   possable to directly notify the gui by paramiters about the new
-//   data.  Thus instead a flag is set and we update the gui now
-    if( flushGuiMemory ){
-    	flushGuiMemory = false;
-		listChangedParam( "MemoryReset" );
-		for( map< unsigned long, unsigned long >::iterator I = memory.begin();
-		     I != memory.end();  ++I ){
-		    ostringstream virtualPropertyName;
+	//***********************************************************************
+	//Edit by Joshua Lansford 12/31/06
+	//Purpose of edit:  When the logic gate loads from a file, it is not
+	//   possable to directly notify the gui by paramiters about the new
+	//   data.  Thus instead a flag is set and we update the gui now
+	if (flushGuiMemory) {
+		flushGuiMemory = false;
+		listChangedParam("MemoryReset");
+		for (map< unsigned long, unsigned long >::iterator I = memory.begin();
+			I != memory.end();  ++I) {
+			ostringstream virtualPropertyName;
 			virtualPropertyName << "Address:";
 			virtualPropertyName << I->first; //we just list the address
-			listChangedParam( virtualPropertyName.str() );
+			listChangedParam(virtualPropertyName.str());
 		}
-    }
-//End of Edit************************************************************
+	}
+	//End of Edit************************************************************
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	// WRITE_ENABLE Now uppercase
-	if (getInputState("WRITE_ENABLE") == ONE) {
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// WRITE_ENABLE Now uppercase
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		// Added ENABLE input
+	if ((getInputState("WRITE_ENABLE") == ONE) && (getInputState("ENABLE") != ZERO)) {
 		// HI_Z all of the data outputs:
-		vector< StateType > allHI_Z( dataBits, HI_Z );
-		setOutputBusState( "DATA_OUT", allHI_Z );
+		vector< StateType > allHI_Z(dataBits, HI_Z);
+		setOutputBusState("DATA_OUT", allHI_Z);
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// WRITE_CLOCK Now Uppercase
-			if ((isRisingEdge("WRITE_CLOCK") && syncWR) || !syncWR) {
+		if ((isRisingEdge("WRITE_CLOCK") && syncWR) || !syncWR) {
 			// Write to the RAM.
 			memory[address] = dataIn;
 			ostringstream oss;
 			oss << "Wroted to the memory thing: Address = " << address << ", data = " << dataIn;
 			WARNING(oss.str());
-//***********************************************************************
-//Edit by Joshua Lansford 12/31/06
-//Purpose of edit:  The Cedar-logic ram gate is being expanded to
-//have a popup that shows the contents of the memory
-//therefore it is necisary for the logic gate to tell the gui gate
-//every time data changes in it.
-				ostringstream virtualPropertyName;
-				virtualPropertyName << "Address:";
-				virtualPropertyName << address;
-				listChangedParam( virtualPropertyName.str() );
-//End of edit************************************************************
+			//***********************************************************************
+			//Edit by Joshua Lansford 12/31/06
+			//Purpose of edit:  The Cedar-logic ram gate is being expanded to
+			//have a popup that shows the contents of the memory
+			//therefore it is necisary for the logic gate to tell the gui gate
+			//every time data changes in it.
+			ostringstream virtualPropertyName;
+			virtualPropertyName << "Address:";
+			virtualPropertyName << address;
+			listChangedParam(virtualPropertyName.str());
+			//End of edit************************************************************
 		}
-	} else {
-		// Read from the RAM, and write the data to the outputs.
-		vector< StateType > ramReadData = ulong_to_bus( memory[address], dataBits );
-		setOutputBusState( "DATA_OUT", ramReadData );
-//***********************************************************************
-//Edit by Joshua Lansford 4/22/06
-//Purpose of edit:  This allerts the pop-up when ever an address has changed
+	}
+	else {
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		// Added ENABLE input
+		if (getInputState("ENABLE") != ZERO) {
+			// Read from the RAM, and write the data to the outputs.
+			vector< StateType > ramReadData = ulong_to_bus(memory[address], dataBits);
+			setOutputBusState("DATA_OUT", ramReadData);
+		} else {
+			// HI_Z all of the data outputs:
+			vector< StateType > allHI_Z(dataBits, HI_Z);
+			setOutputBusState("DATA_OUT", allHI_Z);
+		}
+		//***********************************************************************
+		//Edit by Joshua Lansford 4/22/06
+		//Purpose of edit:  This allerts the pop-up when ever an address has changed
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// To permit ENABLE without BUS
-		// ENABLE_0 now is OUTPUT_ENABLE
-		// if ((getInputState("OUTPUT_ENABLE") == ONE)|| (getInputState("ENABLE_0") == ONE)) {
-			if (getInputState("OUTPUT_ENABLE") == ONE) {
+		// To permit ENABLE without BUS, ENABLE_0 now is OUTPUT_ENABLE
+		if ((getInputState("OUTPUT_ENABLE") == ONE) && (getInputState("ENABLE") != ZERO)) {
 			lastRead = address;
-			listChangedParam( "lastRead" );
+			listChangedParam("lastRead");
 		}
-//End of edit******************************************************
+		//End of edit******************************************************
 	}
 }
-
 
 // Set the parameters:
 bool Gate_RAM::setParameter( string paramName, string value ) {
@@ -3179,7 +3176,317 @@ string Gate_pauseulator::getParameter( string paramName ) {
 //End of edit****************************************************
 
 
+// ******************************** FSM GATE ***********************************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Implement Finite State Machines
+Gate_FSM_SYNC::Gate_FSM_SYNC() : Gate_PASS() {
+	// Declare the inputs:
+	declareInput("CLOCK", true);
+	declareInput("CLEAR");
 
+	setParameter("OUTPUT_BITS", "1");
+
+	// Set the default settings:
+	setParameter("CURRENT_STATE", "");
+	asyncrhonous = false;
+	resetState = "";
+	currentOutput = "";
+	return;
+}
+
+// Handle gate events:
+void Gate_FSM_SYNC::gateProcess(void) {
+	vector< StateType > outBus;
+	vector< StateType > inputBus = getInputBusState("IN");
+	string oldCurrentState = currentState;
+
+	string oldOutputValue = currentOutput;
+
+	if (currentState == "")
+		currentState = resetState;
+	for (unsigned long i = 0; i < inputBus.size(); i++)
+		if ((inputBus[i] == CONFLICT) || (inputBus[i] == HI_Z))	inputBus[i] = UNKNOWN;
+	unsigned long currentInputs = 0;
+	if (inBits>0)
+		currentInputs = bus_to_ulong(inputBus);
+	unsigned long outputVal = 0;
+	if (states.size()>0) {
+		if (getInputState("CLEAR") == ONE)				// Reset
+			currentState = resetState;
+		else {
+			string newState;
+			if (asyncrhonous)											// Asynchronous
+				newState = nextState[currentState][currentInputs];
+			else if (isRisingEdge("CLOCK"))								// Synchronous
+				newState = nextState[currentState][currentInputs];
+
+			for(unsigned long i=0;i<states.size();i++)
+				if (states[i] == newState) {
+					currentState = newState;
+					break;
+				}
+		}
+		currentOutput = outputs[currentState][currentInputs];
+		for (unsigned long i = 0; i < currentOutput.length(); i++)
+			if (i<outBits)
+				if (currentOutput.c_str()[currentOutput.length() - i - 1] == '1')
+					outputVal += pow(2, i);
+		outBus = ulong_to_bus(outputVal, outBits);
+	} else {
+		for (unsigned long i = 0; i < outBus.size(); i++)
+			outBus[i] = UNKNOWN;
+	}
+
+	if (currentOutput != oldOutputValue) {
+		currentOutput = oldOutputValue;
+		if (outBus.size() != 0) setOutputBusState("OUT", outBus);
+	}
+
+	if (currentState != oldCurrentState) listChangedParam("CURRENT_STATE");
+}
+
+// Set the parameters:
+bool Gate_FSM_SYNC::setParameter(string paramName, string value) {
+	istringstream iss(value);
+	if (paramName == "CLEAR_FSM") {
+		states.clear();
+		outputs.clear();
+		nextState.clear();
+		resetState = "";
+		currentState = "";
+		currentOutput = "";
+		return true;
+	}
+	if (paramName == "CURRENT_STATE") {
+		iss >> currentState;
+		return true;
+	}
+	if (paramName == "OUTPUT_BITS") {
+		iss >> outBits;
+		
+		// Declare the output pins!		
+		if (outBits > 0) {
+			declareOutputBus("OUT", outBits);
+		}
+		return true;
+	}
+	if (paramName.substr(0, 6) == "State:")
+	{
+		if (value!="")
+			procState(paramName, value);
+		return true;
+	}
+	return Gate_PASS::setParameter(paramName, value);
+}
+
+// Get the parameters:
+string Gate_FSM_SYNC::getParameter(string paramName) {
+	ostringstream oss;
+	if (paramName == "CURRENT_STATE") {
+		oss << currentState;
+		return oss.str();
+	}
+	else if (paramName == "OUTPUT_BITS") {
+		oss << outBits;
+		return oss.str();
+	}
+	else {
+		return Gate_PASS::getParameter(paramName);
+	}
+}
+
+// Process state param string
+void Gate_FSM_SYNC::procState(string paramName, string value) {
+	int pSlash;
+	int pArrow;
+	bool Moore = false;
+	bool noInputs = false;
+
+	string nState = paramName.substr(6);
+
+	istringstream iss(value);
+	string state;
+	iss >> state;
+	string defOutputs = "";
+	string defNextState = state;
+	pSlash = state.find('/');
+	pArrow = state.find('-');
+	if (pSlash == -1) {
+		for (unsigned long i = 0; i < outBits; i++)
+			defOutputs += "0";
+	} else {
+		Moore = true;		
+		if (pArrow == -1) {
+			defOutputs = state.substr(pSlash + 1);
+			defNextState = state.substr(0, pSlash);
+		} else {
+			noInputs = true;
+			defOutputs = state.substr(pSlash + 1, pArrow - pSlash - 1);
+			defNextState = state.substr(pArrow + 1);
+		}
+		state = state.substr(0, pSlash);
+	}
+
+	if (nState=="0") resetState = state;
+
+	states.push_back(state);
+
+	vector<string> vect;
+	string ceros = "";
+
+	for (unsigned long i=0;i<pow(2,inBits);i++)
+		vect.push_back(defOutputs);
+	outputs[state] = vect;
+	for (unsigned long i = 0; i < pow(2, inBits); i++)
+		vect[i]= defNextState;
+	nextState[state] = vect;
+
+	if (!noInputs)
+		while (!iss.eof()) {
+			string trans;
+			iss >> trans;
+			pArrow = trans.find('-');
+			pSlash = trans.find('/');
+			string inputValue = trans.substr(0, pArrow);
+			for (unsigned int inputVal = 0; inputVal < pow(2, inputValue.length()); inputVal++)
+			{
+				string binValue="";
+				unsigned int val= inputVal;
+				for (long i = inputValue.length() - 1; i >= 0; i--)
+				{
+					if (val >= pow(2, i)) {
+						val -= pow(2, i);
+						binValue = binValue+ "1";
+					}
+					else
+						binValue = binValue + "0";
+					if (inputValue[inputValue.length()-i-1] == 'X')
+						binValue[binValue.length()-1] = 'X';
+				}
+				if (binValue == inputValue) {
+					if (Moore) {
+						nextState[state][inputVal] = trans.substr(pArrow + 1);
+					}
+					else {
+						outputs[state][inputVal] = trans.substr(pSlash + 1);
+						nextState[state][inputVal] = trans.substr(pArrow + 1, pSlash - pArrow - 1);
+					}
+				}
+			}
+		}
+}
+
+// **************************** END FSM GATE ***********************************
+
+// ******************************** CMB GATE ***********************************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Implement Combinational Blocks
+Gate_CMB::Gate_CMB() : Gate_PASS() {
+
+	setParameter("OUTPUT_BITS", "1");
+
+	return;
+}
+
+// Handle gate events:
+void Gate_CMB::gateProcess(void) {
+	vector< StateType > outBus;
+	vector< StateType > inputBus = getInputBusState("IN");
+
+
+	unsigned long inputValue = bus_to_ulong(inputBus);
+	unsigned long outputValue = outputs[inputValue];
+	outBus = ulong_to_bus(outputValue, outBits);
+
+	if (outBus.size() != 0) setOutputBusState("OUT", outBus);
+}
+
+// Set the parameters:
+bool Gate_CMB::setParameter(string paramName, string value) {
+	istringstream iss(value);
+	if (paramName == "OUTPUT_BITS") {
+		iss >> outBits;
+
+		// Declare the output pins!		
+		if (outBits > 0) {
+			declareOutputBus("OUT", outBits);
+		}
+		return true;
+	}
+	if (paramName.substr(0, 9) == "Function:")
+	{		
+		if (value != "")
+			procFunction(paramName, value);
+		return true;
+	}
+	return Gate_PASS::setParameter(paramName, value);
+}
+
+// Get the parameters:
+string Gate_CMB::getParameter(string paramName) {
+	ostringstream oss;
+	if (paramName == "OUTPUT_BITS") {
+		oss << outBits;
+		return oss.str();
+	}
+	else {
+		return Gate_PASS::getParameter(paramName);
+	}
+}
+
+// Process state param string
+void Gate_CMB::procFunction(string paramName, string value) {
+	int pEqual =value.find('=');
+	unsigned int nFunction = atoi(value.substr(1,pEqual-1).c_str());
+	value = value.substr(pEqual + 1);
+
+	bool sum = true;
+	if (value.substr(0) == "0" || value.substr(0, 1) == "S") {
+		for (unsigned int i = 0; i < pow(2, inBits); i++)
+			outputs[i] = outputs[i] & ~((unsigned int)pow(2, nFunction));
+	} else if (value.substr(0) == "1" || value.substr(0, 1) == "P") {
+		sum = false;
+		for (unsigned int i = 0; i < pow(2, inBits); i++)
+			outputs[i] = outputs[i] | (unsigned int)pow(2, nFunction);
+	} else {
+			for (unsigned int i = 0; i < value.length(); i++) {
+				char valHex;
+				if (chkDigits(value.substr(value.length()-i-1, 1)))
+					valHex = value[value.length() - i - 1] - '0';
+				else
+					valHex = value[value.length() - i - 1] - 'A' + 10;
+				for (int j = 3; j >= 0; j--) {
+					if (valHex >= pow(2, j)) {
+						//_MSG("1")
+						valHex -= pow(2, j);
+						outputs[4*i+j]= outputs[4*i+j] | (unsigned int)pow(2, nFunction);
+					} else {
+						outputs[4 * i + j] = outputs[4 * i + j] & ~(unsigned int)pow(2, nFunction);
+					}
+				}
+			}
+			return;
+	}
+	
+	if ((value.substr(0) == "0" || value.substr(0) == "1") && (value.length() == 1)) return;
+
+	value = value.substr(2, value.length() - 3);	// Remove "()"
+
+	istringstream iss(value);
+	while (!iss.eof()) {
+		unsigned int term;
+		char dump;
+		iss >> term >> dump;		
+		if (sum)
+			outputs[term] = outputs[term] | (unsigned int)pow(2, nFunction);
+		else
+			outputs[term] = outputs[term] & ~((unsigned int)pow(2, nFunction));
+
+	}
+
+}
+
+// **************************** END CMB GATE ***********************************
 
 
 

@@ -243,7 +243,7 @@ void OscopeCanvas::UpdateData(void){
 		// Set up a list of TO gates so I only search the whole gate list once.
 		theGate = gateList->begin();
 		while (theGate != gateList->end()) {
-			// Pedro Casanova (casanova@ujaen.es 2020/04-11
+			// Pedro Casanova (casanova@ujaen.es 2020/04-12
 			// TO, FROM and LINK are valid signal to Oscope
 			if (((theGate->second)->getGUIType() == "TO") || ((theGate->second)->getGUIType() == "FROM") || ((theGate->second)->getGUIType() == "LINK"))
 				toGates.push_back(theGate->second);
@@ -358,7 +358,7 @@ void OscopeCanvas::UpdateMenu()
 	    gateIterator != gateList->end(); 
 	    gateIterator++ ){
 		guiGate* aGate = gateIterator->second;
-		// Pedro Casanova (casanova@ujaen.es 2020/04-11
+		// Pedro Casanova (casanova@ujaen.es 2020/04-12
 		// TO, FROM and LINK are valid signal to Oscope
 		//select out the gates which are TOs
 		if ((aGate->getGUIType() == "TO") || (aGate->getGUIType() == "FROM") || (aGate->getGUIType() == "LINK"))

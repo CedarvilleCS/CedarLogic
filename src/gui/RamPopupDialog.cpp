@@ -51,9 +51,9 @@ RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM, GUICircuit* newGUIC
 	wxBoxSizer* buttonSizer = new wxBoxSizer( wxHORIZONTAL );
 	
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	// Added Clear Button
-	clearBtn = new wxButton( this, wxID_CLEAR);	
-	closeBtn = new wxButton( this, wxID_CLOSE );
+	// Added Clear Button	
+	closeBtn = new wxButton( this, wxID_CLOSE);
+	clearBtn = new wxButton(this, wxID_CLEAR);
 	loadBtn = new wxButton( this, wxID_OPEN );
 	saveBtn = new wxButton( this, wxID_SAVE );	
 	
@@ -66,10 +66,10 @@ RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM, GUICircuit* newGUIC
 	topSizer->Add( hexOrDecCB, wxSizerFlags(0).Align(0).Border(wxALL, 5 ));
 	
 	topSizer->Add( memContents, wxSizerFlags(1).Align(0).Expand().Border(wxALL, 5 ));
-
-	buttonSizer->Add( clearBtn, wxSizerFlags(0).Align(wxALIGN_RIGHT).Border(wxALL, 5));
+	
 	buttonSizer->Add( loadBtn, wxSizerFlags(0).Align(wxALIGN_LEFT).Border(wxALL, 5 ));
 	buttonSizer->Add( saveBtn, wxSizerFlags(0).Align(wxALIGN_LEFT).Border(wxALL, 5 ));
+	buttonSizer->Add( clearBtn, wxSizerFlags(0).Align(wxALIGN_RIGHT).Border(wxALL, 5));
 	buttonSizer->Add( closeBtn,wxSizerFlags(0).Align(wxALIGN_RIGHT).Border(wxALL, 5 ));	
 	
 	topSizer->Add( buttonSizer,wxSizerFlags(0).Align(0).Border(wxALL, 5 ));

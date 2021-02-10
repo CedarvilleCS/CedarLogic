@@ -22,7 +22,7 @@ using namespace std;
 class paramDialog : public wxDialog {
 public:
     // ctor(s)
-    
+	/** Constructor. Creates a new paramDialog */
     paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, wxCommandProcessor* wxcmd);
 	virtual ~paramDialog();
 	
@@ -30,7 +30,7 @@ public:
 	void OnLoad( wxCommandEvent &evt );
 	void OnSave( wxCommandEvent &evt );
 	void OnTextEntry( wxCommandEvent &evt) { validateData(); };
-	
+
 private:
 	GUICircuit* gCircuit;
 	guiGate* gGate;
@@ -42,6 +42,16 @@ private:
 	wxButton* cancel;
 
 	bool validateData();
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Replace Gate %_ for his correct type (Dynamics gates)
+	void replaceGate();
+	bool createGatesStruct(string *errorMsg = nullptr);
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Replace Wire length
+	//## Test
+	void replaceWire(string pValue);
 
     // any class wishing to process wxWidgets events must use this macro
     DECLARE_EVENT_TABLE()

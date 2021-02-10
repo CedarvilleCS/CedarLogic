@@ -27,3 +27,4 @@
 #include "command/cmdDeleteTab.h"
 #include "command/cmdAddTab.h"
 #include "command/cmdMergeWire.h"
+#include "command/cmdCreateGateStruct.h"

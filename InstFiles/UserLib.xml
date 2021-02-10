@@ -1,5 +1,5 @@
 <library> <name>User Library</name>
-	<gate> <name>@AL_COUNT4</name>
+	<gate> <name>_AL_COUNT4</name>
 		<caption>4-Bit Up/Down Counter</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 4</logic_param>

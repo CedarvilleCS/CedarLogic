@@ -13,6 +13,79 @@
 #include "wx/cmdline.h"
 #include "../version.h"
 
+// Pedro Casanova (casanova@ujaen.es) 2020/01-02
+// Functions used in some modules
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Check only numeric digits are in string
+bool chkDigits(string number)
+{
+	string numbers = "0123456789";
+	for (unsigned int i = 0; i < number.size(); i++)
+	{
+		if ((int)numbers.find(number.substr(i, 1)) >= 0) continue;
+		return false;
+	}
+	return true;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Check only hexadecimal digits are in string
+bool chkHexDigits(string* number, bool uppercase)
+{
+	string numbers = "0123456789ABCDEFabcdef";
+	for (unsigned int i = 0; i < number->size(); i++)
+	{
+		if ((int)numbers.find(number->substr(i, 1)) >= 0) continue;
+		return false;
+	}	
+	if (uppercase) {
+		for (unsigned int i = 0; i < number->size(); i++) {
+			string c = number->substr(i, 1);
+			number[0][i] = toupper(c[0]);
+		}
+	}
+	return true;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Check only "0", "1" and optionally "X" are in string
+bool chkBits(string* bits, bool uppercase)
+{
+	for (unsigned int i = 0; i < bits->size(); i++)
+	{
+		if (bits->substr(i, 1) == '0' || bits->substr(i, 1) == '1') continue;
+		if (uppercase && (bits->substr(i, 1) == "x") || uppercase && (bits->substr(i, 1) == "X")) { bits[0][i] = 'X'; continue; }
+		return false;
+	}
+	return true;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Round 0.5 precision
+float Round_half(float v)
+{
+	float retVal;
+	if (v < 0)
+		retVal = -int(-v * 2.0f + 0.5f) / 2.0f;
+	else
+		retVal = int(v * 2.0f + 0.5f) / 2.0f;
+
+	return retVal;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Round 0.1 precision
+float Round(float v)
+{
+	float retVal;
+	if (v < 0)
+		retVal = -int(-v * 10.0f + 0.5f) / 10.0f;
+	else
+		retVal = int(v * 10.0f + 0.5f) / 10.0f;
+	return retVal;
+}
+
 IMPLEMENT_APP(MainApp)
 
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
@@ -403,8 +476,9 @@ void MainApp::loadSettingsReg() {
 		appSettings.gridlineVisible = DEFAULT_GRIDLINEVISIBLE;
 		appSettings.wireConnVisible = DEFAULT_WIRECONNVISIBLE;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Changed to false)
 		appSettings.wideOutline = DEFAULT_WIDEOUTLINE;						// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
-		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)		
-		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)		
+		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
+		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
+		appSettings.markDeprecated = DEFAULT_MARKDEPRECATED;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
 	}
 
 

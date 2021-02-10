@@ -13,7 +13,11 @@ class GUICanvas;
 // These "unsigned long"s need to be replaced by IDType's.
 // Not sure why, but doing that right now is causing a crash on copy/paste.
 // TODO TYLER: Find out why, make replacement, remove TODO and description.
-typedef std::unordered_map<unsigned long, unsigned long> TranslationMap;
+// typedef std::unordered_map<unsigned long, unsigned long> TranslationMap;
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Now it does not crash	//##
+typedef std::unordered_map<IDType, IDType> TranslationMap;
 
 // klsCommand - base class for commands.
 class klsCommand : public wxCommand {

@@ -154,7 +154,7 @@ protected:
 	void  setInputInverted( string inputID, bool newInv = true ) {
 		if(inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setInputState() - Invalid input name.");
-			_MSGC(!(false), "ASSERT END 1")
+			_MSGNC(false, "ASSERT END 1.h")
 			assert( false );
 			return;
 		}
@@ -167,7 +167,7 @@ protected:
 	void  setInputPullUp(string inputID, bool newPU = true) {
 		if (inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setInputState() - Invalid input name.");
-			_MSGC(!(false), "ASSERT END 2")
+			_MSGNC(false, "ASSERT END 2.h")
 			assert(false);
 			return;
 		}
@@ -180,7 +180,7 @@ protected:
 	void  setInputPullDown(string inputID, bool newPD = true) {
 		if (inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setInputState() - Invalid input name.");
-			_MSGC(!(false), "ASSERT END 3")
+			_MSGNC(false, "ASSERT END 3.h")
 			assert(false);
 			return;
 		}
@@ -193,7 +193,7 @@ protected:
 	void  setOutputInverted( string outputID, bool newInv = true ) {
 		if(outputList.find(outputID) == outputList.end()) {
 			WARNING("Gate::setOutputState() - Invalid output name.");
-			_MSGC(!(false), "ASSERT END 4")
+			_MSGNC(false, "ASSERT END 4.h")
 			assert( false );
 			return;
 		}
@@ -216,14 +216,14 @@ protected:
 	void  setOutputEnablePin( string outputID, string inputID ) {
 		if(outputList.find(outputID) == outputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid output name.");
-			_MSGC(!(false), "ASSERT END 5")
+			_MSGNC(false, "ASSERT END 5.h")
 			assert( false );
 			return;
 		}
 
 		if(inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid input name.");
-			_MSGC(!(false), "ASSERT END 6")
+			_MSGNC(false, "ASSERT END 6.h")
 			assert( false );
 			return;
 		}
@@ -576,9 +576,8 @@ public:
 protected:
 	unsigned long outBits;
 
-	// Pedro Casanova (casanova@ujan.es) 2020/04-11
-	bool Priority;
-	bool PriorityHigh;
+	// Pedro Casanova (casanova@ujan.es) 2020/04-12
+	string Priority;
 };
 
 
@@ -936,6 +935,76 @@ public:
 //End of edit****************************************************
 
 
+// ******************* FSM Gate *********************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Implement Finite State Machines
+class Gate_FSM_SYNC : public Gate_PASS
+{
+public:
+	Gate_FSM_SYNC();
+
+	// Handle gate events:
+	void gateProcess(void);
+
+	// Set the parameters:
+	bool setParameter(string paramName, string value);
+
+	// Get the parameters:
+	string getParameter(string paramName);
+
+private:
+	// Process state param string
+	void procState(string paramName, string value);
+
+protected:
+	string currentOutput;
+	string currentState;	
+	string resetState;
+	unsigned long outBits;
+	bool asyncrhonous;
+	
+	vector< string > states;
+	map< string, vector< string > > nextState;
+	map< string, vector< string > > outputs;
+};
+
+// ******************* FSM Gate *********************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Implement Asynchronous Finite State Machines
+// This is a poolled gate
+class Gate_FSM_ASYNC : public Gate_FSM_SYNC
+{
+public:
+	Gate_FSM_ASYNC() : Gate_FSM_SYNC() { asyncrhonous = true; }
+};
+
+// ******************* CMB Gate *********************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Implement Combinational Blocks
+class Gate_CMB : public Gate_PASS
+{
+public:
+	Gate_CMB();
+
+	// Handle gate events:
+	void gateProcess(void);
+
+	// Set the parameters:
+	bool setParameter(string paramName, string value);
+
+	// Get the parameters:
+	string getParameter(string paramName);
+
+private:
+	// Process state param string
+	void procFunction(string paramName, string value);
+
+protected:
+	unsigned long outBits;
+
+	map< unsigned long, unsigned long > outputs;
+
+};
 
 
 #endif // LOGIC_GATE_H

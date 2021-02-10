@@ -3,6 +3,8 @@
 #include "../GUICanvas.h"
 #include "../guiWire.h"
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+
 cmdMergeWire::cmdMergeWire(GUICanvas* gCanvas, GUICircuit* gCircuit,
 	const std::vector<IDType> &wireIds, IDType wid1, IDType wid2) : 
 		klsCommand(true, "Merge Wire") {
@@ -112,3 +114,4 @@ void cmdMergeWire::setPointers(GUICircuit* gCircuit, GUICanvas* gCanvas,
 	this->gCircuit = gCircuit;
 	this->gCanvas = gCanvas;
 }
+

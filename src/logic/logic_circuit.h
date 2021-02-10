@@ -57,7 +57,7 @@ public:
 	//even if it is paused.  Thus this method
 	//is created, so that the pop-ups
 	//can request that the core proces
-	//thegateUpdateList without advanceing
+	//the gateUpdateList without advanceing
 	//the system time
 	void stepOnlyGates();
 
@@ -134,9 +134,6 @@ public:
 	// sent to the GUI from the logic core:
 	void addUpdateParam(IDType gateID, const string &paramName);
 
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	void UpdateGate(IDType gateID);	
-
 	vector < changedParam > getParamUpdateList();
 
 	void clearParamUpdateList();
@@ -171,7 +168,6 @@ public:
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	GUICircuit* ourGUICircuit;
-
 
 protected:
 	// For use by the Junction and Wire classes only:

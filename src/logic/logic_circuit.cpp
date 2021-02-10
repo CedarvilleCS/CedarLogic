@@ -75,6 +75,7 @@ void Circuit::step(ID_SET< IDType > *changedWires)
 	// Basically just loop through the things in polledGates and call updateGate() on them.
 	ID_SET< IDType >::iterator gateToPoll = polledGates.begin();
 	while (gateToPoll != polledGates.end()) {
+
 		gateList[*gateToPoll]->updateGate(*gateToPoll, this, ourGUICircuit);
 		gateToPoll++;
 	}
@@ -164,7 +165,6 @@ void Circuit::step(ID_SET< IDType > *changedWires)
 	// Update all of the gates and retrieve the events from them:
 	while (changedGatesIterator != changedGates.end()) {
 		GATE_PTR myGate = gateList[*changedGatesIterator];
-
 		myGate->updateGate(*changedGatesIterator, this, ourGUICircuit);	
 
 		changedGatesIterator++;
@@ -241,8 +241,16 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_EQUIVALENCE );
 		} else if (type == "Pauseulator") {
 			gateList[thisGateID] = GATE_PTR(new Gate_pauseulator());
-		} else if (type == "PLD_AND") {
+		} else if (type == "PLD_AND") {												// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			gateList[thisGateID] = GATE_PTR(new Gate_PLD_AND());
+		} else if (type == "CMB") {													// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+			gateList[thisGateID] = GATE_PTR(new Gate_CMB());
+		} else if (type == "FSM_SYNC") {											// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+			gateList[thisGateID] = GATE_PTR(new Gate_FSM_SYNC());
+		} else if (type == "FSM_ASYNC") {											// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+			gateList[thisGateID] = GATE_PTR(new Gate_FSM_ASYNC());
+			// This is a polled gate, so insert it into the polled gates queue!
+			polledGates.insert(thisGateID);
 		} else {
 			WARNING( "Circuit::newGate() - Invalid logic type!" );
 		}
@@ -677,13 +685,6 @@ void Circuit::setGateOutputParameter( IDType gateID, const string & outputID, co
 
 void Circuit::addUpdateParam(IDType gateID, const string & paramName) {
 	paramUpdateList.push_back(changedParam(gateID, paramName));
-}
-
-// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-void Circuit::UpdateGate(IDType gateID) {
-	if (gateList.find(gateID) != gateList.end()) 
-		gateList[gateID]->updateGate(gateID, this, ourGUICircuit);
-	return;
 }
 
 vector < changedParam > Circuit::getParamUpdateList() {

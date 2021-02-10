@@ -68,7 +68,10 @@ struct lgDlgParam {
 	string type; // The "type" of this parameter. Type can be: STRING, INT, BOOL, FLOAT, FILE_IN, FILE_OUT.
 	float Rmin, Rmax; // Number types can specify a min and max range for the variable.
 
-	lgDlgParam( string ntextLabel = "", string nname = "", string ntype = "STRING", bool nisGui = true, float nRmin = -FLT_MAX, float nRmax = FLT_MAX ) : textLabel(ntextLabel), name(nname), isGui(nisGui), type(ntype), Rmin(nRmin), Rmax(nRmax) {};
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	vector <string> Options;
+
+	lgDlgParam(string ntextLabel = "", string nname = "", string ntype = "STRING", bool nisGui = true, float nRmin = -FLT_MAX, float nRmax = FLT_MAX, vector <string> nOptions = {}) : textLabel(ntextLabel), name(nname), isGui(nisGui), type(ntype), Rmin(nRmin), Rmax(nRmax), Options(nOptions) {};
 };
 
 struct LibraryGate {
@@ -80,7 +83,7 @@ struct LibraryGate {
 	vector < lgLine > shape;
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Lines with offset for rotate chars
-	vector < lgOffLine > Offshape;
+	vector < lgOffLine > textShape;
 	vector < lgDlgParam > dlgParams; // The parameters to be listed in the "settings dialog".
 	map < string, string > guiParams;
 	map < string, string > logicParams;
@@ -94,19 +97,12 @@ public:
 	
 	void parseFile();
 
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Added for dynamic gates
+	void parseText(string text);
+
 	// Added by Colin Broberg 11/16/16 -- need to make this a public function so that I can use it for dynamic gates
 	void addGate(string libName, LibraryGate newGate);
-
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	// New command to generate text shapes
-	bool parseTextObject(LibraryGate* newGate);
-
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	// Lines with offset for rotate chars
-	bool parseShapeText(XMLParser* Parse, string type, LibraryGate* newGate, int stringType, double cenX = 0.0, double cenY = 0.0, double dX = 0.0, double dY = 0.0, double Scale = 1.0);
-
-	// Parse the shape object from the mParse file, adding an offset if needed:
-	bool parseShapeObject( string type, LibraryGate* newGate, double offX = 0.0, double offY = 0.0 );
 
 	// Returns a gate from the library in lgGate.  If the gate does not
 	//	exist in the library, returns false, otherwise true.
@@ -119,11 +115,31 @@ public:
 	string getGateGUIType( string gateName );
 	
 	string getName() { return libName; };
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// To create dynamics gates (not in library)
+	bool CreateDynamicGate(string type);
 	
 	map < string, map < string, LibraryGate > >* getGateDefs() { return &gates; };
 
 private:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Now is private
+	// Parse the shape object from the mParse file, adding an offset if needed:
+	bool parseShapeObject(string type, LibraryGate* newGate, double offX = 0.0, double offY = 0.0);
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// New command to generate text shapes
+	bool parseTextObject(LibraryGate* newGate);
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Lines with offset for rotate chars
+	bool parseShapeText(XMLParser* Parse, string type, LibraryGate* newGate, int stringType, double cenX = 0.0, double cenY = 0.0, double dX = 0.0, double dY = 0.0, double Scale = 1.0);
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// get XML <lines> for a character
 	stringstream getXMLChar(char ch, bool Negate);
+
 	XMLParser* mParse;
 	string fileName;
 	string libName;

@@ -41,6 +41,7 @@ LibraryParse::LibraryParse(string fileName) {
 	this->fileName = fileName;
 	parseFile();
 	delete mParse;
+	this->CreateDynamicGate("@@_NOT_FOUND");
 }
 
 LibraryParse::LibraryParse() {
@@ -76,7 +77,6 @@ void LibraryParse::parseFile() {
 			mParse->readCloseTag();
 			do {
 				temp = mParse->readTag();
-
 				if ( (temp == "input") || (temp == "output") ) {
 
 					string hsType = temp; // The type is determined by the tag name.
@@ -93,7 +93,7 @@ void LibraryParse::parseFile() {
 					int busLines = 1;
 					
 					do {
-						temp = mParse->readTag();
+						temp = mParse->readTag();						
 						if (temp == "") break;
 						if( temp == "name" ) {
 							hsName = mParse->readTagValue("name");
@@ -113,22 +113,25 @@ void LibraryParse::parseFile() {
 							isInverted = mParse->readTagValue("inverted");
 							mParse->readCloseTag();
 						} else if (temp == "pull_up") {
-							// Pedro casanova (casasanova@ujaen.es) 2020/04-11
+							// Pedro casanova (casasanova@ujaen.es) 2020/04-12
 							// To permit pull-up inputs
+							//## Test
 							if (hsType == "input") { // Only inputs can have <pull_up> tags.
 								isPullUp = mParse->readTagValue("pull_up");
 							}
 							mParse->readCloseTag();							
 						} else if (temp == "pull_down") {
-							// Pedro casanova (casasanova@ujaen.es) 2020/04-11
+							// Pedro casanova (casasanova@ujaen.es) 2020/04-12
 							// To permit pull-down inputs
+							//## Test
 							if (hsType == "input") { // Only inputs can have <pull_down> tags.
 								isPullDown = mParse->readTagValue("pull_down");
 							}
 							mParse->readCloseTag();
 						} else if (temp == "force_junction") {
-							// Pedro casanova (casasanova@ujaen.es) 2020/04-11
+							// Pedro casanova (casasanova@ujaen.es) 2020/04-12
 							// To force junctions in inputs
+							//## Test
 							if (hsType == "input") { // Only inputs can have <force_junction> tags.
 								ForceJunction = mParse->readTagValue("force_junction");
 							}
@@ -146,7 +149,7 @@ void LibraryParse::parseFile() {
 
 					} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end input/output
 
-					// Pedro casanova (casasanova@ujaen.es) 2020/04-11
+					// Pedro casanova (casasanova@ujaen.es) 2020/04-12
 					// To permit pull-up and pull-down inputs and force junctions with only one connection
 					newGate.hotspots.push_back(lgHotspot(hsName, (hsType == "input"), x1, y1, (isInverted == "true"), (isPullUp == "true"), (isPullDown == "true"), (ForceJunction == "true"), logicEInput, busLines));
 
@@ -198,6 +201,7 @@ void LibraryParse::parseFile() {
 							string name = "";
 							string logicOrGui = "GUI";
 							float Rmin = -FLT_MAX, Rmax = FLT_MAX;
+							vector <string> Options;
 	
 							do {
 								temp = mParse->readTag();
@@ -218,9 +222,18 @@ void LibraryParse::parseFile() {
 									istringstream iss(temp);
 									iss >> Rmin >> dump >> Rmax;
 									mParse->readCloseTag();
+								} else if (temp == "options") {		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+									temp = mParse->readTagValue("options");
+									istringstream iss(temp);
+									string optionString;
+									while (!iss.eof()) {
+										iss >> optionString;
+										Options.push_back(optionString);
+									}
+									mParse->readCloseTag();
 								}
 							} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end param
-							newGate.dlgParams.push_back( lgDlgParam( textLabel, name, type, (logicOrGui == "GUI"), Rmin, Rmax ) );
+							newGate.dlgParams.push_back( lgDlgParam( textLabel, name, type, (logicOrGui == "GUI"), Rmin, Rmax, Options ) );
 							mParse->readCloseTag();
 						}
 					} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end param_dlg_data
@@ -234,19 +247,41 @@ void LibraryParse::parseFile() {
 				} else if (temp == "gui_param") {
 					string paramName, paramVal;
 					istringstream iss(mParse->readTagValue("gui_param"));
-					iss >> paramName >> paramVal;
+					// Pedro Casanova (casanova@ujaen.es) 2020/01
+					// To permit spaces in gui_param value
+					iss >> paramName;
+					paramVal = "";
+					while (true)
+					{
+						string temp;
+						iss >> temp;
+						paramVal = paramVal + temp;
+						if (iss.eof()) break;
+						paramVal = paramVal + " ";
+					}
 					newGate.guiParams[paramName] = paramVal;
 					mParse->readCloseTag();
 				} else if (temp == "logic_param") {					
 					string paramName, paramVal;
 					istringstream iss(mParse->readTagValue("logic_param"));
-					iss >> paramName >> paramVal;
+					// Pedro Casanova (casanova@ujaen.es) 2020/01
+					// To permit spaces in logic_param value
+					iss >> paramName;
+					paramVal = "";
+					while (true)
+					{
+						string temp;
+						iss >> temp;
+						paramVal = paramVal + temp;
+						if (iss.eof()) break;
+						paramVal = paramVal + " ";
+					}
 					newGate.logicParams[paramName] = paramVal;
 					mParse->readCloseTag();
 				} else if (temp == "caption") {
 					newGate.caption = mParse->readTagValue("caption");
 					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-					//## What's that?
+					// What's that?
 					/*if (newGate.caption == "Inverter" && (time(0) % 1001 == 0)) { // Easter egg, rename inverters once in a while :)
 						newGate.caption = "Santa Hat (Inverter)";
 					}*/
@@ -260,6 +295,15 @@ void LibraryParse::parseFile() {
 		} while (!mParse->isCloseTag(mParse->getCurrentIndex())); // end library
 		mParse->readCloseTag(); // clear the close tag
 	} while (true); // end file
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Added for dynamic gates
+void LibraryParse::parseText(string text) {
+	stringstream ss(text);
+	mParse = new XMLParser((fstream*)&ss, false);
+	parseFile();
+	delete mParse;
 }
 
 #define SCALE_NORMAL 1.0			// Scale for normal text
@@ -277,7 +321,7 @@ void LibraryParse::parseFile() {
 #define CHAR_WIDTH_TOTAL (CHAR_WIDTH + 2 * CHAR_BLANK_W)
 
 // Pedro Casanova (casanova@ujaen.es) 2020/04-12
-// <text> to generate text shapes (only numbers and ucase letters)
+// <text> to generate text shapes (only numbers and letters)
 bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 	string temp;
 	char dump;
@@ -304,9 +348,10 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 	double Scale = 1.0;
 	dY = CHAR_HEIGHT / 2;
 	for (unsigned int i = 0; i < charCode.size(); i++)
-	{
+	{		
+		string specialChars = "~_^$&@%!";
 		char c = (char)charCode.c_str()[i];
-		if (c != '~' && c != '_' && c != '^' && c != '$' && c != '&' && c != '@' && c != '%' && c != '!') {
+		if (specialChars.find(c)==-1) {
 			dX -= CHAR_WIDTH_TOTAL / 2 * Scale;
 			Scale = SCALE_NORMAL;
 		} else {
@@ -333,6 +378,7 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 				Scale = SCALE_BIGGER;
 				break;
 			case '!':
+				// New Line
 				if (dX<dX0)
 					dX0 = dX;
 				dX = 0;
@@ -445,13 +491,15 @@ bool LibraryParse::parseShapeText(XMLParser* Parse, string type, LibraryGate* ne
 		y1 += (1 - Scale) * factor;
 		y2 += (1 - Scale) * factor;
 
-		newGate->Offshape.push_back(lgOffLine(lgLine(x1 + dX, y1 + dY, x2 + dX, y2 + dY), cenX, cenY));
+		newGate->textShape.push_back(lgOffLine(lgLine(x1 + dX, y1 + dY, x2 + dX, y2 + dY), cenX, cenY));
 
 		return true;
 	}
 	return false; // Invalid type.
 }
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// get XML <lines> for a character
 stringstream LibraryParse::getXMLChar(char ch, bool Negate) {
 
 	stringstream XMLstring;
@@ -775,4 +823,398 @@ string LibraryParse::getGateGUIType( string gateName ) {
 	if (findGate == wxGetApp().gateNameToLibrary.end()) return "";
 	if ( gates[findGate->second].find(gateName) == gates[findGate->second].end() ) return "";
 	return gates[findGate->second][gateName].guiType;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// To create dynamics gates (not in library)
+bool LibraryParse::CreateDynamicGate(string type) {
+	if (gates.find(type) == gates.end()) {
+		ostringstream oss;
+		if (type == "@@_NOT_FOUND") {			// @@_NOT_FOUND
+			oss << "<library><name>Deprecated</name>";
+			oss << "<gate><name>@@_NOT_FOUND</name><caption>Not Found</caption>";
+			//oss << "<logic_type>NODE</logic_type>";
+			//oss << "<input><name>N_IN0</name><point>0,0</point></input>";
+			//oss << "<input><name>HOTSPOT</name><point>0,0</point></input>";
+			oss << "<param_dlg_data><param><type>STRING</type><label>Original name</label>";
+			oss << "<varname>GUI ORIGINAL_NAME</varname></param></param_dlg_data>";
+			oss << "<shape>";
+			oss << "<boldline>-1,-1,1,1</boldline><boldline>-1,1,1,-1</boldline><circle>0,0,1,24</circle>";
+			oss << "</shape></gate></library>";
+		} else if (type.substr(0, 8) == "@@_WIRE_") {			// @@_WIRE_L
+			if (!chkDigits(type.substr(8))) return false;
+			unsigned int length = atoi(type.substr(8).c_str());
+			unsigned int nBits = 2 * length + 1;
+			if (length == 0)
+				nBits = 2;
+
+			oss << "<library><name>Hidden</name>";
+			oss << "<gate><name>" << type << "</name>";
+			oss << "<caption>Wire length " << length << "</caption>";
+			oss << "<logic_type>NODE</logic_type>";
+			oss << "<gui_type>WIRE</gui_type>";
+
+			for (unsigned int i = 0; i < nBits; i++)
+				oss << "<input><name>N_IN" << i << "</name><point>0," << -0.5f*i << "</point></input>";
+
+			//oss << "<gui_param>LENGTH " << length << "</gui_param>";
+			//##oss << "<param_dlg_data><param><type>INT</type><label>Wire length</label>";
+			//##oss << "<varname>GUI LENGTH</varname><range>0,500</range></param></param_dlg_data>";
+
+			oss << "<shape>";
+			if (length == 0)
+				oss << "<line>0,0,0,-0.5</line>";
+			else
+				oss << "<line>0,0,0,-" << length << "</line>";
+
+			oss << "</shape></gate></library>";
+
+		} else if (type.substr(0, 9) == "@@_OWIRE_") {			// @@_OWIRE_WXH
+			int posX = type.find("X");
+			if (!chkDigits(type.substr(9, posX - 9))) return false;
+			if (!chkDigits(type.substr(posX + 1))) return false;
+			unsigned int width = atoi(type.substr(9, posX - 9).c_str());
+			unsigned int height = atoi(type.substr(posX + 1).c_str());
+
+			if (!width && !height) return false;
+
+			float left = width / -2.0f;
+			float top = height / 2.0f;
+
+			oss << "<library><name>Hidden</name>";
+			oss << "<gate><name>" << type << "</name>";
+			oss << "<caption>Orthogonal wire width " << width << " " << height << "</caption>";
+			oss << "<logic_type>NODE</logic_type>";
+			oss << "<gui_type>WIRE</gui_type>";
+
+			oss << "<input><name>N_IN0</name><point>" << left << "," << -top << "</point></input>";
+			oss << "<input><name>N_IN1</name><point>" << -left << "," << top << "</point></input>";
+
+			oss << "<shape>";
+			oss << "<line>" << left << "," << -top << "," << -left << "," << -top << "</line>";
+			oss << "<line>" << -left << "," << -top << "," << -left << "," << top << "</line>";
+			oss << "</shape></gate></library>";
+
+		} else if (type.substr(0, 10) == "@@_NOWIRE_") {			// @@_NOWIRE_WXH
+			int posX = type.find("X");
+			if (!chkDigits(type.substr(10, posX - 10))) return false;
+			if (!chkDigits(type.substr(posX + 1))) return false;
+			unsigned int width = atoi(type.substr(10, posX - 10).c_str());
+			unsigned int height = atoi(type.substr(posX + 1).c_str());		
+
+			float left = width / -2.0f;
+			float top = height / 2.0f;
+
+			oss << "<library><name>Hidden</name>";
+			oss << "<gate><name>" << type << "</name>";
+			oss << "<caption>No orthogonal wire width " << width << " " << height << "</caption>";
+			oss << "<logic_type>NODE</logic_type>";
+			oss << "<gui_type>WIRE</gui_type>";
+
+			oss << "<input><name>N_IN0</name><point>" << left << "," << -top << "</point></input>";
+
+			if (!width && !height) {
+				oss << "<shape>";
+				oss << "<line>-0.25,0,0.25,0</line>";
+				oss << "<line>0,-0.25,0,0.25</line>";
+			
+			} else {
+				oss << "<input><name>N_IN1</name><point>" << -left << "," << top << "</point></input>";
+
+				oss << "<shape>";
+				oss << "<line>" << left << "," << -top << "," << -left << "," << top << "</line>";
+			}
+			oss << "</shape></gate></library>";
+
+		} else if (type.substr(0, 10) == "@@_BUSEND_") {			// @@_BUSEND_N
+			if (!chkDigits(type.substr(10))) return false;
+			unsigned int nInputs = atoi(type.substr(10).c_str());
+
+			oss << "<library><name>Hidden</name>";
+			oss << "<gate><name>" << type << "</name>";
+			oss << "<caption>" << nInputs << " lines Bus End</caption>";
+			oss << "<logic_type>BUSEND</logic_type>";
+			oss << "<gui_type>BUSEND</gui_type>";
+			oss << "<logic_param>INPUT_BITS " << nInputs << "</logic_param>";
+
+			for (unsigned int i = 0; i < nInputs; i++)
+				oss << "<input><name>IN_" << i << "</name><point>-1,-" << nInputs - i - 1 << "</point></input>";
+			
+			oss << "<input><name>CNA</name><point>0,0</point><bus>" << nInputs << "</bus></input>";
+			oss << "<input><name>CNB</name><point>0,-" << nInputs - 1 << "</point><bus>" << nInputs << "</bus></input>";
+
+			oss << "<shape>";
+
+			for (unsigned int i = 0; i < nInputs; i++)
+				oss << "<line>-1,-" << i << ",0,-" << i << "</line>";
+
+			oss << "<busline>0,0,0,-" << nInputs - 1 << "</busline>";
+			oss << "<circle>-0.5,-" << nInputs - 1 << ".4,0.2,24</circle>";
+
+			oss << "</shape></gate></library>";
+
+		} else if (type.substr(0, 7) == "@@_BLQ_") {			// @@_BLQ_WXH
+			int posX = type.find("X");
+			if (!chkDigits(type.substr(7, posX - 7))) return false;
+			if (!chkDigits(type.substr(posX + 1))) return false;
+			unsigned int width = atoi(type.substr(7, posX - 7).c_str());
+			unsigned int height = atoi(type.substr(posX + 1).c_str());
+			if (!width || !height) return false;
+
+			float left = width / -2.0f;
+			float top = height / 2.0f;
+
+			oss << "<library><name>Hidden</name>";
+			oss << "<gate><name>" << type << "</name>";
+			oss << "<caption>Block " << width << " x " << height << "</caption>";
+
+			oss << "<shape>";
+
+			oss << "<outline>" << left << "," << top << "," << -left << "," << top << "</outline>";
+			oss << "<outline>" << -left << "," << top << "," << -left << "," << -top << "</outline>";
+			oss << "<outline>" << -left << "," << -top << "," << left << "," << -top << "</outline>";
+			oss << "<outline>" << left << "," << -top << "," << left << "," << top << "</outline>";
+
+			oss << "</shape></gate></library>";
+
+		} else if (type.substr(0,7) == "@@_CMB_") {			// @@_CMB_IXO
+			int posX = type.find("X");
+			if (!chkDigits(type.substr(7, posX - 7))) return false;
+			if (!chkDigits(type.substr(posX + 1))) return false;
+
+			unsigned int inBits = atoi(type.substr(7, posX - 7).c_str());
+			unsigned int outBits = atoi(type.substr(posX + 1).c_str());
+			if (!outBits || !inBits) return false;
+			float top = (outBits > inBits) ? (outBits / 2.0f + 0.5f) : (inBits / 2.0f + 0.5f);
+
+			oss << "<library><name>Hidden</name>";
+			oss << "<gate><name>" << type << "</name>";
+			oss << "<caption>Combinational Block " << inBits << " inputs, " << outBits << " outputs</caption>";
+			oss << "<logic_type>CMB</logic_type>";
+			oss << "<gui_type>CMB</gui_type>";
+			oss << "<logic_param>INPUT_BITS " << inBits << "</logic_param>";
+			oss << "<logic_param>OUTPUT_BITS " << outBits << "</logic_param>";
+			for (unsigned int i = 0; i < outBits; i++)
+				oss << "<logic_param>Function:" << i << " O" << i << "=0</logic_param>";
+
+			double ini;
+			ini = -0.5*(inBits - 1);
+			for (unsigned int i = 0; i < inBits; i++)
+				oss << "<input><name>IN_" << i << "</name><point>-4," << ini + i << "</point></input>";
+			ini = -0.5*(outBits - 1);
+			for (unsigned int i = 0; i < outBits; i++)
+				oss << "<output><name>OUT_" << i << "</name><point>4," << ini + i << "</point></input>";
+
+			oss << "<shape>";
+
+			oss << "<outline>-3," << top << ",3," << top << "</outline>";
+			oss << "<outline>3," << top << ",3," << -top << "</outline>";
+			oss << "<outline>3," << -top << ",-3," << -top << "</outline>";
+			oss << "<outline>-3," << -top << ",-3," << top << "</outline>";
+
+			oss << "<text>0,0,CMB</text>";
+
+			ini = -0.5*(inBits - 1);
+			for (unsigned int i = 0; i < inBits; i++)
+				oss << "<line>-3," << ini + i << ",-4," << ini + i << "</line>";
+			if (inBits <= 10) {
+				for (unsigned int i = 0; i < inBits; i++)
+					oss << "<text>-2.4," << ini + i << ",I_" << i << "</text>";
+			} else {
+				oss << "<text>-2.2," << ini << ",I_0</text>";
+				ostringstream index;
+				index << inBits - 1;
+				oss << "<text>-2.2," << ini + inBits - 1 << ",I";
+				for (unsigned int j = 0; j < index.str().length(); j++)
+					oss << "_" << index.str()[j];
+				oss << "</text>";
+			}
+
+			ini = -0.5*(outBits - 1);
+			for (unsigned int i = 0; i < outBits; i++)
+				oss << "<line>3," << ini + i << ",4," << ini + i << "</line>";
+			if (outBits <= 10) {
+				for (unsigned int i = 0; i < outBits; i++)
+					oss << "<text>2.4," << ini + i << ",O_" << i << "</text>";
+			} else {
+				oss << "<text>2.2," << ini << ",O_0</text>";
+				ostringstream index;
+				index << outBits - 1;
+				oss << "<text>2.2," << ini + outBits - 1 << ",O";
+				for (unsigned int j = 0; j < index.str().length(); j++)
+					oss << "_" << index.str()[j];
+				oss << "</text>";
+			}
+
+			oss << "</shape></gate></library>";
+
+		} else if (type.substr(0, 7) == "@@_FSM_") {			// @@_FSM_T_IXO
+			bool async = false;
+			if (type.substr(7, 1) == "A")
+				async = true;
+			else if (type.substr(7, 1) != "S")
+				return false;
+			int posX = type.find("X");
+			if (!chkDigits(type.substr(9, posX - 9))) return false;
+			if (!chkDigits(type.substr(posX + 1))) return false;
+			unsigned int inBits = atoi(type.substr(9, posX - 9).c_str());
+			unsigned int outBits = atoi(type.substr(posX + 1).c_str());
+			if (!outBits) return false;
+			float top = (outBits > inBits) ? (outBits / 2.0f + 1.5f) : (inBits / 2.0f + 1.5f);
+
+			oss << "<library><name>Hidden</name>";
+			oss << "<gate><name>" << type << "</name>";
+			oss << "<caption>" << (async ? "Asyncrhonuos" : "Syncrhonuos") << " FSM " << inBits << " inputs, " << outBits << " outputs</caption>";
+			oss << "<logic_type>FSM_" << (async == true ? "ASYNC" : "SYNC") << "</logic_type>";
+			oss << "<gui_type>FSM</gui_type>";
+			oss << "<logic_param>INPUT_BITS " << inBits << "</logic_param>";
+			oss << "<logic_param>OUTPUT_BITS " << outBits << "</logic_param>";
+			oss << "<logic_param>State:0 Q0/";
+
+			for (unsigned int i = 0; i < outBits; i++) oss << "0";
+
+			if (inBits) {
+				oss << " ";
+				for (unsigned int i = 0; i < inBits; i++) oss << "X";
+			}
+			oss << "-Q0</logic_param>";
+			if (async) {
+				oss << "<input><name>CLEAR</name><point>0," << -top - 1 << "</point></input>";
+			} else {
+				oss << "<input><name>CLOCK</name><point>-1," << -top - 1 << "</point></input>";
+				oss << "<input><name>CLEAR</name><point>1," << -top - 1 << "</point></input>";
+			}
+
+			double ini;
+			ini = -0.5*(inBits - 1);
+			for (unsigned int i = 0; i < inBits; i++)
+				oss << "<input><name>IN_" << i << "</name><point>-4," << ini + i << "</point></input>";
+			ini = -0.5*(outBits - 1);
+			for (unsigned int i = 0; i < outBits; i++)
+				oss << "<output><name>OUT_" << i << "</name><point>4," << ini + i << "</point></input>";
+
+			oss << "<shape>";
+
+			oss << "<outline>-3," << top << ",3," << top << "</outline>";
+			oss << "<outline>3," << top << ",3," << -top << "</outline>";
+			oss << "<outline>3," << -top << ",-3," << -top << "</outline>";
+			oss << "<outline>-3," << -top << ",-3," << top << "</outline>";
+
+			oss << "<text>0,0,FSM</text>";
+
+			if (async) {
+				oss << "<line>0," << -top << ",0," << -top - 1 << "</line>";
+				oss << "<text>0," << -top + 0.6f << ",R</text>";
+			} else {
+				oss << "<line>-1," << -top << ",-1," << -top - 1 << "</line><line>1," << -top << ",1," << -top - 1 << "</line>";
+				oss << "<line>-0.5," << -top << ",-1," << -top + 1 << "</line><line>-1.5," << -top << ",-1," << -top + 1 << "</line>";
+				oss << "<text>1," << -top + 0.6f << ",R</text>";
+			}
+
+			ini = -0.5*(inBits - 1);
+			for (unsigned int i = 0; i < inBits; i++)
+				oss << "<line>-3," << ini + i << ",-4," << ini + i << "</line>";
+			if (inBits <= 10) {
+				for (unsigned int i = 0; i < inBits; i++)
+					oss << "<text>-2.4," << ini + i << ",I_" << i << "</text>";
+			} else {
+				oss << "<text>-2.2," << ini << ",I_0</text>";
+				ostringstream index;
+				index << inBits - 1;
+				oss << "<text>-2.2," << ini + inBits - 1 << ",I";
+				for (unsigned int j = 0; j < index.str().length(); j++)
+					oss << "_" << index.str()[j];
+				oss << "</text>";
+			}
+
+			ini = -0.5*(outBits - 1);
+			for (unsigned int i = 0; i < outBits; i++)
+				oss << "<line>3," << ini + i << ",4," << ini + i << "</line>";
+			if (outBits <= 10) {
+				for (unsigned int i = 0; i < outBits; i++)
+					oss << "<text>2.4," << ini + i << ",O_" << i << "</text>";
+			} else {
+				oss << "<text>2.2," << ini << ",O_0</text>";
+				ostringstream index;
+				index << outBits - 1;
+				oss << "<text>2.2," << ini + outBits - 1 << ",O";
+				for (unsigned int j = 0; j < index.str().length(); j++)
+					oss << "_" << index.str()[j];
+				oss << "</text>";
+			}
+
+			oss << "</shape></gate></library>";
+		} else if (type.substr(0, 8) == "@@_LAND_") {			// @@_LAND_N
+			if (!chkDigits(type.substr(8))) return false;
+			unsigned int nInputs = atoi(type.substr(8).c_str());
+
+			oss << "<library><name>Hidden</name>";
+			oss << "<gate><name>" << type <<"</name><caption>" << nInputs << " inputs AND gate for PLD</caption>";
+			oss << "<logic_type>PLD_AND</logic_type><gui_type>PLD</gui_type>";
+			oss << "<logic_param>INPUT_BITS <<" << nInputs << "</logic_param>";
+			oss << "<logic_param>FORCE_ZERO false</logic_param>";
+			oss << "<gui_param>CROSS_POINT 0,0</gui_param>";
+			oss << "<gui_param>CROSS_JUNCTION true</gui_param>";
+			oss << "<param_dlg_data><param><type>BOOL</type><label>Cross junction</label>";
+			oss << "<varname>GUI CROSS_JUNCTION</varname></param></param_dlg_data>";
+			oss << "<param_dlg_data><param><type>BOOL</type><label>Force output to zero</label>";
+			oss << "<varname>LOGIC FORCE_ZERO</varname></param></param_dlg_data>";
+
+			for (unsigned int i = 0; i < nInputs; i++)
+				oss << "<input> <name>IN_" << i  <<"</name><point>-" << i+1 << ",0</point><pull_up>true</pull_up></input>";
+
+			oss << "<output> <name>OUT</name><point>1,0</point></output><shape>";
+			oss << "<line>-" << nInputs << ".5,0,-0.5,0</line>";
+			oss << "<line>1,0,0.5,0</line><line>-0.5,0.5,-0.5,-0.5</line>";
+			oss << "<line>-0.5,0.5,0,0.5</line><line>-0.5,-0.5,0,-0.5</line>";
+			oss << "<line>0,0.5,0.09,0.49</line><line>0.09,0.49,0.17,0.47</line><line>0.17,0.47,0.25,0.43</line>";
+			oss << "<line>0.25,0.43,0.32,0.38</line><line>0.32,0.38,0.38,0.32</line><line>0.38,0.32,0.43,0.25</line>";
+			oss << "<line>0.43,0.25,0.47,0.17</line><line>0.47,0.17,0.49,0.09</line><line>0.49,0.09,0.5,0</line>";
+			oss << "<line>0,-0.5,0.09,-0.49</line><line>0.09,-0.49,0.17,-0.47</line><line>0.17,-0.47,0.25,-0.43</line>";
+			oss << "<line>0.25,-0.43,0.32,-0.38</line><line>0.32,-0.38,0.38,-0.32</line><line>0.38,-0.32,0.43,-0.25</line>";
+			oss << "<line>0.43,-0.25,0.47,-0.17</line><line>0.47,-0.17,0.49,-0.09</line><line>0.49,-0.09,0.5,0</line>";
+
+			oss << "</shape></gate></library>";
+
+		} else if (type.substr(0, 7) == "@@_LOR_") {			// @@_LOR_N
+		if (!chkDigits(type.substr(7))) return false;
+		unsigned int nInputs = atoi(type.substr(7).c_str());
+
+		oss << "<library><name>Hidden</name>";
+		oss << "<gate><name>" << type << "</name><caption>" << nInputs << " inputs OR gate for PLD</caption>";
+		oss << "<logic_type>OR</logic_type><gui_type>PLD</gui_type>";
+		oss << "<logic_param>INPUT_BITS <<" << nInputs << "</logic_param>";
+		oss << "<gui_param>CROSS_JUNCTION true</gui_param>";
+		oss << "<param_dlg_data><param><type>BOOL</type><label>Cross junction</label>";
+		oss << "<varname>GUI CROSS_JUNCTION</varname></param></param_dlg_data>";
+
+		for (unsigned int i = 0; i < nInputs; i++)
+			oss << "<input> <name>IN_" << i << "</name><point>-" << i + 1 << ",0</point><pull_down>true</pull_down></input>";
+
+		oss << "<output> <name>OUT</name><point>1,0</point></output><shape>";
+		oss << "<line>-" << nInputs << ".5,0,-0.25,0</line>";
+
+		oss << "<line>1,0,0.5,0</line><line>-0.5,0.5,-0.25,0.5</line><line>-0.5,-0.5,-0.25,-0.5</line>";
+		oss << "<line>-0.25,0.5,-0.12,0.49</line><line>-0.12,0.49,0.01,0.47</line><line>0.01,0.47,0.13,0.43</line>";
+		oss << "<line>0.13,0.43,0.23,0.38</line><line>0.23,0.38,0.32,0.32</line><line>0.32,0.32,0.40,0.25</line>";
+		oss << "<line>0.40,0.25,0.45,0.17</line><line>0.45,0.17,0.49,0.09</line><line>0.49,0.09,0.5,0</line>";
+		oss << "<line>-0.25,-0.5,-0.12,-0.49</line><line>-0.12,-0.49,0.01,-0.47</line><line>0.01,-0.47,0.13,-0.43</line>";
+		oss << "<line>0.13,-0.43,0.23,-0.38</line><line>0.23,-0.38,0.32,-0.32</line><line>0.32,-0.32,0.40,-0.25</line>";
+		oss << "<line>0.40,-0.25,0.45,-0.17</line><line>0.45,-0.17,0.49,-0.09</line><line>0.49,-0.09,0.5,0</line>";
+		oss << "<line>-0.5,0.5,-0.46,0.49</line><line>-0.46,0.49,-0.41,0.47</line><line>-0.41,0.47,-0.38,0.43</line>";
+		oss << "<line>-0.38,0.43,-0.34,0.38</line><line>-0.34,0.38,-0.31,0.32</line><line>-0.31,0.32,-0.28,0.25</line>";
+		oss << "<line>-0.28,0.25,-0.27,0.17</line><line>-0.27,0.17,-0.25,0.09</line><line>-0.25,0.09,-0.25,0</line>";
+		oss << "<line>-0.5,-0.5,-0.46,-0.49</line><line>-0.46,-0.49,-0.41,-0.47</line><line>-0.41,-0.47,-0.38,-0.43</line>";
+		oss << "<line>-0.38,-0.43,-0.34,-0.38</line><line>-0.34,-0.38,-0.31,-0.32</line><line>-0.31,-0.32,-0.28,-0.25</line>";
+		oss << "<line>-0.28,-0.25,-0.27,-0.17</line><line>-0.27,-0.17,-0.25,-0.09</line><line>-0.25,-0.09,-0.25,0</line>";
+
+		oss << "</shape></gate></library>";
+
+		} else
+			return false;
+
+		parseText(oss.str());
+	}
+	return true;
+
 }

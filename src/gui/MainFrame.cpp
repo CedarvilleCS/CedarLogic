@@ -741,7 +741,7 @@ void MainFrame::OnViewWideOutline(wxCommandEvent& event) {
 	wxGetApp().appSettings.wideOutline = event.IsChecked();
 	menuBar->Check(View_WideOutline, wxGetApp().appSettings.wideOutline);
 	toolBar->ToggleTool(View_WideOutline, wxGetApp().appSettings.wideOutline);
-	if (currentCanvas != NULL) currentCanvas->Update();
+	if (currentCanvas != NULL) currentCanvas->Update();	
 }
 
 // Pedro Casanova (casanova@ujaen.es) 2020/04-12
@@ -874,7 +874,7 @@ void MainFrame::OnPaste(wxCommandEvent& event) {
 	currentCanvas->pasteBlockFromClipboard();
 }
 
-// Pedro Casanova(casanova@ujaen.es) 2020/04-11
+// Pedro Casanova(casanova@ujaen.es) 2020/04-12
 void MainFrame::OnCopyColor(wxCommandEvent& event) {
 	wxBitmap bitmap = getBitmap(false);
 	if (wxTheClipboard->Open()) {
@@ -883,7 +883,7 @@ void MainFrame::OnCopyColor(wxCommandEvent& event) {
 	}
 }
 
-// Pedro Casanova(casanova@ujaen.es) 2020/04-11
+// Pedro Casanova(casanova@ujaen.es) 2020/04-12
 void MainFrame::OnCopyGreyscale(wxCommandEvent& event) {
 	wxBitmap bitmap = getBitmap(false);
 	bitmap = wxBitmap(bitmap.ConvertToImage().ConvertToGreyscale());
@@ -893,7 +893,7 @@ void MainFrame::OnCopyGreyscale(wxCommandEvent& event) {
 	}
 }
 
-// Pedro Casanova(casanova@ujaen.es) 2020/04-11
+// Pedro Casanova(casanova@ujaen.es) 2020/04-12
 void MainFrame::OnCopyMonochrome(wxCommandEvent& event) {
 	wxBitmap bitmap = getBitmap(false, false);
 	if (wxTheClipboard->Open()) {

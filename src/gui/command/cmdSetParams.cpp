@@ -95,7 +95,7 @@ bool cmdSetParams::Do() {
 		(*(gCircuit->getGates()))[gid]->setGUIParam(paramWalk->first, paramWalk->second);
 		paramWalk++;
 	}
-	// Pedro Casanova (casanova@ujaen.es 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es 2020/04-12
 	// TO, FROM and LINK are valid signal to Oscope
 	if (!fromString && gCircuit->getOscope() != NULL)
 		if ((*(gCircuit->getGates()))[gid]->getGUIType() == "TO" || (*(gCircuit->getGates()))[gid]->getGUIType() == "FROM" || (*(gCircuit->getGates()))[gid]->getGUIType() == "LINK")
@@ -127,7 +127,7 @@ bool cmdSetParams::Undo() {
 		(*(gCircuit->getGates()))[gid]->setGUIParam(paramWalk->first, paramWalk->second);
 		paramWalk++;
 	}
-	// Pedro Casanova (casanova@ujaen.es 2020/04-11
+	// Pedro Casanova (casanova@ujaen.es 2020/04-12
 	// TO, FROM and LINK are valid signal to Oscope
 	if ((!fromString && (*(gCircuit->getGates()))[gid]->getGUIType() == "TO")  || (!fromString && (*(gCircuit->getGates()))[gid]->getGUIType() == "FROM") || (!fromString && (*(gCircuit->getGates()))[gid]->getGUIType() == "LINK"))
 		gCircuit->getOscope()->UpdateMenu();

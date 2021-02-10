@@ -2,6 +2,8 @@
 #pragma once
 #include "klsCommand.h"
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+
 // cmdMergeWire - Merge two wires
 class cmdMergeWire : public klsCommand {
 public:

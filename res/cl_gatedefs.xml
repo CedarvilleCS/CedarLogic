@@ -2305,7 +2305,6 @@
 		<caption>Mini Inverter</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
-		<logic_param>DEFAULT_DELAY 1</logic_param>
 		<input> <name>IN_0</name>
 		          <point>-0.5,0</point>
 		</input>
@@ -2380,7 +2379,7 @@
 		<caption>Small Buffer</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
-		<logic_param>DEFAULT_DELAY 1</logic_param>	
+		<logic_param>DEFAULT_DELAY 1</logic_param>
 		<param_dlg_data>
 			<param>
 				<type>INT</type>
@@ -3651,12 +3650,19 @@
 			<line>-2.25,2,2.25,2</line>
 			<line>-2.25,-2,2.25,-2</line>
 			<line>2.25,2,2.25,-2</line>
-			<line>-1.5,-1,-0.88,-1</line>
-			<line>-0.88,-1,-0.88,1</line>
-			<line>-0.88,1,0.88,1</line>
-			<line>0.88,1,0.88,-1</line>
-			<line>0.88,-1,1.5,-1</line>
 			<line>2.25,0,4,0</line>
+			
+			<line>-1.5,-1,-1,-1</line>
+			<line>-1,-1,-1,1</line>
+			<line>-1,1,-0.5,1</line>
+			<line>-0.5,1,-0.5,-1</line>
+			<line>-0.5,-1,0,-1</line>
+			<line>0,-1,0,1</line>
+			<line>0,1,0.5,1</line>
+			<line>0.5,1,0.5,-1</line>
+			<line>0.5,-1,1,-1</line>
+			<line>1,-1,1,1</line>			
+			<line>1,1,1.5,1</line>			
 		</shape>
 	</gate>
 	<gate> <name>BC_CLOCK</name>
@@ -3682,6 +3688,7 @@
 			<line>-1,-1,1.8,-1</line>
 			<line>1.8,1,1.8,-1</line>
 			<line>1.8,0,2,0</line>
+			
 			<line>-0.6,-0.6,-0.2,-0.6</line>
 			<line>-0.2,-0.6,-0.2,0.6</line>
 			<line>-0.2,0.6,0.2,0.6</line>
@@ -3896,7 +3903,7 @@
 				
 		</shape>
 	</gate>
-	<gate> <name>DF_KEYPAD_DEC</name>
+	<gate> <name>DE_KEYPAD_DEC</name>
 		<caption>4-bit Dec Keypad</caption>
 		<logic_type>DRIVER</logic_type>
 		<logic_param>OUTPUT_BITS 4</logic_param>
@@ -4681,50 +4688,6 @@
 			</param>
 		</param_dlg_data>
 	</gate>
-	<gate> <name>DA_FROM</name>
-		<caption>"From" Named Link</caption>
-		<gui_type>FROM</gui_type>
-		<logic_type>FROM</logic_type>
-		<logic_param>JUNCTION_ID FROM</logic_param>
-		<param_dlg_data>
-			<param>
-				<type>STRING</type>
-				<label>Label</label>
-# Specify the type (LOGIC or GUI) and the param's name:
-				<varname>LOGIC JUNCTION_ID</varname>
-			</param>
-		</param_dlg_data>
-		<input> <name>IN_0</name>
-		          <point>2,0</point> 
-		</input>
-		<shape>
-			<line>0,1,1,0</line>
-			<line>0,-1,1,0</line>
-			<line>1,0,2,0</line>
-		</shape>
-	</gate>
-	<gate> <name>DE_TO</name>
-		<caption>"To" Named Link</caption>
-		<gui_type>TO</gui_type>
-		<logic_type>TO</logic_type>
-		<logic_param>JUNCTION_ID TO</logic_param>
-		<param_dlg_data>
-			<param>
-				<type>STRING</type>
-				<label>Label</label>
-# Specify the type (LOGIC or GUI) and the param's name:
-				<varname>LOGIC JUNCTION_ID</varname>
-			</param>
-		</param_dlg_data>
-		<input> <name>IN_0</name>
-		          <point>-2,0</point> 
-		</input>
-		<shape>
-			<line>-1,1,0,0</line>
-			<line>-1,-1,0,0</line>
-			<line>-2,0,0,0</line>
-		</shape>
-	</gate>
 	<gate> <name>DI_LINK</name>
 		<caption>Named Link</caption>
 		<gui_type>LINK</gui_type>
@@ -4745,10 +4708,10 @@
 			</param>
 		</param_dlg_data>
 		<input> <name>IN_0</name>
-		          <point>-0.5,0</point> 
+				  <point>-1,0</point> 
 		</input>
 		<shape>
-			<line>-0.5,0,0,0</line>
+			<line>-1,0,0,0</line>
 		</shape>
 	</gate>
 	<gate> <name>HA_JUNC_2</name>
@@ -4826,628 +4789,7 @@
 			<line>0,1,0,0.26</line>
 		</shape>
 	</gate>
-	<gate> <name>HP_JUNC_00</name>
-		<caption>Connection</caption>
-		<logic_type>NODE</logic_type>
-		<gui_type>WIRE</gui_type>
-		<input> <name>N_IN0</name>
-		          <point>0,0</point> 
-		</input>
-		<input> <name>N_IN1</name>
-		          <point>0.5,0</point> 
-		</input>
-		<shape>
-			<line>0,0,0.5,0</line>
-		</shape>
-	</gate>
-	<gate> <name>HP_JUNC_01</name>
-		<caption>wire small</caption>
-		<logic_type>NODE</logic_type>
-		<gui_type>WIRE</gui_type>
-		<input> <name>N_IN0</name>
-		          <point>0,0</point> 
-		</input>
-		<input> <name>N_IN1</name>
-		          <point>0,0.5</point> 
-		</input>
-		<input> <name>N_IN2</name>
-		          <point>0,1</point> 
-		</input>
-		<shape>
-			<line>0,0,0,1</line>
-		</shape>
-	</gate>
-	<gate> <name>HP_JUNC_05</name>
-		<caption>wire short</caption>
-		<logic_type>NODE</logic_type>
-		<gui_type>WIRE</gui_type>
-		<input> <name>N_IN0</name>
-		          <point>0,0</point> 
-		</input>
-		<input> <name>N_IN1</name>
-		          <point>0,0.5</point> 
-		</input>		
-		<input> <name>N_IN2</name>
-		          <point>0,1</point> 
-		</input>
-		<input> <name>N_IN3</name>
-		          <point>0,1.5</point> 
-		</input>
-		<input> <name>N_IN4</name>
-		          <point>0,2</point> 
-		</input>
-		<input> <name>N_IN5</name>		
-		          <point>0,2.5</point> 
-		</input>
-		<input> <name>N_IN6</name>
-		          <point>0,3</point> 
-		</input>
-		<input> <name>N_IN7</name>
-		          <point>0,3.5</point> 
-		</input>		
-		<input> <name>N_IN8</name>
-		          <point>0,4</point> 
-		</input>
-		<shape>
-			<line>0,0,0,4</line>
-		</shape>
-	</gate>
-	<gate> <name>HP_JUNC_10</name>
-		<caption>wire</caption>
-		<logic_type>NODE</logic_type>
-		<gui_type>WIRE</gui_type>
-		<input> <name>N_IN0</name>
-		          <point>0,0</point> 
-		</input>
-		<input> <name>N_IN1</name>
-		          <point>0,0.5</point> 
-		</input>
-		<input> <name>N_IN2</name>
-		          <point>0,1</point> 
-		</input>
-		<input> <name>N_IN3</name>
-		          <point>0,1.5</point> 
-		</input>
-		<input> <name>N_IN4</name>
-		          <point>0,2</point> 
-		</input>
-		<input> <name>N_IN5</name>
-		          <point>0,2.5</point> 
-		</input>
-		<input> <name>N_IN6</name>
-		          <point>0,3</point> 
-		</input>
-		<input> <name>N_IN7</name>
-		          <point>0,3.5</point> 
-		</input>
-		<input> <name>N_IN8</name>
-		          <point>0,4</point> 
-		</input>
-		<input> <name>N_IN9</name>
-		          <point>0,4.5</point> 
-		</input>
-		<input> <name>N_IN10</name>
-		          <point>0,5</point> 
-		</input>
-		<input> <name>N_IN11</name>
-		          <point>0,5.5</point> 
-		</input>
-		<input> <name>N_IN12</name>
-		          <point>0,6</point> 
-		</input>
-		<input> <name>N_IN13</name>
-		          <point>0,6.5</point> 
-		</input>
-		<input> <name>N_IN14</name>
-		          <point>0,7</point> 
-		</input>
-		<input> <name>N_IN15</name>
-		          <point>0,7.5</point> 
-		</input>
-		<input> <name>N_IN16</name>
-		          <point>0,8</point> 
-		</input>
-		<input> <name>N_IN17</name>
-		          <point>0,8.5</point> 
-		</input>
-		<input> <name>N_IN18</name>
-		          <point>0,9</point> 
-		</input>
-
-		<shape>
-			<line>0,0,0,9</line>
-		</shape>
-	</gate>
-	<gate> <name>HP_JUNC_20</name>
-		<caption>wire long</caption>
-		<logic_type>NODE</logic_type>
-		<gui_type>WIRE</gui_type>
-		<input> <name>N_IN0</name>
-		          <point>0,0</point> 
-		</input>
-		<input> <name>N_IN1</name>
-		          <point>0,0.5</point> 
-		</input>
-		<input> <name>N_IN2</name>
-		          <point>0,1</point> 
-		</input>
-		<input> <name>N_IN3</name>
-		          <point>0,1.5</point> 
-		</input>
-		<input> <name>N_IN4</name>
-		          <point>0,2</point> 
-		</input>
-		<input> <name>N_IN5</name>
-		          <point>0,2.5</point> 
-		</input>
-		<input> <name>N_IN6</name>
-		          <point>0,3</point> 
-		</input>
-		<input> <name>N_IN7</name>
-		          <point>0,3.5</point> 
-		</input>
-		<input> <name>N_IN8</name>
-		          <point>0,4</point> 
-		</input>
-		<input> <name>N_IN9</name>
-		          <point>0,4.5</point> 
-		</input>
-		<input> <name>N_IN10</name>
-		          <point>0,5</point> 
-		</input>
-		<input> <name>N_IN11</name>
-		          <point>0,5.5</point> 
-		</input>
-		<input> <name>N_IN12</name>
-		          <point>0,6</point> 
-		</input>
-		<input> <name>N_IN13</name>
-		          <point>0,6.5</point> 
-		</input>
-		<input> <name>N_IN14</name>
-		          <point>0,7</point> 
-		</input>
-		<input> <name>N_IN15</name>
-		          <point>0,7.5</point> 
-		</input>
-		<input> <name>N_IN16</name>
-		          <point>0,8</point> 
-		</input>
-		<input> <name>N_IN17</name>
-		          <point>0,8.5</point> 
-		</input>
-		<input> <name>N_IN18</name>
-		          <point>0,9</point> 
-		</input>
-		<input> <name>N_IN19</name>
-		          <point>0,9.5</point> 
-		</input>
-		<input> <name>N_IN20</name>
-		          <point>0,10</point> 
-		</input>
-		<input> <name>N_IN21</name>
-		          <point>0,10.5</point> 
-		</input>
-		<input> <name>N_IN22</name>
-		          <point>0,11</point> 
-		</input>
-		<input> <name>N_IN23</name>
-		          <point>0,11.5</point> 
-		</input>
-		<input> <name>N_IN24</name>
-		          <point>0,12</point> 
-		</input>
-		<input> <name>N_IN25</name>
-		          <point>0,12.5</point> 
-		</input>
-		<input> <name>N_IN256</name>
-		          <point>0,13</point> 
-		</input>
-		<input> <name>N_IN27</name>
-		          <point>0,13.5</point> 
-		</input>
-		<input> <name>N_IN28</name>
-		          <point>0,14</point> 
-		</input>
-		<input> <name>N_IN29</name>
-		          <point>0,14.5</point> 
-		</input>
-		<input> <name>N_IN30</name>
-		          <point>0,15</point> 
-		</input>
-		<input> <name>N_IN31</name>
-		          <point>0,15.5</point> 
-		</input>
-		<input> <name>N_IN32</name>
-		          <point>0,16</point> 
-		</input>
-		<input> <name>N_IN33</name>
-		          <point>0,16.5</point> 
-		</input>
-		<input> <name>N_IN34</name>
-		          <point>0,17</point> 
-		</input>
-		<input> <name>N_IN35</name>
-		          <point>0,17.5</point> 
-		</input>
-		<input> <name>N_IN36</name>
-		          <point>0,18</point> 
-		</input>
-		<input> <name>N_IN37</name>
-		          <point>0,18.5</point> 
-		</input>
-		<input> <name>N_IN38</name>
-		          <point>0,19</point> 
-		</input>
-
-		<shape>
-			<line>0,0,0,19</line>
-		</shape>
-	</gate>
-	<gate>
-		<name>HR_CROSS_UP</name>
-		<caption>Cross Wire</caption>
-		<logic_type>NODE</logic_type>
-		<gui_type>WIRE</gui_type>
-		<input> <name>N_IN0</name>
-				  <point>-3,-1</point> 
-		</input>
-		<input> <name>N_IN1</name>
-				  <point>3,1</point> 
-		</input>
-		<shape>
-			<line>-3,-1,3,1</line>
-		</shape>		
-	</gate>
-	<gate>
-		<name>HR_CROSS_DOWN</name>
-		<caption>Cross</caption>
-		<logic_type>NODE</logic_type>
-		<gui_type>WIRE</gui_type>
-		<input> <name>N_IN0</name>
-				  <point>-3,1</point> 
-		</input>
-		<input> <name>N_IN1</name>
-				  <point>3,-1</point> 
-		</input>
-		<shape>
-			<line>-3,1,3,-1</line>
-		</shape>		
-	</gate>	
-	<gate>
-		<name>HT_SMCROSS_GATE_UP</name>
-		<caption>Small Cross Wire</caption>
-		<logic_type>NODE</logic_type>
-		<gui_type>WIRE</gui_type>
-		<input> <name>N_IN0</name>
-				  <point>-1.5,-0.5</point> 
-		</input>
-		<input> <name>N_IN1</name>
-				  <point>1.5,0.5</point> 
-		</input>
-		<shape>
-			<line>-1.5,-0.5,1.5,0.5</line>
-		</shape>		
-	</gate>
-	<gate>
-		<name>HT_SMCROSS_GATE_DOWN</name>
-		<caption>Small Cross Wire</caption>
-		<logic_type>NODE</logic_type>		
-		<gui_type>WIRE</gui_type>
-		<input> <name>N_IN0</name>
-				  <point>-1.5,0.5</point> 
-		</input>
-		<input> <name>N_IN1</name>
-				  <point>1.5,-0.5</point> 
-		</input>
-		<shape>
-			<line>-1.5,0.5,1.5,-0.5</line>
-		</shape>		
-	</gate>
-	<gate> <name>MV_04x1_BUSEND</name>
-		<caption>4x1 Bus End</caption>
-    <logic_type>BUSEND</logic_type>
-	<gui_type>BUSEND</gui_type>
-    <logic_param>INPUT_BITS 4</logic_param>
-	<input> 
-      <name>IN_0</name>
-		  <point>-1,-3</point> 
-		</input>
-	<input> 
-      <name>IN_1</name>
-		  <point>-1,-2</point> 
-		</input>
-	<input> 
-      <name>IN_2</name>
-		  <point>-1,-1</point> 
-		</input>
-    <input> 
-      <name>IN_3</name>
-		  <point>-1,0</point> 
-		</input>
-    <input> 
-      <name>CNA</name>
-		  <point>0,0</point>
-      <bus>4</bus>
-	</input>
-    <input> 
-    <name>CNB</name>
-		  <point>0,-3</point>
-      <bus>4</bus>
-	</input>	
-		<shape>
-   
-      # inputs
-      <line>-1,0,0,0</line>
-	  <line>-1,-1,0,-1</line>
-	  <line>-1,-2,0,-2</line>
-	  <line>-1,-3,0,-3</line>
-
-	  # bus
-	  <busline>0,0,0,-3</busline>
-	  
-	  <circle>-0.5,-3.4,0.2,24</circle>
-	</shape>
-	</gate>
-	<gate> <name>MV_08x1_BUSEND</name>
-		<caption>8x1 Bus End</caption>
-    <logic_type>BUSEND</logic_type>
-	<gui_type>BUSEND</gui_type>
-    <logic_param>INPUT_BITS 8</logic_param>
-	<input> 
-      <name>IN_0</name>
-		  <point>-1,-7</point> 
-		</input>
-	<input> 
-      <name>IN_1</name>
-		  <point>-1,-6</point> 
-		</input>
-	<input> 
-      <name>IN_2</name>
-		  <point>-1,-5</point> 
-		</input>
-    <input> 
-      <name>IN_3</name>
-		  <point>-1,-4</point> 
-		</input>
-	<input> 
-      <name>IN_4</name>
-		  <point>-1,-3</point> 
-		</input>
-	<input> 
-      <name>IN_5</name>
-		  <point>-1,-2</point> 
-		</input>
-	<input> 
-      <name>IN_6</name>
-		  <point>-1,-1</point> 
-		</input>
-    <input> 
-      <name>IN_7</name>
-		  <point>-1,0</point> 
-		</input>		
-    <input> 
-      <name>CNA</name>
-		  <point>0,0</point>
-      <bus>8</bus>
-	</input>
-    <input> 
-    <name>CNB</name>
-		  <point>0,-7</point>
-      <bus>8</bus>
-	</input>	
-		<shape>
-   
-      # inputs
-      <line>-1,0,0,0</line>
-	  <line>-1,-1,0,-1</line>
-	  <line>-1,-2,0,-2</line>
-	  <line>-1,-3,0,-3</line>
-	  <line>-1,-4,0,-4</line>
-	  <line>-1,-5,0,-5</line>
-	  <line>-1,-6,0,-6</line>
-	  <line>-1,-7,0,-7</line>
-
-	  # bus
-	  <busline>0,0,0,-7</busline>
-	  
-	  <circle>-0.5,-7.4,0.2,24</circle>
-      
-	</shape>
-	</gate>
-	<gate> <name>MV_12x1_BUSEND</name>
-		<caption>12x1 Bus End</caption>
-    <logic_type>BUSEND</logic_type>
-	<gui_type>BUSEND</gui_type>
-    <logic_param>INPUT_BITS 12</logic_param>
-	<input> 
-      <name>IN_0</name>
-		  <point>-1,-11</point> 
-		</input>
-	<input> 
-      <name>IN_1</name>
-		  <point>-1,-10</point> 
-		</input>
-	<input> 
-      <name>IN_2</name>
-		  <point>-1,-9</point> 
-		</input>
-    <input> 
-      <name>IN_3</name>
-		  <point>-1,-8</point> 
-		</input>
-	<input> 
-      <name>IN_4</name>
-		  <point>-1,-7</point> 
-		</input>
-	<input> 
-      <name>IN_5</name>
-		  <point>-1,-6</point> 
-		</input>
-	<input> 
-      <name>IN_6</name>
-		  <point>-1,-5</point> 
-		</input>
-    <input> 
-      <name>IN_7</name>
-		  <point>-1,-4</point> 
-		</input>
-	<input> 
-      <name>IN_8</name>
-		  <point>-1,-3</point> 
-		</input>
-	<input> 
-      <name>IN_9</name>
-		  <point>-1,-2</point> 
-		</input>
-	<input> 
-      <name>IN_10</name>
-		  <point>-1,-1</point> 
-		</input>
-    <input> 
-      <name>IN_11</name>
-		  <point>-1,-0</point> 
-		</input>		
-    <input> 
-      <name>CNA</name>
-		  <point>0,0</point>
-      <bus>16</bus>
-	</input>
-    <input> 
-    <name>CNB</name>
-		  <point>0,-11</point>
-      <bus>16</bus>
-	</input>	
-		<shape>
-   
-      # inputs
-      <line>-1,0,0,0</line>
-	  <line>-1,-1,0,-1</line>
-	  <line>-1,-2,0,-2</line>
-	  <line>-1,-3,0,-3</line>
-	  <line>-1,-4,0,-4</line>
-	  <line>-1,-5,0,-5</line>
-	  <line>-1,-6,0,-6</line>
-	  <line>-1,-7,0,-7</line>
-      <line>-1,-8,0,-8</line>
-	  <line>-1,-9,0,-9</line>
-	  <line>-1,-10,0,-10</line>
-	  <line>-1,-11,0,-11</line>
-	  
-	  # bus
-	  <busline>0,0,0,-11</busline>
-	  
-	  <circle>-0.5,-11.4,0.2,24</circle>
-
-		</shape>
-	</gate>	
-	<gate> <name>MV_16x1_BUSEND</name>
-		<caption>16x1 Bus End</caption>
-    <logic_type>BUSEND</logic_type>
-	<gui_type>BUSEND</gui_type>
-    <logic_param>INPUT_BITS 16</logic_param>
-	<input> 
-      <name>IN_0</name>
-		  <point>-1,-15</point> 
-		</input>
-	<input> 
-      <name>IN_1</name>
-		  <point>-1,-14</point> 
-		</input>
-	<input> 
-      <name>IN_2</name>
-		  <point>-1,-13</point> 
-		</input>
-    <input> 
-      <name>IN_3</name>
-		  <point>-1,-12</point> 
-		</input>
-	<input> 
-      <name>IN_4</name>
-		  <point>-1,-11</point> 
-		</input>
-	<input> 
-      <name>IN_5</name>
-		  <point>-1,-10</point> 
-		</input>
-	<input> 
-      <name>IN_6</name>
-		  <point>-1,-9</point> 
-		</input>
-    <input> 
-      <name>IN_7</name>
-		  <point>-1,-8</point> 
-		</input>
-	<input> 
-      <name>IN_8</name>
-		  <point>-1,-7</point> 
-		</input>
-	<input> 
-      <name>IN_9</name>
-		  <point>-1,-6</point> 
-		</input>
-	<input> 
-      <name>IN_10</name>
-		  <point>-1,-5</point> 
-		</input>
-    <input> 
-      <name>IN_11</name>
-		  <point>-1,-4</point> 
-		</input>		
-	<input> 
-      <name>IN_12</name>
-		  <point>-1,-3</point> 
-		</input>
-	<input> 
-      <name>IN_13</name>
-		  <point>-1,-2</point> 
-		</input>
-	<input> 
-      <name>IN_14</name>
-		  <point>-1,-1</point> 
-		</input>
-    <input> 
-      <name>IN_15</name>
-		  <point>-1,0</point> 
-		</input>		
-    <input> 
-      <name>CNA</name>
-		  <point>0,0</point>
-      <bus>16</bus>
-	</input>
-    <input> 
-    <name>CNB</name>
-		  <point>0,-15</point>
-      <bus>16</bus>
-	</input>	
-		<shape>
-   
-      # inputs
-      <line>-1,0,0,0</line>
-	  <line>-1,-1,0,-1</line>
-	  <line>-1,-2,0,-2</line>
-	  <line>-1,-3,0,-3</line>
-	  <line>-1,-4,0,-4</line>
-	  <line>-1,-5,0,-5</line>
-	  <line>-1,-6,0,-6</line>
-	  <line>-1,-7,0,-7</line>
-      <line>-1,-8,0,-8</line>
-	  <line>-1,-9,0,-9</line>
-	  <line>-1,-10,0,-10</line>
-	  <line>-1,-11,0,-11</line>
-	  <line>-1,-12,0,-12</line>
-	  <line>-1,-13,0,-13</line>
-	  <line>-1,-14,0,-14</line>
-	  <line>-1,-15,0,-15</line>
-	  
-	  # bus
-	  <busline>0,0,0,-15</busline>
-	  
-	  <circle>-0.5,-15.4,0.2,24</circle>
-      
-		</shape>
-	</gate>
-	<gate> <name>TA_SMALL_TGATE</name>
+	<gate> <name>TA_TGATE</name>
 #NOTE: Needs a large t-gate shape?
 		<caption>T-Gate</caption>
 		<input> <name>T_IN</name>
@@ -5475,9 +4817,8 @@
 			<line>1,0,2,0</line>
 		</shape>
 		<logic_type>TGATE</logic_type>
-		<logic_param>DEFAULT_DELAY 1</logic_param>
 	</gate>
-	<gate> <name>TE_SMALL_TGATE_LOW</name>
+	<gate> <name>TE_TGATE_LOW</name>
 		<caption>T-Gate - Low Active</caption>
 		<input> <name>T_IN</name>
 		          <point>-2,0</point> 
@@ -5506,12 +4847,10 @@
 			<circle>0,0.9,0.35,24</circle>
 		</shape>
 		<logic_type>TGATE</logic_type>
-		<logic_param>DEFAULT_DELAY 1</logic_param>
 	</gate>
 	<gate> <name>VA_NMOS</name>
 		<caption>Simplified nMOS Transistor</caption>
 		<logic_type>TGATE</logic_type>
-		<logic_param>DEFAULT_DELAY 1</logic_param>
 		<input> <name>T_IN</name>
 		          <point>-1,-1</point> 
 		</input>
@@ -5534,8 +4873,7 @@
 	</gate>
 	<gate> <name>VE_PMOS</name>
 		<caption>Simplified pMOS Transistor</caption>
-		<logic_type>TGATE</logic_type>
-		<logic_param>DEFAULT_DELAY 1</logic_param>
+		<logic_type>TGATE</logic_type>		
 		<input> <name>T_IN</name>
 		          <point>-1,-1</point> 
 		</input>
@@ -8068,20 +7406,13 @@
       <name>VALID</name>
       <point>3,1.5</point>
     </output>
-	<logic_param>PRIORITY true</logic_param>
-	<logic_param>PRIORITY_HIGH true</logic_param>
+	<logic_param>PRIORITY high</logic_param>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Priority</label>
+				<type>OPTION</type>
+				<label>Priority type</label>
 				<varname>LOGIC PRIORITY</varname>
-			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Priority high</label>
-				<varname>LOGIC PRIORITY_HIGH</varname>
+				<options>none low high</options>
 			</param>
 		</param_dlg_data>
 		<shape>
@@ -8151,22 +7482,15 @@
       <name>VALID</name>
       <point>3,2.5</point>
     </output>
-	<logic_param>PRIORITY true</logic_param>
-	<logic_param>PRIORITY_HIGH true</logic_param>
+	<logic_param>PRIORITY high</logic_param>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Priority</label>
+				<type>OPTION</type>
+				<label>Priority type</label>
 				<varname>LOGIC PRIORITY</varname>
+				<options>none low high</options>
 			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Priority high</label>
-				<varname>LOGIC PRIORITY_HIGH</varname>
-			</param>
-		</param_dlg_data>
+		</param_dlg_data>		
 		<shape>
 #     		body
 			<outline>-2,3.5,2,3.5</outline>
@@ -8241,22 +7565,15 @@
       <name>VALID</name>
       <point>3,2.5</point>
     </output>
-	<logic_param>PRIORITY true</logic_param>
-	<logic_param>PRIORITY_HIGH true</logic_param>
+	<logic_param>PRIORITY high</logic_param>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Priority</label>
+				<type>OPTION</type>
+				<label>Priority type</label>
 				<varname>LOGIC PRIORITY</varname>
+				<options>none low high</options>
 			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Priority high</label>
-				<varname>LOGIC PRIORITY_HIGH</varname>
-			</param>
-		</param_dlg_data>
+		</param_dlg_data>		
 		<shape>
 #     		body
 			<outline>-2,3.5,2,3.5</outline>
@@ -8350,22 +7667,15 @@
     <name>VALID</name>
     <point>3,3.5</point>
   </output>
-	<logic_param>PRIORITY true</logic_param>
-	<logic_param>PRIORITY_HIGH true</logic_param>
+	<logic_param>PRIORITY high</logic_param>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Priority</label>
+				<type>OPTION</type>
+				<label>Priority type</label>
 				<varname>LOGIC PRIORITY</varname>
+				<options>none low high</options>
 			</param>
 		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Priority high</label>
-				<varname>LOGIC PRIORITY_HIGH</varname>
-			</param>
-		</param_dlg_data>  
   
   <shape>
     #     body
@@ -8465,22 +7775,15 @@
     <name>ENABLE</name>
     <point>-3,4.5</point>
   </input>
-	<logic_param>PRIORITY true</logic_param>
-	<logic_param>PRIORITY_HIGH true</logic_param>
+	<logic_param>PRIORITY high</logic_param>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Priority</label>
+				<type>OPTION</type>
+				<label>Priority type</label>
 				<varname>LOGIC PRIORITY</varname>
+				<options>none low high</options>
 			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Priority high</label>
-				<varname>LOGIC PRIORITY_HIGH</varname>
-			</param>
-		</param_dlg_data>  
+		</param_dlg_data>		
   
   <shape>
     #     body
@@ -8587,22 +7890,15 @@
     <point>-3,4.5</point>
 	<inverted>true</inverted>
   </input>
-	<logic_param>PRIORITY true</logic_param>
-	<logic_param>PRIORITY_HIGH true</logic_param>
+	<logic_param>PRIORITY high</logic_param>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Priority</label>
+				<type>OPTION</type>
+				<label>Priority type</label>
 				<varname>LOGIC PRIORITY</varname>
+				<options>none low high</options>
 			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Priority high</label>
-				<varname>LOGIC PRIORITY_HIGH</varname>
-			</param>
-		</param_dlg_data>  
+		</param_dlg_data>		
   
   <shape>
     #     body
@@ -8742,22 +8038,16 @@
     <name>VALID</name>
     <point>3,7.5</point>
   </output>   
-	<logic_param>PRIORITY true</logic_param>
-	<logic_param>PRIORITY_HIGH true</logic_param>
+	<logic_param>PRIORITY high</logic_param>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Priority</label>
+				<type>OPTION</type>
+				<label>Priority type</label>
 				<varname>LOGIC PRIORITY</varname>
+				<options>none low high</options>
 			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Priority high</label>
-				<varname>LOGIC PRIORITY_HIGH</varname>
-			</param>
-		</param_dlg_data>  
+		</param_dlg_data>		
+		
   <shape>
     #     body
     <outline>-2,8.5,2,8.5</outline>
@@ -8905,22 +8195,16 @@
     <name>ENABLE</name>
     <point>-3,8.5</point>
   </input>
-	<logic_param>PRIORITY true</logic_param>
-	<logic_param>PRIORITY_HIGH true</logic_param>
+	<logic_param>PRIORITY high</logic_param>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Priority</label>
+				<type>OPTION</type>
+				<label>Priority type</label>
 				<varname>LOGIC PRIORITY</varname>
+				<options>none low high</options>
 			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Priority high</label>
-				<varname>LOGIC PRIORITY_HIGH</varname>
-			</param>
-		</param_dlg_data>  
+		</param_dlg_data>		
+		
   <shape>
     #     body
     <outline>-2,9.5,2,9.5</outline>
@@ -9076,22 +8360,16 @@
     <point>-3,8.5</point>
 	<inverted>true</inverted>
   </input>
-	<logic_param>PRIORITY true</logic_param>
-	<logic_param>PRIORITY_HIGH true</logic_param>
+	<logic_param>PRIORITY high</logic_param>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Priority</label>
+				<type>OPTION</type>
+				<label>Priority type</label>
 				<varname>LOGIC PRIORITY</varname>
+				<options>none low high</options>
 			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Priority high</label>
-				<varname>LOGIC PRIORITY_HIGH</varname>
-			</param>
-		</param_dlg_data>  
+		</param_dlg_data>		
+		
   <shape>
     #     body
     <outline>-2,9.5,2,9.5</outline>
@@ -10284,7 +9562,7 @@
 
 		</shape>
 	</gate>
-	<gate> <name>A2_SRLATCH_CNT</name>
+	<gate> <name>A2_SRLATCH_CONTROL</name>
 		<caption>SR Latch wiht Control input</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
@@ -10349,7 +9627,7 @@
 
 		</shape>
 	</gate>
-	<gate> <name>A3_SRLATCH_CNT_LOW</name>
+	<gate> <name>A3_SRLATCH_LOW_CONTROL</name>
 		<caption>SR Latch wiht Control input - Low Active Inputs</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
@@ -10418,7 +9696,7 @@
 			
 		</shape>
 	</gate>
-	<gate> <name>A4_SRLATCH_CNT</name>
+	<gate> <name>A4_SRLATCH_CONTROL_LOW</name>
 		<caption>SR Latch wiht low active Control input</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
@@ -10485,7 +9763,7 @@
 			<text>-1.4,0,C</text>
 		</shape>
 	</gate>
-	<gate> <name>A5_SRLATCH_CNT_LOW</name>
+	<gate> <name>A5_SRLATCH_LOW_CONTROL_LOW</name>
 		<caption>SR Latch wiht low active Control input - Low Active Inputs</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 1</logic_param>
@@ -10900,11 +10178,17 @@
 		<output> <name>OUT_0</name>
 		          <point>3,2</point> 
 		</output>
+		
+#		QNOT
+		<output> <name>OUTINV_0</name>
+		          <point>3,-2</point> 
+		</output>
 
 		<shape>
 #			body
 			<outline>2,3,-2,3</outline>
 			<outline>-2,3,-2,-3</outline>
+			<line>2,-2,3,-2</line>
 			<outline>-2,-3,2,-3</outline>
 			<outline>2,-3,2,3</outline>
 
@@ -10923,6 +10207,9 @@
 
 #			Q
 			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
 	
 #			CL
 			<text>0,-2.5,$C$L</text>
@@ -11355,6 +10642,11 @@
 		<output> <name>Q</name>
 		          <point>3,2</point> 
 		</output>
+
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
 		
 		<shape>
 #			boby
@@ -11370,6 +10662,7 @@
 			<line>-2,2,-3,2</line>		
 			<line>-2,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
 			<line>0,-3,0,-4</line>
 
@@ -11381,6 +10674,9 @@
 
 #			Q
 			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
 
 #			CL
 			<text>0,-2.5,$C$L</text>
@@ -12254,8 +11550,8 @@
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 2</logic_param>
 		<logic_param>MAX_COUNT 3</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
-		<logic_param>SYNC_LOAD false</logic_param>
+		<logic_param>SYNC_CLEAR true</logic_param>
+		<logic_param>SYNC_LOAD true</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-1.3,0.8,1.3</gui_param>
 		
@@ -13677,10 +12973,15 @@
 		<logic_param>NO_HOLD true</logic_param>
 		<logic_param>INPUT_BITS 1</logic_param>
 		<logic_param>MAX_COUNT 1</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
+		<logic_param>SYNC_CLEAR true</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-1.3,0.8,1.3</gui_param>
 		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Synchronous Reset Pin</label>
+				<varname>LOGIC SYNC_CLEAR</varname>
+			</param>
 			<param>
 				<type>BOOL</type>
 				<label>Hide display</label>
@@ -13826,10 +13127,15 @@
 		<logic_param>NO_HOLD true</logic_param>
 		<logic_param>INPUT_BITS 4</logic_param>
 		<logic_param>MAX_COUNT 15</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
+		<logic_param>SYNC_CLEAR true</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -0.8,-1.3,.8,1.3</gui_param>
 		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Synchronous Reset Pin</label>
+				<varname>LOGIC SYNC_CLEAR</varname>
+			</param>
 			<param>
 				<type>BOOL</type>
 				<label>Hide display</label>
@@ -13934,10 +13240,15 @@
 		<logic_param>NO_HOLD true</logic_param>
 		<logic_param>INPUT_BITS 8</logic_param>
 		<logic_param>MAX_COUNT 255</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
+		<logic_param>SYNC_CLEAR true</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -1.4,-1.3,1.4,1.3</gui_param>
 		<param_dlg_data>
+			<param>
+				<type>BOOL</type>
+				<label>Synchronous Reset Pin</label>
+				<varname>LOGIC SYNC_CLEAR</varname>
+			</param>
 			<param>
 				<type>BOOL</type>
 				<label>Hide display</label>
@@ -14698,8 +14009,8 @@
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 8</logic_param>
 		<logic_param>MAX_COUNT 255</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
-		<logic_param>SYNC_LOAD false</logic_param>
+		<logic_param>SYNC_CLEAR true</logic_param>
+		<logic_param>SYNC_LOAD true</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>VALUE_BOX -1.6,-1.3,1.6,1.3</gui_param>
 
@@ -14929,7 +14240,7 @@
 #		<caption>16-Bit Shift Register (TODO)</caption>
 #	</gate>
 </library>
-<library> <name> 09  - ROM, RAM & LUT</name>
+<library> <name> 09  - ROM & RAM</name>
 	<gate> <name>BA_ROM_4x4</name>
 		<caption>4x4 ROM</caption>
 		<logic_type>RAM</logic_type>
@@ -14964,9 +14275,12 @@
 		          <point>-5,1.5</point> 
 		</input>
 		
-#		Misc Inputs OE
+#		Misc Inputs OE,CS
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>5,0</point> 
+		          <point>5,0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>5,-0.5</point> 
 		</input>
 
 #		Data Out
@@ -15007,13 +14321,16 @@
 			<line>-1.5,-4,-1.5,-5</line>
 
 #			Other Inputs
-			<line>5,0,4,0</line>
+			<line>5,0.5,4,0.5</line>
+			<line>5,-0.5,4,-0.5</line>
 
 #			ROM
 			<text>0,0,ROM</text>
 			
+#			CS
+			<text>3.4,-0.5,CS</text>			
 #			OE
-			<text>3.4,0,OE</text>
+			<text>3.4,0.5,OE</text>
 			
 #			A0
 			<text>-3.4,-1.5,A_0</text>
@@ -15075,11 +14392,14 @@
 		          <point>-6,1.5</point> 
 		</input>
 		
-#		Misc Inputs OE
+#		Misc Inputs OE,CS
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>6,0</point> 
+		          <point>6,0.5</point> 
 		</input>
-
+		<input> <name>ENABLE</name>
+		          <point>6,-0.5</point> 
+		</input>
+		
 #		Data Out
 		<output> <name>DATA_OUT_0</name>
 		          <point>3.5,-5</point> 
@@ -15138,13 +14458,16 @@
 			<line>-3.5,-4,-3.5,-5</line>			
 
 #			Other Inputs
-			<line>5,0,6,0</line>
+			<line>5,0.5,6,0.5</line>
+			<line>5,-0.5,6,-0.5</line>
 
 #			ROM
 			<text>0,0,ROM</text>
 			
+#			CS
+			<text>4.4,-0.5,CS</text>			
 #			OE
-			<text>4.4,0,OE</text>
+			<text>4.4,0.5,OE</text>
 			
 #			A0
 			<text>-4.4,-1.5,A_0</text>
@@ -15230,9 +14553,12 @@
 		          <point>-6,3.5</point> 
 		</input>
 
-#		Misc Inputs OE
+#		Misc Inputs OE,CS
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>6,0</point> 
+		          <point>6,0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>6,-0.5</point> 
 		</input>
 
 #		Data Out
@@ -15297,13 +14623,16 @@
 			<line>3.5,-6,3.5,-7</line>
 
 #			Other Inputs
-			<line>5,0,6,0</line>
+			<line>5,0.5,6,0.5</line>
+			<line>5,-0.5,6,-0.5</line>
 
 #			ROM
 			<text>0,0,ROM</text>
 			
+#			CS
+			<text>4.4,-0.5,CS</text>			
 #			OE
-			<text>4.4,0,OE</text>
+			<text>4.4,0.5,OE</text>
 			
 #			A0
 			<text>-4.4,-3.5,A_0</text>
@@ -15414,9 +14743,12 @@
 		</input>
 
 
-#		Misc Inputs OE
+#		Misc Inputs OE,CS
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>10,0</point> 
+		          <point>10,0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>10,-0.5</point> 
 		</input>
 
 #		Data Out
@@ -15525,13 +14857,16 @@
 			<line>-0.5,-10,-0.5,-11</line>
 
 #			Other Inputs
-			<line>10,0,9,0</line>
+			<line>10,0.5,9,0.5</line>
+			<line>10,-0.5,9,-0.5</line>
 
 #			ROM
 			<text>0,0,ROM</text>
 			
+#			CS
+			<text>8.4,-0.5,CS</text>			
 #			OE
-			<text>8.4,0,OE</text>
+			<text>8.4,0.5,OE</text>
 			
 #			A0
 			<text>-8.2,-5.5,A_0</text>
@@ -15617,9 +14952,12 @@
 		          <point>-10,7.5</point> 
 		</input>
 
-#		Misc Inputs OE
+#		Misc Inputs OE,CS
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>10,0</point> 
+		          <point>10,0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>10,-0.5</point> 
 		</input>
 
 #		Data Out
@@ -15732,13 +15070,16 @@
 			<line>-0.5,-10,-0.5,-11</line>
 
 #			Other Inputs
-			<line>10,0,9,0</line>
+			<line>10,0.5,9,0.5</line>
+			<line>10,-0.5,9,-0.5</line>
 
 #			ROM
 			<text>0,0,ROM</text>
 			
+#			CS
+			<text>8.4,-0.5,CS</text>			
 #			OE
-			<text>8.4,0,OE</text>
+			<text>8.4,0.5,OE</text>
 			
 #			A0
 			<text>-8.2,-7.5,A_0</text>
@@ -15789,15 +15130,18 @@
 		          <point>-5,1.5</point> 
 		</input>
 		
-#		Misc Inputs CL,W,OE
+#		Misc Inputs CL,WR,OE,CS
 		<input> <name>WRITE_CLOCK</name>
-		          <point>5,1</point> 
+		          <point>5,1.5</point> 
 		</input>
 		<input> <name>WRITE_ENABLE</name>
-		          <point>5,0</point> 
+		          <point>5,0.5</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>5,-1</point> 
+		          <point>5,-0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>5,-1.5</point> 
 		</input>
 
 #		Data Out
@@ -15838,21 +15182,24 @@
 			<line>-1.5,-4,-1.5,-5</line>
 
 #			Other Inputs
-			<line>5,1,4,1</line>
-			<line>5,0,4,0</line>
-			<line>5,-1,4,-1</line>
+			<line>5,1.5,4,1.5</line>
+			<line>5,0.5,4,0.5</line>
+			<line>5,-0.5,4,-0.5</line>
+			<line>5,-1.5,4,-1.5</line>
 
 #			CLOCK
-			<line>4,0.5,3,1</line>
-			<line>4,1.5,3,1</line>
+			<line>4,1,3,1.5</line>
+			<line>4,2,3,1.5</line>
 
 #			RAM
 			<text>0,0,RAM</text>
 			
+#			CS
+			<text>3.4,-1.5,CS</text>
 #			OE
-			<text>3.4,-1,OE</text>
-#			W
-			<text>3.4,0,W</text>
+			<text>3.4,-0.5,OE</text>			
+#			WR
+			<text>3.4,0.5,WR</text>
 			
 #			A0
 			<text>-3.4,-1.5,A_0</text>
@@ -15915,15 +15262,18 @@
 		          <point>-6,1.5</point> 
 		</input>
 		
-#		Misc Inputs CL,W,OE
+#		Misc Inputs CL,WR,OE,CS
 		<input> <name>WRITE_CLOCK</name>
-		          <point>6,1</point> 
+		          <point>6,1.5</point> 
 		</input>
 		<input> <name>WRITE_ENABLE</name>
-		          <point>6,0</point> 
+		          <point>6,0.5</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>6,-1</point> 
+		          <point>6,-0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>6,-1.5</point> 
 		</input>
 
 #		Data Out
@@ -15984,22 +15334,24 @@
 			<line>-3.5,-4,-3.5,-5</line>			
 
 #			Other Inputs
-			<line>5,1,6,1</line>
-			<line>5,0,6,0</line>
-			<line>5,-1,6,-1</line>
+			<line>5,1.5,6,1.5</line>
+			<line>5,0.5,6,0.5</line>
+			<line>5,-0.5,6,-0.5</line>
+			<line>5,-1.5,6,-1.5</line>
 			
 #			CLOCK
-			<line>4,0.5,5,1</line>
-			<line>4,1.5,5,1</line>
+			<line>5,1,4,1.5</line>
+			<line>5,2,4,1.5</line>
 
 #			RAM
 			<text>0,0,RAM</text>
 			
+#			CS
+			<text>4.4,-1.5,CS</text>
 #			OE
-			<text>4.4,-1.5,OE</text>
-			
-#			W
-			<text>4.4,0,W</text>			
+			<text>4.4,-0.5,OE</text>		
+#			WR
+			<text>4.4,0.5,WR</text>			
 			
 #			A0
 			<text>-4.4,-1.5,A_0</text>
@@ -16086,15 +15438,18 @@
 		          <point>-6,3.5</point> 
 		</input>
 
-#		Misc Inputs CL,W,OE
+#		Misc Inputs CL,WR,OE,CS
 		<input> <name>WRITE_CLOCK</name>
-		          <point>6,1</point> 
+		          <point>6,1.5</point> 
 		</input>
 		<input> <name>WRITE_ENABLE</name>
-		          <point>6,0</point> 
+		          <point>6,0.5</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>6,-1</point> 
+		          <point>6,-0.5</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>6,-1.5</point> 
 		</input>
 
 #		Data Out
@@ -16159,22 +15514,24 @@
 			<line>3.5,-6,3.5,-7</line>
 
 #			Other Inputs
-			<line>5,1,6,1</line>
-			<line>5,0,6,0</line>
-			<line>5,-1,6,-1</line>
-
+			<line>5,1.5,6,1.5</line>
+			<line>5,0.5,6,0.5</line>
+			<line>5,-0.5,6,-0.5</line>
+			<line>5,-1.5,6,-1.5</line>
+			
 #			CLOCK
-			<line>5,1.5,4,1</line>
-			<line>5,0.5,4,1</line>
+			<line>5,1,4,1.5</line>
+			<line>5,2,4,1.5</line>
 
 #			RAM
 			<text>0,0,RAM</text>
 			
+#			CS
+			<text>4.4,-1.5,CS</text>
 #			OE
-			<text>4.4,-1,OE</text>
-			
-#			W
-			<text>4.4,0,W</text>
+			<text>4.4,-0.5,OE</text>		
+#			WR
+			<text>4.4,0.5,WR</text>			
 			
 #			A0
 			<text>-4.4,-3.5,A_0</text>
@@ -16285,16 +15642,19 @@
 		          <point>-10,5.5</point> 
 		</input>
 
-#		Misc Inputs CL,W,OE
+#		Misc Inputs CL,WR,OE,CS
 		<input> <name>WRITE_CLOCK</name>
-		          <point>10,1</point> 
+		          <point>10,1.5</point> 
 		</input>
 		<input> <name>WRITE_ENABLE</name>
-		          <point>10,0</point> 
+		          <point>10,0.5</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>10,-1</point> 
+		          <point>10,-0.5</point> 
 		</input>
+		<input> <name>ENABLE</name>
+		          <point>10,-1.5</point> 
+		</input>		
 
 #		Data Out
 		<output> <name>DATA_OUT_0</name>
@@ -16402,22 +15762,24 @@
 			<line>-0.5,-10,-0.5,-11</line>
 
 #			Other Inputs
-			<line>10,1,9,1</line>
-			<line>10,0,9,0</line>
-			<line>10,-1,9,-1</line>
-
+			<line>10,1.5,9,1.5</line>
+			<line>10,0.5,9,0.5</line>
+			<line>10,-0.5,9,-0.5</line>
+			<line>10,-1.5,9,-1.5</line>
+			
 #			CLOCK
-			<line>9,1.5,8,1</line>
-			<line>9,0.5,8,1</line>
+			<line>9,1,8,1.5</line>
+			<line>9,2,8,1.5</line>
 
 #			RAM
 			<text>0,0,RAM</text>
 			
+#			CS
+			<text>8.4,-1.5,CS</text>
 #			OE
-			<text>8.4,-1,OE</text>
-			
-#			W
-			<text>8.4,0,W</text>
+			<text>8.4,-0.5,OE</text>		
+#			WR
+			<text>8.4,0.5,WR</text>			
 			
 #			A0
 			<text>-8.2,-5.5,A_0</text>
@@ -16504,16 +15866,19 @@
 		          <point>-10,7.5</point> 
 		</input>
 
-#		Misc Inputs CL,W,OE
+#		Misc Inputs CL,WR,OE,CS
 		<input> <name>WRITE_CLOCK</name>
-		          <point>10,1</point> 
+		          <point>10,1.5</point> 
 		</input>
 		<input> <name>WRITE_ENABLE</name>
-		          <point>10,0</point> 
+		          <point>10,0.5</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>10,-1</point> 
+		          <point>10,-0.5</point> 
 		</input>
+		<input> <name>ENABLE</name>
+		          <point>10,-1.5</point> 
+		</input>		
 
 #		Data Out
 		<output> <name>DATA_OUT_0</name>
@@ -16625,23 +15990,25 @@
 			<line>-0.5,-10,-0.5,-11</line>
 
 #			Other Inputs
-			<line>10,1,9,1</line>
-			<line>10,0,9,0</line>
-			<line>10,-1,9,-1</line>
-
+			<line>10,1.5,9,1.5</line>
+			<line>10,0.5,9,0.5</line>
+			<line>10,-0.5,9,-0.5</line>
+			<line>10,-1.5,9,-1.5</line>
+			
 #			CLOCK
-			<line>9,1.5,8,1</line>
-			<line>9,0.5,8,1</line>
-
+			<line>9,1,8,1.5</line>
+			<line>9,2,8,1.5</line>
+			
 #			RAM
 			<text>0,0,RAM</text>
 			
+#			CS
+			<text>8.4,-1.5,CS</text>
 #			OE
-			<text>8.4,-1,OE</text>
-			
-#			W
-			<text>8.4,0,W</text>
-			
+			<text>8.4,-0.5,OE</text>		
+#			WR
+			<text>8.4,0.5,WR</text>			
+
 #			A0
 			<text>-8.2,-7.5,A_0</text>
 			
@@ -16692,12 +16059,15 @@
 		          <point>-5,1.5</point> 
 		</input>
 		
-#		Misc Inputs W,OE
+#		Misc Inputs WR,OE,CS
 		<input> <name>WRITE_ENABLE</name>
-		          <point>5,0.5</point> 
+		          <point>5,1</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>5,-0.5</point> 
+		          <point>5,0</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>5,-1</point> 
 		</input>
 
 #		Data Out
@@ -16738,17 +16108,21 @@
 			<line>-1.5,-4,-1.5,-5</line>
 
 #			Other Inputs
-			<line>5,0.5,4,0.5</line>
-			<line>5,-0.5,4,-0.5</line>
+			<line>5,1,4,1</line>
+			<line>5,0,4,0</line>
+			<line>5,-1,4,-1</line>
 
 #			RAM
 			<text>0,0,RAM</text>
 			
-#			OE
-			<text>3.4,-0.5,OE</text>
+#			CS
+			<text>3.4,-1,CS</text>
 			
-#			W
-			<text>3.4,0.5,W</text>
+#			OE
+			<text>3.4,0,OE</text>
+			
+#			WR
+			<text>3.4,1,WR</text>
 			
 #			A0
 			<text>-3.4,-1.5,A_0</text>
@@ -16810,15 +16184,18 @@
 		<input> <name>ADDRESS_3</name>
 		          <point>-6,1.5</point> 
 		</input>
-		
-#		Misc Inputs W,OE
+
+#		Misc Inputs WR,OE,CS
 		<input> <name>WRITE_ENABLE</name>
-		          <point>6,0.5</point> 
+		          <point>6,1</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>6,-0.5</point> 
+		          <point>6,0</point> 
 		</input>
-
+		<input> <name>ENABLE</name>
+		          <point>6,-1</point> 
+		</input>
+		
 #		Data Out
 		<output> <name>DATA_OUT_0</name>
 		          <point>3.5,-5</point> 
@@ -16877,17 +16254,21 @@
 			<line>-3.5,-4,-3.5,-5</line>			
 
 #			Other Inputs
-			<line>5,0.5,6,0.5</line>
-			<line>5,-0.5,6,-0.5</line>
+			<line>5,1,6,1</line>
+			<line>5,0,6,0</line>
+			<line>5,-1,6,-1</line>
 
 #			RAM
 			<text>0,0,RAM</text>
+
+#			CS
+			<text>4.4,-1,CS</text>
 			
 #			OE
-			<text>4.4,-0.5,OE</text>
+			<text>4.4,-0,OE</text>
 			
-#			W
-			<text>4.4,0.5,W</text>			
+#			WR
+			<text>4.4,1,WR</text>			
 			
 #			A0
 			<text>-4.4,-1.5,A_0</text>
@@ -16975,12 +16356,15 @@
 		          <point>-6,3.5</point> 
 		</input>
 
-#		Misc Inputs W,OE
+#		Misc Inputs WR,OE,CS
 		<input> <name>WRITE_ENABLE</name>
-		          <point>6,0.5</point> 
+		          <point>6,1</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>6,-0.5</point> 
+		          <point>6,0</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>6,-1</point> 
 		</input>
 
 #		Data Out
@@ -17045,17 +16429,21 @@
 			<line>3.5,-6,3.5,-7</line>
 
 #			Other Inputs
-			<line>5,0.5,6,0.5</line>
-			<line>5,-0.5,6,-0.5</line>
+			<line>5,1,6,1</line>
+			<line>5,0,6,0</line>
+			<line>5,-1,6,-1</line>
 
 #			RAM
 			<text>0,0,RAM</text>
+
+#			CS
+			<text>4.4,-1,CS</text>
 			
 #			OE
-			<text>4.4,-0.5,OE</text>
+			<text>4.4,-0,OE</text>
 			
-#			W
-			<text>4.4,0.5,W</text>
+#			WR
+			<text>4.4,1,WR</text>			
 			
 #			A0
 			<text>-4.4,-3.5,A_0</text>
@@ -17167,12 +16555,15 @@
 		          <point>-10,5.5</point> 
 		</input>
 
-#		Misc Inputs W,OE
+#		Misc Inputs WR,OE,CS
 		<input> <name>WRITE_ENABLE</name>
-		          <point>10,0.5</point> 
+		          <point>10,1</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>10,-0.5</point> 
+		          <point>10,0</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>10,-1</point> 
 		</input>
 
 #		Data Out
@@ -17281,17 +16672,21 @@
 			<line>-0.5,-10,-0.5,-11</line>
 
 #			Other Inputs
-			<line>10,0.5,9,0.5</line>
-			<line>10,-0.5,9,-0.5</line>
+			<line>10,1,9,1</line>
+			<line>10,0,9,-0</line>
+			<line>10,-1,9,-1</line>
 
 #			RAM
 			<text>0,0,RAM</text>
 			
-#			OE
-			<text>8.4,-0.5,OE</text>
+#			CS
+			<text>8.4,-1,CS</text>
 			
-#			W
-			<text>8.4,0.5,W</text>
+#			OE
+			<text>8.4,0,OE</text>
+			
+#			WR
+			<text>8.4,1,WR</text>
 			
 #			A0
 			<text>-8.2,-5.5,A_0</text>
@@ -17379,12 +16774,15 @@
 		          <point>-10,7.5</point> 
 		</input>
 
-#		Misc Inputs W,OE
+#		Misc Inputs WR,OE,CS
 		<input> <name>WRITE_ENABLE</name>
-		          <point>10,0.5</point> 
+		          <point>10,1</point> 
 		</input>
 		<input> <name>OUTPUT_ENABLE</name>
-		          <point>10,-0.5</point> 
+		          <point>10,0</point> 
+		</input>
+		<input> <name>ENABLE</name>
+		          <point>10,-1</point> 
 		</input>
 
 #		Data Out
@@ -17497,17 +16895,21 @@
 			<line>-0.5,-10,-0.5,-11</line>
 
 #			Other Inputs
-			<line>10,0.5,9,0.5</line>
-			<line>10,-0.5,9,-0.5</line>
+			<line>10,1,9,1</line>
+			<line>10,0,9,-0</line>
+			<line>10,-1,9,-1</line>
 
 #			RAM
 			<text>0,0,RAM</text>
 			
-#			OE
-			<text>8.4,-0.5,OE</text>
+#			CS
+			<text>8.4,-1,CS</text>
 			
-#			W
-			<text>8.4,0.5,W</text>
+#			OE
+			<text>8.4,0,OE</text>
+			
+#			WR
+			<text>8.4,1,WR</text>
 			
 #			A0
 			<text>-8.2,-7.5,A_0</text>
@@ -17520,581 +16922,6 @@
 			
 #			D15
 			<text>-7.5,-9.2,D_1_5</text>
-
-		</shape>
-	</gate>
-	<gate> <name>H2_LUT2</name>
-		<caption>2-inputs Lookup Table (LUT)</caption>
-		<logic_type>RAM</logic_type>
-		<gui_type>RAM</gui_type>
-		<logic_param>DATA_BITS 1</logic_param>
-		<logic_param>ADDRESS_BITS 2</logic_param>
-
-		<param_dlg_data>
-			<param>
-				<type>FILE_OUT</type>
-				<label>Save filename</label>
-				<varname>LOGIC WRITE_FILE</varname>
-			</param>
-			<param>
-				<type>FILE_IN</type>
-				<label>Load filename</label>
-				<varname>LOGIC READ_FILE</varname>
-			</param>
-		</param_dlg_data>
-
-#		Address Inputs
-		<input> <name>ADDRESS_0</name>
-		          <point>-5,-0.5</point> 
-		</input>
-		<input> <name>ADDRESS_1</name>
-		          <point>-5,0.5</point> 
-		</input>
-		
-#		Data Out
-		<output> <name>DATA_OUT_0</name>
-		          <point>5,0</point> 
-		</output>
-		
-		<shape>
-#			Box
-			<outline>-4,1.5,4,1.5</outline>
-			<outline>4,1.5,4,-1.5</outline>
-			<outline>4,-1.5,-4,-1.5</outline>
-			<outline>-4,-1.5,-4,1.5</outline>
-
-#			Address		
-			<line>-5,0.5,-4,0.5</line>
-			<line>-5,-0.5,-4,-0.5</line>
-
-#			Data Out
-			<line>5,0,4,0</line>
-
-#			LUT
-			<text>0,0,LUT</text>
-			
-#			O
-			<text>3.4,0,O</text>
-			
-#			I0
-			<text>-3.4,-0.5,I_0</text>
-			
-#			I1
-			<text>-3.4,0.5,I_1</text>
-
-		</shape>
-	</gate>
-	<gate> <name>H3_LUT3</name>
-		<caption>3-inputs Lookup Table (LUT)</caption>
-		<logic_type>RAM</logic_type>
-		<gui_type>RAM</gui_type>
-		<logic_param>DATA_BITS 1</logic_param>
-		<logic_param>ADDRESS_BITS 3</logic_param>
-
-		<param_dlg_data>
-			<param>
-				<type>FILE_OUT</type>
-				<label>Save filename</label>
-				<varname>LOGIC WRITE_FILE</varname>
-			</param>
-			<param>
-				<type>FILE_IN</type>
-				<label>Load filename</label>
-				<varname>LOGIC READ_FILE</varname>
-			</param>
-		</param_dlg_data>
-
-#		Address Inputs
-		<input> <name>ADDRESS_0</name>
-		          <point>-5,-1</point> 
-		</input>
-		<input> <name>ADDRESS_1</name>
-		          <point>-5,0</point> 
-		</input>
-		<input> <name>ADDRESS_2</name>
-		          <point>-5,1</point> 
-		</input>
-		
-#		Data Out
-		<output> <name>DATA_OUT_0</name>
-		          <point>5,0</point> 
-		</output>
-		
-		<shape>
-#			Box
-			<outline>-4,2,4,2</outline>
-			<outline>4,2,4,-2</outline>
-			<outline>4,-2,-4,-2</outline>
-			<outline>-4,-2,-4,2</outline>
-
-#			Address		
-			<line>-5,1,-4,1</line>
-			<line>-5,0,-4,0</line>
-			<line>-5,-1,-4,-1</line>
-
-#			Data Out
-			<line>5,0,4,0</line>
-
-#			LUT
-			<text>0,0,LUT</text>
-			
-#			O
-			<text>3.4,0,O</text>
-			
-#			I0
-			<text>-3.4,-1,I_0</text>
-			
-#			I1
-			<text>-3.4,0,I_1</text>
-
-#			I2
-			<text>-3.4,1,I_2</text>
-			
-		</shape>
-	</gate>
-	<gate> <name>H4_LUT4</name>
-		<caption>4-inputs Lookup Table (LUT)</caption>
-		<logic_type>RAM</logic_type>
-		<gui_type>RAM</gui_type>
-		<logic_param>DATA_BITS 1</logic_param>
-		<logic_param>ADDRESS_BITS 4</logic_param>
-
-		<param_dlg_data>
-			<param>
-				<type>FILE_OUT</type>
-				<label>Save filename</label>
-				<varname>LOGIC WRITE_FILE</varname>
-			</param>
-			<param>
-				<type>FILE_IN</type>
-				<label>Load filename</label>
-				<varname>LOGIC READ_FILE</varname>
-			</param>
-		</param_dlg_data>
-
-#		Address Inputs
-		<input> <name>ADDRESS_0</name>
-		          <point>-5,-1.5</point> 
-		</input>
-		<input> <name>ADDRESS_1</name>
-		          <point>-5,-0.5</point> 
-		</input>
-		<input> <name>ADDRESS_2</name>
-		          <point>-5,0.5</point> 
-		</input>
-		<input> <name>ADDRESS_3</name>
-		          <point>-5,1.5</point> 
-		</input>
-		
-#		Data Out
-		<output> <name>DATA_OUT_0</name>
-		          <point>5,0</point> 
-		</output>
-		
-		<shape>
-#			Box
-			<outline>-4,2.5,4,2.5</outline>
-			<outline>4,2.5,4,-2.5</outline>
-			<outline>4,-2.5,-4,-2.5</outline>
-			<outline>-4,-2.5,-4,2.5</outline>
-
-#			Address		
-			<line>-5,1.5,-4,1.5</line>
-			<line>-5,0.5,-4,0.5</line>
-			<line>-5,-0.5,-4,-0.5</line>
-			<line>-5,-1.5,-4,-1.5</line>
-
-#			Data Out
-			<line>5,0,4,0</line>
-
-#			LUT
-			<text>0,0,LUT</text>
-			
-#			O
-			<text>3.4,0,O</text>
-			
-#			I0
-			<text>-3.4,-1.5,I_0</text>
-			
-#			I1
-			<text>-3.4,-0.5,I_1</text>
-			
-#			I2
-			<text>-3.4,0.5,I_2</text>
-			
-#			I3
-			<text>-3.4,1.5,I_3</text>
-
-		</shape>
-	</gate>
-	<gate> <name>H5_LUT5</name>
-		<caption>5-inputs Lookup Table (LUT)</caption>
-		<logic_type>RAM</logic_type>
-		<gui_type>RAM</gui_type>
-		<logic_param>DATA_BITS 1</logic_param>
-		<logic_param>ADDRESS_BITS 5</logic_param>
-
-		<param_dlg_data>
-			<param>
-				<type>FILE_OUT</type>
-				<label>Save filename</label>
-				<varname>LOGIC WRITE_FILE</varname>
-			</param>
-			<param>
-				<type>FILE_IN</type>
-				<label>Load filename</label>
-				<varname>LOGIC READ_FILE</varname>
-			</param>
-		</param_dlg_data>
-
-#		Address Inputs
-		<input> <name>ADDRESS_0</name>
-		          <point>-5,-2</point> 
-		</input>
-		<input> <name>ADDRESS_1</name>
-		          <point>-5,-1</point> 
-		</input>
-		<input> <name>ADDRESS_2</name>
-		          <point>-5,0</point> 
-		</input>
-		<input> <name>ADDRESS_3</name>
-		          <point>-5,1</point> 
-		</input>
-		<input> <name>ADDRESS_4</name>
-		          <point>-5,2</point> 
-		</input>
-		
-#		Data Out
-		<output> <name>DATA_OUT_0</name>
-		          <point>5,0</point> 
-		</output>
-		
-		<shape>
-#			Box
-			<outline>-4,3,4,3</outline>
-			<outline>4,3,4,-3</outline>
-			<outline>4,-3,-4,-3</outline>
-			<outline>-4,-3,-4,3</outline>
-
-#			Address		
-			<line>-5,2,-4,2</line>
-			<line>-5,1,-4,1</line>
-			<line>-5,0,-4,0</line>
-			<line>-5,-1,-4,-1</line>
-			<line>-5,-2,-4,-2</line>
-
-#			Data Out
-			<line>5,0,4,0</line>
-
-#			LUT
-			<text>0,0,LUT</text>
-			
-#			Q
-			<text>3.4,0,O</text>
-			
-#			I0
-			<text>-3.4,-2,I_0</text>
-			
-#			I1
-			<text>-3.4,-1,I_1</text>
-
-#			I2
-			<text>-3.4,0,I_2</text>
-
-#			I3
-			<text>-3.4,1,I_3</text>
-
-#			I4
-			<text>-3.4,2,I_4</text>
-			
-		</shape>
-	</gate>
-	<gate> <name>H6_LUT6</name>
-		<caption>6-inputs Lookup Table (LUT)</caption>
-		<logic_type>RAM</logic_type>
-		<gui_type>RAM</gui_type>
-		<logic_param>DATA_BITS 1</logic_param>
-		<logic_param>ADDRESS_BITS 6</logic_param>
-
-		<param_dlg_data>
-			<param>
-				<type>FILE_OUT</type>
-				<label>Save filename</label>
-				<varname>LOGIC WRITE_FILE</varname>
-			</param>
-			<param>
-				<type>FILE_IN</type>
-				<label>Load filename</label>
-				<varname>LOGIC READ_FILE</varname>
-			</param>
-		</param_dlg_data>
-
-#		Address Inputs
-		<input> <name>ADDRESS_0</name>
-		          <point>-5,-2.5</point> 
-		</input>
-		<input> <name>ADDRESS_1</name>
-		          <point>-5,-1.5</point> 
-		</input>
-		<input> <name>ADDRESS_2</name>
-		          <point>-5,-0.5</point> 
-		</input>
-		<input> <name>ADDRESS_3</name>
-		          <point>-5,0.5</point> 
-		</input>
-		<input> <name>ADDRESS_4</name>
-		          <point>-5,1.5</point> 
-		</input>
-		<input> <name>ADDRESS_5</name>
-		          <point>-5,2.5</point> 
-		</input>
-		
-#		Data Out
-		<output> <name>DATA_OUT_0</name>
-		          <point>5,0</point> 
-		</output>
-		
-		<shape>
-#			Box
-			<outline>-4,3.5,4,3.5</outline>
-			<outline>4,3.5,4,-3.5</outline>
-			<outline>4,-3.5,-4,-3.5</outline>
-			<outline>-4,-3.5,-4,3.5</outline>
-
-#			Address		
-			<line>-5,2.5,-4,2.5</line>
-			<line>-5,1.5,-4,1.5</line>
-			<line>-5,0.5,-4,0.5</line>
-			<line>-5,-0.5,-4,-0.5</line>
-			<line>-5,-1.5,-4,-1.5</line>
-			<line>-5,-2.5,-4,-2.5</line>
-
-#			Data Out
-			<line>5,0,4,0</line>
-
-#			LUT
-			<text>0,0,LUT</text>
-			
-#			O
-			<text>3.4,0,O</text>
-			
-#			I0
-			<text>-3.4,-2.5,I_0</text>
-			
-#			I1
-			<text>-3.4,-1.5,I_1</text>
-			
-#			I2
-			<text>-3.4,-0.5,I_2</text>
-			
-#			I3
-			<text>-3.4,0.5,I_3</text>
-			
-#			I4
-			<text>-3.4,1.5,I_4</text>
-			
-#			I5
-			<text>-3.4,2.5,I_5</text>
-			
-		</shape>
-	</gate>
-	<gate> <name>H7_LUT7</name>
-		<caption>7-inputs Lookup Table (LUT)</caption>
-		<logic_type>RAM</logic_type>
-		<gui_type>RAM</gui_type>
-		<logic_param>DATA_BITS 1</logic_param>
-		<logic_param>ADDRESS_BITS 7</logic_param>
-
-		<param_dlg_data>
-			<param>
-				<type>FILE_OUT</type>
-				<label>Save filename</label>
-				<varname>LOGIC WRITE_FILE</varname>
-			</param>
-			<param>
-				<type>FILE_IN</type>
-				<label>Load filename</label>
-				<varname>LOGIC READ_FILE</varname>
-			</param>
-		</param_dlg_data>
-
-#		Address Inputs
-		<input> <name>ADDRESS_0</name>
-		          <point>-5,-3</point> 
-		</input>
-		<input> <name>ADDRESS_1</name>
-		          <point>-5,-2</point> 
-		</input>
-		<input> <name>ADDRESS_2</name>
-		          <point>-5,-1</point> 
-		</input>
-		<input> <name>ADDRESS_3</name>
-		          <point>-5,0</point> 
-		</input>
-		<input> <name>ADDRESS_4</name>
-		          <point>-5,1</point> 
-		</input>
-		<input> <name>ADDRESS_5</name>
-		          <point>-5,2</point> 
-		</input>
-		<input> <name>ADDRESS_6</name>
-		          <point>-5,3</point> 
-		</input>
-		
-#		Data Out
-		<output> <name>DATA_OUT_0</name>
-		          <point>5,0</point> 
-		</output>
-		
-		<shape>
-#			Box
-			<outline>-4,4,4,4</outline>
-			<outline>4,4,4,-4</outline>
-			<outline>4,-4,-4,-4</outline>
-			<outline>-4,-4,-4,4</outline>
-
-#			Address		
-			<line>-5,3,-4,3</line>
-			<line>-5,2,-4,2</line>
-			<line>-5,1,-4,1</line>
-			<line>-5,0,-4,0</line>
-			<line>-5,-1,-4,-1</line>
-			<line>-5,-2,-4,-2</line>
-			<line>-5,-3,-4,-3</line>
-
-#			Data Out
-			<line>5,0,4,0</line>
-
-#			LUT
-			<text>0,0,LUT</text>
-			
-#			Q
-			<text>3.4,0,O</text>
-			
-#			I0
-			<text>-3.4,-3,I_0</text>
-			
-#			I1
-			<text>-3.4,-2,I_1</text>
-
-#			I2
-			<text>-3.4,-1,I_2</text>
-
-#			I3
-			<text>-3.4,0,I_3</text>
-
-#			I4
-			<text>-3.4,1,I_4</text>
-			
-#			I5
-			<text>-3.4,2,I_5</text>
-
-#			I6
-			<text>-3.4,3,I_6</text>
-
-
-		</shape>
-	</gate>
-	<gate> <name>H8_LUT8</name>
-		<caption>8-inputs Lookup Table (LUT)</caption>
-		<logic_type>RAM</logic_type>
-		<gui_type>RAM</gui_type>
-		<logic_param>DATA_BITS 1</logic_param>
-		<logic_param>ADDRESS_BITS 8</logic_param>
-
-		<param_dlg_data>
-			<param>
-				<type>FILE_OUT</type>
-				<label>Save filename</label>
-				<varname>LOGIC WRITE_FILE</varname>
-			</param>
-			<param>
-				<type>FILE_IN</type>
-				<label>Load filename</label>
-				<varname>LOGIC READ_FILE</varname>
-			</param>
-		</param_dlg_data>
-
-#		Address Inputs
-		<input> <name>ADDRESS_0</name>
-		          <point>-5,-3.5</point> 
-		</input>
-		<input> <name>ADDRESS_1</name>
-		          <point>-5,-2.5</point> 
-		</input>
-		<input> <name>ADDRESS_2</name>
-		          <point>-5,-1.5</point> 
-		</input>
-		<input> <name>ADDRESS_3</name>
-		          <point>-5,-0.5</point> 
-		</input>
-		<input> <name>ADDRESS_4</name>
-		          <point>-5,0.5</point> 
-		</input>
-		<input> <name>ADDRESS_5</name>
-		          <point>-5,1.5</point> 
-		</input>
-		<input> <name>ADDRESS_6</name>
-		          <point>-5,2.5</point> 
-		</input>
-		<input> <name>ADDRESS_7</name>
-		          <point>-5,3.5</point> 
-		</input>
-		
-#		Data Out
-		<output> <name>DATA_OUT_0</name>
-		          <point>5,0</point> 
-		</output>
-		
-		<shape>
-#			Box
-			<outline>-4,4.5,4,4.5</outline>
-			<outline>4,4.5,4,-4.5</outline>
-			<outline>4,-4.5,-4,-4.5</outline>
-			<outline>-4,-4.5,-4,4.5</outline>
-
-#			Address		
-			<line>-5,3.5,-4,3.5</line>
-			<line>-5,2.5,-4,2.5</line>
-			<line>-5,1.5,-4,1.5</line>
-			<line>-5,0.5,-4,0.5</line>
-			<line>-5,-0.5,-4,-0.5</line>
-			<line>-5,-1.5,-4,-1.5</line>
-			<line>-5,-2.5,-4,-2.5</line>
-			<line>-5,-3.5,-4,-3.5</line>
-
-#			Data Out
-			<line>5,0,4,0</line>
-
-#			LUT
-			<text>0,0,LUT</text>
-			
-#			O
-			<text>3.4,0,O</text>
-			
-#			I0
-			<text>-3.4,-3.5,I_0</text>
-			
-#			I1
-			<text>-3.4,-2.5,I_1</text>
-			
-#			I2
-			<text>-3.4,-1.5,I_2</text>
-			
-#			I3
-			<text>-3.4,-0.5,I_3</text>
-			
-#			I4
-			<text>-3.4,0.5,I_4</text>
-			
-#			I5
-			<text>-3.4,1.5,I_5</text>
-
-#			I6
-			<text>-3.4,2.5,I_6</text>
-			
-#			I7
-			<text>-3.4,3.5,I_7</text>
 
 		</shape>
 	</gate>
@@ -21162,48 +19989,485 @@
 		</shape>
 	</gate>
 </library>
-<library> <name> 11  - PLD Gates</name>
-	<gate> <name>BA_LAND4</name>
-		<caption>4-input AND for PLD</caption>
-		<logic_type>PLD_AND</logic_type>
-		<gui_type>PLD</gui_type>
-		<logic_param>INPUT_BITS 4</logic_param>
-		<logic_param>FORCE_ZERO false</logic_param>
-		<gui_param>CROSS_POINT 0,0</gui_param>
-		<gui_param>CROSS_JUNCTION true</gui_param>
+<library> <name>Dynamic</name>
+	<gate> <name>%_34_CIRCUIT</name>
+		<caption>Gates structure with input connections</caption>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Cross junction</label>
-				<varname>GUI CROSS_JUNCTION</varname>
+				<type>OPTION</type>
+				<label>Struct type</label>
+				<varname>GUI STRUCT_TYPE</varname>
+				<options>AND-OR OR-AND NAND-NAND NOR-NOR</options>
 			</param>
 		</param_dlg_data>
 		<param_dlg_data>
 			<param>
 				<type>BOOL</type>
-				<label>Force output to zero</label>
-				<varname>LOGIC FORCE_ZERO</varname>
+				<label>No link neither inverter</label>
+				<varname>GUI NO_LINK_INVERTER</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Input names</label>
+				<varname>GUI INPUT_NAMES</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Gate 1 inputs</label>
+				<varname>GUI G1</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Gate 2 inputs</label>
+				<varname>GUI G2</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Gate 3 inputs</label>
+				<varname>GUI G3</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Gate 4 inputs</label>
+				<varname>GUI G4</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Gate 5 inputs</label>
+				<varname>GUI G5</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Gate 6 inputs</label>
+				<varname>GUI G6</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Gate 7 inputs</label>
+				<varname>GUI G7</varname>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Gate 8 inputs</label>
+				<varname>GUI G8</varname>
+			</param>
+		</param_dlg_data>
+		<shape>
+			
+			<offset><point>-1.5,1</point>
+				<line>-1.5,0.5,-1,0.5</line>
+				<line>-1.5,-0.5,-1,-0.5</line>
+				<line>1,0,1.5,0</line>
+				
+				<line>-1,0.75,0.25,0.75</line>
+				<line>-1,0.75,-1,-0.75</line>
+				<line>-1,-0.75,0.25,-0.75</line>
+
+				<line>0.25,0.75,0.44,0.72</line>
+				<line>0.44,0.72,0.63,0.65</line>
+				<line>0.63,0.65,0.78,0.53</line>
+				<line>0.78,0.53,0.9,0.38</line>
+				<line>0.9,0.38,0.97,0.19</line>
+				<line>0.97,0.19,1,0</line>
+
+				<line>0.25,-0.75,0.44,-0.72</line>
+				<line>0.44,-0.72,0.63,-0.65</line>
+				<line>0.63,-0.65,0.78,-0.53</line>
+				<line>0.78,-0.53,0.9,-0.38</line>
+				<line>0.9,-0.38,0.97,-0.19</line>
+				<line>0.97,-0.19,1,0</line>
+			</offset>
+			<offset><point>-1.5,-1</point>
+				<line>-1.5,0.5,-1,0.5</line>
+				<line>-1.5,-0.5,-1,-0.5</line>
+				<line>1,0,1.5,0</line>
+				
+				<line>-1,0.75,0.25,0.75</line>
+				<line>-1,0.75,-1,-0.75</line>
+				<line>-1,-0.75,0.25,-0.75</line>
+
+				<line>0.25,0.75,0.44,0.72</line>
+				<line>0.44,0.72,0.63,0.65</line>
+				<line>0.63,0.65,0.78,0.53</line>
+				<line>0.78,0.53,0.9,0.38</line>
+				<line>0.9,0.38,0.97,0.19</line>
+				<line>0.97,0.19,1,0</line>
+
+				<line>0.25,-0.75,0.44,-0.72</line>
+				<line>0.44,-0.72,0.63,-0.65</line>
+				<line>0.63,-0.65,0.78,-0.53</line>
+				<line>0.78,-0.53,0.9,-0.38</line>
+				<line>0.9,-0.38,0.97,-0.19</line>
+				<line>0.97,-0.19,1,0</line>
+			</offset>
+			<offset><point>1.5,0</point>
+				<line>-1.5,0.5,-0.7,0.5</line>
+				<line>-1.5,-0.5,-0.7,-0.5</line>
+				<line>1,0,1.5,0</line>
+				
+				<line>-1,-0.75,-0.7,-0.49125</line>
+				<line>-0.7,-0.49125,-0.62,-0.375</line>
+				<line>-0.62,-0.375,-0.54,-0.2475</line>
+				<line>-0.54,-0.2475,-0.49,0</line>			
+				
+				<line>-0.49,0,-0.54,0.2475</line>
+				<line>-0.54,0.2475,-0.62,0.375</line>
+				<line>-0.62,0.375,-0.7,0.49125</line>
+				<line>-0.7,0.49125,-1,0.75</line>			
+								
+				<line>-1,0.75,-0.5,0.75</line>
+				<line>-1,-0.75,-0.5,-0.75</line>
+
+				<line>1,0,0.9582,0.0825</line>
+				<line>0.9582,0.0825,0.8685,0.2250</line>
+				<line>0.8685,0.2250,0.7430,0.3525</line>
+				<line>0.7430,0.3525,0.5876,0.4688</line>
+				<line>0.5876,0.4688,0.4024,0.5663</line>
+				<line>0.4024,0.5663,0.1992,0.6450</line>
+				<line>0.1992,0.6450,-0.0279,0.7013</line>
+				<line>-0.0279,0.7013,-0.2610,0.7388</line>
+				<line>-0.2610,0.7388,-0.5,0.75</line>
+
+				<line>-0.5,-0.75,-0.2610,-0.7388</line>
+				<line>-0.2610,-0.7388,-0.0279,-0.7013</line>
+				<line>-0.0279,-0.7013,0.1992,-0.6450</line>
+				<line>0.1992,-0.6450,0.4024,-0.5663</line>
+				<line>0.4024,-0.5663,0.5876,-0.4688</line>
+				<line>0.5876,-0.4688,0.7430,-0.3525</line>
+				<line>0.7430,-0.3525,0.8685,-0.2250</line>
+				<line>0.8685,-0.2250,0.9582,-0.0825</line>
+				<line>0.9582,-0.0825,1,0</line>
+			</offset>
+			<line>0,1,0,0.5</line>
+			<line>0,-1,0,-0.5</line>
+			
+			<line>-3.5,2,-3.5,-2</line>
+			<line>-4,2,-4,-2</line>
+			<line>-4.5,2,-4.5,-2</line>
+			<line>-5,2,-5,-2</line>
+			
+			<line>-4.5,1.5,-3,1.5</line>
+			<line>-4,0.5,-3,0.5</line>
+			<line>-5,-0.5,-3,-0.5</line>
+			<line>-3.5,-1.5,-3,-1.5</line>
+		</shape>
+	</gate>
+	<gate> <name>%_31_GATES</name>
+		<caption>Gates structure</caption>
+		<param_dlg_data>
+			<param>
+				<type>OPTION</type>
+				<label>Struct type</label>
+				<varname>GUI STRUCT_TYPE</varname>
+				<options>AND-OR OR-AND NAND-NAND NOR-NOR</options>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of intuts for gate 1</label>
+				<varname>GUI G1</varname>
+				<range>0,8</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of intuts for gate 2</label>
+				<varname>GUI G2</varname>
+				<range>0,8</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of intuts for gate 3</label>
+				<varname>GUI G3</varname>
+				<range>0,8</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of intuts for gate 4</label>
+				<varname>GUI G4</varname>
+				<range>0,8</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of intuts for gate 5</label>
+				<varname>GUI G5</varname>
+				<range>0,8</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of intuts for gate 6</label>
+				<varname>GUI G6</varname>
+				<range>0,8</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of intuts for gate 7</label>
+				<varname>GUI G7</varname>
+				<range>0,8</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of intuts for gate 8</label>
+				<varname>GUI G8</varname>
+				<range>0,8</range>
+			</param>
+		</param_dlg_data>
+		<shape>
+			
+			<offset><point>-1.5,1</point>
+				<line>-1.5,0.5,-1,0.5</line>
+				<line>-1.5,-0.5,-1,-0.5</line>
+				<line>1,0,1.5,0</line>
+				
+				<line>-1,0.75,0.25,0.75</line>
+				<line>-1,0.75,-1,-0.75</line>
+				<line>-1,-0.75,0.25,-0.75</line>
+
+				<line>0.25,0.75,0.44,0.72</line>
+				<line>0.44,0.72,0.63,0.65</line>
+				<line>0.63,0.65,0.78,0.53</line>
+				<line>0.78,0.53,0.9,0.38</line>
+				<line>0.9,0.38,0.97,0.19</line>
+				<line>0.97,0.19,1,0</line>
+
+				<line>0.25,-0.75,0.44,-0.72</line>
+				<line>0.44,-0.72,0.63,-0.65</line>
+				<line>0.63,-0.65,0.78,-0.53</line>
+				<line>0.78,-0.53,0.9,-0.38</line>
+				<line>0.9,-0.38,0.97,-0.19</line>
+				<line>0.97,-0.19,1,0</line>
+			</offset>
+			<offset><point>-1.5,-1</point>
+				<line>-1.5,0.5,-1,0.5</line>
+				<line>-1.5,-0.5,-1,-0.5</line>
+				<line>1,0,1.5,0</line>
+				
+				<line>-1,0.75,0.25,0.75</line>
+				<line>-1,0.75,-1,-0.75</line>
+				<line>-1,-0.75,0.25,-0.75</line>
+
+				<line>0.25,0.75,0.44,0.72</line>
+				<line>0.44,0.72,0.63,0.65</line>
+				<line>0.63,0.65,0.78,0.53</line>
+				<line>0.78,0.53,0.9,0.38</line>
+				<line>0.9,0.38,0.97,0.19</line>
+				<line>0.97,0.19,1,0</line>
+
+				<line>0.25,-0.75,0.44,-0.72</line>
+				<line>0.44,-0.72,0.63,-0.65</line>
+				<line>0.63,-0.65,0.78,-0.53</line>
+				<line>0.78,-0.53,0.9,-0.38</line>
+				<line>0.9,-0.38,0.97,-0.19</line>
+				<line>0.97,-0.19,1,0</line>
+			</offset>
+			<offset><point>1.5,0</point>
+				<line>-1.5,0.5,-0.7,0.5</line>
+				<line>-1.5,-0.5,-0.7,-0.5</line>
+				<line>1,0,1.5,0</line>
+				
+				<line>-1,-0.75,-0.7,-0.49125</line>
+				<line>-0.7,-0.49125,-0.62,-0.375</line>
+				<line>-0.62,-0.375,-0.54,-0.2475</line>
+				<line>-0.54,-0.2475,-0.49,0</line>			
+				
+				<line>-0.49,0,-0.54,0.2475</line>
+				<line>-0.54,0.2475,-0.62,0.375</line>
+				<line>-0.62,0.375,-0.7,0.49125</line>
+				<line>-0.7,0.49125,-1,0.75</line>			
+								
+				<line>-1,0.75,-0.5,0.75</line>
+				<line>-1,-0.75,-0.5,-0.75</line>
+
+				<line>1,0,0.9582,0.0825</line>
+				<line>0.9582,0.0825,0.8685,0.2250</line>
+				<line>0.8685,0.2250,0.7430,0.3525</line>
+				<line>0.7430,0.3525,0.5876,0.4688</line>
+				<line>0.5876,0.4688,0.4024,0.5663</line>
+				<line>0.4024,0.5663,0.1992,0.6450</line>
+				<line>0.1992,0.6450,-0.0279,0.7013</line>
+				<line>-0.0279,0.7013,-0.2610,0.7388</line>
+				<line>-0.2610,0.7388,-0.5,0.75</line>
+
+				<line>-0.5,-0.75,-0.2610,-0.7388</line>
+				<line>-0.2610,-0.7388,-0.0279,-0.7013</line>
+				<line>-0.0279,-0.7013,0.1992,-0.6450</line>
+				<line>0.1992,-0.6450,0.4024,-0.5663</line>
+				<line>0.4024,-0.5663,0.5876,-0.4688</line>
+				<line>0.5876,-0.4688,0.7430,-0.3525</line>
+				<line>0.7430,-0.3525,0.8685,-0.2250</line>
+				<line>0.8685,-0.2250,0.9582,-0.0825</line>
+				<line>0.9582,-0.0825,1,0</line>
+			</offset>
+			<line>0,1,0,0.5</line>
+			<line>0,-1,0,-0.5</line>
+		</shape>
+	</gate>
+	<gate>
+		<name>%_11_WIRE</name>
+		<caption>Wire</caption>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Wire length</label>
+				<varname>GUI LENGTH</varname>
+				<range>0,100</range>
+			</param>
+		</param_dlg_data>
+		<shape>
+			<line>0,0,0,-4</line>
+		</shape>		
+	</gate>
+	<gate>
+		<name>%_14_NOWIRE</name>
+		<caption>No orthogonal Wire</caption>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Wire width</label>
+				<varname>GUI WIDTH</varname>
+				<range>0,32</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Wire height</label>
+				<varname>GUI HEIGHT</varname>
+				<range>0,32</range>
 			</param>
 		</param_dlg_data>		
-		<input> <name>IN_0</name>
-		          <point>-1,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-2,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_2</name>
-		          <point>-3,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_3</name>
-		          <point>-4,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<output> <name>OUT</name>
-		          <point>1,0</point> 
-		</output>
+		<shape>
+			<line>-3,-1,3,1</line>
+		</shape>		
+	</gate>
+	<gate>
+		<name>%_13_OWIRE</name>
+		<caption>Orthogonal Wire</caption>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Wire width</label>
+				<varname>GUI WIDTH</varname>
+				<range>1,32</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Wire height</label>
+				<varname>GUI HEIGHT</varname>
+				<range>1,32</range>
+			</param>
+		</param_dlg_data>		
+		<shape>
+			<line>-3,-2,3,-2</line>
+			<line>3,-2,3,2</line>
+		</shape>		
+	</gate>
+	<gate>
+		<name>%_14_WIRES</name>
+		<caption>Wires</caption>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of wires</label>
+				<varname>GUI NUMBER</varname>
+				<range>2,64</range>
+			</param>
+		</param_dlg_data>		
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Wire length</label>
+				<varname>GUI LENGTH</varname>
+				<range>0,100</range>
+			</param>
+		</param_dlg_data>		
+		<param_dlg_data>
+			<param>
+				<type>OPTION</type>
+				<label>Separation</label>
+				<varname>GUI SEPARATION</varname>
+				<options>wide narrow</options>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>OPTION</type>
+				<label>Rotation</label>
+				<varname>GUI ROTATION</varname>
+				<options>vertical horizontal</options>
+			</param>
+		</param_dlg_data>
+		
+		<shape>			
+			<line>0,0,0,-4</line>
+			<line>-0.5,0,-0.5,-4</line>
+			<line>-1,0,-1,-4</line>
+			<line>-1.5,0,-1.5,-4</line>
+		</shape>		
+	</gate>	
+	<gate> <name>%_17_BUSEND</name>
+		<caption>Bus End</caption>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Bus lines</label>
+				<varname>GUI INPUT_BITS</varname>
+				<range>2,64</range>
+			</param>
+		</param_dlg_data>		
+		<shape>
+			<line>-1,0,0,0</line>
+			<line>-1,-1,0,-1</line>
+			<line>-1,-2,0,-2</line>
+			<line>-1,-3,0,-3</line>
+			<boldline>0,0,0,-3</boldline>  
+			<circle>-0.5,-3.4,0.2,24</circle>
+		</shape>
+	</gate>
+	<gate> <name>%_21_LAND</name>
+		<caption>AND for PLD</caption>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Number of inputs</label>
+				<varname>GUI INPUT_BITS</varname>
+				<range>2,100</range>
+			</param>
+		</param_dlg_data>
 		<shape>
 			<line>-4.5,0,-0.5,0</line>
 			<line>1,0,0.5,0</line>
@@ -21233,242 +20497,16 @@
 	
 		</shape>
 	</gate>
-	<gate> <name>BB_LAND8</name>
-		<caption>8-input AND for PLD</caption>
-		<logic_type>PLD_AND</logic_type>
-		<gui_type>PLD</gui_type>
-		<logic_param>INPUT_BITS 8</logic_param>
-		<logic_param>FORCE_ZERO false</logic_param>
-		<gui_param>CROSS_POINT 0,0</gui_param>
-		<gui_param>CROSS_JUNCTION true</gui_param>
+	<gate> <name>%_24_LOR</name>
+		<caption>OR for PLD</caption>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Cross junction</label>
-				<varname>GUI CROSS_JUNCTION</varname>
+				<type>INT</type>
+				<label>Number of inputs</label>
+				<varname>GUI INPUT_BITS</varname>
+				<range>2,100</range>
 			</param>
 		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Force output to zero</label>
-				<varname>LOGIC FORCE_ZERO</varname>
-			</param>
-		</param_dlg_data>
-		<input> <name>IN_0</name>
-		          <point>-1,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-2,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_2</name>
-		          <point>-3,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_3</name>
-		          <point>-4,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_4</name>
-		          <point>-5,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_5</name>
-		          <point>-6,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_6</name>
-		          <point>-7,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_7</name>
-		          <point>-8,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<output> <name>OUT</name>
-		          <point>1,0</point> 
-		</output>
-		<shape>
-			<line>-8.5,0,-0.5,0</line>
-			<line>1,0,0.5,0</line>
-			<line>-0.5,0.5,-0.5,-0.5</line>
-			<line>-0.5,0.5,0,0.5</line>
-			<line>-0.5,-0.5,0,-0.5</line>
-			
-			<line>0,0.5,0.09,0.49</line>
-			<line>0.09,0.49,0.17,0.47</line>
-			<line>0.17,0.47,0.25,0.43</line>
-			<line>0.25,0.43,0.32,0.38</line>
-			<line>0.32,0.38,0.38,0.32</line>
-			<line>0.38,0.32,0.43,0.25</line>
-			<line>0.43,0.25,0.47,0.17</line>
-			<line>0.47,0.17,0.49,0.09</line>
-			<line>0.49,0.09,0.5,0</line>
-			
-			<line>0,-0.5,0.09,-0.49</line>
-			<line>0.09,-0.49,0.17,-0.47</line>
-			<line>0.17,-0.47,0.25,-0.43</line>
-			<line>0.25,-0.43,0.32,-0.38</line>
-			<line>0.32,-0.38,0.38,-0.32</line>
-			<line>0.38,-0.32,0.43,-0.25</line>
-			<line>0.43,-0.25,0.47,-0.17</line>
-			<line>0.47,-0.17,0.49,-0.09</line>
-			<line>0.49,-0.09,0.5,0</line>			
-	
-		</shape>
-	</gate>
-	<gate> <name>BC_LAND16</name>
-		<caption>16-input AND for PLD</caption>
-		<logic_type>PLD_AND</logic_type>
-		<gui_type>PLD</gui_type>
-		<logic_param>INPUT_BITS 16</logic_param>
-		<logic_param>FORCE_ZERO false</logic_param>
-		<gui_param>CROSS_POINT 0,0</gui_param>
-		<gui_param>CROSS_JUNCTION true</gui_param>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Cross junction</label>
-				<varname>GUI CROSS_JUNCTION</varname>
-			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Force output to zero</label>
-				<varname>LOGIC FORCE_ZERO</varname>
-			</param>
-		</param_dlg_data>
-		<input> <name>IN_0</name>
-		          <point>-1,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-2,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_2</name>
-		          <point>-3,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_3</name>
-		          <point>-4,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_4</name>
-		          <point>-5,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_5</name>
-		          <point>-6,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_6</name>
-		          <point>-7,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_7</name>
-		          <point>-8,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_8</name>
-		          <point>-9,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_9</name>
-		          <point>-10,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_10</name>
-		          <point>-11,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_11</name>
-		          <point>-12,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_12</name>
-		          <point>-13,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_13</name>
-		          <point>-14,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_14</name>
-		          <point>-15,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<input> <name>IN_15</name>
-		          <point>-16,0</point> 
-				  <pull_up>true</pull_up>
-		</input>
-		<output> <name>OUT</name>
-		          <point>1,0</point> 
-		</output>
-		<shape>
-			<line>-16.5,0,-0.5,0</line>
-			<line>1,0,0.5,0</line>
-			<line>-0.5,0.5,-0.5,-0.5</line>
-			<line>-0.5,0.5,0,0.5</line>
-			<line>-0.5,-0.5,0,-0.5</line>
-			
-			<line>0,0.5,0.09,0.49</line>
-			<line>0.09,0.49,0.17,0.47</line>
-			<line>0.17,0.47,0.25,0.43</line>
-			<line>0.25,0.43,0.32,0.38</line>
-			<line>0.32,0.38,0.38,0.32</line>
-			<line>0.38,0.32,0.43,0.25</line>
-			<line>0.43,0.25,0.47,0.17</line>
-			<line>0.47,0.17,0.49,0.09</line>
-			<line>0.49,0.09,0.5,0</line>
-			
-			<line>0,-0.5,0.09,-0.49</line>
-			<line>0.09,-0.49,0.17,-0.47</line>
-			<line>0.17,-0.47,0.25,-0.43</line>
-			<line>0.25,-0.43,0.32,-0.38</line>
-			<line>0.32,-0.38,0.38,-0.32</line>
-			<line>0.38,-0.32,0.43,-0.25</line>
-			<line>0.43,-0.25,0.47,-0.17</line>
-			<line>0.47,-0.17,0.49,-0.09</line>
-			<line>0.49,-0.09,0.5,0</line>			
-	
-		</shape>
-	</gate>
-	<gate> <name>BD_LOR4</name>
-		<caption>4-input OR for PLD</caption>
-		<logic_type>OR</logic_type>
-		<gui_type>PLD</gui_type>
-		<logic_param>INPUT_BITS 4</logic_param>
-		<gui_param>CROSS_JUNCTION true</gui_param>
-		<param_dlg_data>
-			<param>
-				<type>BOOL</type>
-				<label>Cross junction</label>
-				<varname>GUI CROSS_JUNCTION</varname>
-			</param>
-		</param_dlg_data>
-		<input> <name>IN_0</name>
-		          <point>-1,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-2,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_2</name>
-		          <point>-3,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_3</name>
-		          <point>-4,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<output> <name>OUT</name>
-		          <point>1,0</point> 
-		</output>
 		<shape>
 			<line>-4.5,0,-0.25,0</line>
 			<line>1,0,0.5,0</line>
@@ -21516,239 +20554,138 @@
 			<line>-0.25,-0.09,-0.25,0</line>	
 		</shape>
 	</gate>
-	<gate> <name>BE_LOR8</name>
-		<caption>8-input OR for PLD</caption>
-		<logic_type>OR</logic_type>
-		<gui_type>PLD</gui_type>
-		<logic_param>INPUT_BITS 8</logic_param>
-		<gui_param>CROSS_JUNCTION true</gui_param>
+	<gate> <name>%_41_BLQ</name>
+		<caption>Block</caption>
 		<param_dlg_data>
 			<param>
-				<type>BOOL</type>
-				<label>Cross junction</label>
-				<varname>GUI CROSS_JUNCTION</varname>
+				<type>INT</type>
+				<label>Block width</label>
+				<varname>GUI WIDTH</varname>
+				<range>1,32</range>
 			</param>
 		</param_dlg_data>
-		<input> <name>IN_0</name>
-		          <point>-1,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-2,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_2</name>
-		          <point>-3,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_3</name>
-		          <point>-4,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_4</name>
-		          <point>-5,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_5</name>
-		          <point>-6,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_6</name>
-		          <point>-7,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_7</name>
-		          <point>-8,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<output> <name>OUT</name>
-		          <point>1,0</point> 
-		</output>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Block height</label>
+				<varname>GUI HEIGHT</varname>
+				<range>1,32</range>
+			</param>
+		</param_dlg_data>
 		<shape>
-			<line>-8.5,0,-0.25,0</line>
-			<line>1,0,0.5,0</line>
-			<line>-0.5,0.5,-0.25,0.5</line>
-			<line>-0.5,-0.5,-0.25,-0.5</line>
-
-			<line>-0.25,0.5,-0.12,0.49</line>
-			<line>-0.12,0.49,0.01,0.47</line>
-			<line>0.01,0.47,0.13,0.43</line>
-			<line>0.13,0.43,0.23,0.38</line>
-			<line>0.23,0.38,0.32,0.32</line>
-			<line>0.32,0.32,0.40,0.25</line>
-			<line>0.40,0.25,0.45,0.17</line>
-			<line>0.45,0.17,0.49,0.09</line>
-			<line>0.49,0.09,0.5,0</line>
-			
-			<line>-0.25,-0.5,-0.12,-0.49</line>
-			<line>-0.12,-0.49,0.01,-0.47</line>
-			<line>0.01,-0.47,0.13,-0.43</line>
-			<line>0.13,-0.43,0.23,-0.38</line>
-			<line>0.23,-0.38,0.32,-0.32</line>
-			<line>0.32,-0.32,0.40,-0.25</line>
-			<line>0.40,-0.25,0.45,-0.17</line>
-			<line>0.45,-0.17,0.49,-0.09</line>
-			<line>0.49,-0.09,0.5,0</line>
-			
-			<line>-0.5,0.5,-0.46,0.49</line>
-			<line>-0.46,0.49,-0.41,0.47</line>
-			<line>-0.41,0.47,-0.38,0.43</line>
-			<line>-0.38,0.43,-0.34,0.38</line>
-			<line>-0.34,0.38,-0.31,0.32</line>
-			<line>-0.31,0.32,-0.28,0.25</line>
-			<line>-0.28,0.25,-0.27,0.17</line>
-			<line>-0.27,0.17,-0.25,0.09</line>
-			<line>-0.25,0.09,-0.25,0</line>
-			
-			<line>-0.5,-0.5,-0.46,-0.49</line>
-			<line>-0.46,-0.49,-0.41,-0.47</line>
-			<line>-0.41,-0.47,-0.38,-0.43</line>
-			<line>-0.38,-0.43,-0.34,-0.38</line>
-			<line>-0.34,-0.38,-0.31,-0.32</line>
-			<line>-0.31,-0.32,-0.28,-0.25</line>
-			<line>-0.28,-0.25,-0.27,-0.17</line>
-			<line>-0.27,-0.17,-0.25,-0.09</line>
-			<line>-0.25,-0.09,-0.25,0</line>	
+			<outline>-2,-2,-2,2</outline>
+			<outline>-2,2,2,2</outline>
+			<outline>2,2,2,-2</outline>
+			<outline>2,-2,-2,-2</outline>
+			<text>0,0,BLQ</text>
 		</shape>
 	</gate>
-	<gate> <name>BF_LOR16</name>
-		<caption>16-input OR for PLD</caption>
-		<logic_type>OR</logic_type>
-		<gui_type>PLD</gui_type>
-		<logic_param>INPUT_BITS 16</logic_param>
-		<gui_param>CROSS_JUNCTION true</gui_param>
+	<gate> <name>%_44_CMB</name>
+		<caption>Combinational Block</caption>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Inputs</label>
+				<varname>LOGIC INPUT_BITS</varname>
+				<range>1,32</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Outputs</label>
+				<varname>LOGIC OUTPUT_BITS</varname>
+				<range>1,32</range>
+			</param>
+		</param_dlg_data>
+		<shape>
+			<outline>-2,-2,-2,2</outline>
+			<outline>-2,2,2,2</outline>
+			<outline>2,2,2,-2</outline>
+			<outline>2,-2,-2,-2</outline>
+			<text>0,0,CMB</text>
+		</shape>
+	</gate>
+	<gate> <name>%_47_FSM</name>
+		<caption>Finite State Machine</caption>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Inputs</label>
+				<varname>LOGIC INPUT_BITS</varname>
+				<range>0,32</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>INT</type>
+				<label>Outputs</label>
+				<varname>LOGIC OUTPUT_BITS</varname>
+				<range>1,32</range>
+			</param>
+		</param_dlg_data>
 		<param_dlg_data>
 			<param>
 				<type>BOOL</type>
-				<label>Cross junction</label>
-				<varname>GUI CROSS_JUNCTION</varname>
+				<label>Asynchronous</label>
+				<varname>LOGIC ASYNCHRONOUS</varname>
 			</param>
-		</param_dlg_data>
-		<input> <name>IN_0</name>
-		          <point>-1,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_1</name>
-		          <point>-2,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_2</name>
-		          <point>-3,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_3</name>
-		          <point>-4,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_4</name>
-		          <point>-5,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_5</name>
-		          <point>-6,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_6</name>
-		          <point>-7,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_7</name>
-		          <point>-8,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_8</name>
-		          <point>-9,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_9</name>
-		          <point>-10,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_10</name>
-		          <point>-11,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_11</name>
-		          <point>-12,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_12</name>
-		          <point>-13,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_13</name>
-		          <point>-14,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_14</name>
-		          <point>-15,0</point> 
-				  <pull_down>true</pull_down>
-		</input>
-		<input> <name>IN_15</name>
-		          <point>-16,0</point> 
-				  <pull_down>true</pull_down>				  
-		</input>
-		<output> <name>OUT</name>
-		          <point>1,0</point> 
-		</output>
+		</param_dlg_data>		
 		<shape>
-			<line>-16.5,0,-0.25,0</line>
-			<line>1,0,0.5,0</line>
-			<line>-0.5,0.5,-0.25,0.5</line>
-			<line>-0.5,-0.5,-0.25,-0.5</line>
-
-			<line>-0.25,0.5,-0.12,0.49</line>
-			<line>-0.12,0.49,0.01,0.47</line>
-			<line>0.01,0.47,0.13,0.43</line>
-			<line>0.13,0.43,0.23,0.38</line>
-			<line>0.23,0.38,0.32,0.32</line>
-			<line>0.32,0.32,0.40,0.25</line>
-			<line>0.40,0.25,0.45,0.17</line>
-			<line>0.45,0.17,0.49,0.09</line>
-			<line>0.49,0.09,0.5,0</line>
-			
-			<line>-0.25,-0.5,-0.12,-0.49</line>
-			<line>-0.12,-0.49,0.01,-0.47</line>
-			<line>0.01,-0.47,0.13,-0.43</line>
-			<line>0.13,-0.43,0.23,-0.38</line>
-			<line>0.23,-0.38,0.32,-0.32</line>
-			<line>0.32,-0.32,0.40,-0.25</line>
-			<line>0.40,-0.25,0.45,-0.17</line>
-			<line>0.45,-0.17,0.49,-0.09</line>
-			<line>0.49,-0.09,0.5,0</line>
-			
-			<line>-0.5,0.5,-0.46,0.49</line>
-			<line>-0.46,0.49,-0.41,0.47</line>
-			<line>-0.41,0.47,-0.38,0.43</line>
-			<line>-0.38,0.43,-0.34,0.38</line>
-			<line>-0.34,0.38,-0.31,0.32</line>
-			<line>-0.31,0.32,-0.28,0.25</line>
-			<line>-0.28,0.25,-0.27,0.17</line>
-			<line>-0.27,0.17,-0.25,0.09</line>
-			<line>-0.25,0.09,-0.25,0</line>
-			
-			<line>-0.5,-0.5,-0.46,-0.49</line>
-			<line>-0.46,-0.49,-0.41,-0.47</line>
-			<line>-0.41,-0.47,-0.38,-0.43</line>
-			<line>-0.38,-0.43,-0.34,-0.38</line>
-			<line>-0.34,-0.38,-0.31,-0.32</line>
-			<line>-0.31,-0.32,-0.28,-0.25</line>
-			<line>-0.28,-0.25,-0.27,-0.17</line>
-			<line>-0.27,-0.17,-0.25,-0.09</line>
-			<line>-0.25,-0.09,-0.25,0</line>
+			<outline>-2,-2,-2,2</outline>
+			<outline>-2,2,2,2</outline>
+			<outline>2,2,2,-2</outline>
+			<outline>2,-2,-2,-2</outline>
+			<text>0,0,FSM</text>
 		</shape>
 	</gate>
 </library>
 <library> <name>Deprecated</name>
-	<gate> <name>@@_NOT_FOUND</name>
-		<caption></caption>
+	<gate> <name>DA_FROM</name>
+		<caption>"From" Named Link</caption>
+		<gui_type>FROM</gui_type>
+		<logic_type>FROM</logic_type>
+		<logic_param>JUNCTION_ID FROM</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Label</label>
+# Specify the type (LOGIC or GUI) and the param's name:
+				<varname>LOGIC JUNCTION_ID</varname>
+			</param>
+		</param_dlg_data>
+		<input> <name>IN_0</name>
+		          <point>2,0</point> 
+		</input>
 		<shape>
-			<boldline>-1,-1,1,1</boldline>
-			<boldline>-1,1,1,-1</boldline>
-			<circle>0,0,1,24</circle>
+			<line>0,1,1,0</line>
+			<line>0,-1,1,0</line>
+			<line>1,0,2,0</line>
 		</shape>
 	</gate>
-	<gate> <name>BI_INVERTER_4BIT</name>
+	<gate> <name>DE_TO</name>
+		<caption>"To" Named Link</caption>
+		<gui_type>TO</gui_type>
+		<logic_type>TO</logic_type>
+		<logic_param>JUNCTION_ID TO</logic_param>
+		<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Label</label>
+# Specify the type (LOGIC or GUI) and the param's name:
+				<varname>LOGIC JUNCTION_ID</varname>
+			</param>
+		</param_dlg_data>
+		<input> <name>IN_0</name>
+		          <point>-2,0</point> 
+		</input>
+		<shape>
+			<line>-1,1,0,0</line>
+			<line>-1,-1,0,0</line>
+			<line>-2,0,0,0</line>
+		</shape>
+	</gate>
+	<gate> <name>AI_INVERTER_4BIT</name>
 		<caption>4-Bit Inverter</caption>
 		<logic_type>BUFFER</logic_type>
 		<logic_param>INPUT_BITS 4</logic_param>
@@ -21857,7 +20794,7 @@
 		<param_dlg_data>
 			<param>
 				<type>BOOL</type>
-				<label>Show BCD only</label>
+				<label>Show BCD only</label>:
 				<varname>GUI BCD</varname>
 			</param>
 		</param_dlg_data>
@@ -23940,6 +22877,626 @@
 			<line>0.4,-0.4,0.4,-0.8</line>
 			<line>0.4,-0.8,0,-0.8</line>
 			</offset>
+		</shape>
+	</gate>
+	<gate>
+		<name>3x8 Decoder Chip</name>
+		<caption>3x8 Decoder</caption>
+		<logic_type>DECODER</logic_type>
+		<gui_type>CHIP_DECODER_3x8</gui_type>
+		<logic_param>INPUT_BITS 3</logic_param>
+
+#		input hotspot
+		<input>
+			<name>IN_0</name>
+			<point>-7.5,3.5</point>
+		</input>
+
+#		input hotspot
+		<input>
+			<name>IN_1</name>
+			<point>-7.5,2.5</point>
+		</input>
+
+#		input hotspot
+		<input>
+			<name>IN_2</name>
+			<point>-7.5,1.5</point>
+		</input>
+
+#		input hotspot
+		<input>
+			<name>ENABLE</name>
+			<point>-7.5,0.5</point>
+			<inverted>true</inverted>
+		</input>
+
+#		input hotspot
+		<input>
+			<name>ENABLE_B</name>
+			<point>-7.5,-0.5</point>
+			<inverted>true</inverted>
+		</input>
+
+#		input hotspot
+		<input>
+			<name>ENABLE_C</name>
+			<point>-7.5,-1.5</point>
+		</input>
+
+#		output hotspot
+		<output>
+			<name>OUT_7</name>
+			<point>-7.5,-2.5</point>
+			<inverted>true</inverted>
+		</output>
+
+#		input hotspot
+		<input>
+			<name>ENABLE_0</name>
+			<point>-7.5,-3.5</point>
+			<inverted>true</inverted>
+		</input>
+
+#		input hotspot
+		<input>
+			<name>ENABLE_1</name>
+			<point>7.5,3.5</point>
+		</input>
+
+#		output hotspot
+		<output>
+			<name>OUT_0</name>
+			<point>7.5,2.5</point>
+			<inverted>true</inverted>
+		</output>
+
+#		output hotspot
+		<output>
+			<name>OUT_1</name>
+			<point>7.5,1.5</point>
+			<inverted>true</inverted>
+		</output>
+
+#		output hotspot
+		<output>
+			<name>OUT_2</name>
+			<point>7.5,0.5</point>
+			<inverted>true</inverted>
+		</output>
+
+#		output hotspot
+		<output>
+			<name>OUT_3</name>
+			<point>7.5,-0.5</point>
+			<inverted>true</inverted>
+		</output>
+
+#		output hotspot
+		<output>
+			<name>OUT_4</name>
+			<point>7.5,-1.5</point>
+			<inverted>true</inverted>
+		</output>
+
+#		output hotspot
+		<output>
+			<name>OUT_5</name>
+			<point>7.5,-2.5</point>
+			<inverted>true</inverted>
+		</output>
+
+#		output hotspot
+		<output>
+			<name>OUT_6</name>
+			<point>7.5,-3.5</point>
+			<inverted>true</inverted>
+		</output>
+
+#		what the gate looks like
+		<shape>
+
+#			outline
+			<line>-6.5,5.0,6.5,5.0</line>
+			<line>-6.5,5.0,-6.5,-5.0</line>
+			<line>-6.5,-5.0,6.5,-5.0</line>
+			<line>6.5,-5.0,6.5,5.0</line>
+
+#			inputs and outputs
+			<line>-7.5,3.5,-6.5,3.5</line>
+			<line>-7.5,2.5,-6.5,2.5</line>
+			<line>-7.5,1.5,-6.5,1.5</line>
+			<line>-7.5,0.5,-6.5,0.5</line>
+			<line>-7.5,-0.5,-6.5,-0.5</line>
+			<line>-7.5,-1.5,-6.5,-1.5</line>
+			<line>-7.5,-2.5,-6.5,-2.5</line>
+			<line>-7.5,-3.5,-6.5,-3.5</line>
+			<line>7.5,3.5,6.5,3.5</line>
+			<line>7.5,2.5,6.5,2.5</line>
+			<line>7.5,1.5,6.5,1.5</line>
+			<line>7.5,0.5,6.5,0.5</line>
+			<line>7.5,-0.5,6.5,-0.5</line>
+			<line>7.5,-1.5,6.5,-1.5</line>
+			<line>7.5,-2.5,6.5,-2.5</line>
+			<line>7.5,-3.5,6.5,-3.5</line>
+
+#			lettering
+			<offset>
+				<point>-6.0,3.9</point>
+
+#				A
+				<line>0.0,-0.8,0.2,0.0</line>
+				<line>0.2,0.0,0.4,-0.8</line>
+				<line>0.1,-0.4,0.30000000000000004,-0.4</line>
+
+#				/
+				<line>1.0,0.0,0.6000000000000001,-0.8</line>
+
+#				A
+				<line>1.2000000000000002,-0.8,1.4000000000000001,0.0</line>
+				<line>1.4000000000000001,0.0,1.6,-0.8</line>
+				<line>1.3000000000000003,-0.4,1.5000000000000002,-0.4</line>
+
+#				0
+				<line>1.8000000000000003,0.0,2.2,0.0</line>
+				<line>2.2,0.0,2.2,-0.8</line>
+				<line>2.2,-0.8,1.8000000000000003,-0.8</line>
+				<line>1.8000000000000003,-0.8,1.8000000000000003,0.0</line>
+			</offset>
+
+#			B/A1
+			<offset>
+				<point>-6.0,2.9</point>
+
+#				B
+				<line>0.0,0.0,0.2,0.0</line>
+				<line>0.2,0.0,0.4,-0.2</line>
+				<line>0.4,-0.2,0.2,-0.4</line>
+				<line>0.0,-0.4,0.2,-0.4</line>
+				<line>0.2,-0.4,0.4,-0.6000000000000001</line>
+				<line>0.4,-0.6000000000000001,0.2,-0.8</line>
+				<line>0.2,-0.8,0.0,-0.8</line>
+				<line>0.0,-0.8,0.0,0.0</line>
+
+#				/
+				<line>1.0,0.0,0.6000000000000001,-0.8</line>
+
+#				A
+				<line>1.2000000000000002,-0.8,1.4000000000000001,0.0</line>
+				<line>1.4000000000000001,0.0,1.6,-0.8</line>
+				<line>1.3000000000000003,-0.4,1.5000000000000002,-0.4</line>
+
+#				1
+				<line>1.8000000000000003,0.0,1.8000000000000003,-0.8</line>
+			</offset>
+
+#			C/A2
+			<offset>
+				<point>-6.0,1.9</point>
+
+#				C
+				<line>0.4,0.0,0.2,0.0</line>
+				<line>0.2,0.0,0.0,-0.2</line>
+				<line>0.0,-0.2,0.0,-0.6000000000000001</line>
+				<line>0.0,-0.6000000000000001,0.2,-0.8</line>
+				<line>0.2,-0.8,0.4,-0.8</line>
+
+#				/
+				<line>1.0,0.0,0.6000000000000001,-0.8</line>
+
+#				A
+				<line>1.2000000000000002,-0.8,1.4000000000000001,0.0</line>
+				<line>1.4000000000000001,0.0,1.6,-0.8</line>
+				<line>1.3000000000000003,-0.4,1.5000000000000002,-0.4</line>
+
+#				2
+				<line>1.8000000000000003,0.0,2.2,0.0</line>
+				<line>2.2,0.0,2.2,-0.4</line>
+				<line>2.2,-0.4,1.8000000000000003,-0.4</line>
+				<line>1.8000000000000003,-0.4,1.8000000000000003,-0.8</line>
+				<line>1.8000000000000003,-0.8,2.2,-0.8</line>
+			</offset>
+
+#			/E1
+			<offset>
+				<point>-6.0,0.9</point>
+
+#				/
+				<line>0.4,0.0,0.0,-0.8</line>
+
+#				E
+				<line>0.6000000000000001,0.0,0.6000000000000001,-0.8</line>
+				<line>0.6000000000000001,0.0,1.0,0.0</line>
+				<line>0.6000000000000001,-0.4,1.0,-0.4</line>
+				<line>0.6000000000000001,-0.8,1.0,-0.8</line>
+
+#				1
+				<line>1.2000000000000002,0.0,1.2000000000000002,-0.8</line>
+			</offset>
+
+#			/E2
+			<offset>
+				<point>-6.0,-0.09999999999999998</point>
+
+#				/
+				<line>0.4,0.0,0.0,-0.8</line>
+
+#				E
+				<line>0.6000000000000001,0.0,0.6000000000000001,-0.8</line>
+				<line>0.6000000000000001,0.0,1.0,0.0</line>
+				<line>0.6000000000000001,-0.4,1.0,-0.4</line>
+				<line>0.6000000000000001,-0.8,1.0,-0.8</line>
+
+#				2
+				<line>1.2000000000000002,0.0,1.6,0.0</line>
+				<line>1.6,0.0,1.6,-0.4</line>
+				<line>1.6,-0.4,1.2000000000000002,-0.4</line>
+				<line>1.2000000000000002,-0.4,1.2000000000000002,-0.8</line>
+				<line>1.2000000000000002,-0.8,1.6,-0.8</line>
+			</offset>
+
+#			E3
+			<offset>
+				<point>-6.0,-1.1</point>
+
+#				E
+				<line>0.0,0.0,0.0,-0.8</line>
+				<line>0.0,0.0,0.4,0.0</line>
+				<line>0.0,-0.4,0.4,-0.4</line>
+				<line>0.0,-0.8,0.4,-0.8</line>
+
+#				3
+				<line>0.6000000000000001,0.0,1.0,0.0</line>
+				<line>1.0,0.0,1.0,-0.8</line>
+				<line>0.6000000000000001,-0.4,1.0,-0.4</line>
+				<line>0.6000000000000001,-0.8,1.0,-0.8</line>
+			</offset>
+
+#			Y7/O7
+			<offset>
+				<point>-6.0,-2.1</point>
+
+#				Y
+				<line>0.0,0.0,0.2,-0.4</line>
+				<line>0.4,0.0,0.2,-0.4</line>
+				<line>0.2,-0.4,0.2,-0.8</line>
+
+#				7
+				<line>0.6000000000000001,0.0,1.0,0.0</line>
+				<line>1.0,0.0,0.6000000000000001,-0.8</line>
+
+#				/
+				<line>1.6,0.0,1.2000000000000002,-0.8</line>
+
+#				0
+				<line>1.8000000000000003,0.0,2.2,0.0</line>
+				<line>2.2,0.0,2.2,-0.8</line>
+				<line>2.2,-0.8,1.8000000000000003,-0.8</line>
+				<line>1.8000000000000003,-0.8,1.8000000000000003,0.0</line>
+
+#				7
+				<line>2.4000000000000004,0.0,2.8000000000000003,0.0</line>
+				<line>2.8000000000000003,0.0,2.4000000000000004,-0.8</line>
+			</offset>
+
+#			GND
+			<offset>
+				<point>-6.0,-3.1</point>
+
+#				G
+				<line>0.4,0.0,0.0,0.0</line>
+				<line>0.0,0.0,0.0,-0.8</line>
+				<line>0.0,-0.8,0.4,-0.8</line>
+				<line>0.4,-0.8,0.4,-0.4</line>
+				<line>0.4,-0.4,0.2,-0.4</line>
+
+#				N
+				<line>0.6000000000000001,-0.8,0.6000000000000001,0.0</line>
+				<line>0.6000000000000001,0.0,1.0,-0.8</line>
+				<line>1.0,-0.8,1.0,0.0</line>
+
+#				D
+				<line>1.2000000000000002,0.0,1.4000000000000001,0.0</line>
+				<line>1.4000000000000001,0.0,1.6,-0.2</line>
+				<line>1.6,-0.2,1.6,-0.6000000000000001</line>
+				<line>1.6,-0.6000000000000001,1.4000000000000001,-0.8</line>
+				<line>1.4000000000000001,-0.8,1.2000000000000002,-0.8</line>
+				<line>1.2000000000000002,-0.8,1.2000000000000002,0.0</line>
+			</offset>
+
+#			Vcc
+			<offset>
+				<point>6.0,3.9</point>
+
+#				V
+				<line>-1.6000000000000003,0.0,-1.4000000000000004,-0.8</line>
+				<line>-1.4000000000000004,-0.8,-1.2000000000000002,0.0</line>
+
+#				c
+				<line>-0.6000000000000002,-0.4,-1.0000000000000002,-0.4</line>
+				<line>-1.0000000000000002,-0.4,-1.0000000000000002,-0.8</line>
+				<line>-1.0000000000000002,-0.8,-0.6000000000000002,-0.8</line>
+
+#				c
+				<line>-1.1102230246251565E-16,-0.4,-0.40000000000000013,-0.4</line>
+				<line>-0.40000000000000013,-0.4,-0.40000000000000013,-0.8</line>
+				<line>-0.40000000000000013,-0.8,-1.1102230246251565E-16,-0.8</line>
+			</offset>
+
+#			O0/Y0
+			<offset>
+				<point>6.0,2.9</point>
+
+#				0
+				<line>-2.8000000000000003,0.0,-2.4000000000000004,0.0</line>
+				<line>-2.4000000000000004,0.0,-2.4000000000000004,-0.8</line>
+				<line>-2.4000000000000004,-0.8,-2.8000000000000003,-0.8</line>
+				<line>-2.8000000000000003,-0.8,-2.8000000000000003,0.0</line>
+
+#				0
+				<line>-2.2,0.0,-1.8000000000000003,0.0</line>
+				<line>-1.8000000000000003,0.0,-1.8000000000000003,-0.8</line>
+				<line>-1.8000000000000003,-0.8,-2.2,-0.8</line>
+				<line>-2.2,-0.8,-2.2,0.0</line>
+
+#				/
+				<line>-1.2000000000000002,0.0,-1.6,-0.8</line>
+
+#				Y
+				<line>-1.0,0.0,-0.8,-0.4</line>
+				<line>-0.6,0.0,-0.8,-0.4</line>
+				<line>-0.8,-0.4,-0.8,-0.8</line>
+
+#				0
+				<line>-0.3999999999999999,0.0,1.1102230246251565E-16,0.0</line>
+				<line>1.1102230246251565E-16,0.0,1.1102230246251565E-16,-0.8</line>
+				<line>1.1102230246251565E-16,-0.8,-0.3999999999999999,-0.8</line>
+				<line>-0.3999999999999999,-0.8,-0.3999999999999999,0.0</line>
+			</offset>
+
+#			O1/Y1
+			<offset>
+				<point>6.0,1.9</point>
+
+#				0
+				<line>-2.0,0.0,-1.6,0.0</line>
+				<line>-1.6,0.0,-1.6,-0.8</line>
+				<line>-1.6,-0.8,-2.0,-0.8</line>
+				<line>-2.0,-0.8,-2.0,0.0</line>
+
+#				1
+				<line>-1.4,0.0,-1.4,-0.8</line>
+
+#				/
+				<line>-0.7999999999999999,0.0,-1.2,-0.8</line>
+
+#				Y
+				<line>-0.5999999999999999,0.0,-0.39999999999999986,-0.4</line>
+				<line>-0.19999999999999984,0.0,-0.39999999999999986,-0.4</line>
+				<line>-0.39999999999999986,-0.4,-0.39999999999999986,-0.8</line>
+
+#				1
+				<line>2.220446049250313E-16,0.0,2.220446049250313E-16,-0.8</line>
+			</offset>
+
+#			O2/Y2
+			<offset>
+				<point>6.0,0.9</point>
+
+#				0
+				<line>-2.8000000000000003,0.0,-2.4000000000000004,0.0</line>
+				<line>-2.4000000000000004,0.0,-2.4000000000000004,-0.8</line>
+				<line>-2.4000000000000004,-0.8,-2.8000000000000003,-0.8</line>
+				<line>-2.8000000000000003,-0.8,-2.8000000000000003,0.0</line>
+
+#				2
+				<line>-2.2,0.0,-1.8000000000000003,0.0</line>
+				<line>-1.8000000000000003,0.0,-1.8000000000000003,-0.4</line>
+				<line>-1.8000000000000003,-0.4,-2.2,-0.4</line>
+				<line>-2.2,-0.4,-2.2,-0.8</line>
+				<line>-2.2,-0.8,-1.8000000000000003,-0.8</line>
+
+#				/
+				<line>-1.2000000000000002,0.0,-1.6,-0.8</line>
+
+#				Y
+				<line>-1.0,0.0,-0.8,-0.4</line>
+				<line>-0.6,0.0,-0.8,-0.4</line>
+				<line>-0.8,-0.4,-0.8,-0.8</line>
+
+#				2
+				<line>-0.3999999999999999,0.0,1.1102230246251565E-16,0.0</line>
+				<line>1.1102230246251565E-16,0.0,1.1102230246251565E-16,-0.4</line>
+				<line>1.1102230246251565E-16,-0.4,-0.3999999999999999,-0.4</line>
+				<line>-0.3999999999999999,-0.4,-0.3999999999999999,-0.8</line>
+				<line>-0.3999999999999999,-0.8,1.1102230246251565E-16,-0.8</line>
+			</offset>
+
+#			O3/Y3
+			<offset>
+				<point>6.0,-0.09999999999999998</point>
+
+#				0
+				<line>-2.8000000000000003,0.0,-2.4000000000000004,0.0</line>
+				<line>-2.4000000000000004,0.0,-2.4000000000000004,-0.8</line>
+				<line>-2.4000000000000004,-0.8,-2.8000000000000003,-0.8</line>
+				<line>-2.8000000000000003,-0.8,-2.8000000000000003,0.0</line>
+
+#				3
+				<line>-2.2,0.0,-1.8000000000000003,0.0</line>
+				<line>-1.8000000000000003,0.0,-1.8000000000000003,-0.8</line>
+				<line>-2.2,-0.4,-1.8000000000000003,-0.4</line>
+				<line>-2.2,-0.8,-1.8000000000000003,-0.8</line>
+
+#				/
+				<line>-1.2000000000000002,0.0,-1.6,-0.8</line>
+
+#				Y
+				<line>-1.0,0.0,-0.8,-0.4</line>
+				<line>-0.6,0.0,-0.8,-0.4</line>
+				<line>-0.8,-0.4,-0.8,-0.8</line>
+
+#				3
+				<line>-0.3999999999999999,0.0,1.1102230246251565E-16,0.0</line>
+				<line>1.1102230246251565E-16,0.0,1.1102230246251565E-16,-0.8</line>
+				<line>-0.3999999999999999,-0.4,1.1102230246251565E-16,-0.4</line>
+				<line>-0.3999999999999999,-0.8,1.1102230246251565E-16,-0.8</line>
+			</offset>
+
+#			O4/Y4
+			<offset>
+				<point>6.0,-1.1</point>
+
+#				0
+				<line>-2.8000000000000003,0.0,-2.4000000000000004,0.0</line>
+				<line>-2.4000000000000004,0.0,-2.4000000000000004,-0.8</line>
+				<line>-2.4000000000000004,-0.8,-2.8000000000000003,-0.8</line>
+				<line>-2.8000000000000003,-0.8,-2.8000000000000003,0.0</line>
+
+#				4
+				<line>-2.2,0.0,-2.2,-0.4</line>
+				<line>-2.2,-0.4,-1.8000000000000003,-0.4</line>
+				<line>-1.8000000000000003,0.0,-1.8000000000000003,-0.8</line>
+
+#				/
+				<line>-1.2000000000000002,0.0,-1.6,-0.8</line>
+
+#				Y
+				<line>-1.0,0.0,-0.8,-0.4</line>
+				<line>-0.6,0.0,-0.8,-0.4</line>
+				<line>-0.8,-0.4,-0.8,-0.8</line>
+
+#				4
+				<line>-0.3999999999999999,0.0,-0.3999999999999999,-0.4</line>
+				<line>-0.3999999999999999,-0.4,1.1102230246251565E-16,-0.4</line>
+				<line>1.1102230246251565E-16,0.0,1.1102230246251565E-16,-0.8</line>
+			</offset>
+
+#			O5/Y5
+			<offset>
+				<point>6.0,-2.1</point>
+
+#				0
+				<line>-2.8000000000000003,0.0,-2.4000000000000004,0.0</line>
+				<line>-2.4000000000000004,0.0,-2.4000000000000004,-0.8</line>
+				<line>-2.4000000000000004,-0.8,-2.8000000000000003,-0.8</line>
+				<line>-2.8000000000000003,-0.8,-2.8000000000000003,0.0</line>
+
+#				5
+				<line>-1.8000000000000003,0.0,-2.2,0.0</line>
+				<line>-2.2,0.0,-2.2,-0.4</line>
+				<line>-2.2,-0.4,-1.8000000000000003,-0.4</line>
+				<line>-1.8000000000000003,-0.4,-1.8000000000000003,-0.8</line>
+				<line>-1.8000000000000003,-0.8,-2.2,-0.8</line>
+
+#				/
+				<line>-1.2000000000000002,0.0,-1.6,-0.8</line>
+
+#				Y
+				<line>-1.0,0.0,-0.8,-0.4</line>
+				<line>-0.6,0.0,-0.8,-0.4</line>
+				<line>-0.8,-0.4,-0.8,-0.8</line>
+
+#				5
+				<line>1.1102230246251565E-16,0.0,-0.3999999999999999,0.0</line>
+				<line>-0.3999999999999999,0.0,-0.3999999999999999,-0.4</line>
+				<line>-0.3999999999999999,-0.4,1.1102230246251565E-16,-0.4</line>
+				<line>1.1102230246251565E-16,-0.4,1.1102230246251565E-16,-0.8</line>
+				<line>1.1102230246251565E-16,-0.8,-0.3999999999999999,-0.8</line>
+			</offset>
+
+#			O6/Y6
+			<offset>
+				<point>6.0,-3.1</point>
+
+#				0
+				<line>-2.8000000000000003,0.0,-2.4000000000000004,0.0</line>
+				<line>-2.4000000000000004,0.0,-2.4000000000000004,-0.8</line>
+				<line>-2.4000000000000004,-0.8,-2.8000000000000003,-0.8</line>
+				<line>-2.8000000000000003,-0.8,-2.8000000000000003,0.0</line>
+
+#				6
+				<line>-1.8000000000000003,0.0,-2.2,0.0</line>
+				<line>-2.2,0.0,-2.2,-0.8</line>
+				<line>-2.2,-0.8,-1.8000000000000003,-0.8</line>
+				<line>-1.8000000000000003,-0.8,-1.8000000000000003,-0.4</line>
+				<line>-1.8000000000000003,-0.4,-2.2,-0.4</line>
+
+#				/
+				<line>-1.2000000000000002,0.0,-1.6,-0.8</line>
+
+#				Y
+				<line>-1.0,0.0,-0.8,-0.4</line>
+				<line>-0.6,0.0,-0.8,-0.4</line>
+				<line>-0.8,-0.4,-0.8,-0.8</line>
+
+#				6
+				<line>1.1102230246251565E-16,0.0,-0.3999999999999999,0.0</line>
+				<line>-0.3999999999999999,0.0,-0.3999999999999999,-0.8</line>
+				<line>-0.3999999999999999,-0.8,1.1102230246251565E-16,-0.8</line>
+				<line>1.1102230246251565E-16,-0.8,1.1102230246251565E-16,-0.4</line>
+				<line>1.1102230246251565E-16,-0.4,-0.3999999999999999,-0.4</line>
+			</offset>
+
+#			3
+			<line>-3.099999999999999,0.4,-2.6999999999999993,0.4</line>
+			<line>-2.6999999999999993,0.4,-2.6999999999999993,-0.4</line>
+			<line>-3.099999999999999,0.0,-2.6999999999999993,0.0</line>
+			<line>-3.099999999999999,-0.4,-2.6999999999999993,-0.4</line>
+
+#			x
+			<line>-2.499999999999999,0.0,-2.099999999999999,-0.4</line>
+			<line>-2.099999999999999,0.0,-2.499999999999999,-0.4</line>
+
+#			8
+			<line>-1.899999999999999,0.4,-1.899999999999999,-0.4</line>
+			<line>-1.4999999999999991,0.4,-1.4999999999999991,-0.4</line>
+			<line>-1.899999999999999,0.4,-1.4999999999999991,0.4</line>
+			<line>-1.899999999999999,0.0,-1.4999999999999991,0.0</line>
+			<line>-1.899999999999999,-0.4,-1.4999999999999991,-0.4</line>
+
+#			D
+			<line>-0.8999999999999989,0.4,-0.6999999999999988,0.4</line>
+			<line>-0.6999999999999988,0.4,-0.4999999999999989,0.2</line>
+			<line>-0.4999999999999989,0.2,-0.4999999999999989,-0.20000000000000007</line>
+			<line>-0.4999999999999989,-0.20000000000000007,-0.6999999999999988,-0.4</line>
+			<line>-0.6999999999999988,-0.4,-0.8999999999999989,-0.4</line>
+			<line>-0.8999999999999989,-0.4,-0.8999999999999989,0.4</line>
+
+#			e
+			<line>0.1000000000000012,-0.4,-0.2999999999999988,-0.4</line>
+			<line>-0.2999999999999988,-0.4,-0.2999999999999988,0.0</line>
+			<line>-0.2999999999999988,0.0,0.1000000000000012,0.0</line>
+			<line>0.1000000000000012,0.0,0.1000000000000012,-0.20000000000000007</line>
+			<line>0.1000000000000012,-0.20000000000000007,-0.2999999999999988,-0.20000000000000007</line>
+
+#			c
+			<line>0.7000000000000013,0.0,0.30000000000000127,0.0</line>
+			<line>0.30000000000000127,0.0,0.30000000000000127,-0.4</line>
+			<line>0.30000000000000127,-0.4,0.7000000000000013,-0.4</line>
+
+#			o
+			<line>0.9000000000000014,0.0,1.3000000000000014,0.0</line>
+			<line>1.3000000000000014,0.0,1.3000000000000014,-0.4</line>
+			<line>1.3000000000000014,-0.4,0.9000000000000014,-0.4</line>
+			<line>0.9000000000000014,-0.4,0.9000000000000014,0.0</line>
+
+#			d
+			<line>1.9000000000000012,0.4,1.9000000000000012,-0.4</line>
+			<line>1.9000000000000012,0.0,1.5000000000000013,0.0</line>
+			<line>1.5000000000000013,0.0,1.5000000000000013,-0.4</line>
+			<line>1.5000000000000013,-0.4,1.9000000000000012,-0.4</line>
+
+#			e
+			<line>2.5000000000000013,-0.4,2.1000000000000014,-0.4</line>
+			<line>2.1000000000000014,-0.4,2.1000000000000014,0.0</line>
+			<line>2.1000000000000014,0.0,2.5000000000000013,0.0</line>
+			<line>2.5000000000000013,0.0,2.5000000000000013,-0.20000000000000007</line>
+			<line>2.5000000000000013,-0.20000000000000007,2.1000000000000014,-0.20000000000000007</line>
+
+#			r
+			<line>2.7000000000000015,-0.4,2.7000000000000015,0.0</line>
+			<line>2.7000000000000015,0.0,3.1000000000000014,0.0</line>
 		</shape>
 	</gate>
 </library>
