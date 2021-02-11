@@ -8,7 +8,7 @@
 
 
 // Uncomment to use
-#define _MSG_
+//#define _MSG_
 #ifdef _MSG_
 #define _MSGGUI_
 #define DBGID "CL_Msg "

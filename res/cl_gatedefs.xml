@@ -4660,9 +4660,8 @@
 			
 			<circle>-4.5,-3.9,0.2,24</circle>
 			
-			
 		</shape>
-	</gate>	
+	</gate>
 </library>
 <library> <name> 04  - Connect & Other</name>
 	<gate> <name>AA_LABEL</name>
