@@ -174,7 +174,9 @@ vector < wireConnection > guiWire::getConnections() {
 }
 
 void guiWire::draw(bool color) {
-	if (connectPoints.size() < 2) return;
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// To draw orphans vertexpoints is size is 1
+	if (connectPoints.size() < 1) return;
 
 	GLint oldStipple = 0; // The old line stipple pattern, if needed.
 	GLint oldRepeat = 0;  // The old line stipple repeat pattern, if needed.
@@ -1167,7 +1169,7 @@ void guiWire::generateRenderInfo() {
 	renderInfo.lineSegments.clear();
 	renderInfo.crossPoints.clear();
 
-	// gate connection points
+	// gate connection points	
 	for (unsigned int i = 0; i < connectPoints.size(); i++) {
 		connectPoints[i].cGate->getHotspotCoords(connectPoints[i].connection, x, y);
 		x = Round(x);
@@ -1233,7 +1235,7 @@ void guiWire::generateRenderInfo() {
 	// Put junctions in components pins in the extrem of the segment
 	int* Nconex = new int[renderInfo.vertexPoints.size()];
 	for (unsigned int i = 0; i < renderInfo.vertexPoints.size(); i++)
-	{
+	{		
 		xv = renderInfo.vertexPoints[i].x;
 		yv = renderInfo.vertexPoints[i].y;
 		Nconex[i] = 0;

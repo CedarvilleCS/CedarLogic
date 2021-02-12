@@ -830,12 +830,9 @@ string LibraryParse::getGateGUIType( string gateName ) {
 bool LibraryParse::CreateDynamicGate(string type) {
 	if (gates.find(type) == gates.end()) {
 		ostringstream oss;
-		if (type == "@@_NOT_FOUND") {			// @@_NOT_FOUND
+		if (type == "@@_NOT_FOUND") {							// @@_NOT_FOUND
 			oss << "<library><name>Deprecated</name>";
 			oss << "<gate><name>@@_NOT_FOUND</name><caption>Not Found</caption>";
-			//oss << "<logic_type>NODE</logic_type>";
-			//oss << "<input><name>N_IN0</name><point>0,0</point></input>";
-			//oss << "<input><name>HOTSPOT</name><point>0,0</point></input>";
 			oss << "<param_dlg_data><param><type>STRING</type><label>Original name</label>";
 			oss << "<varname>GUI ORIGINAL_NAME</varname></param></param_dlg_data>";
 			oss << "<shape>";

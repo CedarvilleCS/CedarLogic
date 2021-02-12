@@ -276,7 +276,8 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found
 	if (notFound) {
 		wxMessageBox("One or more components has not been found in library.\n\n"
-			"Double click on it to see original component name\n\n"
+			"Double click on it to see original component name\n\n"			
+			"Use 'Connections Points' to see orphans connectinos and remove them\n\n"
 			"When you save this circuit information about connections of these components will be lost.\n\n"
 			, "Not found Error!");
 	}
@@ -449,7 +450,7 @@ void CircuitParse::parseWireToSend( void ) {
 				temp = mParse->readTag();
 				if (temp == "vsegment") isVertical = true;
 				wireSegment newSeg; newSeg.verticalSeg = isVertical;
-				do {
+				do {					
 					// Within segments you have ID, points, connection, and intersection tags
 					temp = mParse->readTag();
 					if (temp == "ID") {					
@@ -489,12 +490,13 @@ void CircuitParse::parseWireToSend( void ) {
 						// Pedro Casanova (casanova@ujaen.es) 2021/01-02
 						// Not found gates don´t connect
 						bool notFound = false;
-						for (unsigned int i = 0; i < notFoundGates.size(); i++) {
-							if (GID == notFoundGates[i]) {
-								notFound = true;
-								break;
+						if (!notFound)
+							for (unsigned int i = 0; i < notFoundGates.size(); i++) {
+								if (GID == notFoundGates[i]) {
+									notFound = true;
+									break;
+								}
 							}
-						}
 						if (!notFound)
 						{
 							wireConnection nwc; nwc.gid = GID; nwc.connection = hsName;
@@ -521,9 +523,8 @@ void CircuitParse::parseWireToSend( void ) {
 
 	// Check to make sure the wire exists before we do things to it
 	if ((gCanvas->getCircuit()->getWires())->find(ids.front()) == (gCanvas->getCircuit()->getWires())->end()) return;
-
 	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setIDs(ids);
-	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setSegmentMap( wireShape );
+	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setSegmentMap(wireShape);
 }
 
 void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsigned int currPage) {
