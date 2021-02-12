@@ -21084,30 +21084,30 @@
 			<line>-3,-1,3,1</line>
 		</shape>		
 	</gate>
-	<gate>
-		<name>%_13_OWIRE</name>
-		<caption>Orthogonal Wire</caption>
-		<param_dlg_data>
-			<param>
-				<type>INT</type>
-				<label>Wire width</label>
-				<varname>GUI WIDTH</varname>
-				<range>1,32</range>
-			</param>
-		</param_dlg_data>
-		<param_dlg_data>
-			<param>
-				<type>INT</type>
-				<label>Wire height</label>
-				<varname>GUI HEIGHT</varname>
-				<range>1,32</range>
-			</param>
-		</param_dlg_data>		
-		<shape>
-			<line>-3,-2,3,-2</line>
-			<line>3,-2,3,2</line>
-		</shape>		
-	</gate>
+#	<gate>
+#		<name>%_13_OWIRE</name>
+#		<caption>Orthogonal Wire</caption>
+#		<param_dlg_data>
+#			<param>
+#				<type>INT</type>
+#				<label>Wire width</label>
+#				<varname>GUI WIDTH</varname>
+#				<range>1,32</range>
+#			</param>
+#		</param_dlg_data>
+#		<param_dlg_data>
+#			<param>
+#				<type>INT</type>
+#				<label>Wire height</label>
+#				<varname>GUI HEIGHT</varname>
+#				<range>1,32</range>
+#			</param>
+#		</param_dlg_data>		
+#		<shape>
+#			<line>-3,-2,3,-2</line>
+#			<line>3,-2,3,2</line>
+#		</shape>		
+#	</gate>
 	<gate>
 		<name>%_14_WIRES</name>
 		<caption>Wires</caption>
