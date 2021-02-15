@@ -10214,6 +10214,277 @@
 			<text>0,-2.5,$C$L</text>
 		</shape>
 	</gate>
+	<gate> <name>AE_DFF_LOW</name>
+		<caption>D Flip Flop - Low Active Reset</caption>
+		<logic_type>REGISTER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<logic_param>NO_HOLD true</logic_param>
+		<logic_param>SYNC_LOAD true</logic_param>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		D
+		<input> <name>IN_0</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,-2</point> 
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		Q
+		<output> <name>OUT_0</name>
+		          <point>3,2</point> 
+		</output>
+		
+#		QNOT
+		<output> <name>OUTINV_0</name>
+		          <point>3,-2</point> 
+		</output>
+
+		<shape>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<line>2,-2,3,-2</line>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,-1.5,-1,-2</line>
+			<line>-2,-2.5,-1,-2</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2,2,-3,2</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3.7,0,-4</line>
+			
+			<circle>0,-3.35,0.35,24</circle>
+
+#			D
+			<text>-1.4,2,D</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+	
+#			CL
+			<text>0,-2.5,$C$L</text>
+		</shape>
+	</gate>
+	<gate> <name>AE_DFF_LOW_NT</name>
+		<caption>D Flip Flop - Negative Triggered, Low Active Reset</caption>
+		<logic_type>REGISTER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<logic_param>NO_HOLD true</logic_param>
+		<logic_param>SYNC_LOAD true</logic_param>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		D
+		<input> <name>IN_0</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,-2</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		Q
+		<output> <name>OUT_0</name>
+		          <point>3,2</point> 
+		</output>
+		
+#		QNOT
+		<output> <name>OUTINV_0</name>
+		          <point>3,-2</point> 
+		</output>
+
+		<shape>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<line>2,-2,3,-2</line>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,-1.5,-1,-2</line>
+			<line>-2,-2.5,-1,-2</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2,2,-3,2</line>
+			<line>-2.7,-2,-3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3.7,0,-4</line>
+			
+			<circle>0,-3.35,0.35,24</circle>
+			<circle>-2.35,-2,0.35,24</circle>
+
+#			D
+			<text>-1.4,2,D</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+	
+#			CL
+			<text>0,-2.5,$C$L</text>
+		</shape>
+	</gate>
+	<gate> <name>AE_DFF_NT</name>
+		<caption>D Flip Flop - Negative Triggered, High Active Reset</caption>
+		<logic_type>REGISTER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<logic_param>NO_HOLD true</logic_param>
+		<logic_param>SYNC_LOAD true</logic_param>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		D
+		<input> <name>IN_0</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,-2</point>
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 			
+		</input>
+
+#		Q
+		<output> <name>OUT_0</name>
+		          <point>3,2</point> 
+		</output>
+		
+#		QNOT
+		<output> <name>OUTINV_0</name>
+		          <point>3,-2</point> 
+		</output>
+
+		<shape>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<line>2,-2,3,-2</line>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,-1.5,-1,-2</line>
+			<line>-2,-2.5,-1,-2</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2,2,-3,2</line>
+			<line>-2.7,-2,-3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3,0,-4</line>
+			
+			<circle>-2.35,-2,0.35,24</circle>
+
+#			D
+			<text>-1.4,2,D</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+	
+#			CL
+			<text>0,-2.5,$C$L</text>
+		</shape>
+	</gate>
+	<gate> <name>CD_TFF_LOW</name>
+		<caption>T Flip Flop - Low Active Reset</caption>
+		<logic_type>TFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		T
+		<input> <name>T</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,-2</point>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+			<inverted>true</inverted> 
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+		
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,-1.5,-1,-2</line>
+			<line>-2,-2.5,-1,-2</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3.7,0,-4</line>
+			
+			<circle>0,-3.35,0.35,24</circle>
+
+#			T
+			<text>-1.4,2,T</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+			
+#			CL
+			<text>0,-2.5,$C$L</text>
+
+		</shape>
+	</gate>
 	<gate> <name>AE_DFF_SCP</name>
 		<caption>D Flip Flop</caption>
 		<logic_type>REGISTER</logic_type>
@@ -10769,7 +11040,7 @@
 		</shape>
 	</gate>
 	<gate> <name>BA_JKFF_NT</name>
-		<caption>JK Flip Flop - Negative Triggered,High Active Set/Reset</caption>
+		<caption>JK Flip Flop - Negative Triggered, High Active Set/Reset</caption>
 		<logic_type>JKFF</logic_type>
 		<logic_param>SYNC_SET false</logic_param>
 		<logic_param>SYNC_CLEAR false</logic_param>
@@ -10853,7 +11124,7 @@
 		</shape>
 	</gate>
 	<gate> <name>BE_JKFF_LOW_NT</name>
-		<caption>JK Flip Flop - Negative Triggered,Low Active Set/Reset</caption>
+		<caption>JK Flip Flop - Negative Triggered, Low Active Set/Reset</caption>
 		<logic_type>JKFF</logic_type>
 		<logic_param>SYNC_SET false</logic_param>
 		<logic_param>SYNC_CLEAR false</logic_param>
@@ -10939,6 +11210,224 @@
 			<circle>0,-3.35,0.35,24</circle>
 			<circle>-2.35,0,0.35,24</circle>
 
+		</shape>
+	</gate>
+	<gate> <name>BF_JKFF_LOW</name>
+		<caption>JK Flip Flop - Low Active Reset</caption>
+		<logic_type>JKFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		J
+		<input> <name>J</name>
+		          <point>-3,2</point> 
+		</input>
+#		K
+		<input> <name>K</name>
+		          <point>-3,-2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,0</point> 
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,0.5,-1,0</line>
+			<line>-2,-0.5,-1,0</line>			
+
+			<line>-2,2,-3,2</line>		
+			<line>-2,0,-3,0</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3.7,0,-4</line>
+			
+			<circle>0,-3.35,0.35,24</circle>
+
+#			J
+			<text>-1.4,2,J</text>
+
+#			K
+			<text>-1.4,-2,K</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+
+#			CL
+			<text>0,-2.5,$C$L</text>
+		</shape>
+	</gate>
+	<gate> <name>BF_JKFF_LOW_NT</name>
+		<caption>JK Flip Flop - Negative Triggered, Low Active Reset</caption>
+		<logic_type>JKFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		J
+		<input> <name>J</name>
+		          <point>-3,2</point> 
+		</input>
+#		K
+		<input> <name>K</name>
+		          <point>-3,-2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,0</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,0.5,-1,0</line>
+			<line>-2,-0.5,-1,0</line>			
+
+			<line>-2,2,-3,2</line>		
+			<line>-2.7,0,-3,0</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3.7,0,-4</line>
+			
+			<circle>-2.35,0,0.35,24</circle>
+			<circle>0,-3.35,0.35,24</circle>
+
+#			J
+			<text>-1.4,2,J</text>
+
+#			K
+			<text>-1.4,-2,K</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+
+#			CL
+			<text>0,-2.5,$C$L</text>
+		</shape>
+	</gate>
+	<gate> <name>BF_JKFF_NT</name>
+		<caption>JK Flip Flop - Negative Triggered, High Active Reset</caption>
+		<logic_type>JKFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		J
+		<input> <name>J</name>
+		          <point>-3,2</point> 
+		</input>
+#		K
+		<input> <name>K</name>
+		          <point>-3,-2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,0</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,0.5,-1,0</line>
+			<line>-2,-0.5,-1,0</line>			
+
+			<line>-2,2,-3,2</line>		
+			<line>-2.7,0,-3,0</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3,0,-4</line>
+			
+			<circle>-2.35,0,0.35,24</circle>
+
+#			J
+			<text>-1.4,2,J</text>
+
+#			K
+			<text>-1.4,-2,K</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+
+#			CL
+			<text>0,-2.5,$C$L</text>
 		</shape>
 	</gate>
 	<gate> <name>BF_JKFF_SCP</name>
@@ -11401,6 +11890,11 @@
 		          <point>3,2</point> 
 		</output>
 		
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
 		<shape>
 #			boby
 			<outline>2,3,-2,3</outline>
@@ -11414,6 +11908,7 @@
 
 			<line>-2,2,-3,2</line>
 			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
 			<line>0,-3,0,-4</line>
 
@@ -11430,7 +11925,139 @@
 			<text>0,-2.5,$C$L</text>
 
 		</shape>
-	</gate>	
+	</gate>
+	<gate> <name>CD_TFF_LOW_NT</name>
+		<caption>T Flip Flop - Negative Triggered, Low Active Reset</caption>
+		<logic_type>TFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		T
+		<input> <name>T</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,-2</point>
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+		
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>		
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,-1.5,-1,-2</line>
+			<line>-2,-2.5,-1,-2</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2.7,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3.7,0,-4</line>
+			
+			<circle>-2.35,-2,0.35,24</circle>
+			<circle>0,-3.35,0.35,24</circle>
+
+#			T
+			<text>-1.4,2,T</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+			
+#			CL
+			<text>0,-2.5,$C$L</text>
+
+		</shape>
+	</gate>
+	<gate> <name>CD_TFF_NT</name>
+		<caption>T Flip Flop - Negative Triggered, High Active Reset</caption>
+		<logic_type>TFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		T
+		<input> <name>T</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,-2</point>
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+		
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,-1.5,-1,-2</line>
+			<line>-2,-2.5,-1,-2</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2.7,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3,0,-4</line>
+			
+			<circle>-2.35,-2,0.35,24</circle>
+
+#			T
+			<text>-1.4,2,T</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+			
+#			CL
+			<text>0,-2.5,$C$L</text>
+
+		</shape>
+	</gate>
 	<gate> <name>CD_TFF_SCP</name>
 		<caption>T Flip Flop</caption>
 		<logic_type>TFF</logic_type>
@@ -20714,6 +21341,14 @@
 		</param_dlg_data>
 		<param_dlg_data>
 			<param>
+				<type>OPTION</type>
+				<label>Separation</label>
+				<varname>GUI SEPARATION</varname>
+				<options>wide narrow</options>
+			</param>
+		</param_dlg_data>		
+		<param_dlg_data>
+			<param>
 				<type>BOOL</type>
 				<label>No link neither inverter</label>
 				<varname>GUI NO_LINK_INVERTER</varname>
@@ -21084,32 +21719,8 @@
 			<line>-3,-1,3,1</line>
 		</shape>		
 	</gate>
-#	<gate>
-#		<name>%_13_OWIRE</name>
-#		<caption>Orthogonal Wire</caption>
-#		<param_dlg_data>
-#			<param>
-#				<type>INT</type>
-#				<label>Wire width</label>
-#				<varname>GUI WIDTH</varname>
-#				<range>1,32</range>
-#			</param>
-#		</param_dlg_data>
-#		<param_dlg_data>
-#			<param>
-#				<type>INT</type>
-#				<label>Wire height</label>
-#				<varname>GUI HEIGHT</varname>
-#				<range>1,32</range>
-#			</param>
-#		</param_dlg_data>		
-#		<shape>
-#			<line>-3,-2,3,-2</line>
-#			<line>3,-2,3,2</line>
-#		</shape>		
-#	</gate>
 	<gate>
-		<name>%_14_WIRES</name>
+		<name>%_16_WIRES</name>
 		<caption>Wires</caption>
 		<param_dlg_data>
 			<param>
@@ -21142,8 +21753,7 @@
 				<varname>GUI ROTATION</varname>
 				<options>vertical horizontal</options>
 			</param>
-		</param_dlg_data>
-		
+		</param_dlg_data>		
 		<shape>			
 			<line>0,0,0,-4</line>
 			<line>-0.5,0,-0.5,-4</line>
@@ -21159,6 +21769,14 @@
 				<label>Bus lines</label>
 				<varname>GUI INPUT_BITS</varname>
 				<range>2,64</range>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>OPTION</type>
+				<label>Separation</label>
+				<varname>GUI SEPARATION</varname>
+				<options>wide narrow</options>
 			</param>
 		</param_dlg_data>		
 		<shape>
@@ -21264,6 +21882,48 @@
 			<line>-0.28,-0.25,-0.27,-0.17</line>
 			<line>-0.27,-0.17,-0.25,-0.09</line>
 			<line>-0.25,-0.09,-0.25,0</line>	
+		</shape>
+	</gate>
+	<gate> <name>%_42_FLIPFLOP</name>
+		<caption>Flip-Flop</caption>
+		<param_dlg_data>
+			<param>
+				<type>OPTION</type>
+				<label>Flip-Flop type</label>
+				<varname>GUI FF_TYPE</varname>
+				<options>D JK T</options>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>OPTION</type>
+				<label>Clock active edge</label>
+				<varname>GUI EDGE_CLOCK</varname>
+				<options>rising falling</options>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>OPTION</type>
+				<label>Preset and Clear signals</label>
+				<varname>GUI PRESET_CLEAR</varname>
+				<options>both clear none</options>
+			</param>
+		</param_dlg_data>
+		<param_dlg_data>
+			<param>
+				<type>OPTION</type>
+				<label>Preset and Clear active level</label>
+				<varname>GUI LEVEL_PR_CL</varname>
+				<options>low high</options>
+			</param>
+		</param_dlg_data>
+		<shape>
+			<outline>-2,-2,-2,2</outline>
+			<outline>-2,2,2,2</outline>
+			<outline>2,2,2,-2</outline>
+			<outline>2,-2,-2,-2</outline>
+			<text>0,0,FF</text>
 		</shape>
 	</gate>
 	<gate> <name>%_41_BLQ</name>

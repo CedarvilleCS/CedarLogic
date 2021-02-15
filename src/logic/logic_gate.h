@@ -154,7 +154,7 @@ protected:
 	void  setInputInverted( string inputID, bool newInv = true ) {
 		if(inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setInputState() - Invalid input name.");
-			_MSGNC(false, "ASSERT END 1.h")
+			_MSGNC(false, "ASSERT END 1.h");	//####
 			assert( false );
 			return;
 		}
@@ -167,7 +167,7 @@ protected:
 	void  setInputPullUp(string inputID, bool newPU = true) {
 		if (inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setInputState() - Invalid input name.");
-			_MSGNC(false, "ASSERT END 2.h")
+			_MSGNC(false, "ASSERT END 2.h");	//####
 			assert(false);
 			return;
 		}
@@ -180,7 +180,7 @@ protected:
 	void  setInputPullDown(string inputID, bool newPD = true) {
 		if (inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setInputState() - Invalid input name.");
-			_MSGNC(false, "ASSERT END 3.h")
+			_MSGNC(false, "ASSERT END 3.h");	//####
 			assert(false);
 			return;
 		}
@@ -193,7 +193,7 @@ protected:
 	void  setOutputInverted( string outputID, bool newInv = true ) {
 		if(outputList.find(outputID) == outputList.end()) {
 			WARNING("Gate::setOutputState() - Invalid output name.");
-			_MSGNC(false, "ASSERT END 4.h")
+			_MSGNC(false, "ASSERT END 4.h");	//####
 			assert( false );
 			return;
 		}
@@ -216,14 +216,14 @@ protected:
 	void  setOutputEnablePin( string outputID, string inputID ) {
 		if(outputList.find(outputID) == outputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid output name.");
-			_MSGNC(false, "ASSERT END 5.h")
+			_MSGNC(false, "ASSERT END 5.h");	//####
 			assert( false );
 			return;
 		}
 
 		if(inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid input name.");
-			_MSGNC(false, "ASSERT END 6.h")
+			_MSGNC(false, "ASSERT END 6.h");	//####
 			assert( false );
 			return;
 		}

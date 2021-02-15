@@ -19,7 +19,7 @@
 #include "commands.h"
 #include <sstream>
 
-#include "guiWire.h"		//##
+#include "guiWire.h"		//## Test
 
 using namespace std;
 
@@ -255,7 +255,7 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 				wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
 				return;
 			}
-		} else if (gGate->getLibraryGateName() == "%_14_WIRES") {
+		} else if (gGate->getLibraryGateName() == "%_16_WIRES") {
 			createGatesStruct();
 		} else {
 			replaceGate();
@@ -272,7 +272,7 @@ bool paramDialog::validateData() {
 	LibraryGate* gateDef = &(wxGetApp().libraries[gGate->getLibraryName()][gGate->getLibraryGateName()]);
 	for (unsigned int i = 0; i < gateDef->dlgParams.size(); i++) {
 		if (gateDef->dlgParams[i].type == "FLOAT") {
-			
+
 		}
 	}
 	return retVal;
@@ -318,7 +318,7 @@ void paramDialog::replaceWire(string pValue) {
 	gGate->unselect();
 	cmdDeleteGate* deletegate = new cmdDeleteGate(gCircuit, gCircuit->gCanvas, gGate->getID());
 	gCircuit->GetCommandProcessor()->Submit((wxCommand*)deletegate);
-		
+
 }
 
 // Pedro Casanova (casanova@ujaen.es) 2021/01-02
@@ -332,24 +332,27 @@ void paramDialog::replaceGate() {
 	gGate->unselect();
 	if (gGate->getLibraryGateName() == "%_11_WIRE") {
 		type << "@@_WIRE_" << gParamList.at("LENGTH");
-	} else 	if (gGate->getLibraryGateName() == "%_13_OWIRE") {
-		type << "@@_OWIRE_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");
-	} else 	if (gGate->getLibraryGateName() == "%_14_NOWIRE") {
+	/*} else if (gGate->getLibraryGateName() == "%_13_OWIRE") {
+			type << "@@_OWIRE_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");*/
+	} else if (gGate->getLibraryGateName() == "%_14_NOWIRE") {
 		type << "@@_NOWIRE_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");
-	} else 	if (gGate->getLibraryGateName() == "%_17_BUSEND") {
-		type << "@@_BUSEND_" << gParamList.at("INPUT_BITS");
-	} else 	if (gGate->getLibraryGateName() == "%_21_LAND") {
+	} else if (gGate->getLibraryGateName() == "%_17_BUSEND") {
+		type << "@@_BUSEND" << (gParamList.at("SEPARATION")=="narrow" ? "N_" : "_") << gParamList.at("INPUT_BITS");
+	} else if (gGate->getLibraryGateName() == "%_21_LAND") {
 		type << "@@_LAND_" << gParamList.at("INPUT_BITS");
-	} else 	if (gGate->getLibraryGateName() == "%_24_LOR") {
+	} else if (gGate->getLibraryGateName() == "%_24_LOR") {
 		type << "@@_LOR_" << gParamList.at("INPUT_BITS");
 	} else if (gGate->getLibraryGateName() == "%_41_BLQ") {
 		type << "@@_BLQ_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");
+	} else if (gGate->getLibraryGateName() == "%_42_FLIPFLOP") {
+		type << getFlipFlop();
 	} else if (gGate->getLibraryGateName() == "%_44_CMB") {
 		type << "@@_CMB_" << lParamList.at("INPUT_BITS") << "X" << lParamList.at("OUTPUT_BITS");
 	} else if (gGate->getLibraryGateName() == "%_47_FSM") {
-		type << "@@_FSM_" << ((lParamList.at("ASYNCHRONOUS") == "true") ? "A" : "S") << "_" 
+		type << "@@_FSM_" << ((lParamList.at("ASYNCHRONOUS") == "true") ? "A" : "S") << "_"
 			<< lParamList.at("INPUT_BITS") << "X" << lParamList.at("OUTPUT_BITS");
 	}
+	if (type.str() == "") return;
 	GLfloat x, y;
 	gGate->getGLcoords(x, y);
 	if (!wxGetApp().libParser.CreateDynamicGate(type.str())) return;
@@ -358,6 +361,103 @@ void paramDialog::replaceGate() {
 	gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatecommand);
 
 	gCircuit->getGates()->at(newGID)->select();
+
+}
+
+string paramDialog::getFlipFlop() {
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	bool edgeClock = (gParamList.at("EDGE_CLOCK") == "rising") ? true : false;
+	bool levelPC = (gParamList.at("LEVEL_PR_CL") == "high") ? true : false;
+	string presetClear = gParamList.at("PRESET_CLEAR");
+	string ffType = gParamList.at("FF_TYPE");
+	if (ffType == "D") {
+		if (edgeClock) {
+			if (presetClear=="both") {
+				if (levelPC)
+					return "AB_DFF";
+				else
+					return "AC_DFF_LOW";
+			} else if (presetClear == "clear") {
+				if (levelPC)
+					return "AE_DFF";
+				else
+					return "AE_DFF_LOW";
+			} else
+				return "AE_DFF_SCP";
+		} else {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "AB_DFF_NT";
+				else
+					return "AD_DFF_LOW_NT";
+			} else if (presetClear == "clear") {
+				if (levelPC)
+					return "AE_DFF_NT";
+				else
+					return "AE_DFF_LOW_NT";
+
+			} else
+				return "AE_DFF_NT_SCP";
+		}
+	} else if (ffType == "JK") {
+		if (edgeClock) {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "BA_JKFF";
+				else
+					return "BE_LKFF_LOW";
+			} else if (presetClear == "clear") {
+				if (levelPC)
+					return "BF_JKFF";
+				else
+					return "BF_JKFF_LOW";
+			} else
+				return "BF_JKFF_SCP";
+		} else {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "BA_JKFF_NT";
+				else
+					return "BE_JKFF_LOW_NT";
+			} else if (presetClear == "clear") {
+				if (levelPC)
+					return "BF_JKFF_NT";
+				else
+					return "BF_JKFF_LOW_NT";
+			} else
+				return "BF_JKFF_NT_SCP";
+		}
+	} else if (ffType == "T") {
+		if (edgeClock) {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "CA_TFF";
+				else
+					return "CC_TFF_LOW";
+			} else if (presetClear == "clear") {
+				if (levelPC)
+					return "CD_TFF";
+				else
+					return "CD_TFF_LOW";
+			} else
+				return "CD_TFF_SCP";
+		} else {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "CB_TFF_NT";
+				else
+					return "CC_TFF_LOW_NT";
+			} else if (presetClear == "clear") {
+				if (levelPC)
+					return "CD_TFF_NT";
+				else
+					return "CD_TFF_LOW_NT";
+			} else
+				return "CD_TFF_NT_SCP";
+		}
+	}
+	return "";
+
 
 }
 
@@ -370,7 +470,7 @@ bool paramDialog::createGatesStruct(string *errorMsg) {
 	vector <string> inputNames;
 	unsigned long nOutputs = 0;
 	unsigned long nInputs = 0;
-	if (gGate->getLibraryGateName() != "%_14_WIRES") {
+	if (gGate->getLibraryGateName() != "%_16_WIRES") {
 		if (gGate->getLibraryGateName() == "%_31_GATES") {
 			for (unsigned int i = 1; i <= 8; i++) {
 				ostringstream oss;
@@ -379,14 +479,13 @@ bool paramDialog::createGatesStruct(string *errorMsg) {
 			}
 		}
 		else if (gGate->getLibraryGateName() == "%_34_CIRCUIT") {
-			bool noLinkInverter = (gParamList.at("NO_LINK_INVERTER") == "true") ? true : false;
 			istringstream iss(gParamList.at("INPUT_NAMES"));
 			while (true) {
 				string inputName;
 				iss >> inputName;
 				if (inputName[inputName.length() - 1] == '-') {
 					inputName = inputName.substr(0, inputName.length() - 1);
-					if (noLinkInverter) {
+					if (gParamList.at("NO_LINK_INVERTER") == "true") {
 						ostringstream error;
 						error << "Input '" << inputName << "' can't have '-' sufix";
 						*errorMsg = error.str();

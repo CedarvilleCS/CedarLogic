@@ -224,6 +224,7 @@ bool Gate::setParameter( string paramName, string value ) {
 		return false;
 	} else {
 		WARNING("Gate::setParameter() - Invalid parameter.");
+		_MSGW("Parameter: %s", paramName.c_str());
 		return false;
 	}
 }
@@ -254,7 +255,7 @@ bool Gate::setInputParameter( string inputID, string paramName, string value ) {
 		return true;
 	} else {
 		WARNING("Gate::setInputParameter() - Invalid parameter.");
-		return false;
+		_MSGW("Parameter: %s", paramName.c_str());
 		return false;
 	}
 }
@@ -274,6 +275,7 @@ bool Gate::setOutputParameter( string outputID, string paramName, string value )
 		return true;
 	} else {
 		WARNING("Gate::setOutputParameter() - Invalid parameter.");
+		_MSGW("Parameter: %s", paramName.c_str());
 		return false;
 	}
 }
@@ -286,6 +288,7 @@ string Gate::getParameter( string paramName ) {
 		oss << defaultDelay;
 	} else {
 		WARNING("Gate::getParameter() - Invalid parameter.");
+		_MSGW("Parameter: %s", paramName.c_str());
 	}
 	return oss.str();
 }
@@ -329,7 +332,7 @@ void Gate::declareOutput( string name ) {
 
 // Get the current time in the simulation:
 TimeType Gate::getSimTime( void ) {	
-	_MSGNC(ourCircuit != NULL, "ASSERT END 1")	//####
+	_MSGNC(ourCircuit != NULL, "ASSERT END 1");	//####
 	assert(ourCircuit != NULL);
 	
 	return ourCircuit->getSystemTime();
@@ -337,13 +340,13 @@ TimeType Gate::getSimTime( void ) {
 	
 // Check the state of the named input and return it.
 StateType Gate::getInputState( string inputID ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 2")	//####
+	_MSGNC(ourCircuit != NULL, "ASSERT END 2");	//####
 	assert(ourCircuit != NULL);
 	StateType theState;
 
 	if(inputList.find(inputID) == inputList.end()) {
 		WARNING("Gate::getInputState() - Invalid input name.");
-		_MSGNC(false, "ASSERT END 3")	//####
+		_MSGNC(false, "ASSERT END 3");	//####
 		assert( false );
 		return ZERO;
 	}
@@ -429,7 +432,7 @@ vector< StateType > Gate::getOutputBusWireState(string busName) {
 
 // Get the types of inputs that are represented.
 vector< bool > Gate::groupInputStates( void ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 4")	//####
+	_MSGNC(ourCircuit != NULL, "ASSERT END 4");	//####
 	assert(ourCircuit != NULL);
 
 	vector< bool > groupedInputs(NUM_STATES, false);
@@ -461,7 +464,7 @@ vector< bool > Gate::groupInputStates( void ) {
 	
 // Compare the "this" state with the "last" state and say if this is a rising or falling edge. 
 bool Gate::isRisingEdge( string name ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 5")	//####
+	_MSGNC(ourCircuit != NULL, "ASSERT END 5");	//####
 	assert(ourCircuit != NULL);
 	
 	if( edgeTriggeredLastState.find( name ) == edgeTriggeredLastState.end() ) {
@@ -481,7 +484,7 @@ bool Gate::isRisingEdge( string name ) {
 
 
 bool Gate::isFallingEdge( string name ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 6")	//####
+	_MSGNC(ourCircuit != NULL, "ASSERT END 6");	//####
 	assert(ourCircuit != NULL);
 	
 	if( edgeTriggeredLastState.find( name ) == edgeTriggeredLastState.end() ) {
@@ -504,12 +507,12 @@ bool Gate::isFallingEdge( string name ) {
 // really send the event. Also, log the last sent event so that it can be 
 // repeated later if necessary. 
 void Gate::setOutputState( string outID, StateType newState, TimeType delay ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 7")	//####
+	_MSGNC(ourCircuit != NULL, "ASSERT END 7");	//####
 	assert( ourCircuit != NULL );
 
 	if(outputList.find(outID) == outputList.end()) {
 		WARNING("Gate::setOutputState() - Invalid output name.");
-		_MSGNC(false, "ASSERT END 8")	//####
+		_MSGNC(false, "ASSERT END 8");	//####
 		assert( false );
 		return;
 	}
@@ -2327,7 +2330,7 @@ void Gate_RAM::gateProcess(void) {
 			memory[address] = dataIn;
 			ostringstream oss;
 			oss << "Wroted to the memory thing: Address = " << address << ", data = " << dataIn;
-			WARNING(oss.str());
+			WARNING(oss.str().c_str());
 			//***********************************************************************
 			//Edit by Joshua Lansford 12/31/06
 			//Purpose of edit:  The Cedar-logic ram gate is being expanded to
@@ -3457,7 +3460,6 @@ void Gate_CMB::procFunction(string paramName, string value) {
 					valHex = value[value.length() - i - 1] - 'A' + 10;
 				for (int j = 3; j >= 0; j--) {
 					if (valHex >= pow(2, j)) {
-						//_MSG("1")
 						valHex -= pow(2, j);
 						outputs[4*i+j]= outputs[4*i+j] | (unsigned int)pow(2, nFunction);
 					} else {

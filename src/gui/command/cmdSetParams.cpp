@@ -72,7 +72,6 @@ cmdSetParams::cmdSetParams(string def) : klsCommand(true, "Set Parameter") {
 }
 
 bool cmdSetParams::Do() {
-
 	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return false; // error: gate not found
 	map < string, string >::iterator paramWalk = newLogicParamList.begin();
 	vector < string > dontSendMessages;
@@ -90,11 +89,13 @@ bool cmdSetParams::Do() {
 		if (!found) gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gid, paramWalk->first, paramWalk->second)));
 		paramWalk++;
 	}
+
 	paramWalk = newGUIParamList.begin();
 	while (paramWalk != newGUIParamList.end()) {
 		(*(gCircuit->getGates()))[gid]->setGUIParam(paramWalk->first, paramWalk->second);
 		paramWalk++;
 	}
+
 	// Pedro Casanova (casanova@ujaen.es 2020/04-12
 	// TO, FROM and LINK are valid signal to Oscope
 	if (!fromString && gCircuit->getOscope() != NULL)

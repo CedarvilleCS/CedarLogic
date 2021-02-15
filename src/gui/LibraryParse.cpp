@@ -828,7 +828,8 @@ string LibraryParse::getGateGUIType( string gateName ) {
 // Pedro Casanova (casanova@ujaen.es) 2021/01-02
 // To create dynamics gates (not in library)
 bool LibraryParse::CreateDynamicGate(string type) {
-	if (gates.find(type) == gates.end()) {
+	LibraryGate lgGate;
+	if (!getGate(type, lgGate)) {
 		ostringstream oss;
 		if (type == "@@_NOT_FOUND") {							// @@_NOT_FOUND
 			oss << "<library><name>Deprecated</name>";
@@ -854,7 +855,7 @@ bool LibraryParse::CreateDynamicGate(string type) {
 			for (unsigned int i = 0; i < nBits; i++)
 				oss << "<input><name>N_IN" << i << "</name><point>0," << -0.5f*i << "</point></input>";
 
-			//oss << "<gui_param>LENGTH " << length << "</gui_param>";
+			//##oss << "<gui_param>LENGTH " << length << "</gui_param>";
 			//##oss << "<param_dlg_data><param><type>INT</type><label>Wire length</label>";
 			//##oss << "<varname>GUI LENGTH</varname><range>0,500</range></param></param_dlg_data>";
 
@@ -866,7 +867,7 @@ bool LibraryParse::CreateDynamicGate(string type) {
 
 			oss << "</shape></gate></library>";
 
-		} else if (type.substr(0, 9) == "@@_OWIRE_") {			// @@_OWIRE_WXH
+/*		} else if (type.substr(0, 9) == "@@_OWIRE_") {			// @@_OWIRE_WXH
 			int posX = type.find("X");
 			if (!chkDigits(type.substr(9, posX - 9))) return false;
 			if (!chkDigits(type.substr(posX + 1))) return false;
@@ -891,7 +892,7 @@ bool LibraryParse::CreateDynamicGate(string type) {
 			oss << "<line>" << left << "," << -top << "," << -left << "," << -top << "</line>";
 			oss << "<line>" << -left << "," << -top << "," << -left << "," << top << "</line>";
 			oss << "</shape></gate></library>";
-
+		*/
 		} else if (type.substr(0, 10) == "@@_NOWIRE_") {			// @@_NOWIRE_WXH
 			int posX = type.find("X");
 			if (!chkDigits(type.substr(10, posX - 10))) return false;
@@ -904,7 +905,7 @@ bool LibraryParse::CreateDynamicGate(string type) {
 
 			oss << "<library><name>Hidden</name>";
 			oss << "<gate><name>" << type << "</name>";
-			oss << "<caption>No orthogonal wire width " << width << " " << height << "</caption>";
+			oss << "<caption>No orthogonal wire width " << width << " height" << height << "</caption>";
 			oss << "<logic_type>NODE</logic_type>";
 			oss << "<gui_type>WIRE</gui_type>";
 
@@ -923,9 +924,15 @@ bool LibraryParse::CreateDynamicGate(string type) {
 			}
 			oss << "</shape></gate></library>";
 
-		} else if (type.substr(0, 10) == "@@_BUSEND_") {			// @@_BUSEND_N
-			if (!chkDigits(type.substr(10))) return false;
-			unsigned int nInputs = atoi(type.substr(10).c_str());
+		} else if (type.substr(0, 10) == "@@_BUSEND_" || type.substr(0, 11) == "@@_BUSENDN_") {			// @@_BUSEND_N    @@_BUSENDN_N
+			float separation = -1;
+			unsigned long ini = 10;
+			if (type.substr(0, 11) == "@@_BUSENDN_") {
+				separation = -0.5;
+				ini = 11;
+			}
+			if (!chkDigits(type.substr(ini))) return false;
+			unsigned int nInputs = atoi(type.substr(ini).c_str());
 
 			oss << "<library><name>Hidden</name>";
 			oss << "<gate><name>" << type << "</name>";
@@ -935,18 +942,18 @@ bool LibraryParse::CreateDynamicGate(string type) {
 			oss << "<logic_param>INPUT_BITS " << nInputs << "</logic_param>";
 
 			for (unsigned int i = 0; i < nInputs; i++)
-				oss << "<input><name>IN_" << i << "</name><point>-1,-" << nInputs - i - 1 << "</point></input>";
+				oss << "<input><name>IN_" << i << "</name><point>" << separation << "," << (nInputs - i - 1) * separation << "</point></input>";
 			
 			oss << "<input><name>CNA</name><point>0,0</point><bus>" << nInputs << "</bus></input>";
-			oss << "<input><name>CNB</name><point>0,-" << nInputs - 1 << "</point><bus>" << nInputs << "</bus></input>";
+			oss << "<input><name>CNB</name><point>0," << (nInputs - 1) * separation << "</point><bus>" << nInputs << "</bus></input>";
 
 			oss << "<shape>";
 
 			for (unsigned int i = 0; i < nInputs; i++)
-				oss << "<line>-1,-" << i << ",0,-" << i << "</line>";
+				oss << "<line>"<< separation << "," << i * separation << ",0," << i * separation << "</line>";
 
-			oss << "<busline>0,0,0,-" << nInputs - 1 << "</busline>";
-			oss << "<circle>-0.5,-" << nInputs - 1 << ".4,0.2,24</circle>";
+			oss << "<busline>0,0,0," << (nInputs - 1) * separation << "</busline>";
+			oss << "<circle>" << 0.5 * separation << "," << (nInputs - 1) * separation + 0.4 * separation << "," << -0.2 * separation << ",24</circle>";
 
 			oss << "</shape></gate></library>";
 
@@ -1209,7 +1216,7 @@ bool LibraryParse::CreateDynamicGate(string type) {
 
 		} else
 			return false;
-
+		
 		parseText(oss.str());
 	}
 	return true;

@@ -609,7 +609,7 @@ void Circuit::createEvent( TimeType eventTime, IDType wireID, IDType gateID, con
 
 	ostringstream oss;
 	oss << "Creating event for gate " << gateID << " output " << gateOutputID << " to state " << (int) newState << " at time = " << eventTime << "." << endl;
-	WARNING(oss.str());
+	WARNING(oss.str().c_str());
 
 	// Push the event onto the event queue:
 	eventQueue.push(myEvent);

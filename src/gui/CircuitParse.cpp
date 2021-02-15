@@ -490,12 +490,10 @@ void CircuitParse::parseWireToSend( void ) {
 						// Pedro Casanova (casanova@ujaen.es) 2021/01-02
 						// Not found gates don´t connect
 						bool notFound = false;
-						if (!notFound)
-							for (unsigned int i = 0; i < notFoundGates.size(); i++) {
-								if (GID == notFoundGates[i]) {
-									notFound = true;
-									break;
-								}
+						for (unsigned int i = 0; i < notFoundGates.size(); i++)
+							if (GID == notFoundGates[i]) {
+								notFound = true;
+								break;
 							}
 						if (!notFound)
 						{

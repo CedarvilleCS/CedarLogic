@@ -26,8 +26,7 @@ cmdCreateGate::cmdCreateGate(string def) : klsCommand(true, "Create Gate") {
 }
 
 bool cmdCreateGate::Do() {
-	if (wxGetApp().libraries.size() == 0) return false; // No library loaded, so can't create gate
-
+	if (wxGetApp().libraries.size() == 0) return false; // No library loaded, so can't create gate	
 	gCircuit->createGate(gateType, gid, fromString);
 	gCanvas->insertGate(gid, (*(gCircuit->getGates()))[gid], x, y);
 
@@ -101,6 +100,7 @@ bool cmdCreateGate::Do() {
 	for (unsigned int i = 0; i < proxconnects.size(); i++) {
 		proxconnects[i]->Do();
 	}
+	
 	return true;
 }
 

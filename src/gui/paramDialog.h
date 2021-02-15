@@ -47,6 +47,7 @@ private:
 	// Replace Gate %_ for his correct type (Dynamics gates)
 	void replaceGate();
 	bool createGatesStruct(string *errorMsg = nullptr);
+	string getFlipFlop();
 
 	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
 	// Replace Wire length

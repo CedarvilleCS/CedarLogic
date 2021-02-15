@@ -58,9 +58,12 @@ void GUICircuit::reInitializeLogicCircuit() {
 
 guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	string libName = wxGetApp().gateNameToLibrary[gateName];
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
 	if (libName == "")
-		if (wxGetApp().libParser.CreateDynamicGate(gateName))
-			libName = "Dynamic";
+		if (wxGetApp().libParser.CreateDynamicGate(gateName)) {
+			libName = wxGetApp().gateNameToLibrary[gateName];
+			if (libName == "") return NULL;
+		}
 		else
 			return NULL;
 
@@ -79,8 +82,6 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 		newGate = (guiGate*)(new guiLabel());
 	else if (ggt == "LED")
 		newGate = (guiGate*)(new guiGateLED());
-	else if (ggt == "WIRE")
-		newGate = (guiGate*)(new guiGateWIRE());
 	else if (ggt == "TOGGLE")
 		newGate = (guiGate*)(new guiGateTOGGLE());
 	else if (ggt == "KEYPAD")
@@ -89,6 +90,8 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 		newGate = (guiGate*)(new guiGatePULSE());
 	else if (ggt == "RAM")
 		newGate = (guiGate*)(new guiGateRAM());
+	else if (ggt == "WIRE")										// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		newGate = (guiGate*)(new guiGateWIRE());
 	else if (ggt == "PLD")										// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		newGate = (guiGate*)(new guiGatePLD());
 	else if (ggt == "BUSEND")									// Pedro Casanova (casanova@ujaen.es) 2020/04-12
