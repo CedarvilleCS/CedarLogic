@@ -4,18 +4,13 @@
 #include "../guiWire.h"
 
 // Pedro Casanova (casanova@ujaen.es) 2021/01-02
-
+// cmdCreateGateStruct - Create a two level gate struct and others
 cmdCreateGateStruct::cmdCreateGateStruct(GUICanvas* gCanvas, GUICircuit* gCircuit, guiGate* gGate) :
-	klsCommand(true, "Create Gate Struct") {
+	klsCommand(false, "Create Gate Struct") {
 
 	this->gCanvas = gCanvas;
 	this->gCircuit = gCircuit;
 	this->gGate = gGate;	
-
-}
-
-cmdCreateGateStruct::cmdCreateGateStruct(const std::string &def) :
-	klsCommand(true, "Create Gate Struct") {
 
 }
 
@@ -50,6 +45,9 @@ bool cmdCreateGateStruct::Do() {
 			cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, newGID, type.str(), x, y);
 			cmdList.push_back(creategatecommand);
 			creategatecommand->Do();
+			cmdSetParams setgateparams(gCircuit, newGID, paramSet((*(gCircuit->getGates()))[newGID]->getAllGUIParams(), (*(gCircuit->getGates()))[newGID]->getAllLogicParams()));
+			setgateparams.Do();
+
 
 			if (vertical) {
 				x = x - separation;
@@ -59,6 +57,7 @@ bool cmdCreateGateStruct::Do() {
 				gParams["angle"] = "90";
 				paramSet pSet(&gParams, &lParams);
 				cmdSetParams* paramsetcommand = new cmdSetParams(gCircuit, newGID, pSet);
+				cmdList.push_back(paramsetcommand);
 				paramsetcommand->Do();
 				y = y - separation;
 			}
@@ -139,14 +138,6 @@ bool cmdCreateGateStruct::Do() {
 		}
 	}
 
-	float height = 0;
-	for (unsigned int i = 0; i < gates.size(); i++)
-		height = height + gates[i];
-	GLfloat x0, y0;
-	gGate->getGLcoords(x0, y0);
-	float x, y;
-	x = x0 + 2.5;
-	y = y0 + height / 2.0f - gates[0] / 2.0f;
 	vector <int> gateID;
 	string gateIn, gateOut;
 	string prefIn, prefOut;
@@ -175,10 +166,21 @@ bool cmdCreateGateStruct::Do() {
 		gateOut = "_SNOR";
 		prefOut = "D";
 	}
+	
+	float height = 0;
+	for (unsigned int i = 0; i < gates.size(); i++)
+		height = height + gates[i];
+	GLfloat x0, y0;
+	gGate->getGLcoords(x0, y0);
+	float x, y;
 
 	// Create first level gates
+	x = x0 + 2.5f;
+	y = y0 + height / 2.0f;
 	for (unsigned long i = 0; i < gates.size(); i++)
 	{
+		y = y - gates[i] / 2.0f;
+
 		gateID.push_back(gCircuit->getNextAvailableGateID());
 		ostringstream type;
 		if (gates[i] > 1)
@@ -188,9 +190,12 @@ bool cmdCreateGateStruct::Do() {
 
 		cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, gateID[i], type.str(), x, y);
 		cmdList.push_back(creategatecommand);
-		creategatecommand->Do();		
-		if (i < gates.size() - 1)
-			y = y - gates[i] / 2.0f - gates[i + 1] / 2.0f;
+		creategatecommand->Do();
+		cmdSetParams setgateparams(gCircuit, gateID[i], paramSet((*(gCircuit->getGates()))[gateID[i]]->getAllGUIParams(), (*(gCircuit->getGates()))[gateID[i]]->getAllLogicParams()));
+		setgateparams.Do();
+
+
+		y = y - gates[i] / 2.0f;
 	}
 	int gateoutID = gCircuit->getNextAvailableGateID();
 	{
@@ -205,21 +210,29 @@ bool cmdCreateGateStruct::Do() {
 		cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, gateoutID, type.str(), x, y0);
 		cmdList.push_back(creategatecommand);
 		creategatecommand->Do();
+		cmdSetParams setgateparams(gCircuit, gateoutID, paramSet((*(gCircuit->getGates()))[gateoutID]->getAllGUIParams(), (*(gCircuit->getGates()))[gateoutID]->getAllLogicParams()));
+		setgateparams.Do();
+
 	}
 
 	// Connect first level gates outputs to second level gate inputs
+	GLPoint2f delta(2, 0);
+	float yout, yin;
+	yout = y0 + height / 2.0f;
+	yin = y0 + gates.size() / 2.0;
+	unsigned long i0 = 0;
 	for (unsigned long i = 0; i < gates.size(); i++)
 	{
+		vector<IDType> wireIds;
+		wireIds.push_back(gCircuit->getNextAvailableWireID());
+
 		ostringstream hotspotOut;
 		if (gates[i] > 1)
 			hotspotOut << "OUT";
 		else
 			hotspotOut << "N_IN1";
-
-		vector<IDType> wireIds;
-		wireIds.push_back(gCircuit->getNextAvailableWireID());
-
 		cmdConnectWire* connectwire1 = new cmdConnectWire(gCircuit, wireIds[0], gateID[i], hotspotOut.str());
+		
 		ostringstream hotspotIn;
 		if (gates.size() > 1)
 			hotspotIn << "IN_" << i;
@@ -231,11 +244,22 @@ bool cmdCreateGateStruct::Do() {
 		cmdList.push_back(createWire);
 		createWire->Do();
 
+		yout = yout - gates[i] / 2.0f;
+		if (yout >= yin) {
+			delta.x = 2 - i * 0.5f;
+			i0 = i;
+		} else {
+			delta.x = -2.5 + (i - i0) * 0.5f;
+		}
 
-		//guiWire* gWire = gCircuit->getWires()->at(wireIds[0]);
-		//SegmentMap segmap = gWire->getSegmentMap();
+		yout = yout - gates[i] / 2.0f;
+		yin = yin - 1;
 
-		//cmdMoveWire* moveWire = new cmdMoveWire(gCircuit, wireIDs[0], , );
+		if (delta.x != 0) {
+			guiWire* gWire = gCircuit->getWires()->at(wireIds[0]);
+			cmdMoveWire* movewire = new cmdMoveWire(gCircuit, wireIds[0], gWire->getSegmentMap(), delta);
+			movewire->Do();
+		}
 	}
 	if (gGate->getLibraryGateName() == "%_31_GATES") return true;
 
@@ -254,13 +278,15 @@ bool cmdCreateGateStruct::Do() {
 		cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, wireID[i], type.str(), x + i * separation, y);
 		cmdList.push_back(creategatecommand);
 		creategatecommand->Do();
+		cmdSetParams setgateparams(gCircuit, wireID[i], paramSet((*(gCircuit->getGates()))[wireID[i]]->getAllGUIParams(), (*(gCircuit->getGates()))[wireID[i]]->getAllLogicParams()));
+		setgateparams.Do();
+
 	}
 
 	if (!noLinkInverter) {
 		vector <int> invID;
 		vector <int> linkID;
-		//x = x0 - 2 * nInputs * separation + 1;
-		//y = y0 + height / 2.0f + 1;
+
 		y = y + 1;
 		for (unsigned long i = 0; i < nInputs; i++)
 		{
@@ -270,14 +296,13 @@ bool cmdCreateGateStruct::Do() {
 				cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, linkID[i], "DI_LINK", x + 2 * i * separation, y + 1.5f);
 				cmdList.push_back(creategatecommand);
 				creategatecommand->Do();
+				cmdSetParams setgateparams(gCircuit, linkID[i], paramSet((*(gCircuit->getGates()))[linkID[i]]->getAllGUIParams(), (*(gCircuit->getGates()))[linkID[i]]->getAllLogicParams()));
+				setgateparams.Do();
 				ParameterMap lParams;
 				ParameterMap gParams;
 				lParams["JUNCTION_ID"] = inputNames.at(i);
 				gParams["angle"] = "90";
-				if (separation == 0.5 && !inputInverter[i])
-					gParams["TEXT_HEIGHT"] = "0.4";
-				else
-					gParams["TEXT_HEIGHT"] = "0.5";
+				gParams["TEXT_HEIGHT"] = (separation == 1) ? "0.5" :"0.4";
 				paramSet pSet(&gParams, &lParams);
 				cmdSetParams* paramsetcommand = new cmdSetParams(gCircuit, linkID[i], pSet);
 				paramsetcommand->Do();
@@ -290,6 +315,8 @@ bool cmdCreateGateStruct::Do() {
 					cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, invID[i], "AF_MINI_NOT", x + 2 * i * separation + separation, y);
 					cmdList.push_back(creategatecommand);
 					creategatecommand->Do();
+					cmdSetParams setgateparams(gCircuit, invID[i], paramSet((*(gCircuit->getGates()))[invID[i]]->getAllGUIParams(), (*(gCircuit->getGates()))[invID[i]]->getAllLogicParams()));
+					setgateparams.Do();
 					gCircuit->getGates()->at(invID[i])->setGUIParam("angle", "270");
 				}
 				{
@@ -311,14 +338,13 @@ bool cmdCreateGateStruct::Do() {
 				cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, linknotID, "DI_LINK", x + 2 * i * separation + separation, y + 1.5f);
 				cmdList.push_back(creategatecommand);
 				creategatecommand->Do();
+				cmdSetParams setgateparams(gCircuit, linknotID, paramSet((*(gCircuit->getGates()))[linknotID]->getAllGUIParams(), (*(gCircuit->getGates()))[linknotID]->getAllLogicParams()));
+				setgateparams.Do();
 				ParameterMap lParams;
 				ParameterMap gParams;
 				lParams["JUNCTION_ID"] = "/" + inputNames.at(i);
 				gParams["angle"] = "90";
-				if (separation == 0.5)
-					gParams["TEXT_HEIGHT"] = "0.4";
-				else
-					gParams["TEXT_HEIGHT"] = "0.4";
+				gParams["TEXT_HEIGHT"] = (separation == 1) ? "0.5" : "0.4";
 				paramSet pSet(&gParams, &lParams);
 				cmdSetParams* paramsetcommand = new cmdSetParams(gCircuit, linknotID, pSet);
 				paramsetcommand->Do();

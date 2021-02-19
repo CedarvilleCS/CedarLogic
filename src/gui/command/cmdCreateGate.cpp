@@ -19,6 +19,7 @@ cmdCreateGate::cmdCreateGate(GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned 
 }
 
 cmdCreateGate::cmdCreateGate(string def) : klsCommand(true, "Create Gate") {
+	_MSGCOM("Command String: %s", def.c_str());	//####
 	istringstream iss(def);
 	string dump;
 	iss >> dump >> gid >> gateType >> x >> y;
@@ -95,7 +96,6 @@ bool cmdCreateGate::Do() {
 
 		} // for( loop through the hotspots )
 	} // if( logic type is non-null )
-
 
 	for (unsigned int i = 0; i < proxconnects.size(); i++) {
 		proxconnects[i]->Do();

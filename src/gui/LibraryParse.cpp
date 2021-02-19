@@ -33,10 +33,12 @@ LibraryParse::LibraryParse(string fileName) {
 		DWORD nLenFile = GetFileSize(hFileLib, NULL);
 		DWORD nReaded;
 		char* FileData = new char[nLenFile];
-		ReadFile(hFileLib, FileData, nLenFile, &nReaded, NULL);
-		CloseHandle(hFileLib);
-		XMLLib << FileData;
+		if (ReadFile(hFileLib, FileData, nLenFile, &nReaded, NULL))
+			if (nReaded == nLenFile) 
+				XMLLib << FileData;
+		CloseHandle(hFileLib);		
 	}
+	XMLLib << "\n#";	// Final line is a comment
 	mParse = new XMLParser((fstream*)&XMLLib, false);
 	this->fileName = fileName;
 	parseFile();
@@ -152,7 +154,6 @@ void LibraryParse::parseFile() {
 					// Pedro casanova (casasanova@ujaen.es) 2020/04-12
 					// To permit pull-up and pull-down inputs and force junctions with only one connection
 					newGate.hotspots.push_back(lgHotspot(hsName, (hsType == "input"), x1, y1, (isInverted == "true"), (isPullUp == "true"), (isPullDown == "true"), (ForceJunction == "true"), logicEInput, busLines));
-
 					mParse->readCloseTag(); //input or output
 
 				} else if (temp == "shape") {
@@ -855,10 +856,6 @@ bool LibraryParse::CreateDynamicGate(string type) {
 			for (unsigned int i = 0; i < nBits; i++)
 				oss << "<input><name>N_IN" << i << "</name><point>0," << -0.5f*i << "</point></input>";
 
-			//##oss << "<gui_param>LENGTH " << length << "</gui_param>";
-			//##oss << "<param_dlg_data><param><type>INT</type><label>Wire length</label>";
-			//##oss << "<varname>GUI LENGTH</varname><range>0,500</range></param></param_dlg_data>";
-
 			oss << "<shape>";
 			if (length == 0)
 				oss << "<line>0,0,0,-0.5</line>";
@@ -867,32 +864,6 @@ bool LibraryParse::CreateDynamicGate(string type) {
 
 			oss << "</shape></gate></library>";
 
-/*		} else if (type.substr(0, 9) == "@@_OWIRE_") {			// @@_OWIRE_WXH
-			int posX = type.find("X");
-			if (!chkDigits(type.substr(9, posX - 9))) return false;
-			if (!chkDigits(type.substr(posX + 1))) return false;
-			unsigned int width = atoi(type.substr(9, posX - 9).c_str());
-			unsigned int height = atoi(type.substr(posX + 1).c_str());
-
-			if (!width && !height) return false;
-
-			float left = width / -2.0f;
-			float top = height / 2.0f;
-
-			oss << "<library><name>Hidden</name>";
-			oss << "<gate><name>" << type << "</name>";
-			oss << "<caption>Orthogonal wire width " << width << " " << height << "</caption>";
-			oss << "<logic_type>NODE</logic_type>";
-			oss << "<gui_type>WIRE</gui_type>";
-
-			oss << "<input><name>N_IN0</name><point>" << left << "," << -top << "</point></input>";
-			oss << "<input><name>N_IN1</name><point>" << -left << "," << top << "</point></input>";
-
-			oss << "<shape>";
-			oss << "<line>" << left << "," << -top << "," << -left << "," << -top << "</line>";
-			oss << "<line>" << -left << "," << -top << "," << -left << "," << top << "</line>";
-			oss << "</shape></gate></library>";
-		*/
 		} else if (type.substr(0, 10) == "@@_NOWIRE_") {			// @@_NOWIRE_WXH
 			int posX = type.find("X");
 			if (!chkDigits(type.substr(10, posX - 10))) return false;
@@ -923,7 +894,6 @@ bool LibraryParse::CreateDynamicGate(string type) {
 				oss << "<line>" << left << "," << -top << "," << -left << "," << top << "</line>";
 			}
 			oss << "</shape></gate></library>";
-
 		} else if (type.substr(0, 10) == "@@_BUSEND_" || type.substr(0, 11) == "@@_BUSENDN_") {			// @@_BUSEND_N    @@_BUSENDN_N
 			float separation = -1;
 			unsigned long ini = 10;
@@ -1155,7 +1125,7 @@ bool LibraryParse::CreateDynamicGate(string type) {
 			oss << "<library><name>Hidden</name>";
 			oss << "<gate><name>" << type <<"</name><caption>" << nInputs << " inputs AND gate for PLD</caption>";
 			oss << "<logic_type>PLD_AND</logic_type><gui_type>PLD</gui_type>";
-			oss << "<logic_param>INPUT_BITS <<" << nInputs << "</logic_param>";
+			oss << "<logic_param>INPUT_BITS " << nInputs << "</logic_param>";
 			oss << "<logic_param>FORCE_ZERO false</logic_param>";
 			oss << "<gui_param>CROSS_POINT 0,0</gui_param>";
 			oss << "<gui_param>CROSS_JUNCTION true</gui_param>";
@@ -1187,8 +1157,8 @@ bool LibraryParse::CreateDynamicGate(string type) {
 		oss << "<library><name>Hidden</name>";
 		oss << "<gate><name>" << type << "</name><caption>" << nInputs << " inputs OR gate for PLD</caption>";
 		oss << "<logic_type>OR</logic_type><gui_type>PLD</gui_type>";
-		oss << "<logic_param>INPUT_BITS <<" << nInputs << "</logic_param>";
-		oss << "<gui_param>CROSS_JUNCTION true</gui_param>";
+		oss << "<logic_param>INPUT_BITS " << nInputs << "</logic_param>";
+		oss << "<gui_param>CROSS_JUNCTION false</gui_param>";
 		oss << "<param_dlg_data><param><type>BOOL</type><label>Cross junction</label>";
 		oss << "<varname>GUI CROSS_JUNCTION</varname></param></param_dlg_data>";
 

@@ -1,3 +1,4 @@
+#   UserLib.xml: Contains all XML definitions for user gates
 <library> <name>User Library</name>
 	<gate> <name>_AL_COUNT4</name>
 		<caption>4-Bit Up/Down Counter</caption>
@@ -89,3 +90,4 @@
 		</shape>
 	</gate>
 </library>
+# End

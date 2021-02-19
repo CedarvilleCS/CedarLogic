@@ -119,6 +119,7 @@ void Gate::resendLastEvent( IDType myID, string outputID, Circuit * theCircuit )
 		}
 	} else {
 		WARNING("Gate::resendLastEvent() - Invalid outputID.");
+		_MSGW("Output ID: %s", outputID.c_str());
 	}
 }
 
@@ -163,6 +164,7 @@ IDType Gate::disconnectInput( string inputID ) {
 		inputList[inputID].wireID = ID_NONE;
 	} else {
 		WARNING("Gate::disconnectInput() - Invalid input ID.");
+		_MSGW("Input ID: %s", inputID.c_str());
 	}
 	return wireID;
 }
@@ -178,6 +180,7 @@ IDType Gate::disconnectOutput( string outputID ) {
 		outputList[outputID].wireID = ID_NONE;
 	} else {
 		WARNING("Gate::disconnectOutput() - Invalid output ID.");
+		_MSGW("Output ID: %s", outputID.c_str());
 	}
 	return wireID;
 }
@@ -332,7 +335,7 @@ void Gate::declareOutput( string name ) {
 
 // Get the current time in the simulation:
 TimeType Gate::getSimTime( void ) {	
-	_MSGNC(ourCircuit != NULL, "ASSERT END 1");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::getSimTime() - NULL circuit. ASSERT END 1");	//####
 	assert(ourCircuit != NULL);
 	
 	return ourCircuit->getSystemTime();
@@ -340,12 +343,13 @@ TimeType Gate::getSimTime( void ) {
 	
 // Check the state of the named input and return it.
 StateType Gate::getInputState( string inputID ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 2");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::getInputState() - NULL circuit. ASSERT END 2");	//####
 	assert(ourCircuit != NULL);
 	StateType theState;
 
 	if(inputList.find(inputID) == inputList.end()) {
-		WARNING("Gate::getInputState() - Invalid input name.");
+		WARNING("Gate::getInputState() - Invalid input name.");		
+		_MSGW("Input ID: %s", inputID.c_str());
 		_MSGNC(false, "ASSERT END 3");	//####
 		assert( false );
 		return ZERO;
@@ -432,7 +436,7 @@ vector< StateType > Gate::getOutputBusWireState(string busName) {
 
 // Get the types of inputs that are represented.
 vector< bool > Gate::groupInputStates( void ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 4");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::groupInputStates() - NULL circuit. ASSERT END 4");	//####
 	assert(ourCircuit != NULL);
 
 	vector< bool > groupedInputs(NUM_STATES, false);
@@ -464,7 +468,7 @@ vector< bool > Gate::groupInputStates( void ) {
 	
 // Compare the "this" state with the "last" state and say if this is a rising or falling edge. 
 bool Gate::isRisingEdge( string name ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 5");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::isRisingEdge() - NULL circuit. ASSERT END 5");	//####
 	assert(ourCircuit != NULL);
 	
 	if( edgeTriggeredLastState.find( name ) == edgeTriggeredLastState.end() ) {
@@ -484,7 +488,7 @@ bool Gate::isRisingEdge( string name ) {
 
 
 bool Gate::isFallingEdge( string name ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 6");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::isFallingEdge() - NULL circuit. ASSERT END 6");	//####
 	assert(ourCircuit != NULL);
 	
 	if( edgeTriggeredLastState.find( name ) == edgeTriggeredLastState.end() ) {
@@ -507,11 +511,12 @@ bool Gate::isFallingEdge( string name ) {
 // really send the event. Also, log the last sent event so that it can be 
 // repeated later if necessary. 
 void Gate::setOutputState( string outID, StateType newState, TimeType delay ) {
-	_MSGNC(ourCircuit != NULL, "ASSERT END 7");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::setOutputState() - NULL circuit. ASSERT END 7");	//####
 	assert( ourCircuit != NULL );
 
 	if(outputList.find(outID) == outputList.end()) {
 		WARNING("Gate::setOutputState() - Invalid output name.");
+		_MSGW("Output ID: %s", outID.c_str());
 		_MSGNC(false, "ASSERT END 8");	//####
 		assert( false );
 		return;

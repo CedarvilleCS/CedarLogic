@@ -71,6 +71,7 @@ void Wire::setInputState(IDType gateID, string gateOutputID, StateType newState)
 	WireInput theInput( gateID, gateOutputID, newState );
 	if( inputList.find( theInput ) == inputList.end() ) {
 		WARNING("Wire::setInputState() - Invalid input ID.");
+		_MSG("Wire Input ID: %lld %s", theInput.gateID, theInput.gateOutputID.c_str());
 	} else {
 		// Set the new state of the WireInput:
 		// (Erase the old one, and re-create the new one.)
@@ -184,6 +185,7 @@ void Wire::disconnectInput( IDType gateID, string gateOutputID ) {
 	// Verify that the input exists:
 	if( inputList.find( WireInput( gateID, gateOutputID ) ) == inputList.end() ) {
 		WARNING("Wire::disconnectInput() - Input does not exist.");
+		_MSG("Input wire ID: %lld %s", gateID, gateOutputID.c_str());
 		return;
 	}
 
@@ -208,6 +210,7 @@ void Wire::disconnectOutput( IDType gateID, string gateInputID ) {
 	// Verify that the output exists:
 	if( outputList.find( WireOutput( gateID, gateInputID ) ) == outputList.end() ) {
 		WARNING("Wire::disconnectOutput() - Output does not exist.");
+		_MSG("Output wire ID: %lld %s", gateID, gateInputID.c_str());
 		return;
 	}
 

@@ -296,7 +296,7 @@ void FSMParamDialog::OnBtnOK(wxCommandEvent& event) {
 
 	lParamList["CURRENT_STATE"] = "";
 	lParamList["CLEAR_FSM"] = "true";
-	wxcmd->Submit(new cmdSetParams(guiCircuit, m_guiGateFSM->getID(), paramSet(&gParamList, &lParamList)));
+	wxcmd->Submit(new cmdSetParams(guiCircuit, m_guiGateFSM->getID(), paramSet(&gParamList, &lParamList),false));
 
 	EndModal(wxID_OK);
 

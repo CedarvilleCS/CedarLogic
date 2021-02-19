@@ -11,6 +11,7 @@
 //#define _MSG_
 #ifdef _MSG_
 #define _MSGGUI_
+#define _MSGCOM_
 #define _MSGW_
 #define DBGID "CL_Msg "
 #define DBGLEN sizeof(DBGID)-1
@@ -26,6 +27,12 @@
 #else
 #define _MSGGUI(cad,...)
 #endif
+#ifdef _MSGCOM_
+#define _MSGCOM(cad,...) \
+	{_MSG(cad,##__VA_ARGS__)}
+#else
+#define _MSGCOM(cad,...)
+#endif
 #ifdef _MSGW_
 #define _MSGW(cad,...) \
 	{_MSG(cad,##__VA_ARGS__)}
@@ -38,6 +45,7 @@
 #define _MSGNC(cond,cad,...)
 #define _MSGGUI(cad,...)
 #define _MSGW(cad,...)
+#define _MSGCOM(cad,...)
 #endif
 
 

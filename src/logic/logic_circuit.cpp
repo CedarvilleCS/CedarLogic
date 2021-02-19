@@ -253,10 +253,12 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			polledGates.insert(thisGateID);
 		} else {
 			WARNING( "Circuit::newGate() - Invalid logic type!" );
+			_MSGW("Logic type: %s", type.c_str());
 		}
 
 	} else {
 		WARNING( "Circuit::newGate() - Re-used gate ID!" );
+		_MSGW("Gate ID: %lld", thisGateID);
 	}
 	
 	return thisGateID;
@@ -282,6 +284,7 @@ IDType Circuit::newWire( IDType wireID ) {
 		wireList[thisWireID] = myWire;
 	} else {
 		WARNING( "Circuit::newWire() - Re-used wire ID!" );
+		_MSGW("wire ID: %lld", thisWireID);
 	}
 	
 	return thisWireID;
@@ -308,6 +311,7 @@ IDType Circuit::newJunction( IDType juncID  ) {
 		juncList[thisJuncID] = myJunc;
 	} else {
 		WARNING( "Circuit::newJunction() - Re-used junction ID!" );
+		_MSGW("Junction ID: %lld", thisJuncID);
 	}
 	
 	return thisJuncID;
@@ -316,6 +320,7 @@ IDType Circuit::newJunction( IDType juncID  ) {
 void Circuit::deleteGate( IDType theGate ) {
 	if( gateList.find( theGate ) == gateList.end() ) {
 		WARNING("Circuit::deleteGate() - Invalid gate ID.");
+		_MSGW("Gate ID: %lld", theGate);
 		return;
 	}
 	GATE_PTR myGate = gateList[ theGate ];
@@ -342,6 +347,7 @@ void Circuit::deleteGate( IDType theGate ) {
 void Circuit::deleteWire( IDType theWire ) {
 	if( wireList.find( theWire ) == wireList.end() ) {
 		WARNING("Circuit::deleteWire() - Invalid wire ID.");
+		_MSGW("Wire ID: %lld", theWire);
 		return;
 	}
 	WIRE_PTR myWire = wireList[theWire];
@@ -382,6 +388,7 @@ void Circuit::deleteWire( IDType theWire ) {
 void Circuit::deleteJunction( IDType theJunc ) {
 	if( juncList.find( theJunc ) == juncList.end() ) {
 		WARNING("Circuit::deleteJunction() - Invalid junction ID.");
+		_MSGW("Junction ID: %lld", theJunc);
 		return;
 	}
 	JUNC_PTR myJunc = juncList[theJunc];
@@ -483,6 +490,7 @@ IDType Circuit::connectGateOutput( IDType gateID, const string &gateOutputID, ID
 void Circuit::disconnectGateInput( IDType gateID, const string &gateInputID ) {
 	if( gateList.find( gateID ) == gateList.end() ) {
 		WARNING("Circuit::disconnectGateInput() - Invalid gate ID.");
+		_MSGW("Gate ID: %lld", gateID);
 		return;
 	}
 	GATE_PTR myGate = gateList[ gateID ];
@@ -496,6 +504,7 @@ void Circuit::disconnectGateInput( IDType gateID, const string &gateInputID ) {
 		myWire->disconnectOutput(gateID, gateInputID );
 	} else if( theWire != ID_NONE ) {
 		WARNING("Circuit::disconnectGateInput() - Wire not found.");
+		_MSGW("Wire ID: %lld", theWire);
 	}
 
 	//TODO: Trigger event to update gate.
@@ -507,6 +516,7 @@ void Circuit::disconnectGateInput( IDType gateID, const string &gateInputID ) {
 void Circuit::disconnectGateOutput( IDType gateID, const string &gateOutputID ) {
 	if( gateList.find( gateID ) == gateList.end() ) {
 		WARNING("Circuit::disconnectGateOutput() - Invalid gate ID.");
+		_MSGW("Gate ID: %lld", gateID);
 		return;
 	}
 	GATE_PTR myGate = gateList[ gateID ];
@@ -528,6 +538,7 @@ void Circuit::disconnectGateOutput( IDType gateID, const string &gateOutputID ) 
 		myWire->disconnectInput(gateID, gateOutputID );
 	} else if( theWire != ID_NONE ) {
 		WARNING("Circuit::disconnectGateOutput() - Wire not found.");
+		_MSGW("Wire ID: %lld", theWire);
 		return;
 	}
 
@@ -653,6 +664,7 @@ void Circuit::setGateParameter( IDType gateID, const string &paramName, const st
 		}
 	} else {
 		WARNING("Circuit::setGateParameter() - Gate not found.");
+		_MSGW("Gate ID: %lld", gateID);
 	}
 	return;
 }
@@ -666,6 +678,7 @@ void Circuit::setGateInputParameter( IDType gateID, const string & inputID, cons
 		}
 	} else {
 		WARNING("Circuit::setGateParameter() - Gate not found.");
+		_MSGW("Gate ID: %lld", gateID);
 	}
 	return;
 }
@@ -679,6 +692,7 @@ void Circuit::setGateOutputParameter( IDType gateID, const string & outputID, co
 		}
 	} else {
 		WARNING("Circuit::setGateParameter() - Gate not found.");
+		_MSGW("Gate ID: %lld", gateID);
 	}
 	return;
 }
@@ -714,6 +728,7 @@ string Circuit::getGateParameter( IDType gateID, const string & paramName ) {
 		return gateList[ gateID ]->getParameter( paramName );
 	} else {
 		WARNING("Circuit::setGateParameter() - Gate not found.");
+		_MSGW("Gate ID: %lld", gateID);
 	}
 	return "";
 }
@@ -723,6 +738,7 @@ StateType Circuit::getWireState( IDType wireID ) {
 		return wireList[wireID]->getState();
 	} else {
 		WARNING("Circuit::getWireState() - Wire does not exist.");
+		_MSGW("Wire ID: %lld", wireID);
 		return UNKNOWN;
 	}
 }

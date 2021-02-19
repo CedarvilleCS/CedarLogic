@@ -10214,6 +10214,74 @@
 			<text>0,-2.5,$C$L</text>
 		</shape>
 	</gate>
+	<gate> <name>AE_DFF_NT</name>
+		<caption>D Flip Flop - Negative Triggered, High Active Reset</caption>
+		<logic_type>REGISTER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<logic_param>NO_HOLD true</logic_param>
+		<logic_param>SYNC_LOAD true</logic_param>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		D
+		<input> <name>IN_0</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,-2</point>
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 			
+		</input>
+
+#		Q
+		<output> <name>OUT_0</name>
+		          <point>3,2</point> 
+		</output>
+		
+#		QNOT
+		<output> <name>OUTINV_0</name>
+		          <point>3,-2</point> 
+		</output>
+
+		<shape>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<line>2,-2,3,-2</line>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,-1.5,-1,-2</line>
+			<line>-2,-2.5,-1,-2</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2,2,-3,2</line>
+			<line>-2.7,-2,-3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3,0,-4</line>
+			
+			<circle>-2.35,-2,0.35,24</circle>
+
+#			D
+			<text>-1.4,2,D</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+	
+#			CL
+			<text>0,-2.5,$C$L</text>
+		</shape>
+	</gate>
 	<gate> <name>AE_DFF_LOW</name>
 		<caption>D Flip Flop - Low Active Reset</caption>
 		<logic_type>REGISTER</logic_type>
@@ -10350,139 +10418,6 @@
 	
 #			CL
 			<text>0,-2.5,$C$L</text>
-		</shape>
-	</gate>
-	<gate> <name>AE_DFF_NT</name>
-		<caption>D Flip Flop - Negative Triggered, High Active Reset</caption>
-		<logic_type>REGISTER</logic_type>
-		<logic_param>INPUT_BITS 1</logic_param>
-		<logic_param>NO_HOLD true</logic_param>
-		<logic_param>SYNC_LOAD true</logic_param>
-		<logic_param>SYNC_SET false</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
-
-#		D
-		<input> <name>IN_0</name>
-		          <point>-3,2</point> 
-		</input>
-
-#		Clock
-		<input> <name>CLOCK</name>
-		          <point>-3,-2</point>
-			<inverted>true</inverted>
-		</input>
-
-#		RESET
-		<input> <name>CLEAR</name>
-		          <point>0,-4</point> 			
-		</input>
-
-#		Q
-		<output> <name>OUT_0</name>
-		          <point>3,2</point> 
-		</output>
-		
-#		QNOT
-		<output> <name>OUTINV_0</name>
-		          <point>3,-2</point> 
-		</output>
-
-		<shape>
-#			body
-			<outline>2,3,-2,3</outline>
-			<outline>-2,3,-2,-3</outline>
-			<line>2,-2,3,-2</line>
-			<outline>-2,-3,2,-3</outline>
-			<outline>2,-3,2,3</outline>
-
-#			CLOCK
-			<line>-2,-1.5,-1,-2</line>
-			<line>-2,-2.5,-1,-2</line>
-
-			<line>-2,2,-3,2</line>
-			<line>-2,2,-3,2</line>
-			<line>-2.7,-2,-3,-2</line>
-			<line>2,2,3,2</line>
-			<line>0,-3,0,-4</line>
-			
-			<circle>-2.35,-2,0.35,24</circle>
-
-#			D
-			<text>-1.4,2,D</text>
-
-#			Q
-			<text>1.4,2,Q</text>
-			
-#			Q NOT
-			<text>1.4,-2,~Q</text>
-	
-#			CL
-			<text>0,-2.5,$C$L</text>
-		</shape>
-	</gate>
-	<gate> <name>CD_TFF_LOW</name>
-		<caption>T Flip Flop - Low Active Reset</caption>
-		<logic_type>TFF</logic_type>
-		<logic_param>SYNC_SET false</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
-
-#		T
-		<input> <name>T</name>
-		          <point>-3,2</point> 
-		</input>
-
-#		Clock
-		<input> <name>CLOCK</name>
-		          <point>-3,-2</point>
-		</input>
-
-#		RESET
-		<input> <name>CLEAR</name>
-		          <point>0,-4</point> 
-			<inverted>true</inverted> 
-		</input>
-
-#		Q
-		<output> <name>Q</name>
-		          <point>3,2</point> 
-		</output>
-		
-#		QNOT
-		<output> <name>NQ</name>
-		          <point>3,-2</point> 
-		</output>
-		
-		<shape>
-#			boby
-			<outline>2,3,-2,3</outline>
-			<outline>-2,3,-2,-3</outline>
-			<outline>-2,-3,2,-3</outline>
-			<outline>2,-3,2,3</outline>
-
-#			CLOCK
-			<line>-2,-1.5,-1,-2</line>
-			<line>-2,-2.5,-1,-2</line>
-
-			<line>-2,2,-3,2</line>
-			<line>-2,-2,-3,-2</line>
-			<line>2,-2,3,-2</line>
-			<line>2,2,3,2</line>
-			<line>0,-3.7,0,-4</line>
-			
-			<circle>0,-3.35,0.35,24</circle>
-
-#			T
-			<text>-1.4,2,T</text>
-
-#			Q
-			<text>1.4,2,Q</text>
-
-#			Q NOT
-			<text>1.4,-2,~Q</text>
-			
-#			CL
-			<text>0,-2.5,$C$L</text>
-
 		</shape>
 	</gate>
 	<gate> <name>AE_DFF_SCP</name>
@@ -10883,8 +10818,8 @@
 
 		</shape>
 	</gate>
-	<gate> <name>BF_JKFF</name>
-		<caption>JK Flip Flop - High Active Reset</caption>
+	<gate> <name>BA_JKFF_NT</name>
+		<caption>JK Flip Flop - Negative Triggered, High Active Set/Reset</caption>
 		<logic_type>JKFF</logic_type>
 		<logic_param>SYNC_SET false</logic_param>
 		<logic_param>SYNC_CLEAR false</logic_param>
@@ -10898,9 +10833,16 @@
 		          <point>-3,-2</point> 
 		</input>
 
+
 #		Clock
 		<input> <name>CLOCK</name>
 		          <point>-3,0</point> 
+			  <inverted>true</inverted>
+		</input>
+
+#		SET
+		<input> <name>SET</name>
+		          <point>0,4</point> 
 		</input>
 
 #		RESET
@@ -10917,7 +10859,7 @@
 		<output> <name>NQ</name>
 		          <point>3,-2</point> 
 		</output>
-		
+
 		<shape>
 #			boby
 			<outline>2,3,-2,3</outline>
@@ -10927,13 +10869,14 @@
 
 #			CLOCK
 			<line>-2,0.5,-1,0</line>
-			<line>-2,-0.5,-1,0</line>			
+			<line>-2,-0.5,-1,0</line>
 
-			<line>-2,2,-3,2</line>		
-			<line>-2,0,-3,0</line>
+			<line>-2,2,-3,2</line>
+			<line>-2.7,0,-3,0</line>
 			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
+			<line>0,3,0,4</line>
 			<line>0,-3,0,-4</line>
 
 #			J
@@ -10944,12 +10887,19 @@
 
 #			Q
 			<text>1.4,2,Q</text>
-			
+
 #			Q NOT
 			<text>1.4,-2,~Q</text>
 
+#			PR
+			<text>0,2.5,$P$R</text>
+			
 #			CL
 			<text>0,-2.5,$C$L</text>
+
+#			Low Active Portion
+			<circle>-2.35,0,0.35,24</circle>
+
 		</shape>
 	</gate>
 	<gate> <name>BE_JKFF_LOW</name>
@@ -11036,90 +10986,6 @@
 #			Low Active Portion
 			<circle>0,3.35,0.35,24</circle>
 			<circle>0,-3.35,0.35,24</circle>
-
-		</shape>
-	</gate>
-	<gate> <name>BA_JKFF_NT</name>
-		<caption>JK Flip Flop - Negative Triggered, High Active Set/Reset</caption>
-		<logic_type>JKFF</logic_type>
-		<logic_param>SYNC_SET false</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
-
-#		J
-		<input> <name>J</name>
-		          <point>-3,2</point> 
-		</input>
-#		K
-		<input> <name>K</name>
-		          <point>-3,-2</point> 
-		</input>
-
-
-#		Clock
-		<input> <name>CLOCK</name>
-		          <point>-3,0</point> 
-			  <inverted>true</inverted>
-		</input>
-
-#		SET
-		<input> <name>SET</name>
-		          <point>0,4</point> 
-		</input>
-
-#		RESET
-		<input> <name>CLEAR</name>
-		          <point>0,-4</point> 
-		</input>
-
-#		Q
-		<output> <name>Q</name>
-		          <point>3,2</point> 
-		</output>
-
-#		QNOT
-		<output> <name>NQ</name>
-		          <point>3,-2</point> 
-		</output>
-
-		<shape>
-#			boby
-			<outline>2,3,-2,3</outline>
-			<outline>-2,3,-2,-3</outline>
-			<outline>-2,-3,2,-3</outline>
-			<outline>2,-3,2,3</outline>
-
-#			CLOCK
-			<line>-2,0.5,-1,0</line>
-			<line>-2,-0.5,-1,0</line>
-
-			<line>-2,2,-3,2</line>
-			<line>-2.7,0,-3,0</line>
-			<line>-2,-2,-3,-2</line>
-			<line>2,-2,3,-2</line>
-			<line>2,2,3,2</line>
-			<line>0,3,0,4</line>
-			<line>0,-3,0,-4</line>
-
-#			J
-			<text>-1.4,2,J</text>
-
-#			K
-			<text>-1.4,-2,K</text>
-
-#			Q
-			<text>1.4,2,Q</text>
-
-#			Q NOT
-			<text>1.4,-2,~Q</text>
-
-#			PR
-			<text>0,2.5,$P$R</text>
-			
-#			CL
-			<text>0,-2.5,$C$L</text>
-
-#			Low Active Portion
-			<circle>-2.35,0,0.35,24</circle>
 
 		</shape>
 	</gate>
@@ -11210,6 +11076,147 @@
 			<circle>0,-3.35,0.35,24</circle>
 			<circle>-2.35,0,0.35,24</circle>
 
+		</shape>
+	</gate>
+	<gate> <name>BF_JKFF</name>
+		<caption>JK Flip Flop - High Active Reset</caption>
+		<logic_type>JKFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		J
+		<input> <name>J</name>
+		          <point>-3,2</point> 
+		</input>
+#		K
+		<input> <name>K</name>
+		          <point>-3,-2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,0</point> 
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,0.5,-1,0</line>
+			<line>-2,-0.5,-1,0</line>			
+
+			<line>-2,2,-3,2</line>		
+			<line>-2,0,-3,0</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3,0,-4</line>
+
+#			J
+			<text>-1.4,2,J</text>
+
+#			K
+			<text>-1.4,-2,K</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+
+#			CL
+			<text>0,-2.5,$C$L</text>
+		</shape>
+	</gate>
+	<gate> <name>BF_JKFF_NT</name>
+		<caption>JK Flip Flop - Negative Triggered, High Active Reset</caption>
+		<logic_type>JKFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		J
+		<input> <name>J</name>
+		          <point>-3,2</point> 
+		</input>
+#		K
+		<input> <name>K</name>
+		          <point>-3,-2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,0</point> 
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,0.5,-1,0</line>
+			<line>-2,-0.5,-1,0</line>			
+
+			<line>-2,2,-3,2</line>		
+			<line>-2.7,0,-3,0</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3,0,-4</line>
+			
+			<circle>-2.35,0,0.35,24</circle>
+
+#			J
+			<text>-1.4,2,J</text>
+
+#			K
+			<text>-1.4,-2,K</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+			
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+
+#			CL
+			<text>0,-2.5,$C$L</text>
 		</shape>
 	</gate>
 	<gate> <name>BF_JKFF_LOW</name>
@@ -11358,78 +11365,6 @@
 			<text>0,-2.5,$C$L</text>
 		</shape>
 	</gate>
-	<gate> <name>BF_JKFF_NT</name>
-		<caption>JK Flip Flop - Negative Triggered, High Active Reset</caption>
-		<logic_type>JKFF</logic_type>
-		<logic_param>SYNC_SET false</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
-
-#		J
-		<input> <name>J</name>
-		          <point>-3,2</point> 
-		</input>
-#		K
-		<input> <name>K</name>
-		          <point>-3,-2</point> 
-		</input>
-
-#		Clock
-		<input> <name>CLOCK</name>
-		          <point>-3,0</point> 
-			<inverted>true</inverted>
-		</input>
-
-#		RESET
-		<input> <name>CLEAR</name>
-		          <point>0,-4</point> 
-		</input>
-
-#		Q
-		<output> <name>Q</name>
-		          <point>3,2</point> 
-		</output>
-
-#		QNOT
-		<output> <name>NQ</name>
-		          <point>3,-2</point> 
-		</output>
-		
-		<shape>
-#			boby
-			<outline>2,3,-2,3</outline>
-			<outline>-2,3,-2,-3</outline>
-			<outline>-2,-3,2,-3</outline>
-			<outline>2,-3,2,3</outline>
-
-#			CLOCK
-			<line>-2,0.5,-1,0</line>
-			<line>-2,-0.5,-1,0</line>			
-
-			<line>-2,2,-3,2</line>		
-			<line>-2.7,0,-3,0</line>
-			<line>-2,-2,-3,-2</line>
-			<line>2,-2,3,-2</line>
-			<line>2,2,3,2</line>
-			<line>0,-3,0,-4</line>
-			
-			<circle>-2.35,0,0.35,24</circle>
-
-#			J
-			<text>-1.4,2,J</text>
-
-#			K
-			<text>-1.4,-2,K</text>
-
-#			Q
-			<text>1.4,2,Q</text>
-			
-#			Q NOT
-			<text>1.4,-2,~Q</text>
-
-#			CL
-			<text>0,-2.5,$C$L</text>
-		</shape>
-	</gate>
 	<gate> <name>BF_JKFF_SCP</name>
 		<caption>JK Flip Flop</caption>
 		<logic_type>JKFF</logic_type>
@@ -11560,8 +11495,8 @@
 
 		</shape>
 	</gate>
-	<gate> <name>CC_TFF_LOW_NT</name>
-		<caption>T Flip Flop - Negative Triggered, Low Active Set/Reset</caption>
+	<gate> <name>CA_TFF</name>
+		<caption>T Flip Flop - High Active Set/Reset</caption>
 		<logic_type>TFF</logic_type>
 		<logic_param>SYNC_SET false</logic_param>
 		<logic_param>SYNC_CLEAR false</logic_param>
@@ -11574,19 +11509,16 @@
 #		Clock
 		<input> <name>CLOCK</name>
 		          <point>-3,-2</point>
-				<inverted>true</inverted>				  
 		</input>
 
 #		SET
 		<input> <name>SET</name>
-		          <point>0,4</point>
-				<inverted>true</inverted>
+		          <point>0,4</point> 
 		</input>
 
 #		RESET
 		<input> <name>CLEAR</name>
 		          <point>0,-4</point> 
-				<inverted>true</inverted>
 		</input>
 
 #		Q
@@ -11612,11 +11544,11 @@
 			<line>-2,-2.5,-1,-2</line>
 
 			<line>-2,2,-3,2</line>
-			<line>-2.70,-2,-3,-2</line>
+			<line>-2,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
-			<line>0,3.7,0,4</line>
-			<line>0,-3.7,0,-4</line>
+			<line>0,3,0,4</line>
+			<line>0,-3,0,-4</line>
 
 #			T
 			<text>-1.4,2,T</text>
@@ -11633,13 +11565,8 @@
 #			CL
 			<text>0,-2.5,$C$L</text>
 
-#			Low Active Portion
-			<circle>0,3.35,0.35,24</circle>
-			<circle>0,-3.35,0.35,24</circle>
-			<circle>-2.35,-2,0.35,24</circle>			
-
 		</shape>
-	</gate>
+	</gate>	
 	<gate> <name>CB_TFF_NT</name>
 		<caption>T Flip Flop - Negative Triggered, High Active Set/Reset</caption>
 		<logic_type>TFF</logic_type>
@@ -11792,8 +11719,8 @@
 			<circle>0,-3.35,0.35,24</circle>
 		</shape>
 	</gate>
-	<gate> <name>CA_TFF</name>
-		<caption>T Flip Flop - High Active Set/Reset</caption>
+	<gate> <name>CC_TFF_LOW_NT</name>
+		<caption>T Flip Flop - Negative Triggered, Low Active Set/Reset</caption>
 		<logic_type>TFF</logic_type>
 		<logic_param>SYNC_SET false</logic_param>
 		<logic_param>SYNC_CLEAR false</logic_param>
@@ -11806,16 +11733,19 @@
 #		Clock
 		<input> <name>CLOCK</name>
 		          <point>-3,-2</point>
+				<inverted>true</inverted>				  
 		</input>
 
 #		SET
 		<input> <name>SET</name>
-		          <point>0,4</point> 
+		          <point>0,4</point>
+				<inverted>true</inverted>
 		</input>
 
 #		RESET
 		<input> <name>CLEAR</name>
 		          <point>0,-4</point> 
+				<inverted>true</inverted>
 		</input>
 
 #		Q
@@ -11841,11 +11771,11 @@
 			<line>-2,-2.5,-1,-2</line>
 
 			<line>-2,2,-3,2</line>
-			<line>-2,-2,-3,-2</line>
+			<line>-2.70,-2,-3,-2</line>
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
-			<line>0,3,0,4</line>
-			<line>0,-3,0,-4</line>
+			<line>0,3.7,0,4</line>
+			<line>0,-3.7,0,-4</line>
 
 #			T
 			<text>-1.4,2,T</text>
@@ -11862,8 +11792,13 @@
 #			CL
 			<text>0,-2.5,$C$L</text>
 
+#			Low Active Portion
+			<circle>0,3.35,0.35,24</circle>
+			<circle>0,-3.35,0.35,24</circle>
+			<circle>-2.35,-2,0.35,24</circle>			
+
 		</shape>
-	</gate>	
+	</gate>
 	<gate> <name>CD_TFF</name>
 		<caption>T Flip Flop - High Active Reset</caption>
 		<logic_type>TFF</logic_type>
@@ -11911,6 +11846,136 @@
 			<line>2,-2,3,-2</line>
 			<line>2,2,3,2</line>
 			<line>0,-3,0,-4</line>
+
+#			T
+			<text>-1.4,2,T</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+			
+#			CL
+			<text>0,-2.5,$C$L</text>
+
+		</shape>
+	</gate>
+	<gate> <name>CD_TFF_NT</name>
+		<caption>T Flip Flop - Negative Triggered, High Active Reset</caption>
+		<logic_type>TFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		T
+		<input> <name>T</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,-2</point>
+			<inverted>true</inverted>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+		
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,-1.5,-1,-2</line>
+			<line>-2,-2.5,-1,-2</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2.7,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3,0,-4</line>
+			
+			<circle>-2.35,-2,0.35,24</circle>
+
+#			T
+			<text>-1.4,2,T</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+			
+#			CL
+			<text>0,-2.5,$C$L</text>
+
+		</shape>
+	</gate>
+	<gate> <name>CD_TFF_LOW</name>
+		<caption>T Flip Flop - Low Active Reset</caption>
+		<logic_type>TFF</logic_type>
+		<logic_param>SYNC_SET false</logic_param>
+		<logic_param>SYNC_CLEAR false</logic_param>
+
+#		T
+		<input> <name>T</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,-2</point>
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+			<inverted>true</inverted> 
+		</input>
+
+#		Q
+		<output> <name>Q</name>
+		          <point>3,2</point> 
+		</output>
+		
+#		QNOT
+		<output> <name>NQ</name>
+		          <point>3,-2</point> 
+		</output>
+		
+		<shape>
+#			boby
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,-1.5,-1,-2</line>
+			<line>-2,-2.5,-1,-2</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,-3.7,0,-4</line>
+			
+			<circle>0,-3.35,0.35,24</circle>
 
 #			T
 			<text>-1.4,2,T</text>
@@ -11978,71 +12043,6 @@
 			
 			<circle>-2.35,-2,0.35,24</circle>
 			<circle>0,-3.35,0.35,24</circle>
-
-#			T
-			<text>-1.4,2,T</text>
-
-#			Q
-			<text>1.4,2,Q</text>
-
-#			Q NOT
-			<text>1.4,-2,~Q</text>
-			
-#			CL
-			<text>0,-2.5,$C$L</text>
-
-		</shape>
-	</gate>
-	<gate> <name>CD_TFF_NT</name>
-		<caption>T Flip Flop - Negative Triggered, High Active Reset</caption>
-		<logic_type>TFF</logic_type>
-		<logic_param>SYNC_SET false</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
-
-#		T
-		<input> <name>T</name>
-		          <point>-3,2</point> 
-		</input>
-
-#		Clock
-		<input> <name>CLOCK</name>
-		          <point>-3,-2</point>
-			<inverted>true</inverted>
-		</input>
-
-#		RESET
-		<input> <name>CLEAR</name>
-		          <point>0,-4</point> 
-		</input>
-
-#		Q
-		<output> <name>Q</name>
-		          <point>3,2</point> 
-		</output>
-		
-#		QNOT
-		<output> <name>NQ</name>
-		          <point>3,-2</point> 
-		</output>
-		
-		<shape>
-#			boby
-			<outline>2,3,-2,3</outline>
-			<outline>-2,3,-2,-3</outline>
-			<outline>-2,-3,2,-3</outline>
-			<outline>2,-3,2,3</outline>
-
-#			CLOCK
-			<line>-2,-1.5,-1,-2</line>
-			<line>-2,-2.5,-1,-2</line>
-
-			<line>-2,2,-3,2</line>
-			<line>-2.7,-2,-3,-2</line>
-			<line>2,-2,3,-2</line>
-			<line>2,2,3,2</line>
-			<line>0,-3,0,-4</line>
-			
-			<circle>-2.35,-2,0.35,24</circle>
 
 #			T
 			<text>-1.4,2,T</text>
@@ -21417,6 +21417,13 @@
 				<varname>GUI G8</varname>
 			</param>
 		</param_dlg_data>
+				<param_dlg_data>
+			<param>
+				<type>STRING</type>
+				<label>Gate 8 inputs</label>
+				<varname>GUI G8</varname>
+			</param>
+		</param_dlg_data>
 		<shape>
 			
 			<offset><point>-1.5,1</point>
@@ -22488,627 +22495,6 @@
 			<line>0,-0.8,0,-0.4</line>
 			<line>0,-0.4,0,0</line>
 			</offset>
-		</shape>
-	</gate>
-#	3x8 Decoder Gate
-	<gate>
-		<name>3x8 Decoder Chip</name>
-		<caption>3x8 Decoder</caption>
-		<logic_type>DECODER</logic_type>
-		<gui_type>CHIP_DECODER_3x8</gui_type>
-		<logic_param>INPUT_BITS 3</logic_param>
-
-#		input hotspot
-		<input>
-			<name>IN_0</name>
-			<point>-7.5,3.5</point>
-		</input>
-
-#		input hotspot
-		<input>
-			<name>IN_1</name>
-			<point>-7.5,2.5</point>
-		</input>
-
-#		input hotspot
-		<input>
-			<name>IN_2</name>
-			<point>-7.5,1.5</point>
-		</input>
-
-#		input hotspot
-		<input>
-			<name>ENABLE_A</name>
-			<point>-7.5,0.5</point>
-			<inverted>true</inverted>
-		</input>
-
-#		input hotspot
-		<input>
-			<name>ENABLE_B</name>
-			<point>-7.5,-0.5</point>
-			<inverted>true</inverted>
-		</input>
-
-#		input hotspot
-		<input>
-			<name>ENABLE_C</name>
-			<point>-7.5,-1.5</point>
-		</input>
-
-#		output hotspot
-		<output>
-			<name>OUT_7</name>
-			<point>-7.5,-2.5</point>
-			<inverted>true</inverted>
-		</output>
-
-#		input hotspot
-		<input>
-			<name>OUTPUT_ENABLE</name>
-			<point>-7.5,-3.5</point>
-			<inverted>true</inverted>
-		</input>
-
-#		input hotspot
-		<input>
-			<name>ENABLE_1</name>
-			<point>7.5,3.5</point>
-		</input>
-
-#		output hotspot
-		<output>
-			<name>OUT_0</name>
-			<point>7.5,2.5</point>
-			<inverted>true</inverted>
-		</output>
-
-#		output hotspot
-		<output>
-			<name>OUT_1</name>
-			<point>7.5,1.5</point>
-			<inverted>true</inverted>
-		</output>
-
-#		output hotspot
-		<output>
-			<name>OUT_2</name>
-			<point>7.5,0.5</point>
-			<inverted>true</inverted>
-		</output>
-
-#		output hotspot
-		<output>
-			<name>OUT_3</name>
-			<point>7.5,-0.5</point>
-			<inverted>true</inverted>
-		</output>
-
-#		output hotspot
-		<output>
-			<name>OUT_4</name>
-			<point>7.5,-1.5</point>
-			<inverted>true</inverted>
-		</output>
-
-#		output hotspot
-		<output>
-			<name>OUT_5</name>
-			<point>7.5,-2.5</point>
-			<inverted>true</inverted>
-		</output>
-
-#		output hotspot
-		<output>
-			<name>OUT_6</name>
-			<point>7.5,-3.5</point>
-			<inverted>true</inverted>
-		</output>
-
-#		what the gate looks like
-		<shape>
-
-#			outline
-			<line>-6.5,5.0,6.5,5.0</line>
-			<line>-6.5,5.0,-6.5,-5.0</line>
-			<line>-6.5,-5.0,6.5,-5.0</line>
-			<line>6.5,-5.0,6.5,5.0</line>
-
-#			inputs and outputs
-			<line>-7.5,3.5,-6.5,3.5</line>
-			<line>-7.5,2.5,-6.5,2.5</line>
-			<line>-7.5,1.5,-6.5,1.5</line>
-			<line>-7.5,0.5,-6.5,0.5</line>
-			<line>-7.5,-0.5,-6.5,-0.5</line>
-			<line>-7.5,-1.5,-6.5,-1.5</line>
-			<line>-7.5,-2.5,-6.5,-2.5</line>
-			<line>-7.5,-3.5,-6.5,-3.5</line>
-			<line>7.5,3.5,6.5,3.5</line>
-			<line>7.5,2.5,6.5,2.5</line>
-			<line>7.5,1.5,6.5,1.5</line>
-			<line>7.5,0.5,6.5,0.5</line>
-			<line>7.5,-0.5,6.5,-0.5</line>
-			<line>7.5,-1.5,6.5,-1.5</line>
-			<line>7.5,-2.5,6.5,-2.5</line>
-			<line>7.5,-3.5,6.5,-3.5</line>
-
-#			lettering
-			<offset>
-				<point>-6.0,3.9</point>
-
-#				A
-				<line>0.0,-0.8,0.2,0.0</line>
-				<line>0.2,0.0,0.4,-0.8</line>
-				<line>0.1,-0.4,0.3,-0.4</line>
-
-#				/
-				<line>1.0,0.0,0.6,-0.8</line>
-
-#				A
-				<line>1.2,-0.8,1.4,0.0</line>
-				<line>1.4,0.0,1.6,-0.8</line>
-				<line>1.3,-0.4,1.5,-0.4</line>
-
-#				0
-				<line>1.8,0.0,2.2,0.0</line>
-				<line>2.2,0.0,2.2,-0.8</line>
-				<line>2.2,-0.8,1.8,-0.8</line>
-				<line>1.8,-0.8,1.8,0.0</line>
-			</offset>
-
-#			B/A1
-			<offset>
-				<point>-6.0,2.9</point>
-
-#				B
-				<line>0.0,0.0,0.2,0.0</line>
-				<line>0.2,0.0,0.4,-0.2</line>
-				<line>0.4,-0.2,0.2,-0.4</line>
-				<line>0.0,-0.4,0.2,-0.4</line>
-				<line>0.2,-0.4,0.4,-0.6</line>
-				<line>0.4,-0.6,0.2,-0.8</line>
-				<line>0.2,-0.8,0.0,-0.8</line>
-				<line>0.0,-0.8,0.0,0.0</line>
-
-#				/
-				<line>1.0,0.0,0.6,-0.8</line>
-
-#				A
-				<line>1.2,-0.8,1.4,0.0</line>
-				<line>1.4,0.0,1.6,-0.8</line>
-				<line>1.3,-0.4,1.5,-0.4</line>
-
-#				1
-				<line>1.8,0.0,1.8,-0.8</line>
-			</offset>
-
-#			C/A2
-			<offset>
-				<point>-6.0,1.9</point>
-
-#				C
-				<line>0.4,0.0,0.2,0.0</line>
-				<line>0.2,0.0,0.0,-0.2</line>
-				<line>0.0,-0.2,0.0,-0.6</line>
-				<line>0.0,-0.6,0.2,-0.8</line>
-				<line>0.2,-0.8,0.4,-0.8</line>
-
-#				/
-				<line>1.0,0.0,0.6,-0.8</line>
-
-#				A
-				<line>1.2,-0.8,1.4,0.0</line>
-				<line>1.4,0.0,1.6,-0.8</line>
-				<line>1.3,-0.4,1.5,-0.4</line>
-
-#				2
-				<line>1.8,0.0,2.2,0.0</line>
-				<line>2.2,0.0,2.2,-0.4</line>
-				<line>2.2,-0.4,1.8,-0.4</line>
-				<line>1.8,-0.4,1.8,-0.8</line>
-				<line>1.8,-0.8,2.2,-0.8</line>
-			</offset>
-
-#			/E1
-			<offset>
-				<point>-6.0,0.9</point>
-
-#				/
-				<line>0.4,0.0,0.0,-0.8</line>
-
-#				E
-				<line>0.6,0.0,0.6,-0.8</line>
-				<line>0.6,0.0,1.0,0.0</line>
-				<line>0.6,-0.4,1.0,-0.4</line>
-				<line>0.6,-0.8,1.0,-0.8</line>
-
-#				1
-				<line>1.2,0.0,1.2,-0.8</line>
-			</offset>
-
-#			/E2
-			<offset>
-				<point>-6.0,-0.1</point>
-
-#				/
-				<line>0.4,0.0,0.0,-0.8</line>
-
-#				E
-				<line>0.6,0.0,0.6,-0.8</line>
-				<line>0.6,0.0,1.0,0.0</line>
-				<line>0.6,-0.4,1.0,-0.4</line>
-				<line>0.6,-0.8,1.0,-0.8</line>
-
-#				2
-				<line>1.2,0.0,1.6,0.0</line>
-				<line>1.6,0.0,1.6,-0.4</line>
-				<line>1.6,-0.4,1.2,-0.4</line>
-				<line>1.2,-0.4,1.2,-0.8</line>
-				<line>1.2,-0.8,1.6,-0.8</line>
-			</offset>
-
-#			E3
-			<offset>
-				<point>-6.0,-1.1</point>
-
-#				E
-				<line>0.0,0.0,0.0,-0.8</line>
-				<line>0.0,0.0,0.4,0.0</line>
-				<line>0.0,-0.4,0.4,-0.4</line>
-				<line>0.0,-0.8,0.4,-0.8</line>
-
-#				3
-				<line>0.6,0.0,1.0,0.0</line>
-				<line>1.0,0.0,1.0,-0.8</line>
-				<line>0.6,-0.4,1.0,-0.4</line>
-				<line>0.6,-0.8,1.0,-0.8</line>
-			</offset>
-
-#			Y7/O7
-			<offset>
-				<point>-6.0,-2.1</point>
-
-#				Y
-				<line>0.0,0.0,0.2,-0.4</line>
-				<line>0.4,0.0,0.2,-0.4</line>
-				<line>0.2,-0.4,0.2,-0.8</line>
-
-#				7
-				<line>0.6,0.0,1.0,0.0</line>
-				<line>1.0,0.0,0.6,-0.8</line>
-
-#				/
-				<line>1.6,0.0,1.2,-0.8</line>
-
-#				0
-				<line>1.8,0.0,2.2,0.0</line>
-				<line>2.2,0.0,2.2,-0.8</line>
-				<line>2.2,-0.8,1.8,-0.8</line>
-				<line>1.8,-0.8,1.8,0.0</line>
-
-#				7
-				<line>2.4,0.0,2.8,0.0</line>
-				<line>2.8,0.0,2.4,-0.8</line>
-			</offset>
-
-#			GND
-			<offset>
-				<point>-6.0,-3.1</point>
-
-#				G
-				<line>0.4,0.0,0.0,0.0</line>
-				<line>0.0,0.0,0.0,-0.8</line>
-				<line>0.0,-0.8,0.4,-0.8</line>
-				<line>0.4,-0.8,0.4,-0.4</line>
-				<line>0.4,-0.4,0.2,-0.4</line>
-
-#				N
-				<line>0.6,-0.8,0.6,0.0</line>
-				<line>0.6,0.0,1.0,-0.8</line>
-				<line>1.0,-0.8,1.0,0.0</line>
-
-#				D
-				<line>1.2,0.0,1.4,0.0</line>
-				<line>1.4,0.0,1.6,-0.2</line>
-				<line>1.6,-0.2,1.6,-0.6</line>
-				<line>1.6,-0.6,1.4,-0.8</line>
-				<line>1.4,-0.8,1.2,-0.8</line>
-				<line>1.2,-0.8,1.2,0.0</line>
-			</offset>
-
-#			Vcc
-			<offset>
-				<point>6.0,3.9</point>
-
-#				V
-				<line>-1.6,0.0,-1.4,-0.8</line>
-				<line>-1.4,-0.8,-1.2,0.0</line>
-
-#				c
-				<line>-0.6,-0.4,-1,-0.4</line>
-				<line>-1,-0.4,-1,-0.8</line>
-				<line>-1,-0.8,-0.6,-0.8</line>
-
-#				c
-				<line>0,-0.4,-0.4,-0.4</line>
-				<line>-0.4,-0.4,-0.4,-0.8</line>
-				<line>-0.4,-0.8,0,-0.8</line>
-			</offset>
-
-#			O0/Y0
-			<offset>
-				<point>6.0,2.9</point>
-
-#				0
-				<line>-2.8,0.0,-2.4,0.0</line>
-				<line>-2.4,0.0,-2.4,-0.8</line>
-				<line>-2.4,-0.8,-2.8,-0.8</line>
-				<line>-2.8,-0.8,-2.8,0.0</line>
-
-#				0
-				<line>-2.2,0.0,-1.8,0.0</line>
-				<line>-1.8,0.0,-1.8,-0.8</line>
-				<line>-1.8,-0.8,-2.2,-0.8</line>
-				<line>-2.2,-0.8,-2.2,0.0</line>
-
-#				/
-				<line>-1.2,0.0,-1.6,-0.8</line>
-
-#				Y
-				<line>-1.0,0.0,-0.8,-0.4</line>
-				<line>-0.6,0.0,-0.8,-0.4</line>
-				<line>-0.8,-0.4,-0.8,-0.8</line>
-
-#				0
-				<line>-0.4,0.0,0,0.0</line>
-				<line>0,0.0,0,-0.8</line>
-				<line>0,-0.8,-0.4,-0.8</line>
-				<line>-0.4,-0.8,-0.4,0.0</line>
-			</offset>
-
-#			O1/Y1
-			<offset>
-				<point>6.0,1.9</point>
-
-#				0
-				<line>-2.8,0.0,-2.4,0.0</line>
-				<line>-2.4,0.0,-2.4,-0.8</line>
-				<line>-2.4,-0.8,-2.8,-0.8</line>
-				<line>-2.8,-0.8,-2.8,0.0</line>
-
-#				1
-				<line>-2.2,0,-2.2,-0.8</line>
-
-#				/
-				<line>-1.2,0.0,-1.6,-0.8</line>
-
-#				Y
-				<line>-1.0,0.0,-0.8,-0.4</line>
-				<line>-0.6,0.0,-0.8,-0.4</line>
-				<line>-0.8,-0.4,-0.8,-0.8</line>
-
-#				1
-				<line>-0.4,0,-0.4,-0.8</line>
-			</offset>
-
-#			O2/Y2
-			<offset>
-				<point>6.0,0.9</point>
-
-#				0
-				<line>-2.8,0.0,-2.4,0.0</line>
-				<line>-2.4,0.0,-2.4,-0.8</line>
-				<line>-2.4,-0.8,-2.8,-0.8</line>
-				<line>-2.8,-0.8,-2.8,0.0</line>
-
-#				2
-				<line>-2.2,0.0,-1.8,0.0</line>
-				<line>-1.8,0.0,-1.8,-0.4</line>
-				<line>-1.8,-0.4,-2.2,-0.4</line>
-				<line>-2.2,-0.4,-2.2,-0.8</line>
-				<line>-2.2,-0.8,-1.8,-0.8</line>
-
-#				/
-				<line>-1.2,0.0,-1.6,-0.8</line>
-
-#				Y
-				<line>-1.0,0.0,-0.8,-0.4</line>
-				<line>-0.6,0.0,-0.8,-0.4</line>
-				<line>-0.8,-0.4,-0.8,-0.8</line>
-
-#				2
-				<line>-0.4,0.0,0,0.0</line>
-				<line>0,0.0,0,-0.4</line>
-				<line>0,-0.4,-0.4,-0.4</line>
-				<line>-0.4,-0.4,-0.4,-0.8</line>
-				<line>-0.4,-0.8,0,-0.8</line>
-			</offset>
-
-#			O3/Y3
-			<offset>
-				<point>6.0,-0.1</point>
-
-#				0
-				<line>-2.8,0.0,-2.4,0.0</line>
-				<line>-2.4,0.0,-2.4,-0.8</line>
-				<line>-2.4,-0.8,-2.8,-0.8</line>
-				<line>-2.8,-0.8,-2.8,0.0</line>
-
-#				3
-				<line>-2.2,0.0,-1.8,0.0</line>
-				<line>-1.8,0.0,-1.8,-0.8</line>
-				<line>-2.2,-0.4,-1.8,-0.4</line>
-				<line>-2.2,-0.8,-1.8,-0.8</line>
-
-#				/
-				<line>-1.2,0.0,-1.6,-0.8</line>
-
-#				Y
-				<line>-1.0,0.0,-0.8,-0.4</line>
-				<line>-0.6,0.0,-0.8,-0.4</line>
-				<line>-0.8,-0.4,-0.8,-0.8</line>
-
-#				3
-				<line>-0.4,0.0,0,0.0</line>
-				<line>0,0.0,0,-0.8</line>
-				<line>-0.4,-0.4,0,-0.4</line>
-				<line>-0.4,-0.8,0,-0.8</line>
-			</offset>
-
-#			O4/Y4
-			<offset>
-				<point>6.0,-1.1</point>
-
-#				0
-				<line>-2.8,0.0,-2.4,0.0</line>
-				<line>-2.4,0.0,-2.4,-0.8</line>
-				<line>-2.4,-0.8,-2.8,-0.8</line>
-				<line>-2.8,-0.8,-2.8,0.0</line>
-
-#				4
-				<line>-2.2,0.0,-2.2,-0.4</line>
-				<line>-2.2,-0.4,-1.8,-0.4</line>
-				<line>-1.8,0.0,-1.8,-0.8</line>
-
-#				/
-				<line>-1.2,0.0,-1.6,-0.8</line>
-
-#				Y
-				<line>-1.0,0.0,-0.8,-0.4</line>
-				<line>-0.6,0.0,-0.8,-0.4</line>
-				<line>-0.8,-0.4,-0.8,-0.8</line>
-
-#				4
-				<line>-0.4,0.0,-0.4,-0.4</line>
-				<line>-0.4,-0.4,0,-0.4</line>
-				<line>0,0.0,0,-0.8</line>
-			</offset>
-
-#			O5/Y5
-			<offset>
-				<point>6.0,-2.1</point>
-
-#				0
-				<line>-2.8,0.0,-2.4,0.0</line>
-				<line>-2.4,0.0,-2.4,-0.8</line>
-				<line>-2.4,-0.8,-2.8,-0.8</line>
-				<line>-2.8,-0.8,-2.8,0.0</line>
-
-#				5
-				<line>-1.8,0.0,-2.2,0.0</line>
-				<line>-2.2,0.0,-2.2,-0.4</line>
-				<line>-2.2,-0.4,-1.8,-0.4</line>
-				<line>-1.8,-0.4,-1.8,-0.8</line>
-				<line>-1.8,-0.8,-2.2,-0.8</line>
-
-#				/
-				<line>-1.2,0.0,-1.6,-0.8</line>
-
-#				Y
-				<line>-1.0,0.0,-0.8,-0.4</line>
-				<line>-0.6,0.0,-0.8,-0.4</line>
-				<line>-0.8,-0.4,-0.8,-0.8</line>
-
-#				5
-				<line>0,0.0,-0.4,0.0</line>
-				<line>-0.4,0.0,-0.4,-0.4</line>
-				<line>-0.4,-0.4,0,-0.4</line>
-				<line>0,-0.4,0,-0.8</line>
-				<line>0,-0.8,-0.4,-0.8</line>
-			</offset>
-
-#			O6/Y6
-			<offset>
-				<point>6.0,-3.1</point>
-
-#				0
-				<line>-2.8,0.0,-2.4,0.0</line>
-				<line>-2.4,0.0,-2.4,-0.8</line>
-				<line>-2.4,-0.8,-2.8,-0.8</line>
-				<line>-2.8,-0.8,-2.8,0.0</line>
-
-#				6
-				<line>-1.8,0.0,-2.2,0.0</line>
-				<line>-2.2,0.0,-2.2,-0.8</line>
-				<line>-2.2,-0.8,-1.8,-0.8</line>
-				<line>-1.8,-0.8,-1.8,-0.4</line>
-				<line>-1.8,-0.4,-2.2,-0.4</line>
-
-#				/
-				<line>-1.2,0.0,-1.6,-0.8</line>
-
-#				Y
-				<line>-1.0,0.0,-0.8,-0.4</line>
-				<line>-0.6,0.0,-0.8,-0.4</line>
-				<line>-0.8,-0.4,-0.8,-0.8</line>
-
-#				6
-				<line>0,0.0,-0.4,0.0</line>
-				<line>-0.4,0.0,-0.4,-0.8</line>
-				<line>-0.4,-0.8,0,-0.8</line>
-				<line>0,-0.8,0,-0.4</line>
-				<line>0,-0.4,-0.4,-0.4</line>
-			</offset>
-
-#			3
-			<line>-3.1,0.4,-2.7,0.4</line>
-			<line>-2.7,0.4,-2.7,-0.4</line>
-			<line>-3.1,0.0,-2.7,0.0</line>
-			<line>-3.1,-0.4,-2.7,-0.4</line>
-
-#			x
-			<line>-2.5,0.0,-2.1,-0.4</line>
-			<line>-2.1,0.0,-2.5,-0.4</line>
-
-#			8
-			<line>-1.9,0.4,-1.9,-0.4</line>
-			<line>-1.5,0.4,-1.5,-0.4</line>
-			<line>-1.9,0.4,-1.5,0.4</line>
-			<line>-1.9,0.0,-1.5,0.0</line>
-			<line>-1.9,-0.4,-1.5,-0.4</line>
-
-#			D
-			<line>-0.9,0.4,-0.7,0.4</line>
-			<line>-0.7,0.4,-0.5,0.2</line>
-			<line>-0.5,0.2,-0.5,-0.2</line>
-			<line>-0.5,-0.2,-0.7,-0.4</line>
-			<line>-0.7,-0.4,-0.9,-0.4</line>
-			<line>-0.9,-0.4,-0.9,0.4</line>
-
-#			e
-			<line>0.1,-0.4,-0.3,-0.4</line>
-			<line>-0.3,-0.4,-0.3,0.0</line>
-			<line>-0.3,0.0,0.1,0.0</line>
-			<line>0.1,0.0,0.1,-0.2</line>
-			<line>0.1,-0.2,-0.3,-0.2</line>
-
-#			c
-			<line>0.7,0.0,0.3,0.0</line>
-			<line>0.3,0.0,0.3,-0.4</line>
-			<line>0.3,-0.4,0.7,-0.4</line>
-
-#			o
-			<line>0.9,0.0,1.3,0.0</line>
-			<line>1.3,0.0,1.3,-0.4</line>
-			<line>1.3,-0.4,0.9,-0.4</line>
-			<line>0.9,-0.4,0.9,0.0</line>
-
-#			d
-			<line>1.9,0.4,1.9,-0.4</line>
-			<line>1.9,0.0,1.5,0.0</line>
-			<line>1.5,0.0,1.5,-0.4</line>
-			<line>1.5,-0.4,1.9,-0.4</line>
-
-#			e
-			<line>2.5,-0.4,2.1,-0.4</line>
-			<line>2.1,-0.4,2.1,0.0</line>
-			<line>2.1,0.0,2.5,0.0</line>
-			<line>2.5,0.0,2.5,-0.2</line>
-			<line>2.5,-0.2,2.1,-0.2</line>
-
-#			r
-			<line>2.7,-0.4,2.7,0.0</line>
-			<line>2.7,0.0,3.1,0.0</line>
 		</shape>
 	</gate>
 	<gate> <name>AA_RAM_4x4</name>
@@ -24251,6 +23637,7 @@
 			</offset>
 		</shape>
 	</gate>
+#	3x8 Decoder Gate
 	<gate>
 		<name>3x8 Decoder Chip</name>
 		<caption>3x8 Decoder</caption>
@@ -24872,6 +24259,4 @@
 		</shape>
 	</gate>
 </library>
-
-
-
+# End

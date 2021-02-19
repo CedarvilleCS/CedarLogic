@@ -12,9 +12,11 @@ paramSet::paramSet(ParameterMap *g, ParameterMap* l) {
 	lParams = l;
 };
 
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Added canUndo in contructors to prevent FSM and CMB undo descriptions
 cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid,
-		paramSet pSet, bool setMode) :
-			klsCommand(true, "Set Parameter") {
+		paramSet pSet, bool canUndo, bool setMode) :
+			klsCommand(canUndo, "Set Parameter") {
 
 	if ((gCircuit->getGates())->find(gid) == (gCircuit->getGates())->end()) return; // error: gate not found
 	this->gCircuit = gCircuit;
@@ -48,8 +50,8 @@ cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid,
 	}
 }
 
-cmdSetParams::cmdSetParams(string def) : klsCommand(true, "Set Parameter") {
-
+cmdSetParams::cmdSetParams(string def, bool canUndo) : klsCommand(canUndo, "Set Parameter") {
+	_MSGCOM("Command String: %s", def.c_str());	//####
 	this->fromString = true;
 	istringstream iss(def);
 	string dump; char comma;
@@ -101,6 +103,7 @@ bool cmdSetParams::Do() {
 	if (!fromString && gCircuit->getOscope() != NULL)
 		if ((*(gCircuit->getGates()))[gid]->getGUIType() == "TO" || (*(gCircuit->getGates()))[gid]->getGUIType() == "FROM" || (*(gCircuit->getGates()))[gid]->getGUIType() == "LINK")
 			gCircuit->getOscope()->UpdateMenu();
+	
 	return true;
 }
 

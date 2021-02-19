@@ -26,7 +26,7 @@ cmdMoveWire::cmdMoveWire(GUICircuit* gCircuit, unsigned long wid,
 }
 
 cmdMoveWire::cmdMoveWire(string def) : klsCommand(true, "Move Wire") {
-
+	_MSGCOM("Command String: %s", def.c_str());	//####
 	istringstream iss(def);
 	// wire looks like "movewire wid" then series of segments
 	string temp; char dump;

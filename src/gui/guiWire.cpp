@@ -555,6 +555,7 @@ map < long, wireSegment > guiWire::getOldSegmentMap(void) { return oldSegMap; };
 
 // Calculates a default three-segment shape for the wire, from source to destination, squared halfway
 void guiWire::calcShape() {
+
 	this->deleteSubObjects(); // prevent coll checker pointers from invalidating
 
 	// Get rid of the old shape

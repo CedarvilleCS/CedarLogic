@@ -4,13 +4,11 @@
 #include "../guiGate.h"
 
 // Pedro Casanova (casanova@ujaen.es) 2021/01-02
-// cmdCreateGateStruct - Create a two level gate struct
+// cmdCreateGateStruct - Create a two level gate struct and others
 class cmdCreateGateStruct : public klsCommand {
 public:
 	cmdCreateGateStruct(GUICanvas* gCanvas, GUICircuit* gCircuit, guiGate* gGate); 
 	
-	cmdCreateGateStruct(const std::string &def);
-
 	virtual ~cmdCreateGateStruct();
 
 	bool Do();
@@ -24,6 +22,5 @@ public:
 
 private:
 	guiGate* gGate;
-	//map<string, string> gParamList;
 	std::vector<klsCommand *> cmdList;
 };

@@ -307,7 +307,6 @@ bool CircuitParse::parseGateToSend(string type, string ID, string position, vect
 			wxGetApp().libParser.CreateDynamicGate(type);
 		}
 		if (!wxGetApp().libParser.getGate(type, libGate)) {
-			//wxMessageBox("Component not found!\nGate name:" + type, "Not found Error!");
 			notFound = true;
 			orgName = type;
 			type = "@@_NOT_FOUND";

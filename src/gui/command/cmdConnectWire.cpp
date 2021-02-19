@@ -18,7 +18,7 @@ cmdConnectWire::cmdConnectWire(GUICircuit* gCircuit, IDType wid, IDType gid,
 
 cmdConnectWire::cmdConnectWire(const std::string &def) :
 		klsCommand(true, "Connection") {
-
+	_MSGCOM("Command String: %s", def.c_str());	//####
 	std::istringstream iss(def);
 	std::string dump;
 	iss >> dump >> wireId >> gateId >> hotspot;

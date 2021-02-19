@@ -7,6 +7,7 @@ namespace {
 	const int VERSION_MAJOR = CEDARLOGIC_MAJOR;
 	const int VERSION_MINOR = CEDARLOGIC_MINOR;
 	const int VERSION_PATCH = CEDARLOGIC_PATCH;
+	const string VERSION_REVISION = CEDARLOGIC_REVISION;
 }
 
 // Pedro Casanova (casanova@ujaen.es) 2020/04-12
@@ -52,8 +53,14 @@ string VERSION_NUMBER_STRING() {
 		std::to_string(VERSION_PATCH);
 }
 
+string VERSION_REVISION_STRING() {
+	if (VERSION_REVISION == "A")
+		return "";
+	return " Rev. "+ VERSION_REVISION;
+}
+
 string VERSION_TITLE() {
-	return "CedarLogic " + VERSION_NUMBER_STRING();
+	return "CedarLogic " + VERSION_NUMBER_STRING() + VERSION_REVISION_STRING();
 }
 
 string VERSION_ABOUT_TEXT() {

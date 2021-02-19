@@ -10,8 +10,6 @@ public:
 	cmdMergeWire(GUICanvas* gCanvas, GUICircuit* gCircuit,
 		const std::vector<IDType> &wireIds, IDType wid1, IDType wid2);
 
-	cmdMergeWire(const std::string &def);
-
 	virtual ~cmdMergeWire();
 
 	bool Do();

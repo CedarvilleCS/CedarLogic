@@ -596,17 +596,15 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 						ostringstream ossAngle;
 						ossAngle << angle;
 						newParams["angle"] = ossAngle.str();
-						gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
-					}
-					else {
+					} else {
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Shift or Control and mouseRightDown to change "mirror" GUI param
 						if (newParams["mirror"] == "true")
 							newParams["mirror"] = "false";
 						else
 							newParams["mirror"] = "true";
-						gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
 					}
+					gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
 				}
 
 			}
@@ -874,8 +872,22 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 	if (currentDragState == DRAG_NEWGATE) {
 		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
 		// Midified to create dynamics gates
-		if (newDragGate->getLibraryGateName().substr(0, 2) == "%_") {			
-			newDragGate->doParamsDialog(gCircuit, gCircuit->GetCommandProcessor());
+		if (newDragGate->getLibraryGateName().substr(0, 2) == "%_") {
+			float x, y;
+			newDragGate->getGLcoords(x, y);
+			// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+			// Dynamic gates
+			while (true) {
+				newDragGate->setGUIParam("DYNAMIC_GATE", "false");
+				newDragGate->doParamsDialog(gCircuit, gCircuit->GetCommandProcessor());
+				if (newDragGate->getGUIParam("DYNAMIC_GATE") != "true")
+					break;
+				else {
+					newDragGate->setGLcoords(x, y);
+					if (addDynamicGate(newDragGate))
+						break;
+				}
+			}
 		} else {
 			int newGID = gCircuit->getNextAvailableGateID();
 			float nx, ny;
@@ -1580,3 +1592,297 @@ klsCommand * GUICanvas::createWireConnectionCommand(IDType wireId1, IDType wireI
 	}
 }
 
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Add Dynamics gates
+bool GUICanvas::addDynamicGate(guiGate* gGate) {
+
+	if (gGate->getLibraryGateName() == "%_31_GATES" || gGate->getLibraryGateName() == "%_34_CIRCUIT") {
+		string msg;
+		if (!createGatesStruct(gGate, &msg)) {
+			wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
+			return false;
+		}
+	}
+	else if (gGate->getLibraryGateName() == "%_16_WIRES") {
+		createGatesStruct(gGate);
+	}
+	else {
+		replaceGate(gGate);
+	}
+	return true;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Replace Gate %_ for his correct type (Dynamics gates)
+void GUICanvas::replaceGate(guiGate* gGate) {
+	// Replace gate	
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	map<string, string> lParamList = *gGate->getAllLogicParams();
+
+	ostringstream type;
+	gGate->unselect();
+	if (gGate->getLibraryGateName() == "%_11_WIRE") {
+		type << "@@_WIRE_" << gParamList.at("LENGTH");
+	}
+	else if (gGate->getLibraryGateName() == "%_14_NOWIRE") {
+		type << "@@_NOWIRE_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");
+	}
+	else if (gGate->getLibraryGateName() == "%_17_BUSEND") {
+		type << "@@_BUSEND" << (gParamList.at("SEPARATION") == "narrow" ? "N_" : "_") << gParamList.at("INPUT_BITS");
+	}
+	else if (gGate->getLibraryGateName() == "%_21_LAND") {
+		type << "@@_LAND_" << gParamList.at("INPUT_BITS");
+	}
+	else if (gGate->getLibraryGateName() == "%_24_LOR") {
+		type << "@@_LOR_" << gParamList.at("INPUT_BITS");
+	}
+	else if (gGate->getLibraryGateName() == "%_41_BLQ") {
+		type << "@@_BLQ_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");
+	}
+	else if (gGate->getLibraryGateName() == "%_42_FLIPFLOP") {
+		type << getFlipFlop(gGate);
+	}
+	else if (gGate->getLibraryGateName() == "%_44_CMB") {
+		type << "@@_CMB_" << lParamList.at("INPUT_BITS") << "X" << lParamList.at("OUTPUT_BITS");
+	}
+	else if (gGate->getLibraryGateName() == "%_47_FSM") {
+		type << "@@_FSM_" << ((lParamList.at("ASYNCHRONOUS") == "true") ? "A" : "S") << "_"
+			<< lParamList.at("INPUT_BITS") << "X" << lParamList.at("OUTPUT_BITS");
+	}
+	if (type.str() == "") return;
+	int newGID = gCircuit->getNextAvailableGateID();
+	float x, y;
+	gGate->getGLcoords(x, y);
+	cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, newGID, type.str(), x, y);
+	gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatecommand);
+	cmdSetParams setgateparams(gCircuit, newGID, paramSet((*(gCircuit->getGates()))[newGID]->getAllGUIParams(), (*(gCircuit->getGates()))[newGID]->getAllLogicParams()));
+	setgateparams.Do();
+	gateList[newGID]->select();
+	selectedGates.push_back(newGID);
+
+}
+
+string GUICanvas::getFlipFlop(guiGate* gGate) {
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	bool edgeClock = (gParamList.at("EDGE_CLOCK") == "rising") ? true : false;
+	bool levelPC = (gParamList.at("LEVEL_PR_CL") == "high") ? true : false;
+	string presetClear = gParamList.at("PRESET_CLEAR");
+	string ffType = gParamList.at("FF_TYPE");
+	if (ffType == "D") {
+		if (edgeClock) {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "AB_DFF";
+				else
+					return "AC_DFF_LOW";
+			}
+			else if (presetClear == "clear") {
+				if (levelPC)
+					return "AE_DFF";
+				else
+					return "AE_DFF_LOW";
+			}
+			else
+				return "AE_DFF_SCP";
+		}
+		else {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "AB_DFF_NT";
+				else
+					return "AD_DFF_LOW_NT";
+			}
+			else if (presetClear == "clear") {
+				if (levelPC)
+					return "AE_DFF_NT";
+				else
+					return "AE_DFF_LOW_NT";
+
+			}
+			else
+				return "AE_DFF_NT_SCP";
+		}
+	}
+	else if (ffType == "JK") {
+		if (edgeClock) {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "BA_JKFF";
+				else
+					return "BE_LKFF_LOW";
+			}
+			else if (presetClear == "clear") {
+				if (levelPC)
+					return "BF_JKFF";
+				else
+					return "BF_JKFF_LOW";
+			}
+			else
+				return "BF_JKFF_SCP";
+		}
+		else {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "BA_JKFF_NT";
+				else
+					return "BE_JKFF_LOW_NT";
+			}
+			else if (presetClear == "clear") {
+				if (levelPC)
+					return "BF_JKFF_NT";
+				else
+					return "BF_JKFF_LOW_NT";
+			}
+			else
+				return "BF_JKFF_NT_SCP";
+		}
+	}
+	else if (ffType == "T") {
+		if (edgeClock) {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "CA_TFF";
+				else
+					return "CC_TFF_LOW";
+			}
+			else if (presetClear == "clear") {
+				if (levelPC)
+					return "CD_TFF";
+				else
+					return "CD_TFF_LOW";
+			}
+			else
+				return "CD_TFF_SCP";
+		}
+		else {
+			if (presetClear == "both") {
+				if (levelPC)
+					return "CB_TFF_NT";
+				else
+					return "CC_TFF_LOW_NT";
+			}
+			else if (presetClear == "clear") {
+				if (levelPC)
+					return "CD_TFF_NT";
+				else
+					return "CD_TFF_LOW_NT";
+			}
+			else
+				return "CD_TFF_NT_SCP";
+		}
+	}
+	return "";
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Create two levels gates structs: AND-OR, OR-AND, NAND-NAND or NOR-NOR and wire sets
+// Can add input wires whith links an inverters and connect to first level gate inputs
+bool GUICanvas::createGatesStruct(guiGate* gGate, string *errorMsg) {
+
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	vector <string> inputNames;
+	unsigned long nOutputs = 0;
+	unsigned long nInputs = 0;
+	if (gGate->getLibraryGateName() != "%_16_WIRES") {
+		if (gGate->getLibraryGateName() == "%_31_GATES") {
+			for (unsigned int i = 1; i <= 8; i++) {
+				ostringstream oss;
+				oss << "G" << i;
+				if (gParamList.at(oss.str()) != "0") nOutputs++;
+			}
+		}
+		else if (gGate->getLibraryGateName() == "%_34_CIRCUIT") {
+			istringstream iss(gParamList.at("INPUT_NAMES"));
+			while (true) {
+				string inputName;
+				iss >> inputName;
+				if (inputName[inputName.length() - 1] == '-') {
+					inputName = inputName.substr(0, inputName.length() - 1);
+					if (gParamList.at("NO_LINK_INVERTER") == "true") {
+						ostringstream error;
+						error << "Input '" << inputName << "' can't have '-' sufix";
+						*errorMsg = error.str();
+						return false;
+					}
+				}
+				if (inputName != "") {
+					for (unsigned int i = 0; i < inputNames.size(); i++)
+						if (inputName == inputNames[i]) {
+							ostringstream error;
+							error << "Duplicate input '" << inputName << "'";
+							*errorMsg = error.str();
+							return false;
+						}
+					inputNames.push_back(inputName);
+					nInputs++;
+				}
+				if (iss.eof()) break;
+			}
+			if (nInputs < 2 || nInputs > 8) {
+				*errorMsg = "Incorrect number of inputs, must be from 2 to 8";
+				return false;
+			}
+			for (unsigned int i = 1; i <= 8; i++) {
+				ostringstream oss;
+				oss << "G" << i;
+				if (gParamList.at(oss.str()) != "")
+				{
+					istringstream iss(gParamList.at(oss.str()));
+					unsigned long countInputs = 0;
+					while (true)
+					{
+						string term;
+						iss >> term;
+						if (term != "") {
+							unsigned long termcol;
+							bool found = false;
+							for (unsigned int i = 0; i < nInputs; i++)
+								if (term.substr(0, 1) == "/") {
+									if (term.substr(1) == inputNames.at(i)) {
+										termcol = 2 * i + 1;
+										found = true;
+										break;
+									}
+								}
+								else {
+									if (term == inputNames.at(i)) {
+										termcol = 2 * i;
+										found = true;
+										break;
+									}
+								}
+							if (!found) {
+								ostringstream error;
+								error << "Unknown input name: '" << term << "' at gate " << i;
+								*errorMsg = error.str();
+								return false;
+							}
+							countInputs++;
+						}
+						if (iss.eof()) break;
+					}
+					if (!countInputs) {
+						ostringstream error;
+						error << "Gate " << i << " whithout inputs";
+						*errorMsg = error.str();
+						return false;
+					}
+					nOutputs++;
+				}
+			}
+		}
+		else {
+			*errorMsg = "Incorrect Gate";
+			return false;
+		}
+		if (!nOutputs) {
+			*errorMsg = "No gate has defined inputs";
+			return false;
+		}
+	}
+
+	cmdCreateGateStruct* creategatestruct = new cmdCreateGateStruct(gCircuit->gCanvas, gCircuit, gGate);
+	gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatestruct);
+
+	return true;
+}

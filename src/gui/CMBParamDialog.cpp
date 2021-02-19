@@ -217,7 +217,7 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 		lParamList[oss.str()] = lines[line];
 	}
 	
-	wxcmd->Submit(new cmdSetParams(guiCircuit, m_guiGateCMB->getID(), paramSet(&gParamList, &lParamList)));
+	wxcmd->Submit(new cmdSetParams(guiCircuit, m_guiGateCMB->getID(), paramSet(&gParamList, &lParamList),false));
 
 	EndModal(wxID_OK);
 

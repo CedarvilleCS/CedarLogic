@@ -4,7 +4,7 @@
                      Matt Lewellyn, and David Knierim
    All rights reserved.
    For license information see license.txt included with distribution.   
-
+   
    guiGate: GUI representation of gate objects
 *****************************************************************************/
 
@@ -238,9 +238,12 @@ void guiGate::draw(bool color, bool drawPalette) {
 		glEnd();
 		glColor4f(Color[0], Color[1], Color[2], Color[3]);
 	}
+	// */
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Uncommnet to show offset cross
 	// Put offset cross	
-	{
+	/*{
 		GLfloat Color[4];
 		glGetFloatv(GL_CURRENT_COLOR, Color);
 		glColor4f(1.0, 0.0, 1.0, 1.0);
@@ -259,8 +262,7 @@ void guiGate::draw(bool color, bool drawPalette) {
 		glEnd();
 		glColor4f(Color[0], Color[1], Color[2], Color[3]);
 	}
-
-	//    */
+	// */
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Draw text
@@ -460,8 +462,14 @@ std::string guiGate::getHotspotPal(const std::string &hotspot) {
 }
 
 bool guiGate::isVerticalHotspot( string hsName ) {
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// This is a problem when draging WIRE gates and in @@_GATES and @@_CIRCUIT !!!!
 	float x, y;
+	float w, h;
 	getHotspotCoords( hsName, x, y );
+	w = getBBox().getRight() - getBBox().getLeft();
+	h = getBBox().getTop() - getBBox().getBottom();
+	if (h < 0.5) return false;
 	return ( min( getBBox().getTop()-y, y-getBBox().getBottom() ) < min( getBBox().getRight()-x, x-getBBox().getLeft() ) );
 }
 
@@ -587,14 +595,37 @@ void guiGate::doPropsDialog() {
 	else
 	{
 		string Prop;
-		oss << "Library:\t\t" << this->getLibraryName() << "\n";
-		oss << "Name:\t\t" << this->getLibraryGateName() << "\n";
+		oss << "Library:\t\t" << getLibraryName() << "\n";
+		oss << "Name:\t\t" << getLibraryGateName() << "\n";
+		oss << "Caption:\t\t" << wxGetApp().libraries[getLibraryName()][getLibraryGateName()].caption << "\n";
 		Prop = this->getLogicType();
-		if (Prop != "")
-			oss << "Logic type:\t" << Prop << "\n";
+		if (Prop == "") Prop = "-";
+		oss << "Logic type:\t" << Prop << "\n";
 		Prop = this->getGUIType();
-		if (Prop != "")
-			oss << "GUI type:\t\t" << Prop << "\n";
+		if (Prop == "") Prop = "-";
+		oss << "GUI type:\t\t" << Prop << "\n";
+
+		oss << "HOTSPOTS:\n";
+		vector <lgHotspot> hotspot = wxGetApp().libraries[getLibraryName()][getLibraryGateName()].hotspots;
+		for (unsigned int i = 0; i < hotspot.size(); i++) {
+			oss << "\t" << (hotspot[i].isInput ? "INPUT" : "OUTPUT") << "\t" << hotspot[i].name;
+			oss << "\t" << (hotspot[i].isInverted ? "INVERTED" : "") << "\n";
+		}
+		oss << "PARAMS:\n";
+		map <string, string> lParams = wxGetApp().libraries[getLibraryName()][getLibraryGateName()].logicParams;
+		map < string, string >::iterator lpwalk = lParams.begin();
+		while (lpwalk != lParams.end()) {
+			oss << "\tLOGIC\t" << lpwalk->first << " : " << lpwalk->second << "\n";
+			lpwalk++;
+		}
+
+		map <string, string> gParams = wxGetApp().libraries[getLibraryName()][getLibraryGateName()].guiParams;
+		map < string, string >::iterator gpwalk = gParams.begin();
+		while (gpwalk != gParams.end()) {
+			oss << "\tGUI\t" << gpwalk->first << " : " << gpwalk->second << "\n";
+			gpwalk++;
+		}
+
 	}
 	wxMessageBox(oss.str(), "Properties");
 }
@@ -612,7 +643,8 @@ void guiGate::setGUIParam(string paramName, string value) {
 	if (paramName == "angle" || paramName == "mirror") {
 		// Update the matrices and bounding box:
 		updateConnectionMerges();
-		updateBBoxes();
+		draw();
+		calcBBox();
 	}
 }
 
@@ -965,18 +997,11 @@ klsMessage::Message_SET_GATE_PARAM* guiGateKEYPAD::checkClick( GLfloat x, GLfloa
 		iss >> minx >> dump >> miny >> dump >> maxx >> dump >> maxy;
 
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// ROTATE_KEYPAD_BOX only appears in old KEYPAD style and must be always true
-		if (gparams.find("ROTATE_KEYPAD_BOX") == gparams.end()) {
-			keyButton.addPoint(modelToWorld(GLPoint2f(minx, miny), false));
-			keyButton.addPoint(modelToWorld(GLPoint2f(minx, maxy), false));
-			keyButton.addPoint(modelToWorld(GLPoint2f(maxx, miny), false));
-			keyButton.addPoint(modelToWorld(GLPoint2f(maxx, maxy), false));
-		} else {
-			keyButton.addPoint(modelToWorld(GLPoint2f(minx, miny)));
-			keyButton.addPoint(modelToWorld(GLPoint2f(minx, maxy)));
-			keyButton.addPoint(modelToWorld(GLPoint2f(maxx, miny)));
-			keyButton.addPoint(modelToWorld(GLPoint2f(maxx, maxy)));
-		}
+		// Do not rotate KEYPAD_BOX
+		keyButton.addPoint(modelToWorld(GLPoint2f(minx, miny), false));
+		keyButton.addPoint(modelToWorld(GLPoint2f(minx, maxy), false));
+		keyButton.addPoint(modelToWorld(GLPoint2f(maxx, miny), false));
+		keyButton.addPoint(modelToWorld(GLPoint2f(maxx, maxy), false));
 	
 		if (keyButton.contains( GLPoint2f( x, y ) )) {
 			// Retrieve the value of the box
@@ -1373,8 +1398,8 @@ void guiGateLED::setGUIParam( string paramName, string value ) {
 // Added drawPalette to do not draw wide outlines in palette
 void guiGateWIRE::draw(bool color, bool drawPalette) {
 	StateType outputState = HI_Z;
-
-	// Get the first connected input in the LED's library description:
+	
+	// Get the first connected input in the WIRE's library description:
 	// map i/o name to wire id
 	map< string, guiWire* >::iterator theCnk = connections.begin();
 	if (theCnk != connections.end()) {
@@ -1495,12 +1520,12 @@ void guiLabel::setGUIParam( string paramName, string value ) {
 void guiLabel::calcBBox( void ) {
 	GLbox textBBox = theText.getBoundingBox();
 	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
-	// To center vertically 0.75 instead of 0.5
+	// To center vertically 0.75 instead of 0.5 in dy
 	float dx = fabs(textBBox.right - textBBox.left) * 0.5f;
 	float dy = fabs(textBBox.top - textBBox.bottom) * 0.75f;
 	theText.setPosition(-dx, +dy);
 	modelBBox.reset();
-	modelBBox.addPoint( GLPoint2f(textBBox.left-dx, textBBox.bottom+dy) );
+	modelBBox.addPoint(GLPoint2f(textBBox.left - dx, textBBox.bottom + dy));
 	modelBBox.addPoint( GLPoint2f(textBBox.right-dx, textBBox.top+dy) );
 
 	// Recalculate the world-space bbox:

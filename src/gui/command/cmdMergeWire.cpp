@@ -16,28 +16,6 @@ cmdMergeWire::cmdMergeWire(GUICanvas* gCanvas, GUICircuit* gCircuit,
 	this->wid2 = wid2;
 }
 
-cmdMergeWire::cmdMergeWire(const std::string &def) :
-	klsCommand(true, "Merge Wire") {
-
-/*	std::istringstream iss(def);
-	std::string dump;
-	iss >> dump;
-
-	// The list of id's is followed by a non-integer.
-	// So we can just read until we can't get an integer.
-	IDType tempId;
-	while (iss >> tempId) {
-		wireIds.push_back(tempId);
-	}
-	iss.clear();
-
-	std::string wireid, gateid, hotspot;
-	iss >> dump >> wireid >> gateid >> hotspot;
-	conn1 = new cmdConnectWire(dump + " " + wireid + " " + gateid + " " + hotspot);
-	iss >> dump >> wireid >> gateid >> hotspot;
-	conn2 = new cmdConnectWire(dump + " " + wireid + " " + gateid + " " + hotspot);*/
-}
-
 cmdMergeWire::~cmdMergeWire() {
 
 }
