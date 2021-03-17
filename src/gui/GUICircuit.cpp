@@ -58,7 +58,7 @@ void GUICircuit::reInitializeLogicCircuit() {
 
 guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	string libName = wxGetApp().gateNameToLibrary[gateName];
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	if (libName == "")
 		if (wxGetApp().libParser.CreateDynamicGate(gateName)) {
 			libName = wxGetApp().gateNameToLibrary[gateName];
@@ -96,9 +96,9 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 		newGate = (guiGate*)(new guiGatePLD());
 	else if (ggt == "BUSEND")									// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		newGate = (guiGate*)(new guiGateBUSEND());
-	else if (ggt == "FSM")										// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	else if (ggt == "FSM")										// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 		newGate = (guiGate*)(new guiGateFSM());
-	else if (ggt == "CMB")										// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	else if (ggt == "CMB")										// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 		newGate = (guiGate*)(new guiGateCMB());
 	else
 		newGate = new guiGate();
@@ -316,5 +316,4 @@ void GUICircuit::printState() {
 		wxGetApp().logfile << "gate " << thisGate->first << endl << flush;
 		thisGate++;
 	}
-	
 }

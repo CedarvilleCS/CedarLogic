@@ -30,8 +30,10 @@ PaletteCanvas::PaletteCanvas( wxWindow *parent, wxWindowID id, wxString &libName
 	libraryName = (string)((const char *)libName.c_str());  // KAS
 	gateSizer = NULL;
 	
+	scrollPos = 0;
 	init = false;
 	activate = true;
+
 }
 
 PaletteCanvas::~PaletteCanvas() {
@@ -47,7 +49,7 @@ void PaletteCanvas::OnPaint( wxPaintEvent &event ) {
 		gateSizer = new wxBoxSizer( wxVERTICAL );
 		while (gateWalk != wxGetApp().libraries[libraryName].end()) {
 			// Pedro Casanova (casanova@ujaen.es) 2020/04-12	4 columns of components instead of 3
-			if (!(counter%4)) {
+			if (!(counter % 4)) {
 				lineSizer = new wxBoxSizer( wxHORIZONTAL );
 				gateSizer->Add( lineSizer, wxSizerFlags(0).Border(wxALL, 1) );			
 			}	
@@ -60,15 +62,21 @@ void PaletteCanvas::OnPaint( wxPaintEvent &event ) {
 		this->SetSizer( gateSizer );
 		this->SetScrollRate(0, IMAGESIZE + 1);
 		gateSizer->Layout();
-		init = true;
+		init = true;		
 	}
 	if (activate) {
 		this->FitInside();
-		this->Scroll(0,0); // reset position because the sizer is dumb
+		this->Scroll(0,scrollPos); // reset position because the sizer is dumb
 		gateSizer->Layout();
 		activate = false;
 	}
 }
 void PaletteCanvas::Activate() {
 	activate = true;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// To remember scroll position
+void PaletteCanvas::Deactivate() {
+	scrollPos = this->GetScrollPos(1);
 }

@@ -80,8 +80,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	//EVT_MENU(Help_RequestAFeature, MainFrame::OnRequestAFeature)
 	//EVT_MENU(Help_DownloadLatestVersion, MainFrame::OnDownloadLatestVersion)
 	
-    //EVT_SIZE(MainFrame::OnSize)
-    //EVT_MAXIMIZE(MainFrame::OnMaximize)
+    EVT_SIZE(MainFrame::OnSize)    
+	EVT_MOVE(MainFrame::OnMove)
+	//EVT_MAXIMIZE(MainFrame::OnMaximize)
     
 	EVT_TIMER(TIMER_ID, MainFrame::OnTimer)
 	EVT_TIMER(IDLETIMER_ID, MainFrame::OnIdle)
@@ -99,8 +100,8 @@ wxPrintData *g_printData = (wxPrintData*) NULL;
 
 
 MainFrame::MainFrame(const wxString& title, string cmdFilename)
-       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(1100,800))
-{
+       : wxFrame(NULL, wxID_ANY, title, wxPoint(wxGetApp().appSettings.mainFrameLeft, wxGetApp().appSettings.mainFrameTop), wxSize(wxGetApp().appSettings.mainFrameWidth, wxGetApp().appSettings.mainFrameHeight), wxDEFAULT_FRAME_STYLE | (wxGetApp().appSettings.mainFrameMaximized ? wxMAXIMIZE : 0))
+{	
     // set the frame icon
     //SetIcon(wxICON(sample));
 	currentCanvas = nullptr;
@@ -154,9 +155,11 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     
     wxMenu *helpMenu = new wxMenu; // HELP MENU
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	// Eliminated. HelpFile is not updated to 2.x versions
-    //helpMenu->Append(wxID_HELP_CONTENTS, "&Contents...\tF1", "Show Help system");
-	//helpMenu->AppendSeparator();
+	// HelpFile is outdated
+	if (wxGetApp().appSettings.helpFile != "") {
+		helpMenu->Append(wxID_HELP_CONTENTS, "&Contents...\tF1", "Show Help system");
+		helpMenu->AppendSeparator();
+	}
 	//helpMenu->Append(Help_ReportABug, "Report a bug...");
 	//helpMenu->Append(Help_RequestAFeature, "Request a feature...");
 	//helpMenu->Append(Help_DownloadLatestVersion, "Download latest version...");
@@ -204,9 +207,9 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
     // parse a gate library
 	//////////////////////////////////////////////////////////////////////////
 
-	string libPath = wxGetApp().appSettings.gateLibFile;	// User library
-
-	LibraryParse newLib(libPath);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Parse main and user libraries
+	LibraryParse newLib(wxGetApp().appSettings.mainGateLibFile, wxGetApp().appSettings.userGateLibFile);
 	wxGetApp().libParser = newLib;
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -258,13 +261,15 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddTool(Tool_Pause, "Pause/Resume", *bmp[9], "Pause/Resume", wxITEM_CHECK);
 	toolBar->AddTool(Tool_Step, "Step", *bmp[10], "Step");
 	timeStepModSlider = new wxSlider(toolBar, wxID_ANY, wxGetApp().timeStepMod/5, 0, 100, wxDefaultPosition, wxSize(125, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS);
+	timeStepModSlider->SetToolTip("Time Step");
 	ostringstream ossTimeStepMod;
 	ossTimeStepMod << wxGetApp().timeStepMod << "ms";
 	timeStepModVal = new wxStaticText(toolBar, wxID_ANY, (const wxChar *)ossTimeStepMod.str().c_str(), wxDefaultPosition, wxSize(45, -1), wxSUNKEN_BORDER | wxALIGN_RIGHT | wxST_NO_AUTORESIZE);  // added cast KAS
+	timeStepModVal->SetToolTip("Time Step");
 	toolBar->AddControl( timeStepModSlider );
 	toolBar->AddControl( timeStepModVal );
 	toolBar->AddSeparator();
-	toolBar->AddTool(Tool_Lock, "Lock state", *bmp[13], "Lock state", wxITEM_CHECK);
+	toolBar->AddTool(Tool_Lock, "Lock State", *bmp[13], "Lock State", wxITEM_CHECK);
 	toolBar->AddSeparator();
 	toolBar->AddTool(Tool_NewTab, "New Tab", *bmp[14], "New Tab");
 
@@ -277,9 +282,11 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	toolBar->AddTool(View_WideOutline, "Wide Outlines", *bmp[16], "Wide Outlines", wxITEM_CHECK);
 	toolBar->AddTool(View_WireConn, "Connection Points", *bmp[17], "Connection Points", wxITEM_CHECK);
 	wireConnRadiusSlider = new wxSlider(toolBar, wxID_ANY, wxGetApp().appSettings.wireConnRadius * 40, 1, 12, wxDefaultPosition, wxSize(50, -1), wxSL_HORIZONTAL | wxSL_AUTOTICKS);
+	wireConnRadiusSlider->SetToolTip("Junction Radius");
 	ostringstream ossWireConnRadius;
 	ossWireConnRadius << wxGetApp().appSettings.wireConnRadius * 1000 << "mils";
 	wireConnRadiusVal = new wxStaticText(toolBar, wxID_ANY, (const wxChar *)ossWireConnRadius.str().c_str(), wxDefaultPosition, wxSize(45, -1), wxSUNKEN_BORDER | wxALIGN_RIGHT | wxST_NO_AUTORESIZE);
+	wireConnRadiusVal->SetToolTip("Junction Radius");
 	toolBar->AddControl( wireConnRadiusSlider );
 	toolBar->AddControl( wireConnRadiusVal );
 
@@ -366,6 +373,9 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	g_printData->SetOrientation(wxLANDSCAPE);
 	
 	this->SetSize( wxGetApp().appSettings.mainFrameLeft, wxGetApp().appSettings.mainFrameTop, wxGetApp().appSettings.mainFrameWidth, wxGetApp().appSettings.mainFrameHeight );
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// Set maximized window status
+	if (wxGetApp().appSettings.mainFrameMaximized) this->Maximize();
 	
 	doOpenFile = (cmdFilename.size() > 0);
 	this->openedFilename = (const wxChar *)cmdFilename.c_str(); // KAS
@@ -555,7 +565,8 @@ void MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
     wxString msg;
     msg.Printf(VERSION_ABOUT_TEXT().c_str());
 
-    wxMessageBox(msg, "About", wxOK | wxICON_INFORMATION, this);
+	wxMessageBox(msg, "About", wxOK | wxICON_INFORMATION, this);
+
 }
 
 void MainFrame::OnNew(wxCommandEvent& event) {
@@ -707,6 +718,7 @@ void MainFrame::OnSaveAs(wxCommandEvent& WXUNUSED(event)) {
 	dialog.SetDirectory(lastDirectory);
 	if (dialog.ShowModal() == wxID_OK) {
 		removeTempFile();
+		lastDirectory = dialog.GetDirectory();
 		wxString path = dialog.GetPath();
 		openedFilename = path;
 		this->SetTitle(VERSION_TITLE() + " - " + path );
@@ -825,9 +837,40 @@ void MainFrame::OnIdle(wxTimerEvent& event) {
 		wxSizeEvent temp;
 	}
 }
+
 void MainFrame::OnSize(wxSizeEvent& event) {
-	if (currentCanvas != NULL) currentCanvas->Update();
-	if (mainSizer != NULL) mainSizer->Layout();
+	wxFrame::OnSize(event);
+	//if (currentCanvas != NULL) currentCanvas->Update();
+	//if (mainSizer != NULL) mainSizer->Layout();
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// To get coordinates and maximized status
+	if (!this->IsIconized())
+		if (!this->IsMaximized()) {
+			wxGetApp().appSettings.mainFrameWidth = this->GetSize().x;
+			wxGetApp().appSettings.mainFrameHeight = this->GetSize().y;
+			wxGetApp().appSettings.mainFrameLeft = this->GetPosition().x;
+			wxGetApp().appSettings.mainFrameTop = this->GetPosition().y;
+			wxGetApp().appSettings.mainFrameMaximized = false;
+		}
+		else {
+			wxGetApp().appSettings.mainFrameMaximized = true;
+		}
+}
+
+void MainFrame::OnMove(wxMoveEvent& event) {
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// To get coordinates and maximized status
+	if (!this->IsIconized())
+		if (!this->IsMaximized()) {
+			wxGetApp().appSettings.mainFrameWidth = this->GetSize().x;
+			wxGetApp().appSettings.mainFrameHeight = this->GetSize().y;
+			wxGetApp().appSettings.mainFrameLeft = this->GetPosition().x;
+			wxGetApp().appSettings.mainFrameTop = this->GetPosition().y;
+			wxGetApp().appSettings.mainFrameMaximized = false;
+		}
+		else {
+			wxGetApp().appSettings.mainFrameMaximized = true;
+		}
 }
 
 void MainFrame::OnMaximize(wxMaximizeEvent& event) {
@@ -987,12 +1030,12 @@ void MainFrame::OnSelectLibrary(wxCommandEvent& event) {
 	wxString wildcard = "Library files (*.xml)|*.xml";
 	wxString defaultFilename = "";
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	dialog.SetPath(wxGetApp().appSettings.gateLibFile);
+	dialog.SetPath(wxGetApp().appSettings.userGateLibFile);
 
 	if (dialog.ShowModal() == wxID_OK)
-		if (wxGetApp().appSettings.gateLibFile != dialog.GetPath())
+		if (wxGetApp().appSettings.userGateLibFile != dialog.GetPath())
 		{
-			wxGetApp().appSettings.gateLibFile = dialog.GetPath();
+			wxGetApp().appSettings.userGateLibFile = dialog.GetPath();
 			wxMessageBox("You must restart CedarLogic to load the selected library.", "Select User Library", wxOK);
 		}
 
@@ -1201,20 +1244,31 @@ void MainFrame::saveSettingsFile() {
 	string settingsIni = wxGetApp().pathToExe + "settings.ini";
 
 	ofstream iniFile(settingsIni.c_str(), ios::out);
-	iniFile << "GateLib=" << wxGetApp().appSettings.gateLibFile << endl;
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	// Help is obsolete
-	//iniFile << "HelpFile=" << wxGetApp().appSettings.helpFile.substr(numCharAbsolute) << endl;
+	// Now in resources
+	if (wxGetApp().appSettings.mainGateLibFile == "res")
+		iniFile << "MainGateLib=" << "res" << endl;
+	else
+		iniFile << "MainGateLib=" << wxGetApp().appSettings.mainGateLibFile.substr(numCharAbsolute) << endl;
+
+	iniFile << "UserGateLib=" << wxGetApp().appSettings.userGateLibFile << endl;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Help is outdated
+	if (wxGetApp().appSettings.helpFile!="")
+		iniFile << "HelpFile=" << wxGetApp().appSettings.helpFile.substr(numCharAbsolute) << endl;
+	else
+		iniFile << "HelpFile=" << endl;
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Now in resources
 	if (wxGetApp().appSettings.textFontFile=="res")
 		iniFile << "TextFont=" << "res" << endl;
 	else
 		iniFile << "TextFont=" << wxGetApp().appSettings.textFontFile.substr(numCharAbsolute) << endl;
-	iniFile << "FrameWidth=" << this->GetSize().GetWidth() << endl;
-	iniFile << "FrameHeight=" << this->GetSize().GetHeight() << endl;
-	iniFile << "FrameLeft=" << this->GetPosition().x << endl;
-	iniFile << "FrameTop=" << this->GetPosition().y << endl;
+	iniFile << "FrameMaximized=" << wxGetApp().appSettings.mainFrameMaximized << endl;
+	iniFile << "FrameWidth=" << wxGetApp().appSettings.mainFrameWidth << endl;
+	iniFile << "FrameHeight=" << wxGetApp().appSettings.mainFrameHeight<< endl;
+	iniFile << "FrameLeft=" << wxGetApp().appSettings.mainFrameLeft << endl;
+	iniFile << "FrameTop=" << wxGetApp().appSettings.mainFrameTop << endl;
 	iniFile << "TimeStep=" << wxGetApp().timeStepMod << endl;
 	iniFile << "RefreshRate=" << wxGetApp().appSettings.refreshRate << endl;
 	iniFile << "LastDirectory=" << lastDirectory.c_str() << endl;
@@ -1240,21 +1294,40 @@ void MainFrame::saveSettingsReg() {
 	{
 		Value_S = VERSION_TITLE();
 		RegSetValue(hKey, "", REG_SZ, Value_S.c_str(), 0);
-		Value_S = wxGetApp().appSettings.gateLibFile;
-		RegSetValueEx(hKey, "GateLib", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
-		//Value_S = wxGetApp().appSettings.helpFile.substr(numCharAbsolute);
-		//RegSetValueEx(hKey, "HelpFile", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
-		//Value_S = wxGetApp().appSettings.textFontFile;
-		//RegSetValueEx(hKey, "TextFont", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
+
+		if (wxGetApp().appSettings.mainGateLibFile  != "res")
+			Value_S = wxGetApp().appSettings.mainGateLibFile.substr(numCharAbsolute);
+		else
+			Value_S = "res";
+		RegSetValueEx(hKey, "MainGateLib", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
+
+		Value_S = wxGetApp().appSettings.userGateLibFile;
+		RegSetValueEx(hKey, "UserGateLib", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
+
+		if (wxGetApp().appSettings.textFontFile != "res")
+			Value_S = wxGetApp().appSettings.textFontFile.substr(numCharAbsolute);
+		else
+			Value_S = "res";
+		RegSetValueEx(hKey, "TextFont", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
+
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Help is outdated
+		if (wxGetApp().appSettings.helpFile != "")
+			Value_S = wxGetApp().appSettings.helpFile.substr(numCharAbsolute);
+		else
+			Value_S = "";
+		RegSetValueEx(hKey, "HelpFile", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
 		Value_S = lastDirectory;
 		RegSetValueEx(hKey, "LastDirectory", 0, REG_SZ, (BYTE*)Value_S.c_str(), strlen(Value_S.c_str()) + 1);
-		Value = this->GetSize().GetWidth();
+		Value = (wxGetApp().appSettings.mainFrameMaximized == true) ? 1 : 0;
+		RegSetValueEx(hKey, "FrameMaximized", 0, REG_DWORD, (BYTE*)&Value, 4);
+		Value = wxGetApp().appSettings.mainFrameWidth;
 		RegSetValueEx(hKey, "FrameWidth", 0, REG_DWORD, (BYTE*)&Value, 4);
-		Value = this->GetSize().GetHeight();
+		Value = wxGetApp().appSettings.mainFrameHeight;
 		RegSetValueEx(hKey, "FrameHeight", 0, REG_DWORD, (BYTE*)&Value, 4);
-		Value = this->GetPosition().x;
+		Value = wxGetApp().appSettings.mainFrameLeft;
 		RegSetValueEx(hKey, "FrameLeft", 0, REG_DWORD, (BYTE*)&Value, 4);
-		Value = this->GetPosition().y;
+		Value = wxGetApp().appSettings.mainFrameTop;
 		RegSetValueEx(hKey, "FrameTop", 0, REG_DWORD, (BYTE*)&Value, 4);
 		Value = wxGetApp().timeStepMod;
 		RegSetValueEx(hKey, "TimeStep", 0, REG_DWORD, (BYTE*)&Value, 4);

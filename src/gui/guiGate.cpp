@@ -224,8 +224,8 @@ void guiGate::draw(bool color, bool drawPalette) {
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Uncommnet to show cross
-	// Put 0,0 cross
-	/*{
+	/*// Put 0,0 cross
+	{
 		GLfloat Color[4];
 		glGetFloatv(GL_CURRENT_COLOR, Color);
 		glColor4f(0.0, 1.0, 1.0, 1.0);
@@ -234,16 +234,17 @@ void guiGate::draw(bool color, bool drawPalette) {
 		glVertex2f(wxGetApp().appSettings.wireConnRadius, wxGetApp().appSettings.wireConnRadius);
 		glVertex2f(-wxGetApp().appSettings.wireConnRadius, -wxGetApp().appSettings.wireConnRadius);
 		glVertex2f(-wxGetApp().appSettings.wireConnRadius, wxGetApp().appSettings.wireConnRadius);
-		glVertex2f(wxGetApp().appSettings.wireConnRadius, -wxGetApp().appSettings.wireConnRadius);
+		glVertex2f(wxGetApp().appSettings.wireConnRadius, -wxGetApp().appSettings.wireConnRadius);		
 		glEnd();
+		glLineWidth(1);
 		glColor4f(Color[0], Color[1], Color[2], Color[3]);
 	}
 	// */
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Uncommnet to show offset cross
-	// Put offset cross	
-	/*{
+	/*// Put offset cross	
+	{
 		GLfloat Color[4];
 		glGetFloatv(GL_CURRENT_COLOR, Color);
 		glColor4f(1.0, 0.0, 1.0, 1.0);
@@ -462,7 +463,7 @@ std::string guiGate::getHotspotPal(const std::string &hotspot) {
 }
 
 bool guiGate::isVerticalHotspot( string hsName ) {
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	// This is a problem when draging WIRE gates and in @@_GATES and @@_CIRCUIT !!!!
 	float x, y;
 	float w, h;
@@ -508,22 +509,29 @@ void guiGate::saveGate(XMLParser* xparse) {
 
 		pC++;
 	}
+	LibraryGate lg = wxGetApp().libraries[getLibraryName()][getLibraryGateName()];
 	map< string, string >::iterator pParams = gparams.begin();
 	while (pParams != gparams.end()) {
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// Avoid to save some gparams, they are obtained from the library
+		// Avoid to save some gparams
 		if (pParams->first == "angle" && (pParams->second == "0" || pParams->second == "0.0")) { pParams++; continue; }
-		if (pParams->first == "mirror" && pParams->second != "true") { pParams++; continue; }
-		if (pParams->first == "HIDE_DISPLAY" && pParams->second != "true") { pParams++; continue; }
-		if (pParams->first == "BCD" && pParams->second != "true") { pParams++; continue; }		
-		if (pParams->first == "ORIGINAL_NAME" && pParams->second == "") { pParams++; continue; }		
-		if (pParams->first == "CROSS_POINT") { pParams++; continue; }
-		if (pParams->first == "LED_BOX") { pParams++; continue; }
-		if (pParams->first == "VALUE_BOX") { pParams++; continue; }		
-		if (pParams->first == "CLICK_BOX") { pParams++; continue; }
-		if (pParams->first == "LENGTH") { pParams++; continue; }
-		if (pParams->first.substr(0, 11) == "KEYPAD_BOX_") { pParams++; continue; }
-	
+		if (pParams->first == "mirror" && pParams->second != "true") { pParams++; continue; }		
+		if (pParams->first == "ORIGINAL_NAME" && pParams->second == "") { pParams++; continue; }
+
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		// Only GUI params in dialog params are saved, rest of them are obtained from the library
+		if (pParams->first != "angle" && pParams->first != "mirror") {
+			bool found = false;
+			for (unsigned long i = 0; i < lg.dlgParams.size() && !found; i++) {
+				if (!lg.dlgParams[i].isGui) continue;
+				if (lg.dlgParams[i].name == pParams->first) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) { pParams++; continue; }
+		}
+
 		xparse->openTag("gparam");
 		oss.str("");
 		oss << pParams->first << " " << pParams->second;
@@ -531,35 +539,45 @@ void guiGate::saveGate(XMLParser* xparse) {
 		xparse->closeTag("gparam");		
 		pParams++;
 	}
-	pParams = lparams.begin();
-	LibraryGate lg = wxGetApp().libraries[getLibraryName()][getLibraryGateName()];
+	pParams = lparams.begin();	
 	while (pParams != lparams.end()) {
 		bool found = false;
 		for (unsigned int i = 0; i < lg.dlgParams.size() && !found; i++) {
 			if (lg.dlgParams[i].isGui) continue;
-			if ((lg.dlgParams[i].type == "FILE_IN" || lg.dlgParams[i].type == "FILE_OUT") &&
-				lg.dlgParams[i].name == pParams->first) found = true;
+			if ((lg.dlgParams[i].type == "FILE_IN" || lg.dlgParams[i].type == "FILE_OUT") && lg.dlgParams[i].name == pParams->first) {
+				found = true;
+				break;
+			}
 		}
 		if (found) { pParams++; continue; }
-		// Pedro Casanova (casanova@ujaen.es) 2021-01
-		// Avoid to save some lparams, they are obtained from the library
-		if (pParams->first == "DEFAULT_DELAY" && pParams->second == "1") { pParams++; continue; }
-		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
-		// State: param saved in saveGateTypeSpecifics to short them		
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		// State: and Function: params saved in saveGateTypeSpecifics to short them		
 		if (pParams->first.substr(0, 6) == "State:") { pParams++; continue; }
 		if (pParams->first.substr(0, 9) == "Function:") { pParams++; continue; }
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		// Avoid to save some lparams
+		if (pParams->first == "DEFAULT_DELAY" && pParams->second == "1") { pParams++; continue; }
 		if (pParams->first == "CURRENT_STATE" && pParams->second == "") { pParams++; continue; }
-		if (pParams->first == "CLEAR_FSM") { pParams++; continue; }
 
-		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// Avoid to save some lparams, they are obtained from the library
-		// if (pParams->first == "xxx") { pParams++; continue; }
-
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		// Only logic params in dialog params are saved, rest of them are obtained from the library
+		if (pParams->first != "CURRENT_VALUE" && pParams->first != "OUTPUT_NUM" && pParams->first != "CURRENT_STATE") {
+			bool found = false;
+			for (unsigned long i = 0; i < lg.dlgParams.size() && !found; i++) {
+				if (lg.dlgParams[i].isGui) continue;
+				if (lg.dlgParams[i].name == pParams->first) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) { pParams++; continue; }
+		}
+		
 		xparse->openTag("lparam");
 		oss.str("");
 		oss << pParams->first << " " << pParams->second;
 		xparse->writeTag("lparam", oss.str());
-		xparse->closeTag("lparam");		
+		xparse->closeTag("lparam");	
 		pParams++;
 	}
 	
@@ -586,7 +604,7 @@ void guiGate::doParamsDialog(void* gCircuit, wxCommandProcessor* wxcmd) {
 	myDialog.ShowModal();
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Show gate propierties
 void guiGate::doPropsDialog() {
 	ostringstream oss;	
@@ -595,6 +613,43 @@ void guiGate::doPropsDialog() {
 	else
 	{
 		string Prop;
+		oss << "GateID:\t\t" << getID() << "\n";
+		oss << "Library:\t\t" << getLibraryName() << "\n";
+		oss << "Name:\t\t" << getLibraryGateName() << "\n";
+		oss << "Caption:\t\t" << wxGetApp().libraries[getLibraryName()][getLibraryGateName()].caption << "\n";
+		Prop = this->getLogicType();
+		if (Prop == "") Prop = "-";
+		oss << "Logic type:\t" << Prop << "\n";
+		Prop = this->getGUIType();
+		if (Prop == "") Prop = "-";
+		oss << "GUI type:\t\t" << Prop << "\n";
+
+		oss << "HOTSPOTS:\n";
+		vector <lgHotspot> hotspot = wxGetApp().libraries[getLibraryName()][getLibraryGateName()].hotspots;
+		for (unsigned int i = 0; i < hotspot.size(); i++) {
+			oss << "\t" << (hotspot[i].isInput ? "INPUT" : "OUTPUT") << "\t" << hotspot[i].name;
+			oss << "\t" << (hotspot[i].isInverted ? "INVERTED" : "") << "\n";
+		}
+		oss << "PARAMS:\n";
+		map <string, string>* lParams = this->getAllLogicParams();
+		map < string, string >::iterator lpwalk = lParams->begin();
+		while (lpwalk != lParams->end()) {
+			oss << "\tLOGIC\t" << lpwalk->first << " : " << lpwalk->second << "\n";
+			lpwalk++;
+		}
+
+		map <string, string>* gParams = this->getAllGUIParams();
+		map < string, string >::iterator gpwalk = gParams->begin();
+		while (gpwalk != gParams->end()) {
+			oss << "\tGUI\t" << gpwalk->first << " : " << gpwalk->second << "\n";
+			gpwalk++;
+		}
+
+	}
+	wxMessageBox(oss.str(), "Gate properties");
+/*	{
+		string Prop;
+		oss << "GateID:\t\t" << getID() << "\n";
 		oss << "Library:\t\t" << getLibraryName() << "\n";
 		oss << "Name:\t\t" << getLibraryGateName() << "\n";
 		oss << "Caption:\t\t" << wxGetApp().libraries[getLibraryName()][getLibraryGateName()].caption << "\n";
@@ -627,7 +682,7 @@ void guiGate::doPropsDialog() {
 		}
 
 	}
-	wxMessageBox(oss.str(), "Properties");
+	wxMessageBox(oss.str(), "Gate properties");*/
 }
 
 void guiGate::setGUIParam(string paramName, string value) {
@@ -734,27 +789,32 @@ void guiGatePLD::draw(bool color, bool drawPalette) {
 
 	// Set the color back to the old color:
 	glColor4f(0.0, 0.0, 0.0, 1.0);
+	bool cross = false;
 	map <string, string>* logicParams = getAllLogicParams();
-	if (logicParams->find("FORCE_ZERO") != logicParams->end())
-		if (logicParams->find("FORCE_ZERO")->second == "true")
-		{
-			glLineWidth(2);
-			glBegin(GL_LINES);
-			glVertex2f(renderInfo_crossPoint.x + wxGetApp().appSettings.wireConnRadius, renderInfo_crossPoint.y + wxGetApp().appSettings.wireConnRadius);
-			glVertex2f(renderInfo_crossPoint.x - wxGetApp().appSettings.wireConnRadius, renderInfo_crossPoint.y - wxGetApp().appSettings.wireConnRadius);
-			glVertex2f(renderInfo_crossPoint.x - wxGetApp().appSettings.wireConnRadius, renderInfo_crossPoint.y + wxGetApp().appSettings.wireConnRadius);
-			glVertex2f(renderInfo_crossPoint.x + wxGetApp().appSettings.wireConnRadius, renderInfo_crossPoint.y - wxGetApp().appSettings.wireConnRadius);
-			glBegin(GL_LINES);
-			glEnd();
-			glLineWidth(1);
-		}
+	if (logicParams->find("FORCE_ZERO") != logicParams->end()) {
+		if (logicParams->find("FORCE_ZERO")->second == "true") cross = true;
+	} else if (logicParams->find("FORCE_ONE") != logicParams->end()) {
+		if (logicParams->find("FORCE_ONE")->second == "true") cross = true;
+	}
+	if (cross)
+	{
+		glLineWidth(2);
+		glBegin(GL_LINES);
+		glVertex2f(renderInfo_crossPoint.x + wxGetApp().appSettings.wireConnRadius, renderInfo_crossPoint.y + wxGetApp().appSettings.wireConnRadius);
+		glVertex2f(renderInfo_crossPoint.x - wxGetApp().appSettings.wireConnRadius, renderInfo_crossPoint.y - wxGetApp().appSettings.wireConnRadius);
+		glVertex2f(renderInfo_crossPoint.x - wxGetApp().appSettings.wireConnRadius, renderInfo_crossPoint.y + wxGetApp().appSettings.wireConnRadius);
+		glVertex2f(renderInfo_crossPoint.x + wxGetApp().appSettings.wireConnRadius, renderInfo_crossPoint.y - wxGetApp().appSettings.wireConnRadius);
+		glBegin(GL_LINES);
+		glEnd();
+		glLineWidth(1);
+	}
 }
 
 void guiGatePLD::setGUIParam(string paramName, string value) {
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// <CROSS_JUNCTION> cross junctions in inputs for PLD devices (LAND & LOR gates)
 	if (paramName == "CROSS_JUNCTION")
-		if (this->getLogicType() == "PLD_AND" || this->getLogicType() == "OR")
+		if (this->getLogicType() == "PLD_AND" || this->getLogicType() == "PLD_OR")
 		{
 			if (value != "true" && value != "false")
 				return;
@@ -765,7 +825,7 @@ void guiGatePLD::setGUIParam(string paramName, string value) {
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// <CROSS_POINT> point to draw cross junctions in gate for PLD devices (LAND gates)
 	if (paramName == "CROSS_POINT") {
-		if (this->getLogicType() == "PLD_AND")
+		if (this->getLogicType() == "PLD_AND" || this->getLogicType() == "PLD_OR")
 		{
 			istringstream iss(value);
 			char dump;
@@ -1469,7 +1529,7 @@ void guiLabel::draw(bool color, bool drawPalette) {
 		theText.setColor( 0.0, 0.0, 0.0, 1.0 );
 	}
 	
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	if (this->getGUIParam("angle") == "180" || this->getGUIParam("angle") == "270") {
 		glRotatef(180, 0.0, 0.0, 1.0);
 	}
@@ -1519,7 +1579,7 @@ void guiLabel::setGUIParam( string paramName, string value ) {
 
 void guiLabel::calcBBox( void ) {
 	GLbox textBBox = theText.getBoundingBox();
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	// To center vertically 0.75 instead of 0.5 in dy
 	float dx = fabs(textBBox.right - textBBox.left) * 0.5f;
 	float dy = fabs(textBBox.top - textBBox.bottom) * 0.75f;
@@ -1734,7 +1794,8 @@ void guiGateRAM::doParamsDialog(void* gCircuit, wxCommandProcessor* wxcmd){
 		ramPopupDialog->updateGridDisplay();
 	}
 	ramPopupDialog->SetFocus();
-	ramPopupDialog->Show( true );
+
+	ramPopupDialog->Show(true);
 }
 
 //Saves the ram contents to the circuit file
@@ -1827,7 +1888,7 @@ long guiGateRAM::getLastRead(){
 //*************************************************
 
 // ************************ FSM gate ****************************
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 guiGateFSM::guiGateFSM() {
 	guiGate();
 	fsmParamDialog = NULL;
@@ -1903,7 +1964,7 @@ void guiGateFSM::saveGateTypeSpecifics(XMLParser* xparse) {
 //*************************************************
 
 // ************************ CMB gate ****************************
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 guiGateCMB::guiGateCMB() {
 	guiGate();
 	cmbParamDialog = NULL;

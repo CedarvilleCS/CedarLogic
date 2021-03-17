@@ -152,11 +152,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Some names are changed for alfabetic order
 						else if (type == "CA_SMALL_TGATE") type = "TA_TGATE";
-						else if (type == "AA_DFF") type = "AB_DFF";
-						else if (type == "AE_DFF_LOW") type = "AC_DFF_LOW";
-						else if (type == "AE_DFF_LOW_NT") type = "AD_DFF_LOW_NT";
-						else if (type == "AF_DFF_LOW") type = "AF_DFF_CE_LOW";
-
+											
 						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 						// Names are changed becuse now the encoder can chage priority type (none, low and high)
 						else if (type == "CB_PRI_ENCODER_4x2") type = "CB_ENCODER_4x2_EN";
@@ -334,9 +330,27 @@ bool CircuitParse::parseGateToSend(string type, string ID, string position, vect
 		newGate->setGUIParam("ORIGINAL_NAME", orgName);
 		return true;
 	}
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// Get library default logic params
+	if (libGate.logicType.size() > 0) {
+		map <string, string> lParams = libGate.logicParams;
+		map < string, string >::iterator lpwalk = lParams.begin();
+		while (lpwalk != lParams.end()) {
+			bool found = false;
+			for (unsigned long i = 0; i < params.size(); i++)
+				if (params[i].paramName == lpwalk->first) {
+					found = true;
+					break;
+				}
+			if (!found)
+				params.push_back(parameter(lpwalk->first, lpwalk->second, false));
+			lpwalk++;
+		}
+	}
 	
 	for (unsigned int i = 0; i < params.size(); i++) {
-		if (!(params[i].isGUI)) {
+		if (!(params[i].isGUI)) {			
 			newGate->setLogicParam( params[i].paramName, params[i].paramValue );
 			gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(id, params[i].paramName, params[i].paramValue)));
 		} else newGate->setGUIParam( params[i].paramName, params[i].paramValue );
@@ -486,7 +500,7 @@ void CircuitParse::parseWireToSend( void ) {
 								mParse->readCloseTag();
 							}
 						}
-						// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+						// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 						// Not found gates don´t connect
 						bool notFound = false;
 						for (unsigned int i = 0; i < notFoundGates.size(); i++)

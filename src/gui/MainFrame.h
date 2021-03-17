@@ -95,6 +95,7 @@ public:
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxTimerEvent& event);
 	void OnSize(wxSizeEvent& event);
+	void OnMove(wxMoveEvent& event);
 	void OnNotebookPage(wxAuiNotebookEvent& event);
 	void OnMaximize(wxMaximizeEvent& event);
 	void OnUndo(wxCommandEvent& event);

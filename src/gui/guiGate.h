@@ -133,7 +133,7 @@ public:
 	//	processor object to assign the setparameters command to.  gc is
 	//	a GUICircuit pointer
 	virtual void doParamsDialog( void* gc, wxCommandProcessor* wxcmd );
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	// Show gate propierties
 	virtual void doPropsDialog();
 
@@ -141,9 +141,7 @@ public:
 	virtual void setGUIParam(string paramName, string value);
 	virtual string getGUIParam( string paramName ) { return gparams[paramName]; };
 	map < string, string >* getAllGUIParams() { return &gparams; };
-	virtual void setLogicParam( string paramName, string value ) {
-		lparams[paramName] = value;
-	};
+	virtual void setLogicParam(string paramName, string value) { lparams[paramName] = value; };
 	virtual string getLogicParam( string paramName ) { return lparams[paramName]; };
 	map < string, string >* getAllLogicParams() { return &lparams; };
 
@@ -543,7 +541,7 @@ private:
 // ************************ FSM gate ****************************
 
 //*************************************************
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 //I am creating a guiGate for the FSM so that
 //the FSM can have its own special pop-up window
 class guiGateFSM : public guiGate {
@@ -569,7 +567,7 @@ private:
 // ************************ CMB gate ****************************
 
 //*************************************************
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 //I am creating a guiGate for the CMB so that
 //the CMB can have its own special pop-up window
 class guiGateCMB : public guiGate {

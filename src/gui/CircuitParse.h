@@ -61,7 +61,7 @@ private:
 	// Parses, builds, and sets a wire's information (shape, id, etc)
 	void parseWireToSend( void );
 
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	// Not found gates list
 	vector <long> notFoundGates;
 };

@@ -14,7 +14,7 @@ struct paramSet {
 	paramSet(ParameterMap *g, ParameterMap* l);
 };
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Added canUndo in contructors to prevent FSM and CMB undo descriptions
 // cmdSetParams - Sets a gate's parameters
 class cmdSetParams : public klsCommand {

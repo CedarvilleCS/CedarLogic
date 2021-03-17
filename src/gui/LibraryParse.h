@@ -68,7 +68,7 @@ struct lgDlgParam {
 	string type; // The "type" of this parameter. Type can be: STRING, INT, BOOL, FLOAT, FILE_IN, FILE_OUT.
 	float Rmin, Rmax; // Number types can specify a min and max range for the variable.
 
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	vector <string> Options;
 
 	lgDlgParam(string ntextLabel = "", string nname = "", string ntype = "STRING", bool nisGui = true, float nRmin = -FLT_MAX, float nRmax = FLT_MAX, vector <string> nOptions = {}) : textLabel(ntextLabel), name(nname), isGui(nisGui), type(ntype), Rmin(nRmin), Rmax(nRmax), Options(nOptions) {};
@@ -91,13 +91,13 @@ struct LibraryGate {
 
 class LibraryParse {
 public:
-	LibraryParse(string);
+	LibraryParse(string,string);
 	LibraryParse();
 	virtual ~LibraryParse();
 	
 	void parseFile();
 
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	// Added for dynamic gates
 	void parseText(string text);
 
@@ -116,7 +116,7 @@ public:
 	
 	string getName() { return libName; };
 
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	// To create dynamics gates (not in library)
 	bool CreateDynamicGate(string type);
 	

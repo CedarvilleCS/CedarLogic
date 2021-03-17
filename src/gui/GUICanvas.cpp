@@ -326,12 +326,6 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	// If I am in a paste operation then mouse-up is all I am concerned with
 	if (isWithinPaste) return;
 
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
-	// Alt + MouseDown
-/*	if (event.AltDown()) {
-		return;
-	}*/
-
 	bool handled = false;
 
 	// Update the mouse collision object
@@ -403,28 +397,38 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 				else {
 					// Nor ControlDown neither ShiftDown to drag wire segment
 					if (!(event.ShiftDown() || event.ControlDown())) {
+#ifdef _MSG_
 						if (hotspotHighlight.size() == 0)
 						{
-							//####
-							_MSGGUI("wireID: %lld", hitWire->getID())	//####
+							//@@@@
+							_MSGGUI("wireID: %lld\n", hitWire->getID())	//@@@@
 								guiWire *wire = wireList[hitWire->getID()];
 							vector<wireConnection> conn(wire->getConnections());
 							for (int i = 0; i < (int)conn.size(); i++) {
-								_MSGGUI("... gateID: %d (%s)", conn[i].gid, conn[i].connection.c_str());	//####
+								_MSGGUI("... gateID: %d (%s)\n", conn[i].gid, conn[i].connection.c_str());	//@@@@
 							}
 							map< long, wireSegment > segm(wire->getSegmentMap());
 							for (int i = 0; i < (int)segm.size(); i++) {
-								_MSGGUI("... segmenID: %d (%s) (%1.1f,%1.1f)-(%1.1f,%1.1f)", segm[i].id, segm[i].isVertical() ? "V" : "H", segm[i].begin.x, segm[i].begin.y, segm[i].end.x, segm[i].end.y);	//####
+								_MSGGUI("... segmenID: %d (%s) (%1.1f,%1.1f)-(%1.1f,%1.1f)\n", segm[i].id, segm[i].isVertical() ? "V" : "H", segm[i].begin.x, segm[i].begin.y, segm[i].end.x, segm[i].end.y);	//@@@@
 							}
-							//####
+							//@@@@
 						}
 						else
-							_MSGGUI("wireID: %lld gateID: %d (%s) (%f,%f)", hitWire->getID(), hotspotGate, hotspotHighlight.c_str(), m.x, m.y)	//####
+							_MSGGUI("wireID: %lld gateID: %d (%s) (%f,%f)\n", hitWire->getID(), hotspotGate, hotspotHighlight.c_str(), m.x, m.y)	//@@@@
+#endif
+						if (event.AltDown()) {
+#ifdef _MSG_
+							ostringstream oss;
+							oss << "WireID:\t\t" << hitWire->getID() << "\n";
+							wxMessageBox(oss.str(), "Wire properties");
+#endif
+						} else {
 							wireHoverID = hitWire->getID();
-						if (wireList[wireHoverID]->startSegDrag(snapMouse) && !(this->isLocked())) {
-							currentDragState = DRAG_WIRESEG;
+							if (wireList[wireHoverID]->startSegDrag(snapMouse) && !(this->isLocked())) {
+								currentDragState = DRAG_WIRESEG;
+							}
+							hitWire->unselect();
 						}
-						hitWire->unselect();
 					}
 				}
 				handled = true;
@@ -438,7 +442,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	if (hotspotHighlight.size() > 0 && currentDragState == DRAG_NONE && !(this->isLocked())) {
 		// Start dragging a new wire:
 		//gateList[hotspotGate]->select();
-		_MSGGUI("gateID: %d (%s)", hotspotGate, hotspotHighlight.c_str())	//####
+		_MSGGUI("gateID: %d (%s)\n", hotspotGate, hotspotHighlight.c_str())	//@@@@
 		unselectAllGates();
 		unselectAllWires();
 		handled = true; // Don't worry about checking other events in this proc
@@ -467,7 +471,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 				hitGate->select();
 			}
 			if (!(event.ShiftDown() || event.ControlDown()) && !(this->isLocked())) {
-				_MSGGUI("gateID: %d %s", hitGate->getID(), hitGate->getLibraryGateName().c_str())	//####
+				_MSGGUI("gateID: %d (%s)\n", hitGate->getID(), hitGate->getLibraryGateName().c_str())	//@@@@
 				currentDragState = DRAG_SELECTION; // Start dragging
 			}
 			handled = true;
@@ -568,7 +572,9 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 			if ((*hit)->getType() == COLL_GATE) {
 				guiGate* hitGate = ((guiGate*)(*hit));
 				if (event.AltDown()) {
+#ifdef _MSG_
 					hitGate->doPropsDialog();
+#endif
 				}
 				else {
 					// BEGIN WORKAROUND
@@ -870,47 +876,42 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 
 	// If dragging a new gate then 
 	if (currentDragState == DRAG_NEWGATE) {
-		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 		// Midified to create dynamics gates
-		if (newDragGate->getLibraryGateName().substr(0, 2) == "%_") {
-			float x, y;
-			newDragGate->getGLcoords(x, y);
-			// Pedro Casanova (casanova@ujaen.es) 2021/01-02
-			// Dynamic gates
+		if (newDragGate->getLibraryGateName().substr(0, 3) == "%%_") {
+			float nx, ny;
+			newDragGate->getGLcoords(nx, ny);
 			while (true) {
-				newDragGate->setGUIParam("DYNAMIC_GATE", "false");
+				newDragGate->setGUIParam("DYNAMIC_GATE", "false");		// Needed to detect "Cancel" pressed in dialog
 				newDragGate->doParamsDialog(gCircuit, gCircuit->GetCommandProcessor());
 				if (newDragGate->getGUIParam("DYNAMIC_GATE") != "true")
 					break;
-				else {
-					newDragGate->setGLcoords(x, y);
+				else 
+				{
+					newDragGate->setGLcoords(nx, ny);
 					if (addDynamicGate(newDragGate))
 						break;
 				}
 			}
-		} else {
+		}
+		else {
 			int newGID = gCircuit->getNextAvailableGateID();
 			float nx, ny;
 			newDragGate->getGLcoords(nx, ny);
 			creategatecommand = new cmdCreateGate(this, gCircuit, newGID, newDragGate->getLibraryGateName(), nx, ny);
 			gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatecommand);
-			cmdSetParams setgateparams(gCircuit, newGID, paramSet((*(gCircuit->getGates()))[newGID]->getAllGUIParams(), (*(gCircuit->getGates()))[newGID]->getAllLogicParams()));
-			setgateparams.Do();
 			gateList[newGID]->select();
 			selectedGates.push_back(newGID);
 		}
 
 		gCircuit->getGates()->erase(newDragGate->getID());
 
-		collisionChecker.removeObject( newDragGate );
+		collisionChecker.removeObject(newDragGate);
 		// Only now do a collision detection on all first-level objects since the new gate is in.
 		// The map collisionChecker.overlaps now contains
 		// all of the objects involved in any collisions.
 		collisionChecker.update();
-		//cmdSetParams setgateparams( gCircuit, newGID, paramSet((*(gCircuit->getGates()))[newGID]->getAllGUIParams(), (*(gCircuit->getGates()))[newGID]->getAllLogicParams()));
-		//setgateparams.Do();
 		delete newDragGate;
-
 	}
 	else {
 		// Do a collision detection on all first-level objects.
@@ -961,7 +962,7 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 			bool twoWires = false;
 			
 			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-			// We can grag from gates and from wires
+			// We can drag from gates and from wires
 			// Oh yeah, we only drag from gates... FALSE
 
 			// Source is hotspot and target is hotspot:
@@ -1155,7 +1156,10 @@ void GUICanvas::OnKeyDown(wxKeyEvent& event) {
 			collisionChecker.removeObject( newDragGate );
 			delete newDragGate;
 			collisionChecker.update();
-		} else {
+		}
+		 else {
+			// Pedro Casanova(casanova@ujaen.es) 2021/01-03
+			// This causes many problems
 			if (preMove.size() > 0) {
 				saveMove = false;
 				for (unsigned int i = 0; i < preMove.size(); i++) {
@@ -1204,6 +1208,16 @@ void GUICanvas::OnKeyDown(wxKeyEvent& event) {
 	case WXK_SPACE:
 		setZoomAll();
 		break;
+#ifdef _MSG_
+	// Pedro Casanova(casanova@ujaen.es) 2021/01-03
+	// Print info
+	case WXK_TAB:
+		this->printLists();
+		break;
+	case WXK_BACK:
+		gCircuit->printState();
+		break;
+#endif
 	}
 }
 
@@ -1399,6 +1413,65 @@ void GUICanvas::printLists() {
 		}
 		thisWire++;
 	}
+#ifdef _MSG_
+	{
+		_MSG("printing lists");
+		unordered_map< unsigned long, guiGate* >::iterator thisGate = gCircuit->getGates()->begin();
+		ostringstream oss;
+		while (thisGate != gCircuit->getGates()->end()) {
+			float x, y;
+			(thisGate->second)->getGLcoords(x, y);
+			oss.str(""); oss.clear();
+			oss << " gate " << thisGate->first << " type " << thisGate->second->getLibraryGateName() << " at " << x << "," << y;
+			_MSG("%s\n", oss.str().c_str());
+			oss.str(""); oss.clear();
+			oss << "  hotspots:";
+			map < string, GLPoint2f > gateHotspots = thisGate->second->getHotspotList();
+			map < string, GLPoint2f >::iterator thisHotspot = gateHotspots.begin();
+			while (thisHotspot != gateHotspots.end()) {
+				oss << thisHotspot->first << " ";
+				thisHotspot++;
+			}
+			_MSG("%s\n", oss.str().c_str());
+			thisGate++;
+		}
+		unordered_map< unsigned long, guiWire* >::iterator thisWire = gCircuit->getWires()->begin();
+		while (thisWire != gCircuit->getWires()->end()) {
+			if (thisWire->second != nullptr) {
+				oss.str(""); oss.clear();
+				oss << "wire " << thisWire->first << " status: " << GetStringState(thisWire->second->getState());
+				_MSG("%s\n", oss.str().c_str());
+				oss.str(""); oss.clear();
+				oss << "  connections: ";
+				for (unsigned int i = 0; i < thisWire->second->getConnections().size(); i++) {					
+					unsigned long index=0;
+					map < string, GLPoint2f > gateHotspots = thisWire->second->getConnections()[i].cGate->getHotspotList();
+					map < string, GLPoint2f >::iterator thisHotspot = gateHotspots.begin();
+					while (thisHotspot != gateHotspots.end()) {
+						if (thisHotspot->first == thisWire->second->getConnections()[i].connection)
+							break;
+						index++;
+						thisHotspot++;
+					}
+					oss << thisWire->second->getConnections()[i].gid << "@" << index;
+					oss << " (" << thisWire->second->getConnections()[i].cGate->getLibraryGateName(); 
+					oss << "@" << thisWire->second->getConnections()[i].connection << ")";
+					if (i < thisWire->second->getConnections().size() - 1) oss << " - ";
+				}
+				_MSG("%s\n", oss.str().c_str());
+				oss.str(""); oss.clear();
+				oss << "  segments: ";
+				for (unsigned int i = 0; i < thisWire->second->getSegmentMap().size(); i++) {
+					oss << "(" << thisWire->second->getSegmentMap()[i].begin.x << "," << thisWire->second->getSegmentMap()[i].begin.y << ")";
+					oss << "-(" << thisWire->second->getSegmentMap()[i].end.x << "," << thisWire->second->getSegmentMap()[i].end.y << ")";
+					if (i < thisWire->second->getSegmentMap().size() - 1) oss << " ";
+				}
+				_MSG("%s\n", oss.str().c_str());
+			}
+			thisWire++;
+		}
+	}
+#endif
 }	
 
 // Update the collision checker and refresh
@@ -1543,31 +1616,6 @@ klsCommand * GUICanvas::createGateConnectionCommand(IDType gate1Id, const string
 // Exists a problem: wire2 changes shape
 klsCommand * GUICanvas::createWireConnectionCommand(IDType wireId1, IDType wireId2) {
 
-	
-	// Esto funciona pero cambia el trazado de wire2 y necesita varios Control-Z para deshacer
-	
-
-/*	if (wireId1 != wireId2) {
-		// If not already connected.
-		guiWire *wire2 = wireList[wireId2];
-		vector<wireConnection> conn2(wire2->getConnections());
-		cmdConnectWire *connectWire = new cmdConnectWire(gCircuit, wireId1, conn2[0].gid, conn2[0].connection);
-		bool validateBueses = connectWire->validateBusLines();
-		delete connectWire;
-		if (!validateBueses) return nullptr;
-
-		cmdDeleteWire *deleteWire = new cmdDeleteWire(gCircuit, this, wireId2);
-		gCircuit->GetCommandProcessor()->Submit(deleteWire);
-
-		for (int i = 0; i < (int)conn2.size(); i++) {
-			connectWire = new cmdConnectWire(gCircuit, wireId1, conn2[i].gid, conn2[i].connection);
-			gCircuit->GetCommandProcessor()->Submit(connectWire);
-		}
-	}
-	return nullptr;*/
-	//####
-
-
 	// Make sure not already connected.
 	if (wireId1 == wireId2) 
 		return nullptr;
@@ -1577,11 +1625,10 @@ klsCommand * GUICanvas::createWireConnectionCommand(IDType wireId1, IDType wireI
 	// Get the correct number of new, unique wire ids.
 	for (int i = 0; i < (int)wireIds.size(); i++) {
 		wireIds[i] = gCircuit->getNextAvailableWireID();
-		_MSGGUI("WID: %lld", wireIds[i])	//####
+		_MSGGUI("WireID: %lld\n", wireIds[i])	//@@@@
 	}
 
-	cmdMergeWire* mergeWire =
-		new cmdMergeWire(this, gCircuit, wireIds, wireId1, wireId2);
+	cmdMergeWire* mergeWire = new cmdMergeWire(this, gCircuit, wireIds, wireId1, wireId2);
 
 	if (mergeWire->validateBusLines()) {
 		return mergeWire;
@@ -1592,18 +1639,18 @@ klsCommand * GUICanvas::createWireConnectionCommand(IDType wireId1, IDType wireI
 	}
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Add Dynamics gates
 bool GUICanvas::addDynamicGate(guiGate* gGate) {
 
-	if (gGate->getLibraryGateName() == "%_31_GATES" || gGate->getLibraryGateName() == "%_34_CIRCUIT") {
+	if (gGate->getLibraryGateName() == "%%_31_GATES" || gGate->getLibraryGateName() == "%%_34_CIRCUIT" || gGate->getLibraryGateName() == "%%_38_PLD") {
 		string msg;
 		if (!createGatesStruct(gGate, &msg)) {
 			wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
 			return false;
 		}
 	}
-	else if (gGate->getLibraryGateName() == "%_16_WIRES") {
+	else if (gGate->getLibraryGateName() == "%%_16_WIRES") {
 		createGatesStruct(gGate);
 	}
 	else {
@@ -1612,8 +1659,8 @@ bool GUICanvas::addDynamicGate(guiGate* gGate) {
 	return true;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
-// Replace Gate %_ for his correct type (Dynamics gates)
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Replace Gate %%_ for his correct type (Dynamics gates)
 void GUICanvas::replaceGate(guiGate* gGate) {
 	// Replace gate	
 	map<string, string> gParamList = *gGate->getAllGUIParams();
@@ -1621,31 +1668,37 @@ void GUICanvas::replaceGate(guiGate* gGate) {
 
 	ostringstream type;
 	gGate->unselect();
-	if (gGate->getLibraryGateName() == "%_11_WIRE") {
+	if (gGate->getLibraryGateName() == "%%_11_WIRE") {
 		type << "@@_WIRE_" << gParamList.at("LENGTH");
 	}
-	else if (gGate->getLibraryGateName() == "%_14_NOWIRE") {
+	else if (gGate->getLibraryGateName() == "%%_14_NOWIRE") {
 		type << "@@_NOWIRE_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");
 	}
-	else if (gGate->getLibraryGateName() == "%_17_BUSEND") {
+	else if (gGate->getLibraryGateName() == "%%_17_BUSEND") {
 		type << "@@_BUSEND" << (gParamList.at("SEPARATION") == "narrow" ? "N_" : "_") << gParamList.at("INPUT_BITS");
 	}
-	else if (gGate->getLibraryGateName() == "%_21_LAND") {
+	else if (gGate->getLibraryGateName() == "%%_21_LAND") {
 		type << "@@_LAND_" << gParamList.at("INPUT_BITS");
 	}
-	else if (gGate->getLibraryGateName() == "%_24_LOR") {
+	else if (gGate->getLibraryGateName() == "%%_24_LOR") {
 		type << "@@_LOR_" << gParamList.at("INPUT_BITS");
 	}
-	else if (gGate->getLibraryGateName() == "%_41_BLQ") {
+	else if (gGate->getLibraryGateName() == "%%_43_BLQ") {
 		type << "@@_BLQ_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");
 	}
-	else if (gGate->getLibraryGateName() == "%_42_FLIPFLOP") {
+	else if (gGate->getLibraryGateName() == "%%_40_GATE") {
+		type << getGate(gGate);
+	}
+	else if (gGate->getLibraryGateName() == "%%_41_LATCH") {
+		type << getLatch(gGate);
+	}
+	else if (gGate->getLibraryGateName() == "%%_42_FLIPFLOP") {
 		type << getFlipFlop(gGate);
 	}
-	else if (gGate->getLibraryGateName() == "%_44_CMB") {
+	else if (gGate->getLibraryGateName() == "%%_44_CMB") {
 		type << "@@_CMB_" << lParamList.at("INPUT_BITS") << "X" << lParamList.at("OUTPUT_BITS");
 	}
-	else if (gGate->getLibraryGateName() == "%_47_FSM") {
+	else if (gGate->getLibraryGateName() == "%%_47_FSM") {
 		type << "@@_FSM_" << ((lParamList.at("ASYNCHRONOUS") == "true") ? "A" : "S") << "_"
 			<< lParamList.at("INPUT_BITS") << "X" << lParamList.at("OUTPUT_BITS");
 	}
@@ -1655,150 +1708,243 @@ void GUICanvas::replaceGate(guiGate* gGate) {
 	gGate->getGLcoords(x, y);
 	cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, newGID, type.str(), x, y);
 	gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatecommand);
-	cmdSetParams setgateparams(gCircuit, newGID, paramSet((*(gCircuit->getGates()))[newGID]->getAllGUIParams(), (*(gCircuit->getGates()))[newGID]->getAllLogicParams()));
-	setgateparams.Do();
 	gateList[newGID]->select();
 	selectedGates.push_back(newGID);
 
 }
 
-string GUICanvas::getFlipFlop(guiGate* gGate) {
+string GUICanvas::getGate(guiGate* gGate) {
 	map<string, string> gParamList = *gGate->getAllGUIParams();
-	bool edgeClock = (gParamList.at("EDGE_CLOCK") == "rising") ? true : false;
-	bool levelPC = (gParamList.at("LEVEL_PR_CL") == "high") ? true : false;
-	string presetClear = gParamList.at("PRESET_CLEAR");
-	string ffType = gParamList.at("FF_TYPE");
-	if (ffType == "D") {
-		if (edgeClock) {
-			if (presetClear == "both") {
-				if (levelPC)
-					return "AB_DFF";
-				else
-					return "AC_DFF_LOW";
-			}
-			else if (presetClear == "clear") {
-				if (levelPC)
-					return "AE_DFF";
-				else
-					return "AE_DFF_LOW";
-			}
-			else
-				return "AE_DFF_SCP";
-		}
-		else {
-			if (presetClear == "both") {
-				if (levelPC)
-					return "AB_DFF_NT";
-				else
-					return "AD_DFF_LOW_NT";
-			}
-			else if (presetClear == "clear") {
-				if (levelPC)
-					return "AE_DFF_NT";
-				else
-					return "AE_DFF_LOW_NT";
+	string gateType = gParamList.at("GATE_TYPE");
+	unsigned long nInputs = atoi(gParamList.at("N_INPUTS").c_str());
+	ostringstream oss;
+	char index;
+	if (nInputs < 11)
+		index = 47 + nInputs;
+	else
+		index = 54 + nInputs;
+	if (gateType == "AND")
+		oss << "A" << index << "_SAND" << nInputs;
+	else if (gateType == "NAND")
+		oss << "B" << index << "_SNAND" << nInputs;
+	else if (gateType == "OR")
+		oss << "C" << index << "_SOR" << nInputs;
+	else if (gateType == "NOR")
+		oss << "D" << index << "_SNOR" << nInputs;
+	else if (gateType == "XOR")
+		oss << "E" << index << "_SXOR" << nInputs;
+	else if (gateType == "XNOR")
+		oss << "F" << index << "_SXNOR" << nInputs;
+	return oss.str();
+}
 
-			}
-			else
-				return "AE_DFF_NT_SCP";
-		}
+string GUICanvas::getLatch(guiGate* gGate) {
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	string latchType = gParamList.at("LATCH_TYPE");
+	bool signallevel = (gParamList.at("SIGNAL_LEVEL") == "high") ? true : false;
+	bool controlLevel = (gParamList.at("CONTROL_LEVEL") == "high") ? true : false;		
+	if (latchType == "SR") {
+		if (signallevel)
+			return "A0_SRLATCH";
+		else
+			return "A1_SRLATCH_LOW";
 	}
-	else if (ffType == "JK") {
-		if (edgeClock) {
-			if (presetClear == "both") {
-				if (levelPC)
-					return "BA_JKFF";
-				else
-					return "BE_LKFF_LOW";
-			}
-			else if (presetClear == "clear") {
-				if (levelPC)
-					return "BF_JKFF";
-				else
-					return "BF_JKFF_LOW";
-			}
+	else if (latchType == "SR-controlled") {
+		if (controlLevel) {
+			if (signallevel)
+				return "A2_SRLATCH_CONTROL";
 			else
-				return "BF_JKFF_SCP";
+				return "A3_SRLATCH_LOW_CONTROL";
 		}
 		else {
-			if (presetClear == "both") {
-				if (levelPC)
-					return "BA_JKFF_NT";
-				else
-					return "BE_JKFF_LOW_NT";
-			}
-			else if (presetClear == "clear") {
-				if (levelPC)
-					return "BF_JKFF_NT";
-				else
-					return "BF_JKFF_LOW_NT";
-			}
+			if (signallevel)
+				return "A4_SRLATCH_CONTROL_LOW";
 			else
-				return "BF_JKFF_NT_SCP";
+				return "A5_SRLATCH_LOW_CONTROL_LOW";
 		}
 	}
-	else if (ffType == "T") {
-		if (edgeClock) {
-			if (presetClear == "both") {
-				if (levelPC)
-					return "CA_TFF";
-				else
-					return "CC_TFF_LOW";
-			}
-			else if (presetClear == "clear") {
-				if (levelPC)
-					return "CD_TFF";
-				else
-					return "CD_TFF_LOW";
-			}
-			else
-				return "CD_TFF_SCP";
-		}
-		else {
-			if (presetClear == "both") {
-				if (levelPC)
-					return "CB_TFF_NT";
-				else
-					return "CC_TFF_LOW_NT";
-			}
-			else if (presetClear == "clear") {
-				if (levelPC)
-					return "CD_TFF_NT";
-				else
-					return "CD_TFF_LOW_NT";
-			}
-			else
-				return "CD_TFF_NT_SCP";
-		}
+	else if (latchType == "D") {
+		if (controlLevel)
+			return "A6_DLATCH";
+		else
+			return "A6_DLATCH_LOW";
 	}
 	return "";
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+string GUICanvas::getFlipFlop(guiGate* gGate) {
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	string ffType = gParamList.at("FF_TYPE");
+	bool edgeClock = (gParamList.at("EDGE_CLOCK") == "rising") ? true : false;
+	bool levelCP = (gParamList.at("LEVEL_CL_PR") == "high") ? true : false;
+	string presetClear = gParamList.at("PRESET_CLEAR");
+	string prefix;
+	ostringstream oss;
+	
+	if (ffType == "D") prefix = "A";
+	else if (ffType == "JK") prefix = "B";
+	else prefix = "C";
+	
+	oss << prefix;
+
+	if (presetClear == "both") {
+		if (levelCP)
+			oss << "B_" << ffType << "FF";
+		else
+			oss << "C_" << ffType << "FF_LOW";
+	}
+	else if (presetClear == "clear") {
+		if (levelCP)
+			oss << "D_" << ffType << "FF";
+		else
+			oss << "G_" << ffType << "FF_LOW";
+	}
+	else
+		oss << "H_" << ffType << "FF_NCP";
+
+	if (!edgeClock) oss << "_NT";
+
+	return oss.str();
+
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Create two levels gates structs: AND-OR, OR-AND, NAND-NAND or NOR-NOR and wire sets
 // Can add input wires whith links an inverters and connect to first level gate inputs
 bool GUICanvas::createGatesStruct(guiGate* gGate, string *errorMsg) {
 
 	map<string, string> gParamList = *gGate->getAllGUIParams();
-	vector <string> inputNames;
-	unsigned long nOutputs = 0;
-	unsigned long nInputs = 0;
-	if (gGate->getLibraryGateName() != "%_16_WIRES") {
-		if (gGate->getLibraryGateName() == "%_31_GATES") {
+	if (gGate->getLibraryGateName() != "%%_16_WIRES") {
+		if (gGate->getLibraryGateName() == "%%_38_PLD") {
+			string PLDType = gParamList.at("PLD_TYPE");
+			unsigned long inBits = atoi(gParamList.at("INPUT_BITS").c_str());
+			unsigned long outBits = atoi(gParamList.at("OUTPUT_BITS").c_str());
+			unsigned long inORBits = pow(2, inBits);
+			if (PLDType != "PROM")
+				inORBits = atoi(gParamList.at("OR_INPUTS").c_str());
+			unsigned long nAnd;
+			if (PLDType == "PAL")
+				nAnd = inORBits * outBits;
+			else
+				nAnd = inORBits;
+
+			unsigned long linesAND = 0;
+			unsigned long charsAND = 0;
+			unsigned long linesOR = 0;
+			unsigned long charsOR = 0;
+			unsigned long totalLength;
+			if (PLDType == "PROM") {
+				linesOR = outBits;
+				charsOR = pow(2, inBits);
+			}
+			else if (PLDType == "PAL") {
+				linesAND = nAnd;
+				charsAND = 2 * inBits;
+			}
+			else {
+				linesAND = nAnd;
+				charsAND = 2 * inBits;
+				linesOR = outBits;
+				charsOR = nAnd;
+			}
+			totalLength = linesAND * charsAND + linesOR * charsOR;
+
+			string connections = "";
+			unsigned long cntLines = 0;
+			unsigned long cntChars = 0;
+			string paramConnections = gParamList.at("CONNECTIONS");
+			if (paramConnections != "") {
+				paramConnections = paramConnections + "\n";
+				for (unsigned int i = 0; i < paramConnections.length(); i++) {
+					if (paramConnections[i] != '\n') {
+						if (paramConnections[i] != '0' && paramConnections[i] != '1') {
+							*errorMsg = "Invalid char, must be '0' or '1'";
+							return false;
+						}
+						connections = connections + paramConnections[i];
+						cntChars++;
+					} else if (cntChars) {
+						if (PLDType == "PROM") {
+							if (cntChars != charsOR) {
+								*errorMsg = "Invalid connection map line length";
+								return false;
+							}
+						}
+						else if (PLDType == "PAL") {
+							if (cntChars != charsAND) {
+								*errorMsg = "Invalid connection map line length";
+								return false;
+							}
+						}
+						else {
+							if (cntLines < linesAND) {
+								if (cntChars != charsAND) {
+									*errorMsg = "Invalid connection map line length";
+									return false;
+								}
+							}
+							else {
+								if (cntChars != charsOR) {
+									*errorMsg = "Invalid connection map line length";
+									return false;
+								}
+							}
+						}
+						cntChars = 0;
+						cntLines++;
+					}
+				}
+				if (PLDType == "PROM") {
+					if (cntLines != linesOR) {
+						*errorMsg = "Invalid connection map lines";
+						return false;
+					}
+				}
+				else if (PLDType == "PAL") {
+					if (cntLines != linesAND) {
+						*errorMsg = "Invalid connection map lines";
+						return false;
+					}
+				}
+				else {
+					if (cntLines < linesAND + linesOR) {
+						*errorMsg = "Invalid connection map lines";
+						return false;
+					}
+				}
+				if (totalLength != connections.length()) {
+					*errorMsg = "Invalid connection map length";
+					return false;
+				}
+				gGate->setGUIParam("CONNECTIONS", connections);
+			}
+		}
+		else if (gGate->getLibraryGateName() == "%%_31_GATES") {
+			unsigned long nOutputs = 0;
 			for (unsigned int i = 1; i <= 8; i++) {
 				ostringstream oss;
 				oss << "G" << i;
 				if (gParamList.at(oss.str()) != "0") nOutputs++;
 			}
+			if (!nOutputs) {
+				*errorMsg = "No gate has defined inputs";
+				return false;
+			}
 		}
-		else if (gGate->getLibraryGateName() == "%_34_CIRCUIT") {
+		else if (gGate->getLibraryGateName() == "%%_34_CIRCUIT") {
+			vector <string> inputNames;
+			unsigned long nInputs = 0;
+			unsigned long nOutputs = 0;			
+			string outputName=gParamList.at("OUTPUT_NAME");
+			removeSpaces(&outputName);
+			gGate->setGUIParam("OUTPUT_NAME", outputName);
 			istringstream iss(gParamList.at("INPUT_NAMES"));
 			while (true) {
 				string inputName;
 				iss >> inputName;
 				if (inputName[inputName.length() - 1] == '-') {
 					inputName = inputName.substr(0, inputName.length() - 1);
-					if (gParamList.at("NO_LINK_INVERTER") == "true") {
+					if (gParamList.at("NO_LINK_INPUT") == "true") {
 						ostringstream error;
 						error << "Input '" << inputName << "' can't have '-' sufix";
 						*errorMsg = error.str();
@@ -1818,11 +1964,15 @@ bool GUICanvas::createGatesStruct(guiGate* gGate, string *errorMsg) {
 				}
 				if (iss.eof()) break;
 			}
-			if (nInputs < 2 || nInputs > 8) {
-				*errorMsg = "Incorrect number of inputs, must be from 2 to 8";
+			if (!nInputs) {
+				*errorMsg = "Incorrect number of inputs, must be at least one";
 				return false;
 			}
-			for (unsigned int i = 1; i <= 8; i++) {
+			if (nInputs > 16) {
+				*errorMsg = "Incorrect number of inputs, must be less than 16";
+				return false;
+			}
+			for (unsigned int i = 1; i <= 16; i++) {
 				ostringstream oss;
 				oss << "G" << i;
 				if (gParamList.at(oss.str()) != "")
@@ -1870,19 +2020,20 @@ bool GUICanvas::createGatesStruct(guiGate* gGate, string *errorMsg) {
 					nOutputs++;
 				}
 			}
+			if (!nOutputs) {
+				*errorMsg = "No gate has defined inputs";
+				return false;
+			}
 		}
 		else {
 			*errorMsg = "Incorrect Gate";
-			return false;
-		}
-		if (!nOutputs) {
-			*errorMsg = "No gate has defined inputs";
 			return false;
 		}
 	}
 
 	cmdCreateGateStruct* creategatestruct = new cmdCreateGateStruct(gCircuit->gCanvas, gCircuit, gGate);
 	gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatestruct);
+	//creategatestruct->Do();
 
 	return true;
 }

@@ -39,16 +39,19 @@
 bool chkDigits(string number);
 bool chkHexDigits(string* number, bool uppercase = false);
 bool chkBits(string* bits, bool uppercase = false);
+void removeSpaces(string* text);
 float Round_half(float v);
 float Round(float v);
+string GetStringState(vector<StateType> states);
 
 class MainFrame;
 
 using namespace std;
 
 struct ApplicationSettings {
-	string gateLibFile;
-	string textFontFile = "res";		// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Font is now in resources 
+	string mainGateLibFile;
+	string userGateLibFile;
+	string textFontFile;						// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Font is now in resources 
 	string helpFile;
 	string lastDir;
 	unsigned int mainFrameWidth;
@@ -63,8 +66,9 @@ struct ApplicationSettings {
 	bool componentCollVisible;
 	bool adjustBitmap;
 	bool markDeprecated;
-	float wireConnRadius;	
-	bool settingsInReg = true;			// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Settings in register
+	float wireConnRadius;
+	bool mainFrameMaximized;
+	bool settingsInReg = SETTINGS_IN_REG;		// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Settings in register
 };
 
 class MainApp : public wxApp {

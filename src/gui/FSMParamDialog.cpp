@@ -18,7 +18,7 @@ using namespace std;
 
 DECLARE_APP(MainApp)
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // This class is the special pop-up window that comes up when a FSM chip is double clicked.
 FSMParamDialog::FSMParamDialog( guiGateFSM* newM_guiGateFSM, GUICircuit* newGUICircuit, wxCommandProcessor* wxcmd)
 	: wxDialog(wxGetApp().GetTopWindow(), wxID_ANY, "FSM info",

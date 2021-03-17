@@ -44,7 +44,7 @@ void Junction::connectWire( IDType wireID ) {
 bool Junction::disconnectWire( IDType wireID ) {
 	if( wireList.find( wireID ) == wireList.end() ) {
 		WARNING("Junction::disconnectWire() - wireID not found in junction.");
-		_MSG("Wire ID: %lld", wireID);
+		_MSG("Wire ID: %lld\n", wireID);
 		return false;
 	}
 

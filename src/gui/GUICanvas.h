@@ -200,10 +200,12 @@ public:
 	// Create a command to connect a wire to a wire.
 	klsCommand * createWireConnectionCommand(IDType wireId1, IDType wireId2);
 
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
-	// Replace Gate %_ for his correct type (Dynamics gates)
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// Replace Gate %%_ for his correct type (Dynamics gates)
 	bool addDynamicGate(guiGate* gGate);
 	void replaceGate(guiGate* gGate);
+	string getGate(guiGate* gGate);
+	string getLatch(guiGate* gGate);
 	string getFlipFlop(guiGate* gGate);
 	bool createGatesStruct(guiGate* gGate, string *errorMsg = nullptr);
 

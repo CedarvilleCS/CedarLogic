@@ -153,10 +153,10 @@ include(MsStaticRuntimeLibs)
 ms_static_runtime_libs()
 
 # Read environment variable, but if it is not set, use installer default location.
-set(wxwin "$ENV{WXWIN}")
-if ("${wxwin}" STREQUAL "")
-    set(wxwin "C:/wxWidgets-2.8.12")
+if ("$ENV{WXWIN}" STREQUAL "")
+    set(ENV{WXWIN} "C:/wxWidgets-2.8.12")
 endif()
+set(wxwin "$ENV{WXWIN}" CACHE STRING "Path to wxWidgets install folder.")
 
 # Set special variables read-in by functions from LibraryTools module.
 set(wx_widgets_include
@@ -238,6 +238,7 @@ install(TARGETS CedarLogic RUNTIME DESTINATION ".")
 
 install(FILES "${CMAKE_SOURCE_DIR}/InstFiles/LICENSE.txt" DESTINATION ".")
 install(FILES "${CMAKE_SOURCE_DIR}/InstFiles/UserLib.xml" DESTINATION ".")
+install(FILES "${CMAKE_SOURCE_DIR}/InstFiles/KLS_Logic.chm" DESTINATION ".")
 
 set(CPACK_PACKAGE_NAME "CedarLogic")
 # This exceptionally weird line is hard to understand even with the documentation.

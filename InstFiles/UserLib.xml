@@ -1,12 +1,241 @@
 #   UserLib.xml: Contains all XML definitions for user gates
+#
+#	Gate names should begin with "_" to avoid problems with main library
+#
+#	Gate names should not begin with '%%_' neither '@@_' to avoid problems with dynamyc gates
+#
 <library> <name>User Library</name>
+	<gate> <name>_A7_DLATCH_E</name>
+		<caption>D Latch Tri-State</caption>
+		<logic_type>REGISTER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+
+#		E
+		<input> <name>OUTPUT_ENABLE</name>
+		          <point>-3,0</point> 
+		</input>
+		
+#		C
+		<input> <name>LOAD</name>
+		          <point>-3,-2</point> 
+		</input>
+
+#		D
+		<input> <name>IN_0</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Q
+		<output> <name>OUT_0</name>
+		          <point>3,2</point> 
+				  <enable_input>OUTPUT_ENABLE</enable_input>
+		</output>
+		
+#		QNOT
+		<output> <name>OUTINV_0</name>
+		          <point>3,-2</point> 
+				  <enable_input>OUTPUT_ENABLE</enable_input>
+		</output>
+
+		<shape>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+			<line>-2,2,-3,2</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,2,3,2</line>
+			<line>2,-2,3,-2</line>
+			<line>-2,0,-3,0</line>
+
+#			D
+			<text>-1.4,2,D</text>
+			
+#			C
+			<text>-1.4,-2,C</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+
+#			E
+			<text>-1.4,0,E</text>
+
+
+		</shape>
+	</gate>
+	<gate> <name>_AJ_DFF_CE</name>
+		<caption>D Flip Flop - Clock Enabled, High Active Set/Reset</caption>
+		<logic_type>REGISTER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<logic_param>NO_HOLD true</logic_param>
+		<logic_param>SYNC_LOAD true</logic_param>
+
+#		D
+		<input> <name>IN_0</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,0</point> 
+		</input>
+		
+#		Clock Enable
+		<input><name>CLOCK_ENABLE</name>
+			<point>-3,-2</point>
+		</input>
+
+#		SET
+		<input> <name>SET</name>
+		          <point>0,4</point> 
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+		</input>
+#		Q
+		<output> <name>OUT_0</name>
+		          <point>3,2</point> 
+		</output>
+
+#		QNOT
+		<output> <name>OUTINV_0</name>
+		          <point>3,-2</point> 
+		</output>
+
+
+		<shape>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,0.5,-1,0</line>
+			<line>-2,-0.5,-1,0</line>
+			
+			<line>-2,0,-3,0</line>
+			<line>-2,2,-3,2</line>			
+			<line>-3,-2,-2,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,3,0,4</line>
+			<line>0,-3,0,-4</line>
+
+#			D
+			<text>-1.4,2,D</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+
+#			PR
+			<text>0,2.5,$P$R</text>
+			
+#			CL
+			<text>0,-2.5,$C$L</text>
+			
+#			CE
+			<text>-1.4,-2,CE</text>
+				
+		</shape>
+	</gate>
+	<gate> <name>_AK_DFF_E</name>
+		<caption>D Flip Flop - High Active Set/Reset Tri-State</caption>
+		<logic_type>REGISTER</logic_type>
+		<logic_param>INPUT_BITS 1</logic_param>
+		<logic_param>NO_HOLD true</logic_param>
+		<logic_param>SYNC_LOAD true</logic_param>
+		
+#		E
+		<input> <name>OUTPUT_ENABLE</name>
+		          <point>-3,-2</point> 
+		</input>
+
+#		D
+		<input> <name>IN_0</name>
+		          <point>-3,2</point> 
+		</input>
+
+#		Clock
+		<input> <name>CLOCK</name>
+		          <point>-3,0</point> 
+		</input>
+
+#		SET
+		<input> <name>SET</name>
+		          <point>0,4</point> 
+		</input>
+
+#		RESET
+		<input> <name>CLEAR</name>
+		          <point>0,-4</point> 
+		</input>
+#		Q
+		<output> <name>OUT_0</name>
+		          <point>3,2</point> 
+				  <enable_input>OUTPUT_ENABLE</enable_input>
+		</output>
+
+#		QNOT
+		<output> <name>OUTINV_0</name>
+		          <point>3,-2</point>
+				  <enable_input>OUTPUT_ENABLE</enable_input>
+		</output>
+
+		<shape>
+#			body
+			<outline>2,3,-2,3</outline>
+			<outline>-2,3,-2,-3</outline>
+			<outline>-2,-3,2,-3</outline>
+			<outline>2,-3,2,3</outline>
+
+#			CLOCK
+			<line>-2,0.5,-1,0</line>
+			<line>-2,-0.5,-1,0</line>
+
+			<line>-2,2,-3,2</line>
+			<line>-2,0,-3,0</line>
+			<line>-2,-2,-3,-2</line>
+			<line>2,-2,3,-2</line>
+			<line>2,2,3,2</line>
+			<line>0,3,0,4</line>
+			<line>0,-3,0,-4</line>
+
+#			D
+			<text>-1.4,2,D</text>
+
+#			Q
+			<text>1.4,2,Q</text>
+
+#			Q NOT
+			<text>1.4,-2,~Q</text>
+
+#			PR
+			<text>0,2.5,$P$R</text>
+			
+#			CL
+			<text>0,-2.5,$C$L</text>
+
+#			E
+			<text>-1.4,-2,E</text>
+
+		</shape>
+	</gate>
 	<gate> <name>_AL_COUNT4</name>
 		<caption>4-Bit Up/Down Counter</caption>
 		<logic_type>REGISTER</logic_type>
 		<logic_param>INPUT_BITS 4</logic_param>
 		<logic_param>MAX_COUNT 15</logic_param>
-		<logic_param>SYNC_CLEAR false</logic_param>
-		<logic_param>SYNC_LOAD false</logic_param>
 		<gui_type>REGISTER</gui_type>
 		<gui_param>HIDE_DISPLAY true</gui_param>
 
@@ -88,6 +317,111 @@
 			<text>1.5,1.4,Q_D</text>
 
 		</shape>
+	</gate>
+	<gate> <name>_JC_ENCODER_10x4</name>
+	  <caption>10x4 Encoder</caption>
+	  <logic_type>ENCODER</logic_type>
+	  <logic_param>INPUT_BITS 16</logic_param>
+	  <input>
+		<name>IN_0</name>
+		<point>-3,-4.5</point>
+	  </input>
+	  <input>
+		<name>IN_1</name>
+		<point>-3,-3.5</point>
+	  </input>
+	  <input>
+		<name>IN_2</name>
+		<point>-3,-2.5</point>
+	  </input>
+	  <input>
+		<name>IN_3</name>
+		<point>-3,-1.5</point>
+	  </input>
+	  <input>
+		<name>IN_4</name>
+		<point>-3,-0.5</point>
+	  </input>
+	  <input>
+		<name>IN_5</name>
+		<point>-3,0.5</point>
+	  </input>
+	  <input>
+		<name>IN_6</name>
+		<point>-3,1.5</point>
+	  </input>
+	  <input>
+		<name>IN_7</name>
+		<point>-3,2.5</point>
+	  </input>
+	  <input>
+		<name>IN_8</name>
+		<point>-3,3.5</point>
+	  </input>
+	  <input>
+		<name>IN_9</name>
+		<point>-3,4.5</point>
+	  </input>
+	  
+	  <output>
+		<name>OUT_0</name>
+		<point>3,-4.5</point>
+	  </output>
+	  <output>
+		<name>OUT_1</name>
+		<point>3,-3.5</point>
+	  </output>
+	  <output>
+		<name>OUT_2</name>
+		<point>3,-2.5</point>
+	  </output>
+	  <output>
+		<name>OUT_3</name>
+		<point>3,-1.5</point>
+	  </output>
+		<logic_param>PRIORITY none</logic_param>
+		<logic_param>INVALID_VALUE 15</logic_param>
+	  <shape>
+		#     body
+		<outline>-2,5.5,2,5.5</outline>
+		<outline>2,5.5,2,-5.5</outline>
+		<outline>2,-5.5,-2,-5.5</outline>
+		<outline>-2,-5.5,-2,5.5</outline>
+
+		#		  outputs
+		<line>2,-1.5,3,-1.5</line>
+		<line>2,-2.5,3,-2.5</line>
+		<line>2,-3.5,3,-3.5</line>
+		<line>2,-4.5,3,-4.5</line>
+
+		#			Encoder Input Lines    
+		<line>-2,-4.5,-3,-4.5</line>
+		<line>-2,-3.5,-3,-3.5</line>
+		<line>-2,-2.5,-3,-2.5</line>
+		<line>-2,-1.5,-3,-1.5</line>	    
+		<line>-2,-0.5,-3,-0.5</line>
+		<line>-2, 0.5,-3, 0.5</line>
+		<line>-2, 1.5,-3, 1.5</line>
+		<line>-2, 2.5,-3, 2.5</line>
+		<line>-2, 3.5,-3, 3.5</line>
+		<line>-2, 4.5,-3, 4.5</line>
+
+#			I0
+			<text>-1.4,-4.5,I_0</text>
+
+#			A
+			<text>1.4,-4.5,A</text>
+			
+#			B
+			<text>1.4,-3.5,B</text>
+			
+#			C
+			<text>1.4,-2.5,C</text>
+			
+#			D
+			<text>1.4,-1.5,D</text>			
+
+	  </shape>
 	</gate>
 </library>
 # End

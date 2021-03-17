@@ -119,7 +119,7 @@ void Gate::resendLastEvent( IDType myID, string outputID, Circuit * theCircuit )
 		}
 	} else {
 		WARNING("Gate::resendLastEvent() - Invalid outputID.");
-		_MSGW("Output ID: %s", outputID.c_str());
+		_MSGW("Output ID: %s\n", outputID.c_str());
 	}
 }
 
@@ -164,7 +164,7 @@ IDType Gate::disconnectInput( string inputID ) {
 		inputList[inputID].wireID = ID_NONE;
 	} else {
 		WARNING("Gate::disconnectInput() - Invalid input ID.");
-		_MSGW("Input ID: %s", inputID.c_str());
+		_MSGW("Input ID: %s\n", inputID.c_str());
 	}
 	return wireID;
 }
@@ -180,7 +180,7 @@ IDType Gate::disconnectOutput( string outputID ) {
 		outputList[outputID].wireID = ID_NONE;
 	} else {
 		WARNING("Gate::disconnectOutput() - Invalid output ID.");
-		_MSGW("Output ID: %s", outputID.c_str());
+		_MSGW("Output ID: %s\n", outputID.c_str());
 	}
 	return wireID;
 }
@@ -227,7 +227,7 @@ bool Gate::setParameter( string paramName, string value ) {
 		return false;
 	} else {
 		WARNING("Gate::setParameter() - Invalid parameter.");
-		_MSGW("Parameter: %s", paramName.c_str());
+		_MSGW("Parameter: %s\n", paramName.c_str());
 		return false;
 	}
 }
@@ -258,7 +258,7 @@ bool Gate::setInputParameter( string inputID, string paramName, string value ) {
 		return true;
 	} else {
 		WARNING("Gate::setInputParameter() - Invalid parameter.");
-		_MSGW("Parameter: %s", paramName.c_str());
+		_MSGW("Parameter: %s\n", paramName.c_str());
 		return false;
 	}
 }
@@ -278,7 +278,7 @@ bool Gate::setOutputParameter( string outputID, string paramName, string value )
 		return true;
 	} else {
 		WARNING("Gate::setOutputParameter() - Invalid parameter.");
-		_MSGW("Parameter: %s", paramName.c_str());
+		_MSGW("Parameter: %s\n", paramName.c_str());
 		return false;
 	}
 }
@@ -291,7 +291,7 @@ string Gate::getParameter( string paramName ) {
 		oss << defaultDelay;
 	} else {
 		WARNING("Gate::getParameter() - Invalid parameter.");
-		_MSGW("Parameter: %s", paramName.c_str());
+		_MSGW("Parameter: %s\n", paramName.c_str());
 	}
 	return oss.str();
 }
@@ -335,7 +335,7 @@ void Gate::declareOutput( string name ) {
 
 // Get the current time in the simulation:
 TimeType Gate::getSimTime( void ) {	
-	_MSGNC(ourCircuit != NULL, "Gate::getSimTime() - NULL circuit. ASSERT END 1");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::getSimTime() - NULL circuit. ASSERT END 1\n");	//@@@@
 	assert(ourCircuit != NULL);
 	
 	return ourCircuit->getSystemTime();
@@ -343,14 +343,14 @@ TimeType Gate::getSimTime( void ) {
 	
 // Check the state of the named input and return it.
 StateType Gate::getInputState( string inputID ) {
-	_MSGNC(ourCircuit != NULL, "Gate::getInputState() - NULL circuit. ASSERT END 2");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::getInputState() - NULL circuit. ASSERT END 2\n");	//@@@@
 	assert(ourCircuit != NULL);
 	StateType theState;
 
 	if(inputList.find(inputID) == inputList.end()) {
 		WARNING("Gate::getInputState() - Invalid input name.");		
-		_MSGW("Input ID: %s", inputID.c_str());
-		_MSGNC(false, "ASSERT END 3");	//####
+		_MSGW("Input ID: %s\n", inputID.c_str());
+		_MSGNC(false, "ASSERT END 3\n");	//@@@@
 		assert( false );
 		return ZERO;
 	}
@@ -436,7 +436,7 @@ vector< StateType > Gate::getOutputBusWireState(string busName) {
 
 // Get the types of inputs that are represented.
 vector< bool > Gate::groupInputStates( void ) {
-	_MSGNC(ourCircuit != NULL, "Gate::groupInputStates() - NULL circuit. ASSERT END 4");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::groupInputStates() - NULL circuit. ASSERT END 4\n");	//@@@@
 	assert(ourCircuit != NULL);
 
 	vector< bool > groupedInputs(NUM_STATES, false);
@@ -468,7 +468,7 @@ vector< bool > Gate::groupInputStates( void ) {
 	
 // Compare the "this" state with the "last" state and say if this is a rising or falling edge. 
 bool Gate::isRisingEdge( string name ) {
-	_MSGNC(ourCircuit != NULL, "Gate::isRisingEdge() - NULL circuit. ASSERT END 5");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::isRisingEdge() - NULL circuit. ASSERT END 5\n");	//@@@@
 	assert(ourCircuit != NULL);
 	
 	if( edgeTriggeredLastState.find( name ) == edgeTriggeredLastState.end() ) {
@@ -488,7 +488,7 @@ bool Gate::isRisingEdge( string name ) {
 
 
 bool Gate::isFallingEdge( string name ) {
-	_MSGNC(ourCircuit != NULL, "Gate::isFallingEdge() - NULL circuit. ASSERT END 6");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::isFallingEdge() - NULL circuit. ASSERT END 6\n");	//@@@@
 	assert(ourCircuit != NULL);
 	
 	if( edgeTriggeredLastState.find( name ) == edgeTriggeredLastState.end() ) {
@@ -511,13 +511,13 @@ bool Gate::isFallingEdge( string name ) {
 // really send the event. Also, log the last sent event so that it can be 
 // repeated later if necessary. 
 void Gate::setOutputState( string outID, StateType newState, TimeType delay ) {
-	_MSGNC(ourCircuit != NULL, "Gate::setOutputState() - NULL circuit. ASSERT END 7");	//####
+	_MSGNC(ourCircuit != NULL, "Gate::setOutputState() - NULL circuit. ASSERT END 7\n");	//@@@@
 	assert( ourCircuit != NULL );
 
 	if(outputList.find(outID) == outputList.end()) {
 		WARNING("Gate::setOutputState() - Invalid output name.");
-		_MSGW("Output ID: %s", outID.c_str());
-		_MSGNC(false, "ASSERT END 8");	//####
+		_MSGW("Output ID: %s\n", outID.c_str());
+		_MSGNC(false, "ASSERT END 8\n");	//@@@@
 		assert( false );
 		return;
 	}
@@ -892,7 +892,74 @@ string Gate_PLD_AND::getParameter(string paramName) {
 	}
 }
 
-// **************************** END AND GATE ***********************************
+// **************************** END PLD_AND GATE ***********************************
+
+// ******************************** PLD_OR GATE ***********************************
+
+// Initialize the gate's interface:
+Gate_PLD_OR::Gate_PLD_OR() : Gate_OR() {
+	//NOTE: Inputs and outupt are declared by Gate_AND()
+
+	setParameter("FORCE_ONE", "false");
+
+}
+
+// Handle gate events:
+void Gate_PLD_OR::gateProcess(void) {
+	// Get the status of all of the inputs:
+	vector< StateType > inputStates = getInputBusState("IN");
+
+	StateType outState = ZERO; // Assume that the output is ZERO first of all.
+	for (unsigned long i = 0; i < inBits; i++) {
+		if (inputStates[i] == ONE) {
+			outState = ONE;
+			break; // A single ONE input will force the gate to ONE.
+		}
+		else if (inputStates[i] == ZERO) {
+			// A zero does nothing, since we assume zero first.
+		}
+		else { // HI_Z, CONFLICT, UNKNOWN
+			outState = UNKNOWN;
+		}
+	}
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// If FORCE_ONE output is always ONE
+	if (forceOne)
+		outState = ONE;
+
+	setOutputState("OUT", outState);
+}
+
+// Set the parameters:
+bool Gate_PLD_OR::setParameter(string paramName, string value) {
+	istringstream iss(value);
+	if (paramName == "FORCE_ONE") {		// Pedro Casanova (casanova@ujaen.es) 2020/04-07
+		string setVal;
+		iss >> setVal;
+		forceOne = (setVal == "true");
+		return true;
+	}
+	else {
+		return Gate_OR::setParameter(paramName, value);
+	}
+	return false;
+}
+
+// Get the parameters:
+string Gate_PLD_OR::getParameter(string paramName) {
+	ostringstream oss;
+	if (paramName == "FORCE_ONE") {
+		oss << (forceOne ? "true" : "false");
+		return oss.str();
+	}
+	else {
+		return Gate_OR::getParameter(paramName);
+	}
+}
+
+// **************************** END PLD_OR GATE ***********************************
+
 
 // ************************** EQUIVALENCE GATE *********************************
 
@@ -1010,9 +1077,13 @@ Gate_REGISTER::Gate_REGISTER() : Gate_PASS() {
 // Also, when doing a load operation, un-resolvable inputs are defaulted to 0's.
 
 	// Set the default settings:
-	syncSet = true;
-	syncClear = true;
-	syncLoad = true;
+	//##syncSet = false; //## true;
+	//##syncClear = false; //## true;
+	//##syncLoad = false; //## true;
+	setParameter("SYNC_SET", "false");
+	setParameter("SYNC_CLEAR", "false");
+	setParameter("SYNC_LOAD", "false");
+	
 	disableHold = false;
     unknownOutputs = false;
 	currentValue = 0;
@@ -1024,7 +1095,8 @@ Gate_REGISTER::Gate_REGISTER() : Gate_PASS() {
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Carry out on overfow, not on max/min
-	CoOnOverflow = false;
+	//##CoOnOverflow = false;
+	setParameter("CO_ON_OVERFLOW", "false");		//@@@@ Review
 
 	// An initialization value, to make REGISTERs initialize more
 	// nicely when loading them or making new ones:
@@ -1050,7 +1122,7 @@ void Gate_REGISTER::gateProcess( void ) {
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Register functions managed by opcode
-	// 000: NOP, 001: LOAD, 010: INC, 011: DEC
+	// 000: NOP, 001: CLR, 010: INC, 011: DEC
 	// 100: SLL, 101: SRL, 110: ROL, 111:ROR
 	vector< StateType > opBus = getInputBusState("OP");
 	for (unsigned long i = 0; i < opBus.size(); i++)
@@ -1063,7 +1135,7 @@ void Gate_REGISTER::gateProcess( void ) {
 			if (hasClockEdge(syncClear)) {		// Control Set - Clear and async Clear
 				// Clear.
 				currentValue = 0;
-				if (CoOnOverflow) carryOut = ONE;		//#### Review
+				if (CoOnOverflow) carryOut = ONE;		//@@@@ Review
 			}
 	} else if( getInputState("SET") == ONE ) {
 		if (getInputState("CONTROL") != ZERO)	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
@@ -1071,9 +1143,9 @@ void Gate_REGISTER::gateProcess( void ) {
 				// Set.
 				vector< StateType > allOnes( inBits, ONE );
 				currentValue = bus_to_ulong(allOnes);
-				if (CoOnOverflow) carryOut = ONE;		//#### Review
+				if (CoOnOverflow) carryOut = ONE;		//@@@@ Review
 			}
-	} else if( getInputState("LOAD") == ONE || OPcode == 1) {
+	} else if( getInputState("LOAD") == ONE) {
 		if (hasClockEdge(syncLoad)) {			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 			// Load.
 			vector< StateType > inputBus = getInputBusState("IN");
@@ -1083,6 +1155,11 @@ void Gate_REGISTER::gateProcess( void ) {
 				}
 			}
 			currentValue = bus_to_ulong( inputBus );
+		}
+	} else if (OPcode == 1) {
+		if (isRisingEdge("CLOCK")) {
+			// Sync Clear
+			currentValue = 0;
 		}
 	} else if( getInputState("COUNT_ENABLE") == ONE || OPcode == 2 || OPcode == 3) {
 		// Count.
@@ -1192,20 +1269,24 @@ void Gate_REGISTER::gateProcess( void ) {
 			}
 			currentValue = currentValue & mask;
 		}
-	} else {
+	} else {		
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		// For LED_DISPLAY, DFF and REG_EDGE: disableHold=true (NO_HOLD=true)
+		// For LED_DISPLAY: syncLoad=false (SYNC_LOAD false)
+		// For DFF and REG_EDGE: syncLoad=true (SYNC_LOAD true)
+
 		// If hold is allowed, then keep the current value.
-		
 		if( disableHold ) {
-		// Otherwise, load in what is on the input pins:
+			// Otherwise, load in what is on the input pins:
 			if (hasClockEdge(syncLoad)) {		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 				// Load.
 				vector< StateType > inputBus = getInputBusState("IN");
-				for( unsigned long i = 0; i < inputBus.size(); i++ ) {
-					if( (inputBus[i] == CONFLICT) || (inputBus[i] == HI_Z) ) {
+				for (unsigned long i = 0; i < inputBus.size(); i++) {
+					if ((inputBus[i] == CONFLICT) || (inputBus[i] == HI_Z)) {
 						inputBus[i] = UNKNOWN;
 					}
 				}
-				currentValue = bus_to_ulong( inputBus );
+				currentValue = bus_to_ulong(inputBus);
 			}
 		}
 	}
@@ -1240,7 +1321,9 @@ void Gate_REGISTER::gateProcess( void ) {
 	if( outBus.size() != 0 ) {
 		setOutputBusState("OUT", outBus);
 		setOutputBusState("OUTINV", outBus);
-		
+
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		// This do nothting
 		// Check if any of the outputs are "unknown" state, and send that info on
 		// to the GUI:
 		bool oldUO = unknownOutputs;
@@ -1251,8 +1334,9 @@ void Gate_REGISTER::gateProcess( void ) {
 			}
 		}
 		// Update the GUI's knowledge of our unknown outputs state, if it has changed:
-		if( oldUO != unknownOutputs )
+		if (oldUO != unknownOutputs) {
 			listChangedParam("UNKNOWN_OUTPUTS");
+		}
 	}
 
 	// Update the GUI's knowledge of our current value, if it has changed:
@@ -1310,7 +1394,7 @@ bool Gate_REGISTER::setParameter( string paramName, string value ) {
 		return false;
 	} else if (paramName == "CO_ON_OVERFLOW") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		string CoOnOverflowVal;								// Carry out on overfow, not on max/min
-		iss >> CoOnOverflowVal;								//## Test (Experimental, not finished)
+		iss >> CoOnOverflowVal;								//@@ Test (Experimental, not finished)
 
 		CoOnOverflow = (CoOnOverflowVal == "true");
 		return false;
@@ -1695,6 +1779,8 @@ Gate_ENCODER::Gate_ENCODER() : Gate_N_INPUT() {
 	// Pedro Casanova (casanova@ujan.es) 2020/04-12
 	// Set Params, by default high for compatibility with PRI_ENCODER
 	setParameter("PRIORITY", "high");
+
+	invalidValue = 0;
 }
 
 
@@ -1722,25 +1808,24 @@ void Gate_ENCODER::gateProcess(void) {
 		if (Priority=="none")
 		{
 			int nHigh = 0;
-			for (unsigned int i = 0; i < inBus.size(); i++)
+			for (unsigned long i = 0; i < inBus.size(); i++)
 				if (inBus[i] == ONE) nHigh++;
 			if (nHigh == 1) {
 				isValid = true;
-				for (unsigned int i = 0; i < inBus.size(); i++) {
+				for (unsigned long i = 0; i < inBus.size(); i++) {
 					if (inBus[i] == ONE) {
 						outBus = ulong_to_bus(i, outBusSize);
 						break;
 					}
 				}
 			}
-
 		}
 		else
 		{
 			if (Priority=="high")
 			{
 				// Loop through input bits from MSB to LSB to find active
-				for (int i = inBus.size() - 1; i >= 0; i--) {
+				for (long i = inBus.size() - 1; i >= 0; i--) {
 					if (inBus[i] == ONE) {
 						// If this bit is one, then we found MSB for output
 						outBus = ulong_to_bus(i, outBusSize);
@@ -1751,7 +1836,7 @@ void Gate_ENCODER::gateProcess(void) {
 			else
 			{
 				// Loop through input bits from LSB to MSB to find active
-				for (unsigned int i = 0; i < inBus.size(); i++) {
+				for (unsigned long i = 0; i < inBus.size(); i++) {
 					if (inBus[i] == ONE) {
 						// If this bit is one, then we found MSB for output
 						outBus = ulong_to_bus(i, outBusSize);
@@ -1766,11 +1851,13 @@ void Gate_ENCODER::gateProcess(void) {
 		}
 	}
 
+
 	if (isValid) {
 		setOutputState("VALID", ONE);
 	}
 	else {
 		setOutputState("VALID", ZERO);
+		outBus = ulong_to_bus(invalidValue, outBusSize);
 	}
 
 	setOutputBusState("OUT", outBus);
@@ -1800,8 +1887,11 @@ bool Gate_ENCODER::setParameter(string paramName, string value) {
 		// anything is connected anyhow!
 		// Also, allow the Gate_N_INPUT class to change the number of inputs:
 		return Gate_N_INPUT::setParameter(paramName, value);
-	} else if (paramName == "PRIORITY") {	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	} else if (paramName == "PRIORITY") {	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 		iss >> Priority;
+		return true;
+	} else if (paramName == "INVALID_VALUE") {	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		iss >> invalidValue;
 		return true;
 	} else {
 		return Gate_N_INPUT::setParameter(paramName, value);
@@ -1815,8 +1905,11 @@ string Gate_ENCODER::getParameter(string paramName) {
 	ostringstream oss;
 	if (paramName == "PRIORITY") {
 		return Priority;
-	}
-	else {
+	} else if (paramName == "INVALID_VALLUE") {
+		ostringstream oss;
+		oss << invalidValue;
+		return oss.str();
+	} else {
 		return Gate::getParameter(paramName);
 	}
 }
@@ -2081,8 +2174,12 @@ Gate_JKFF::Gate_JKFF() : Gate() {
 
 	// The default state:
 	currentState = ZERO;
-	setParameter("SYNC_SET", "false");
-	setParameter("SYNC_CLEAR", "false");
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// By default no set parameters
+	syncSet = false;
+	syncClear = false;
+	//##setParameter("SYNC_SET", "false");
+	//##setParameter("SYNC_CLEAR", "false");
 }
 
 
@@ -2177,8 +2274,12 @@ Gate_TFF::Gate_TFF() : Gate() {
 
 	// The default state:
 	currentState = ZERO;
-	setParameter("SYNC_SET", "false");
-	setParameter("SYNC_CLEAR", "false");
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// By default no set parameters
+	syncSet = false;
+	syncClear = false;
+	//##setParameter("SYNC_SET", "false");
+	//##setParameter("SYNC_CLEAR", "false");
 }
 
 
@@ -2264,7 +2365,7 @@ Gate_RAM::Gate_RAM( ) : Gate() {
 	declareInput( "WRITE_CLOCK", true );
 	declareInput( "WRITE_ENABLE" );
 
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	// Added ENABLE input
 	declareInput("ENABLE");
 	
@@ -2322,7 +2423,7 @@ void Gate_RAM::gateProcess(void) {
 
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// WRITE_ENABLE Now uppercase
-		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 		// Added ENABLE input
 	if ((getInputState("WRITE_ENABLE") == ONE) && (getInputState("ENABLE") != ZERO)) {
 		// HI_Z all of the data outputs:
@@ -2350,7 +2451,7 @@ void Gate_RAM::gateProcess(void) {
 		}
 	}
 	else {
-		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 		// Added ENABLE input
 		if (getInputState("ENABLE") != ZERO) {
 			// Read from the RAM, and write the data to the outputs.
@@ -2467,7 +2568,7 @@ bool Gate_RAM::setParameter( string paramName, string value ) {
 
 
 // Set the parameters:
-string Gate_RAM::getParameter( string paramName ) {	
+string Gate_RAM::getParameter(string paramName) {
 	ostringstream oss;
 	if (paramName == "BIDIRECTIONAL_DATA") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		oss << (bidirectionalDATA ? "true" : "false");		// Bidirectional data lines
@@ -3185,7 +3286,7 @@ string Gate_pauseulator::getParameter( string paramName ) {
 
 
 // ******************************** FSM GATE ***********************************
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Implement Finite State Machines
 Gate_FSM_SYNC::Gate_FSM_SYNC() : Gate_PASS() {
 	// Declare the inputs:
@@ -3387,7 +3488,7 @@ void Gate_FSM_SYNC::procState(string paramName, string value) {
 // **************************** END FSM GATE ***********************************
 
 // ******************************** CMB GATE ***********************************
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Implement Combinational Blocks
 Gate_CMB::Gate_CMB() : Gate_PASS() {
 
@@ -3449,16 +3550,21 @@ void Gate_CMB::procFunction(string paramName, string value) {
 	value = value.substr(pEqual + 1);
 
 	bool sum = true;
-	if (value.substr(0) == "0" || value.substr(0, 1) == "S") {
+	if (value.substr(0) == "0") {
 		for (unsigned int i = 0; i < pow(2, inBits); i++)
 			outputs[i] = outputs[i] & ~((unsigned int)pow(2, nFunction));
-	} else if (value.substr(0) == "1" || value.substr(0, 1) == "P") {
+		return;
+	} else if (value.substr(0, 1) == "S") {
+			for (unsigned int i = 0; i < pow(2, inBits); i++)
+				outputs[i] = outputs[i] & ~((unsigned int)pow(2, nFunction));
+	} else if (value.substr(0, 1) == "P") {
 		sum = false;
 		for (unsigned int i = 0; i < pow(2, inBits); i++)
 			outputs[i] = outputs[i] | (unsigned int)pow(2, nFunction);
 	} else {
 			for (unsigned int i = 0; i < value.length(); i++) {
 				char valHex;
+				valHex = value[value.length() - i - 1];
 				if (chkDigits(value.substr(value.length()-i-1, 1)))
 					valHex = value[value.length() - i - 1] - '0';
 				else
@@ -3466,7 +3572,7 @@ void Gate_CMB::procFunction(string paramName, string value) {
 				for (int j = 3; j >= 0; j--) {
 					if (valHex >= pow(2, j)) {
 						valHex -= pow(2, j);
-						outputs[4*i+j]= outputs[4*i+j] | (unsigned int)pow(2, nFunction);
+						outputs[4 * i + j] = outputs[4 * i + j] | (unsigned int)pow(2, nFunction);
 					} else {
 						outputs[4 * i + j] = outputs[4 * i + j] & ~(unsigned int)pow(2, nFunction);
 					}
@@ -3475,8 +3581,6 @@ void Gate_CMB::procFunction(string paramName, string value) {
 			return;
 	}
 	
-	if ((value.substr(0) == "0" || value.substr(0) == "1") && (value.length() == 1)) return;
-
 	value = value.substr(2, value.length() - 3);	// Remove "()"
 
 	istringstream iss(value);

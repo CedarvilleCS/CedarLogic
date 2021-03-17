@@ -6,7 +6,7 @@ klsCommand::klsCommand(bool canUndo, const char *name) :
 
 	gCircuit = nullptr;
 	gCanvas = nullptr;
-	_MSGCOM("KlsCommand: %s", name);	//####
+	_MSGCOM("KlsCommand: %s\n", name);	//@@@@
 }
 
 std::string klsCommand::toString() const {

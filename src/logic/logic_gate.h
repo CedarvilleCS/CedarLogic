@@ -153,9 +153,9 @@ protected:
 	// Set the input to be automatically inverted:
 	void  setInputInverted( string inputID, bool newInv = true ) {
 		if(inputList.find(inputID) == inputList.end()) {
-			WARNING("Gate::setInputState() - Invalid input name.");
-			_MSGW("Input ID: %s", inputID.c_str());
-			_MSGNC(false, "ASSERT END 1.h");	//####
+			WARNING("Gate::setInputInverted() - Invalid input name.");
+			_MSGW("Input ID: %s\n", inputID.c_str());
+			_MSGNC(false, "ASSERT END 1.h\n");	//@@@@
 			assert( false );
 			return;
 		}
@@ -167,9 +167,9 @@ protected:
 	// Set the input to be pull-up:
 	void  setInputPullUp(string inputID, bool newPU = true) {
 		if (inputList.find(inputID) == inputList.end()) {
-			WARNING("Gate::setInputState() - Invalid input name.");
-			_MSG("Input ID: %s", inputID.c_str());
-			_MSGNC(false, "ASSERT END 2.h");	//####
+			WARNING("Gate::setInputPullUp() - Invalid input name.");
+			_MSG("Input ID: %s\n", inputID.c_str());
+			_MSGNC(false, "ASSERT END 2.h\n");	//@@@@
 			assert(false);
 			return;
 		}
@@ -181,9 +181,9 @@ protected:
 	// Set the input to be pull-down:
 	void  setInputPullDown(string inputID, bool newPD = true) {
 		if (inputList.find(inputID) == inputList.end()) {
-			WARNING("Gate::setInputState() - Invalid input name.");
-			_MSG("Input ID: %s", inputID.c_str());
-			_MSGNC(false, "ASSERT END 3.h");	//####
+			WARNING("Gate::setInputPullDown() - Invalid input name.");
+			_MSG("Input ID: %s\n", inputID.c_str());
+			_MSGNC(false, "ASSERT END 3.h\n");	//@@@@
 			assert(false);
 			return;
 		}
@@ -195,9 +195,9 @@ protected:
 	// Set the output to be automatically inverted:
 	void  setOutputInverted( string outputID, bool newInv = true ) {
 		if(outputList.find(outputID) == outputList.end()) {
-			WARNING("Gate::setOutputState() - Invalid output name.");
-			_MSG("Output ID: %s", outputID.c_str());
-			_MSGNC(false, "ASSERT END 4.h");	//####
+			WARNING("Gate::setOutputInverted() - Invalid output name.");
+			_MSG("Output ID: %s\n", outputID.c_str());
+			_MSGNC(false, "ASSERT END 4.h\n");	//@@@@
 			assert( false );
 			return;
 		}
@@ -220,16 +220,16 @@ protected:
 	void  setOutputEnablePin( string outputID, string inputID ) {
 		if(outputList.find(outputID) == outputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid output name.");
-			_MSG("Output ID: %s", outputID.c_str());
-			_MSGNC(false, "ASSERT END 5.h");	//####
+			_MSG("Output ID: %s\n", outputID.c_str());
+			_MSGNC(false, "ASSERT END 5.h\n");	//@@@@
 			assert( false );
 			return;
 		}
 
 		if(inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid input name.");
-			_MSG("Input ID: %s", inputID.c_str());
-			_MSGNC(false, "ASSERT END 6.h");	//####
+			_MSG("Input ID: %s\n", inputID.c_str());
+			_MSGNC(false, "ASSERT END 6.h\n");	//@@@@
 			assert( false );
 			return;
 		}
@@ -379,6 +379,27 @@ public:
 	void gateProcess( void );
 };
 
+// ******************* PLD_OR Gate *****************
+class Gate_PLD_OR : public Gate_OR
+{
+public:
+
+	// Initialize the gate's interface:
+	Gate_PLD_OR();
+
+	// Handle gate events:
+	void gateProcess(void);
+
+	// Set the parameters:
+	bool setParameter(string paramName, string value);
+
+	// Get the parameters:
+	string getParameter(string paramName);
+
+protected:
+	bool forceOne;
+};
+
 
 // ******************* AND Gate *********************
 class Gate_AND : public Gate_N_INPUT
@@ -468,7 +489,7 @@ protected:
 	// or the register isn't synched to a clock.
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// syncSignal added to permit set and clear
-	bool hasClockEdge(bool syncSignal);
+	bool hasClockEdge(bool syncSignal = true);
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Bidirectional data lines
@@ -584,6 +605,7 @@ protected:
 
 	// Pedro Casanova (casanova@ujan.es) 2020/04-12
 	string Priority;
+	unsigned long invalidValue;
 };
 
 
@@ -942,7 +964,7 @@ public:
 
 
 // ******************* FSM Gate *********************
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Implement Finite State Machines
 class Gate_FSM_SYNC : public Gate_PASS
 {
@@ -975,7 +997,7 @@ protected:
 };
 
 // ******************* FSM Gate *********************
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Implement Asynchronous Finite State Machines
 // This is a poolled gate
 class Gate_FSM_ASYNC : public Gate_FSM_SYNC
@@ -985,7 +1007,7 @@ public:
 };
 
 // ******************* CMB Gate *********************
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Implement Combinational Blocks
 class Gate_CMB : public Gate_PASS
 {

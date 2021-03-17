@@ -18,7 +18,7 @@ using namespace std;
 
 DECLARE_APP(MainApp)
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // This class is the special pop-up window that comes up when a CMB chip is double clicked.
 CMBParamDialog::CMBParamDialog( guiGateCMB* newM_guiGateCMB, GUICircuit* newGUICircuit, wxCommandProcessor* wxcmd)
 	: wxDialog(wxGetApp().GetTopWindow(), wxID_ANY, "CMB info",
@@ -40,7 +40,7 @@ CMBParamDialog::CMBParamDialog( guiGateCMB* newM_guiGateCMB, GUICircuit* newGUIC
 
 	functionTX = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition,wxSize(680,190), wxTE_MULTILINE | wxHSCROLL);
 
-	infoTX = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxSize(680,190), wxTE_MULTILINE | wxTE_READONLY);
+	infoTX = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxSize(680,190), wxTE_MULTILINE | wxHSCROLL | wxTE_READONLY);
 	
 	topSizer->Add(label, wxSizerFlags(0).Align(0).Border(wxALL, 5));
 	topSizer->Add(functionTX, wxSizerFlags(0).Align(1).Border(wxALL, 5));
@@ -54,17 +54,15 @@ CMBParamDialog::CMBParamDialog( guiGateCMB* newM_guiGateCMB, GUICircuit* newGUIC
 
 	*infoTX << "Line structure to define a CMB:\n"
 		<< "Zero: Oi=0\n"
-		<< "One: Oi=1\n"
-		<< "Mask: Oi=hexnumber"
+		<< "Mask: Oi=hexnumber\n"
 		<< "First canonical form: Oi=S(ma,mb,...)\n"
 		<< "Second canonical form: Oi=P(Ma,Mb,...)\n"
 		<< "\nYou must include all outpus\n"
-		<< "\nExamples: (4 inputs, 5 outputs)\n"
+		<< "\nExamples: (4 inputs, 4 outputs)\n"
 		<< "\tO0=0\n"
-		<< "\tO1=1\n"
-		<< "\tO2=55AA\n"
-		<< "\tO3=S(1,2,3,5,7,11,13)\n"
-		<< "\tO4=P(0,4,6,8,9,10,12,14,15)\n"
+		<< "\tO1=55AA\n"
+		<< "\tO2=S(1,2,3,5,7,11,13)\n"
+		<< "\tO3=P(0,4,6,8,9,10,12,14,15)\n"
 		;
 
 
@@ -131,15 +129,18 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 			unsigned int nOutput = atoi(output.substr(1).c_str());
 			if (nOutput >= outBits) { error = 2; break; }
 			for(unsigned int i = 0; i < outputs.size();i++)
-				if (outputs[i] == output) { error = 5; break; }
+				if (outputs[i] == output) { error = 6; break; }
 			if (error) break;
 			outputs.push_back(output);
-			if (lines[line].substr(pEqual + 1) == "0" || lines[line].substr(pEqual + 1) == "1") {
+			if (lines[line].substr(pEqual + 1) == "0") {
 				if ((int)lines[line].length() > pEqual + 2) { error = 3; break; }
-			} else if (chkHexDigits(&lines[line].substr(pEqual + 1)) && inBits>1) {
-				if (lines[line].substr(pEqual + 1).length()!=pow(2,inBits-2)) { error = 4; break; }
+			} else if (chkHexDigits(&lines[line].substr(pEqual + 1))) {
+				unsigned long hexDigits = 1;
+				if (inBits>1) hexDigits = pow(2, (inBits - 2));
+				if (lines[line].substr(pEqual + 1).length()!=hexDigits) { error = 5; break; }
 				string hexValue = lines[line].substr(pEqual + 1);
 				chkHexDigits(&hexValue, true);
+				if (inBits == 1) if (hexValue > "3") { error = 5; break; }
 				for (unsigned int i = 0; i < hexValue.length(); i++)
 					lines[line][pEqual + i + 1] = hexValue[i];
 			} else if (lines[line].substr(pEqual + 1, 1) == "P" || lines[line].substr(pEqual + 1, 1) == "p" 
@@ -186,6 +187,9 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 			msgError << "Incorrect term value";
 			break;
 		case 5:
+			msgError << "Incorrect value";
+			break;
+		case 6:
 			msgError << "Duplicate output name";
 			break;
 		case 10:

@@ -16,7 +16,7 @@
 // Pedro Casanova (casanova@ujaen.es) 2020/01-02
 // Functions used in some modules
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Check only numeric digits are in string
 bool chkDigits(string number)
 {
@@ -29,7 +29,7 @@ bool chkDigits(string number)
 	return true;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Check only hexadecimal digits are in string
 bool chkHexDigits(string* number, bool uppercase)
 {
@@ -48,20 +48,33 @@ bool chkHexDigits(string* number, bool uppercase)
 	return true;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Check only "0", "1" and optionally "X" are in string
 bool chkBits(string* bits, bool uppercase)
 {
 	for (unsigned int i = 0; i < bits->size(); i++)
 	{
-		if (bits->substr(i, 1) == '0' || bits->substr(i, 1) == '1') continue;
+		if (bits->substr(i, 1) == "0" || bits->substr(i, 1) == "1") continue;
 		if (uppercase && (bits->substr(i, 1) == "x") || uppercase && (bits->substr(i, 1) == "X")) { bits[0][i] = 'X'; continue; }
 		return false;
 	}
 	return true;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Remove spaces at the begininig and end of a string
+void removeSpaces(string* text) {
+	while (text->substr(0, 1) == " ")
+		*text = text->substr(1);
+	while (text->length()>0) {
+		if (text->substr(text->length() - 1, 1) == " ")
+			*text = text->substr(0, text->length() - 1);
+		else
+			break;
+	}
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Round 0.5 precision
 float Round_half(float v)
 {
@@ -84,6 +97,24 @@ float Round(float v)
 	else
 		retVal = int(v * 10.0f + 0.5f) / 10.0f;
 	return retVal;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Get the state of a wire
+string GetStringState(vector<StateType> states)
+{	
+	if (states.size() != 1) {
+		ostringstream oss;
+		oss << "BUS " << states.size();
+		return oss.str();
+	}
+	StateType st = states[0];
+	if (st == ZERO) return "0";
+	if (st == ONE) return "1";
+	if (st == HI_Z) return "Z";
+	if (st == CONFLICT) return "X";
+	if (st == UNKNOWN) return "?";
+	return "";
 }
 
 IMPLEMENT_APP(MainApp)
@@ -154,14 +185,14 @@ bool MainApp::OnInit()
     //Acording to 
     //http://www.wxwidgets.org/manuals/2.6.3/wx_wxappoverview.html#wxappoverview
     //the following function should be called at this time
-    SetTopWindow(frame);
-    
+    SetTopWindow(frame);	
     mainframe = frame;
     //End of edit***********************************************
     
     // success: wxApp::OnRun() will be called which will enter the main message
     // loop and the application will run. If we returned false here, the
     // application would exit immediately
+
     return true;
 }
 
@@ -199,13 +230,23 @@ void MainApp::loadSettingsFile() {
 	if (!iniFile) {
 		// set defaults
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// cl_gatedefs.xm in Resources, added extern UserLib.xml
-		appSettings.gateLibFile = pathToExe + DEFAULT_GATELIBFILE;
-		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		//appSettings.helpFile = pathToExe + "KLS_Logic.chm";
+		// cl_gatedefs.xml in Resources, added extern UserLib.xml
+		if (DEFAULT_MAINLIBFILE != "res")
+			appSettings.mainGateLibFile = pathToExe + DEFAULT_MAINLIBFILE;
+		else
+			appSettings.mainGateLibFile = "res";
+		appSettings.userGateLibFile = pathToExe + DEFAULT_USERLIBFILE;
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Help file is outdated
+		if (DEFAULT_HELPFILE != "")
+			appSettings.helpFile = pathToExe + DEFAULT_HELPFILE;
+		else
+			appSettings.helpFile = "";
 		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		if (appSettings.textFontFile != "res")
+		if (DEFAULT_TEXTFONTFILE != "res")
 			appSettings.textFontFile = pathToExe + DEFAULT_TEXTFONTFILE;
+		else
+			appSettings.textFontFile = "res";
 		appSettings.mainFrameWidth = DEFAULT_MAINFRAMEWIDTH;
 		appSettings.mainFrameHeight = DEFAULT_MAINFRAMEHEIGHT;
 		appSettings.mainFrameLeft = DEFAULT_MAINFRAMELEFT;
@@ -219,19 +260,32 @@ void MainApp::loadSettingsFile() {
 		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
 		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
 		appSettings.markDeprecated = DEFAULT_MARKDEPRECATED;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
+		appSettings.mainFrameMaximized = DEFAULT_MAINFRAMEMAXIMIZE;			// Pedro Casanova (casanova@ujaen.es) 2021/01-03	(Addded)
 	} else {
 		// load from the file
 		string line;
-		// gateLibFile
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Now in resources
+		// mainGateLibFile
 		getline(iniFile, line, '\n');
-		int pos = line.find('=',0);
-		appSettings.gateLibFile = line.substr(pos+1,line.size()-(pos+1));
+		int pos = line.find('=', 0);
+		if (line.substr(pos + 1, line.size() - (pos + 1)) == "res")
+			appSettings.mainGateLibFile = "res";
+		else
+			appSettings.mainGateLibFile = pathToExe + line.substr(pos + 1, line.size() - (pos + 1));
+		// userGateLibFile
+		getline(iniFile, line, '\n');
+		pos = line.find('=',0);
+		appSettings.userGateLibFile = line.substr(pos+1,line.size()-(pos+1));
 		// helpFile
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// Obsolete
-		//getline(iniFile, line, '\n');
-		//pos = line.find('=',0);
-		//appSettings.helpFile = pathToExe + line.substr(pos+1,line.size()-(pos+1));
+		// Help file is outdated
+		getline(iniFile, line, '\n');
+		pos = line.find('=',0);
+		if (line.size() - (pos + 1) != 0)
+			appSettings.helpFile = pathToExe + line.substr(pos + 1, line.size() - (pos + 1));
+		else
+			appSettings.helpFile = "";		
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Now in resources
 		// textFontFile
@@ -241,6 +295,12 @@ void MainApp::loadSettingsFile() {
 			appSettings.textFontFile = "res";
 		else
 			appSettings.textFontFile = pathToExe + line.substr(pos+1,line.size()-(pos+1));
+		// frame maximized
+		getline(iniFile, line, '\n');
+		pos = line.find('=', 0);
+		line = line.substr(pos + 1, line.size() - (pos + 1));
+		istringstream issMaximized(line);
+		issMaximized >> appSettings.mainFrameMaximized;
 		// frame width
 		getline(iniFile, line, '\n');
 		pos = line.find('=',0);
@@ -376,17 +436,34 @@ void MainApp::loadSettingsReg() {
 			if (!strcmp(Value_C, VERSION_TITLE().c_str())) {
 				newVersion = false;
 				Length = MAX_PATH;
-				if (RegQueryValueEx(hKey, "GateLib", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
-					appSettings.gateLibFile = Value_C;
+				if (!RegQueryValueEx(hKey, "MainGateLib", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
+					strcpy(Value_C, DEFAULT_MAINLIBFILE);
+				if (!strcmp(Value_C, "res"))
+					appSettings.mainGateLibFile = "res";
 				else
-					appSettings.gateLibFile = pathToExe + DEFAULT_GATELIBFILE;
+					appSettings.mainGateLibFile = pathToExe + Value_C;
+
+				Length = MAX_PATH;
+				if (RegQueryValueEx(hKey, "UserGateLib", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
+					appSettings.userGateLibFile = Value_C;
+				else
+					appSettings.userGateLibFile = pathToExe + DEFAULT_USERLIBFILE;
+				Length = MAX_PATH;
+				if (!RegQueryValueEx(hKey, "TextFont", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
+					strcpy(Value_C, DEFAULT_TEXTFONTFILE);
+				if (!strcmp(Value_C,"res"))
+					appSettings.textFontFile = "res";
+				else
+					appSettings.textFontFile = pathToExe + Value_C;
 				Length = MAX_PATH;
 				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-				// There is no helpfile
-				/*if (RegQueryValueEx(hKey, "HelpFile", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
+				// Help file is outdated
+				if (!RegQueryValueEx(hKey, "HelpFile", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
+					strcpy(Value_C, DEFAULT_HELPFILE);
+				if (strlen(Value_C)!=0)
 					appSettings.helpFile = pathToExe + Value_C;
 				else
-					appSettings.helpFile = pathToExe + "KLS_Logic.chm";*/
+					appSettings.helpFile = "";
 				Length = MAX_PATH;
 				if (RegQueryValueEx(hKey, "LastDirectory", NULL, NULL, (BYTE*)Value_C, (LPDWORD)&Length) == ERROR_SUCCESS)
 					appSettings.lastDir = Value_C;
@@ -399,6 +476,10 @@ void MainApp::loadSettingsReg() {
 					appSettings.lastDir = myDocs;
 					//appSettings.lastDir = wxGetHomeDir();
 				}
+				Length = 4;
+				if (RegQueryValueEx(hKey, "FrameMaximized", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
+					Value = (DEFAULT_MAINFRAMEMAXIMIZE == true) ? 1 : 0;
+				appSettings.mainFrameMaximized = (Value == 0) ? false : true;
 				Length = 4;
 				if (RegQueryValueEx(hKey, "FrameWidth", NULL, NULL, (BYTE*)&Value, (LPDWORD)&Length) != ERROR_SUCCESS)
 					Value = DEFAULT_MAINFRAMEWIDTH;
@@ -459,17 +540,27 @@ void MainApp::loadSettingsReg() {
 	if (newVersion) {
 		// set defaults
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		// cl_gatedefs.xm in Resources, added extern UserLib.xml
-		appSettings.gateLibFile = pathToExe + DEFAULT_GATELIBFILE;
-		// Help is obsoleted - Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		//appSettings.helpFile = pathToExe + "KLS_Logic.chm";
+		// cl_gatedefs.xm in Resources, added extern UserLib.xml		
+		if (DEFAULT_MAINLIBFILE != "res")
+			appSettings.mainGateLibFile = pathToExe + DEFAULT_MAINLIBFILE;
+		else
+			appSettings.mainGateLibFile = "res";
+		appSettings.userGateLibFile = pathToExe + DEFAULT_USERLIBFILE;
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Help file is outdated
+		if (DEFAULT_HELPFILE != "")
+			appSettings.helpFile = pathToExe + DEFAULT_HELPFILE;
+		else
+			appSettings.helpFile = "";
 		// Now in resources - Pedro Casanova (casanova@ujaen.es) 2020/04-12
-		if (appSettings.textFontFile != "res")
+		if (DEFAULT_TEXTFONTFILE != "res")
 			appSettings.textFontFile = pathToExe + DEFAULT_TEXTFONTFILE;
+		else
+			appSettings.textFontFile = "res";
 		appSettings.mainFrameWidth = DEFAULT_MAINFRAMEWIDTH;
 		appSettings.mainFrameHeight = DEFAULT_MAINFRAMEHEIGHT;
 		appSettings.mainFrameLeft = DEFAULT_MAINFRAMELEFT;
-		appSettings.mainFrameTop = DEFAULT_MAINFRAMETOP;
+		appSettings.mainFrameTop = DEFAULT_MAINFRAMETOP;		
 		appSettings.timePerStep = timeStepMod = DEFAULT_TIMEPERSTEP;		// ms
 		appSettings.refreshRate = DEFAULT_REFRESHRATE;						// ms
 		appSettings.wireConnRadius = DEFAULT_WIRECONNRADIUS;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(was 0.18)
@@ -479,6 +570,7 @@ void MainApp::loadSettingsReg() {
 		appSettings.componentCollVisible = DEFAULT_COMPONENTCOLLVISIBLE;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
 		appSettings.adjustBitmap = DEFAULT_ADJUSTBITMAP;					// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
 		appSettings.markDeprecated = DEFAULT_MARKDEPRECATED;				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	(Addded)
+		appSettings.mainFrameMaximized = DEFAULT_MAINFRAMEMAXIMIZE;			// Pedro Casanova (casanova@ujaen.es) 2021/01-03	(Added)
 	}
 
 

@@ -174,7 +174,7 @@ vector < wireConnection > guiWire::getConnections() {
 }
 
 void guiWire::draw(bool color) {
-	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	// To draw orphans vertexpoints is size is 1
 	if (connectPoints.size() < 1) return;
 

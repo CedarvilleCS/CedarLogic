@@ -15,8 +15,8 @@ class GUICanvas;
 // TODO TYLER: Find out why, make replacement, remove TODO and description.
 // typedef std::unordered_map<unsigned long, unsigned long> TranslationMap;
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
-// Now it does not crash	//##
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Now it does not crash	//@@
 typedef std::unordered_map<IDType, IDType> TranslationMap;
 
 // klsCommand - base class for commands.

@@ -17,26 +17,43 @@
 
 DECLARE_APP(MainApp)
 
-LibraryParse::LibraryParse(string fileName) {
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Parse main and user libraries
+LibraryParse::LibraryParse(string mainFileName, string userFileName) {
+	stringstream XMLLib;
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// cl_gatedefs.xml now is in resources
 	// You can add a new file (UserLib.xml as default name) with new componentes
-	HANDLE hResLib = FindResource(NULL, "CL_GATEDEFS.XML", "BIN");
-	DWORD nLenRes = SizeofResource(NULL, (HRSRC)hResLib);
-	hResLib = LoadResource(NULL, (HRSRC)hResLib);
-	char* ResData = (char*) LockResource(hResLib);
-	stringstream XMLLib;
-	XMLLib << ResData;
-	HANDLE hFileLib = CreateFile(fileName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (hFileLib != INVALID_HANDLE_VALUE)
+	if (mainFileName == "res") {
+		HANDLE hResLib = FindResource(NULL, "CL_GATEDEFS.XML", "BIN");
+		DWORD nLenRes = SizeofResource(NULL, (HRSRC)hResLib);
+		hResLib = LoadResource(NULL, (HRSRC)hResLib);
+		char* ResData = (char*)LockResource(hResLib);
+		XMLLib << ResData;
+	}
+	else {
+		HANDLE hFileMainLib = CreateFile(mainFileName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFileMainLib != INVALID_HANDLE_VALUE)
+		{
+			DWORD nLenFile = GetFileSize(hFileMainLib, NULL);
+			DWORD nReaded;
+			char* FileData = new char[nLenFile];
+			if (ReadFile(hFileMainLib, FileData, nLenFile, &nReaded, NULL))
+				if (nReaded == nLenFile)
+					XMLLib << FileData;
+			CloseHandle(hFileMainLib);
+		}
+	}
+	HANDLE hFileUSerLib = CreateFile(userFileName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFileUSerLib != INVALID_HANDLE_VALUE)
 	{
-		DWORD nLenFile = GetFileSize(hFileLib, NULL);
+		DWORD nLenFile = GetFileSize(hFileUSerLib, NULL);
 		DWORD nReaded;
 		char* FileData = new char[nLenFile];
-		if (ReadFile(hFileLib, FileData, nLenFile, &nReaded, NULL))
+		if (ReadFile(hFileUSerLib, FileData, nLenFile, &nReaded, NULL))
 			if (nReaded == nLenFile) 
 				XMLLib << FileData;
-		CloseHandle(hFileLib);		
+		CloseHandle(hFileUSerLib);
 	}
 	XMLLib << "\n#";	// Final line is a comment
 	mParse = new XMLParser((fstream*)&XMLLib, false);
@@ -117,7 +134,7 @@ void LibraryParse::parseFile() {
 						} else if (temp == "pull_up") {
 							// Pedro casanova (casasanova@ujaen.es) 2020/04-12
 							// To permit pull-up inputs
-							//## Test
+							//@@ Test
 							if (hsType == "input") { // Only inputs can have <pull_up> tags.
 								isPullUp = mParse->readTagValue("pull_up");
 							}
@@ -125,7 +142,7 @@ void LibraryParse::parseFile() {
 						} else if (temp == "pull_down") {
 							// Pedro casanova (casasanova@ujaen.es) 2020/04-12
 							// To permit pull-down inputs
-							//## Test
+							//@@ Test
 							if (hsType == "input") { // Only inputs can have <pull_down> tags.
 								isPullDown = mParse->readTagValue("pull_down");
 							}
@@ -133,7 +150,7 @@ void LibraryParse::parseFile() {
 						} else if (temp == "force_junction") {
 							// Pedro casanova (casasanova@ujaen.es) 2020/04-12
 							// To force junctions in inputs
-							//## Test
+							//@@ Test
 							if (hsType == "input") { // Only inputs can have <force_junction> tags.
 								ForceJunction = mParse->readTagValue("force_junction");
 							}
@@ -223,7 +240,7 @@ void LibraryParse::parseFile() {
 									istringstream iss(temp);
 									iss >> Rmin >> dump >> Rmax;
 									mParse->readCloseTag();
-								} else if (temp == "options") {		// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+								} else if (temp == "options") {		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 									temp = mParse->readTagValue("options");
 									istringstream iss(temp);
 									string optionString;
@@ -298,7 +315,7 @@ void LibraryParse::parseFile() {
 	} while (true); // end file
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Added for dynamic gates
 void LibraryParse::parseText(string text) {
 	stringstream ss(text);
@@ -307,16 +324,17 @@ void LibraryParse::parseText(string text) {
 	delete mParse;
 }
 
-#define SCALE_NORMAL 1.0			// Scale for normal text
-#define SCALE_SUB_SUPER 2.0/3.0		// Scale for substring and superstring
-#define SCALE_SMALL 2.0/3.0			// Scale for small text
-#define SCALE_SMALLER 1.0/3.0		// Scale for smaller text
-#define SCALE_BIG 1.5				// Scale for big text
-#define SCALE_BIGGER 2.5			// Scale for bigger text
-#define CHAR_HEIGHT 0.8				// Heigh of every digit
-#define CHAR_BLANK_H 0.1			// Blank space to the top and the bottom of every digit
-#define CHAR_WIDTH 0.4				// Width of every digit
-#define CHAR_BLANK_W 0.05			// Blank space to the left and the right of every digit
+#define SCALE_NORMAL 1.0						// Scale for normal text
+#define SCALE_SMALL 2.0/3.0						// Scale for small text
+#define SCALE_SMALLER 1.0/2.0					// Scale for smaller text
+#define SCALE_BIG 1.5							// Scale for big text
+#define SCALE_BIGGER 2.5						// Scale for bigger text
+#define SCALE_SUB_SUPER SCALE_SMALL				// Scale for substring and superstring
+#define SCALE_SUB_SUPER_SMALL SCALE_SMALLER		// Scale for small substring and superstring
+#define CHAR_HEIGHT 0.8							// Heigh of every digit
+#define CHAR_BLANK_H 0.1						// Blank space to the top and the bottom of every digit
+#define CHAR_WIDTH 0.4							// Width of every digit
+#define CHAR_BLANK_W 0.05						// Blank space to the left and the right of every digit
 
 #define CHAR_HEIGHT_TOTAL (CHAR_HEIGHT + 2 * CHAR_BLANK_H)
 #define CHAR_WIDTH_TOTAL (CHAR_WIDTH + 2 * CHAR_BLANK_W)
@@ -350,7 +368,7 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 	dY = CHAR_HEIGHT / 2;
 	for (unsigned int i = 0; i < charCode.size(); i++)
 	{		
-		string specialChars = "~_^$&@%!";
+		string specialChars = "~_^-+$&@%!";
 		char c = (char)charCode.c_str()[i];
 		if (specialChars.find(c)==-1) {
 			dX -= CHAR_WIDTH_TOTAL / 2 * Scale;
@@ -361,6 +379,11 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 			case '^':
 				// Substring and Superstring
 				Scale = SCALE_SUB_SUPER;
+				break;
+			case '-':
+			case '+':
+				// Small Substring and Superstring
+				Scale = SCALE_SUB_SUPER_SMALL;
 				break;
 			case '$':
 				// Small
@@ -408,6 +431,16 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 			stringType = -1;
 			Scale = SCALE_SUB_SUPER;
 			continue;
+		case '-':
+			// Small Substring
+			stringType = 1;
+			Scale = SCALE_SUB_SUPER_SMALL;
+			continue;
+		case '+':
+			// Small Superstring
+			stringType = -1;
+			Scale = SCALE_SUB_SUPER_SMALL;
+			continue;
 		case '$':
 			// Small
 			Scale = SCALE_SMALL;
@@ -454,7 +487,7 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 // Pedro Casanova (casanova@ujaen.es) 2020/04-12
 // Lines with offset for rotate chars
 // stringType: -1=superstring, 0=normal, 1=substring
-// Scale: 1=normal, 2/3=sub and super, 2/3=small, 1.5=big, 2.5=bigger
+// Scale: 1=normal, 2/3=sub-super, 1/2=small sub-super, 1/2=smaller, 2/3=small, 1.5=big, 2.5=bigger
 bool LibraryParse::parseShapeText(XMLParser* Parse, string type, LibraryGate* newGate, int stringType, double cenX, double cenY, double dX, double dY, double Scale) {
 	double x1, y1, x2, y2;
 	double factor;
@@ -826,7 +859,7 @@ string LibraryParse::getGateGUIType( string gateName ) {
 	return gates[findGate->second][gateName].guiType;
 }
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // To create dynamics gates (not in library)
 bool LibraryParse::CreateDynamicGate(string type) {
 	LibraryGate lgGate;
@@ -1130,8 +1163,8 @@ bool LibraryParse::CreateDynamicGate(string type) {
 			oss << "<gui_param>CROSS_POINT 0,0</gui_param>";
 			oss << "<gui_param>CROSS_JUNCTION true</gui_param>";
 			oss << "<param_dlg_data><param><type>BOOL</type><label>Cross junction</label>";
-			oss << "<varname>GUI CROSS_JUNCTION</varname></param></param_dlg_data>";
-			oss << "<param_dlg_data><param><type>BOOL</type><label>Force output to zero</label>";
+			oss << "<varname>GUI CROSS_JUNCTION</varname></param>";
+			oss << "<param><type>BOOL</type><label>Force output to ZERO/label>";
 			oss << "<varname>LOGIC FORCE_ZERO</varname></param></param_dlg_data>";
 
 			for (unsigned int i = 0; i < nInputs; i++)
@@ -1151,38 +1184,42 @@ bool LibraryParse::CreateDynamicGate(string type) {
 			oss << "</shape></gate></library>";
 
 		} else if (type.substr(0, 7) == "@@_LOR_") {			// @@_LOR_N
-		if (!chkDigits(type.substr(7))) return false;
-		unsigned int nInputs = atoi(type.substr(7).c_str());
+			if (!chkDigits(type.substr(7))) return false;
+			unsigned int nInputs = atoi(type.substr(7).c_str());
 
-		oss << "<library><name>Hidden</name>";
-		oss << "<gate><name>" << type << "</name><caption>" << nInputs << " inputs OR gate for PLD</caption>";
-		oss << "<logic_type>OR</logic_type><gui_type>PLD</gui_type>";
-		oss << "<logic_param>INPUT_BITS " << nInputs << "</logic_param>";
-		oss << "<gui_param>CROSS_JUNCTION false</gui_param>";
-		oss << "<param_dlg_data><param><type>BOOL</type><label>Cross junction</label>";
-		oss << "<varname>GUI CROSS_JUNCTION</varname></param></param_dlg_data>";
+			oss << "<library><name>Hidden</name>";
+			oss << "<gate><name>" << type << "</name><caption>" << nInputs << " inputs OR gate for PLD</caption>";
+			oss << "<logic_type>PLD_OR</logic_type><gui_type>PLD</gui_type>";
+			oss << "<logic_param>INPUT_BITS " << nInputs << "</logic_param>";
+			oss << "<logic_param>FORCE_ONE false</logic_param>";
+			oss << "<gui_param>CROSS_POINT 0,0</gui_param>";
+			oss << "<gui_param>CROSS_JUNCTION false</gui_param>";
+			oss << "<param_dlg_data><param><type>BOOL</type><label>Cross junction</label>";
+			oss << "<varname>GUI CROSS_JUNCTION</varname></param>";
+			oss << "<param><type>BOOL</type><label>Force output to ONE</label>";
+			oss << "<varname>LOGIC FORCE_ONE</varname></param></param_dlg_data>";
 
-		for (unsigned int i = 0; i < nInputs; i++)
-			oss << "<input> <name>IN_" << i << "</name><point>-" << i + 1 << ",0</point><pull_down>true</pull_down></input>";
+			for (unsigned int i = 0; i < nInputs; i++)
+				oss << "<input> <name>IN_" << i << "</name><point>-" << i + 1 << ",0</point><pull_down>true</pull_down></input>";
 
-		oss << "<output> <name>OUT</name><point>1,0</point></output><shape>";
-		oss << "<line>-" << nInputs << ".5,0,-0.25,0</line>";
+			oss << "<output> <name>OUT</name><point>1,0</point></output><shape>";
+			oss << "<line>-" << nInputs << ".5,0,-0.25,0</line>";
 
-		oss << "<line>1,0,0.5,0</line><line>-0.5,0.5,-0.25,0.5</line><line>-0.5,-0.5,-0.25,-0.5</line>";
-		oss << "<line>-0.25,0.5,-0.12,0.49</line><line>-0.12,0.49,0.01,0.47</line><line>0.01,0.47,0.13,0.43</line>";
-		oss << "<line>0.13,0.43,0.23,0.38</line><line>0.23,0.38,0.32,0.32</line><line>0.32,0.32,0.40,0.25</line>";
-		oss << "<line>0.40,0.25,0.45,0.17</line><line>0.45,0.17,0.49,0.09</line><line>0.49,0.09,0.5,0</line>";
-		oss << "<line>-0.25,-0.5,-0.12,-0.49</line><line>-0.12,-0.49,0.01,-0.47</line><line>0.01,-0.47,0.13,-0.43</line>";
-		oss << "<line>0.13,-0.43,0.23,-0.38</line><line>0.23,-0.38,0.32,-0.32</line><line>0.32,-0.32,0.40,-0.25</line>";
-		oss << "<line>0.40,-0.25,0.45,-0.17</line><line>0.45,-0.17,0.49,-0.09</line><line>0.49,-0.09,0.5,0</line>";
-		oss << "<line>-0.5,0.5,-0.46,0.49</line><line>-0.46,0.49,-0.41,0.47</line><line>-0.41,0.47,-0.38,0.43</line>";
-		oss << "<line>-0.38,0.43,-0.34,0.38</line><line>-0.34,0.38,-0.31,0.32</line><line>-0.31,0.32,-0.28,0.25</line>";
-		oss << "<line>-0.28,0.25,-0.27,0.17</line><line>-0.27,0.17,-0.25,0.09</line><line>-0.25,0.09,-0.25,0</line>";
-		oss << "<line>-0.5,-0.5,-0.46,-0.49</line><line>-0.46,-0.49,-0.41,-0.47</line><line>-0.41,-0.47,-0.38,-0.43</line>";
-		oss << "<line>-0.38,-0.43,-0.34,-0.38</line><line>-0.34,-0.38,-0.31,-0.32</line><line>-0.31,-0.32,-0.28,-0.25</line>";
-		oss << "<line>-0.28,-0.25,-0.27,-0.17</line><line>-0.27,-0.17,-0.25,-0.09</line><line>-0.25,-0.09,-0.25,0</line>";
+			oss << "<line>1,0,0.5,0</line><line>-0.5,0.5,-0.25,0.5</line><line>-0.5,-0.5,-0.25,-0.5</line>";
+			oss << "<line>-0.25,0.5,-0.12,0.49</line><line>-0.12,0.49,0.01,0.47</line><line>0.01,0.47,0.13,0.43</line>";
+			oss << "<line>0.13,0.43,0.23,0.38</line><line>0.23,0.38,0.32,0.32</line><line>0.32,0.32,0.40,0.25</line>";
+			oss << "<line>0.40,0.25,0.45,0.17</line><line>0.45,0.17,0.49,0.09</line><line>0.49,0.09,0.5,0</line>";
+			oss << "<line>-0.25,-0.5,-0.12,-0.49</line><line>-0.12,-0.49,0.01,-0.47</line><line>0.01,-0.47,0.13,-0.43</line>";
+			oss << "<line>0.13,-0.43,0.23,-0.38</line><line>0.23,-0.38,0.32,-0.32</line><line>0.32,-0.32,0.40,-0.25</line>";
+			oss << "<line>0.40,-0.25,0.45,-0.17</line><line>0.45,-0.17,0.49,-0.09</line><line>0.49,-0.09,0.5,0</line>";
+			oss << "<line>-0.5,0.5,-0.46,0.49</line><line>-0.46,0.49,-0.41,0.47</line><line>-0.41,0.47,-0.38,0.43</line>";
+			oss << "<line>-0.38,0.43,-0.34,0.38</line><line>-0.34,0.38,-0.31,0.32</line><line>-0.31,0.32,-0.28,0.25</line>";
+			oss << "<line>-0.28,0.25,-0.27,0.17</line><line>-0.27,0.17,-0.25,0.09</line><line>-0.25,0.09,-0.25,0</line>";
+			oss << "<line>-0.5,-0.5,-0.46,-0.49</line><line>-0.46,-0.49,-0.41,-0.47</line><line>-0.41,-0.47,-0.38,-0.43</line>";
+			oss << "<line>-0.38,-0.43,-0.34,-0.38</line><line>-0.34,-0.38,-0.31,-0.32</line><line>-0.31,-0.32,-0.28,-0.25</line>";
+			oss << "<line>-0.28,-0.25,-0.27,-0.17</line><line>-0.27,-0.17,-0.25,-0.09</line><line>-0.25,-0.09,-0.25,0</line>";
 
-		oss << "</shape></gate></library>";
+			oss << "</shape></gate></library>";
 
 		} else
 			return false;

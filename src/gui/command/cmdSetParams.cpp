@@ -12,7 +12,7 @@ paramSet::paramSet(ParameterMap *g, ParameterMap* l) {
 	lParams = l;
 };
 
-// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Added canUndo in contructors to prevent FSM and CMB undo descriptions
 cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid,
 		paramSet pSet, bool canUndo, bool setMode) :
@@ -51,7 +51,7 @@ cmdSetParams::cmdSetParams(GUICircuit* gCircuit, unsigned long gid,
 }
 
 cmdSetParams::cmdSetParams(string def, bool canUndo) : klsCommand(canUndo, "Set Parameter") {
-	_MSGCOM("Command String: %s", def.c_str());	//####
+	_MSGCOM("Command String: %s\n", def.c_str());	//@@@@
 	this->fromString = true;
 	istringstream iss(def);
 	string dump; char comma;

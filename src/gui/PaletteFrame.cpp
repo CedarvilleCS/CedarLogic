@@ -28,11 +28,10 @@ PaletteFrame::PaletteFrame( wxWindow *parent, wxWindowID id, const wxPoint &pos,
 	while (libWalk != wxGetApp().libraries.end()) {
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Library "Deprecated" do not show
-		if (libWalk->first!="Deprecated")
+		if (libWalk->first!="Deprecated" && libWalk->first != "Hidden")
 			strings.Add((const wxChar *)((libWalk->first).c_str())); // KAS
 		libWalk++;
 	}
-	//## strings.Add("Hidden");		//Test
 	listBox = new wxListBox(this, ID_LISTBOX, wxDefaultPosition, wxSize(0,strings.GetCount()*14), strings, wxLB_SINGLE);
 	paletteSizer->Add( listBox, wxSizerFlags(0).Expand().Border(wxALL, 0) );
 	paletteSizer->Show( listBox );
@@ -48,9 +47,10 @@ PaletteFrame::PaletteFrame( wxWindow *parent, wxWindowID id, const wxPoint &pos,
 	this->SetSizer( paletteSizer );
 }
 
-void PaletteFrame::OnListSelect( wxCommandEvent& evt ) {
+void PaletteFrame::OnListSelect(wxCommandEvent& evt) {
 	for (unsigned int i = 0; i < strings.GetCount(); i++) {
 		if (listBox->IsSelected(i)) {
+			currentPalette->Deactivate();
 			paletteSizer->Hide( currentPalette );
 			currentPalette = pcanvases[strings[i]];
 			paletteSizer->Show( currentPalette );

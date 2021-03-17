@@ -28,7 +28,7 @@ DECLARE_APP(MainApp)
 #define ID_SAVE 8890
 
 paramDialog::paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, wxCommandProcessor* wxcmd)
-       : wxDialog(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(250,400), wxCAPTION|wxFRAME_TOOL_WINDOW)
+	: wxDialog(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(250, 400), wxCAPTION | wxFRAME_TOOL_WINDOW)
 {
 	// Copy the circuit and gate pointers to this frame:
 	this->gCircuit = (GUICircuit*)gCircuit;
@@ -62,12 +62,24 @@ paramDialog::paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, 
 		} else if ( gateDef->dlgParams[i].type == "STRING" ) {
 			if ( gateDef->dlgParams[i].isGui ) initialString = gGate->getGUIParam(gateDef->dlgParams[i].name);
 			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
-			// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+			// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 			// This param must not be changed
 			long style = 0;
 			if (gateDef->dlgParams[i].name == "ORIGINAL_NAME")
 				style = wxTE_READONLY;
 			paramVals.push_back(new wxTextCtrl(this, wxID_ANY, (const wxChar *)initialString.c_str(),wxDefaultPosition,wxDefaultSize, style));
+		} else if (gateDef->dlgParams[i].type == "STRING_L") {
+			// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+			// Large string
+			if (gateDef->dlgParams[i].isGui) initialString = gGate->getGUIParam(gateDef->dlgParams[i].name);
+			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
+			paramVals.push_back(new wxTextCtrl(this, wxID_ANY, (const wxChar *)initialString.c_str(), wxDefaultPosition, wxSize(300,-1)));
+		} else if (gateDef->dlgParams[i].type == "STRING_M") {
+			// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+			// Multiline string
+			if (gateDef->dlgParams[i].isGui) initialString = gGate->getGUIParam(gateDef->dlgParams[i].name);
+			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
+			paramVals.push_back(new wxTextCtrl(this, wxID_ANY, (const wxChar *)initialString.c_str(), wxDefaultPosition, wxSize(300, 70), wxTE_MULTILINE | wxHSCROLL));
 		} else if ( gateDef->dlgParams[i].type == "BOOL" ) {
 			paramVals.push_back( new wxCheckBox( this, wxID_ANY, "" ) );
 			// Retrieve the current param setting
@@ -78,7 +90,7 @@ paramDialog::paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, 
 			if (gateDef->dlgParams[i].isGui) initialString = gGate->getGUIParam(gateDef->dlgParams[i].name);
 			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
 			paramVals.push_back(new wxTextCtrl(this, ID_TEXT, (const wxChar *)initialString.c_str())); // KAS
-		} else if (gateDef->dlgParams[i].type == "OPTION") {	// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		} else if (gateDef->dlgParams[i].type == "OPTION") {	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 			if (gateDef->dlgParams[i].isGui) initialString = gGate->getGUIParam(gateDef->dlgParams[i].name);
 			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
 			wxArrayString choices;
@@ -108,6 +120,10 @@ paramDialog::paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, 
 
 	dlgSizer->Fit(this);
 	dlgSizer->SetSizeHints(this);
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// For big dialogs move to top
+	if (paramVals.size()>8)
+		this->SetPosition(wxPoint(-1, 0));
 }
 
 paramDialog::~paramDialog() {
@@ -191,9 +207,19 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 			oss << ((wxSpinCtrl*)(paramVals[i]))->GetValue();
 			pValue = oss.str();
 		}
-		else if (gateDef->dlgParams[i].type == "STRING") {
+		else if (gateDef->dlgParams[i].type.substr(0,6) == "STRING") {
+			// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+			// Added "STRING_L" and "STRING_M" for Large and Multiline strings
 			pValue = (string)((const char *)((wxTextCtrl*)(paramVals[i]))->GetValue().c_str());  // KAS
-		}
+			removeSpaces(&pValue);
+			if (gateDef->dlgParams[i].name == "JUNCTION_ID" && pValue == "") {
+				ostringstream oss;
+				oss << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is empty.";
+				msg.Printf((const wxChar *)oss.str().c_str()); // KAS
+				wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
+				return;
+			}
+		} 
 		else if (gateDef->dlgParams[i].type == "FLOAT") {
 			ostringstream oss;
 			// Check range:
@@ -212,32 +238,46 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 		else if (gateDef->dlgParams[i].type == "BOOL") {
 			pValue = (((wxCheckBox*)(paramVals[i]))->GetValue() ? "true" : "false");
 		}
-		else if (gateDef->dlgParams[i].type == "OPTION") {			// Pedro Casanova (casanova@ujaen.es) 2021/01-02
+		else if (gateDef->dlgParams[i].type == "OPTION") {			// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 			pValue = ((wxRadioBox*)(paramVals[i]))->GetString(((wxRadioBox*)(paramVals[i]))->GetSelection());
 		}
 		if (gateDef->dlgParams[i].isGui) gParamList[gateDef->dlgParams[i].name] = pValue;
 		else lParamList[gateDef->dlgParams[i].name] = pValue;
 	}
-	// If no params are different, then don't submit a command
-	bool allParamsSame = true;
-	map < string, string >::iterator paramWalk = gParamList.begin();
-	while (paramWalk != gParamList.end() && allParamsSame) {
-		allParamsSame = (gGate->getGUIParam(paramWalk->first) == paramWalk->second);
-		paramWalk++;
-	}
-	paramWalk = lParamList.begin();
-	while (paramWalk != lParamList.end() && allParamsSame) {
-		allParamsSame = (gGate->getLogicParam(paramWalk->first) == paramWalk->second);
-		// Pedro Casanova (casanova@ujaen) 2020/04-12
-		// To generate a pulse when change in gate_PULSE for Initializer
-		if (paramWalk->first == "PULSE_WIDTH") allParamsSame = false;
-		paramWalk++;
-	}
-	//##
-	if (gGate->getLibraryGateName().substr(0, 2) == "%_")
-		gParamList["DYNAMIC_GATE"] = "true";
 
-	if (!allParamsSame) wxcmd->Submit( new cmdSetParams( gCircuit, gGate->getID(), paramSet(&gParamList, &lParamList) ) );
+	// Pedro Casanova (casanova@ujaen) 2021/01-03
+	// If dynamic gate cannot sen a message to drag gate, use setGUIparam and setLogicParam
+	if (gGate->getLibraryGateName().substr(0, 3) == "%%_") {
+		gParamList["DYNAMIC_GATE"] = "true";
+		map < string, string >::iterator paramWalk = gParamList.begin();
+		while (paramWalk != gParamList.end()) {
+			gGate->setGUIParam(paramWalk->first, paramWalk->second);
+			paramWalk++;
+		}
+		paramWalk = lParamList.begin();
+		while (paramWalk != lParamList.end()) {
+			gGate->setLogicParam(paramWalk->first, paramWalk->second);
+			paramWalk++;
+		}
+	}
+	else {
+		// If no params are different, then don't submit a command
+		bool allParamsSame = true;
+		map < string, string >::iterator paramWalk = gParamList.begin();
+		while (paramWalk != gParamList.end() && allParamsSame) {
+			allParamsSame = (gGate->getGUIParam(paramWalk->first) == paramWalk->second);
+			paramWalk++;
+		}
+		paramWalk = lParamList.begin();
+		while (paramWalk != lParamList.end() && allParamsSame) {
+			allParamsSame = (gGate->getLogicParam(paramWalk->first) == paramWalk->second);
+			// Pedro Casanova (casanova@ujaen) 2020/04-12
+			// To generate a pulse when change in gate_PULSE for Initializer
+			if (paramWalk->first == "PULSE_WIDTH") allParamsSame = false;
+			paramWalk++;
+		}
+		if (!allParamsSame) wxcmd->Submit(new cmdSetParams(gCircuit, gGate->getID(), paramSet(&gParamList, &lParamList)));
+	}
 
 	// Make me go away forever!
 	this->EndModal(wxID_OK);
