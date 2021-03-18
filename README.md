@@ -34,7 +34,7 @@ In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonr
 
 6. Edit `%WXWIN%\src\msw\window.cpp` so that it does not include `pbt.h`.
 
-7. Open an `x86 native tools` command prompt (like [Powershell](https://docs.microsoft.com/en-us/powershell/)) and run [nmake](https://docs.microsoft.com/en-us/cpp/build/reference/nmake-reference):
+7. Open an `x86 native tools` command prompt (like [cmd](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd)) and run [nmake](https://docs.microsoft.com/en-us/cpp/build/reference/nmake-reference):
 	
 ```PS
 cd %WXWIN%\build\msw
