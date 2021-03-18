@@ -28,7 +28,7 @@ In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonr
 
 3. Run wxWidgets source installer.
 
-4. (Optional) Set windows environment variable `WXWIN` to point to your wxWidgets directory.
+4. (Optional) [Set windows environment variable](https://www.onmsft.com/how-to/how-to-set-an-environment-variable-in-windows-10) `WXWIN` to point to your wxWidgets directory.
 
 5. Edit `%WXWIN%\include\wx\msw\setup.h` so that `wxUSE_GLCANVAS` is `1` instead of `0`.
 
