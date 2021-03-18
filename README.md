@@ -34,17 +34,19 @@ In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonr
 
 6. Edit `%WXWIN%\src\msw\window.cpp` so that it does not include `pbt.h`.
 
-7. Open an `x86 native tools` command prompt and run these commands.
+7. Open an `x86 native tools` command prompt (like [Powershell](https://docs.microsoft.com/en-us/powershell/)) and run [nmake](https://docs.microsoft.com/en-us/cpp/build/reference/nmake-reference):
 	
-		cd %WXWIN%\build\msw
-		nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
-		nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
+```PS
+cd %WXWIN%\build\msw
+nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
+nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
+```
 
 ## Compiling and creating an installer.
 
-1. First, you need to install NSIS.
+1. First, you need to install [NSIS](https://nsis.sourceforge.io/Download).
 
-2. Next, go to the root of the git repo.
+2. Next, go to the root of the CedarLogic git repo ([Clone](https://www.git-scm.com/docs/git-clone)) it if you haven't already).
 
 3. Run `mkdir build && cd build`
 
