@@ -22,7 +22,7 @@ In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonr
 ## Getting Ready to Compile
 **TODO:** Automate build process so this is antiquated (infrastructure as code)
 
-1. Install _[Visual Studio](https://visualstudio.microsoft.com/downloads/) 2015_ or newer. _Visual Studio 2019 Community Edition_ is known to work as well.
+1. Install [Visual Studio](https://visualstudio.microsoft.com/downloads/) 2015 or newer. (Tested and works with Visual Studio 2019)
 
 2. Download [wxWidgets 2.8.12](https://github.com/wxWidgets/wxWidgets/releases/download/v2.8.12/wxMSW-2.8.12-Setup.exe) source for windows.
 
@@ -46,15 +46,13 @@ nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
 
 1. First, you need to install [NSIS](https://nsis.sourceforge.io/Download).
 
-2. Next, go to the root of the CedarLogic git repo ([Clone](https://www.git-scm.com/docs/git-clone)) it if you haven't already).
+2. Next, go to the root of the CedarLogic git repo ([clone](https://www.git-scm.com/docs/git-clone) it if you haven't already).
 
 3. Run `mkdir build && cd build`
 
 3. Run `cmake .. -A Win32` (If you did not set the windows environment variable earlier, also add `-Dwxwin=C:/wxWidgets-2.8.12` to set `wxwin` variable to the base of the wxWidgets install path).
 
-4. There is now a visual studio solution in the `build` directory. Open the solution file.
-
-5. Right-click on the project titled `CedarLogic` and select `Set as Startup Project`.
+4. There is now a Visual Studio Solution File in the `build` directory. Open the solution file with Visual Studio.
 
 6. Select `Release` from the configuration menu.
 
