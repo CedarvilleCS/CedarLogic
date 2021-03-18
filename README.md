@@ -22,7 +22,7 @@ In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonr
 ## Getting Ready to Compile
 **TODO:** Automate build process so this is antiquated (infrastructure as code)
 
-1. Install `[Visual Studio](https://visualstudio.microsoft.com/downloads/) 2015` or newer. Visual Studio 2019 Community Edition is known to work as well.
+1. Install _[Visual Studio](https://visualstudio.microsoft.com/downloads/) 2015_ or newer. _Visual Studio 2019 Community Edition_ is known to work as well.
 
 2. Download [wxWidgets 2.8.12](https://github.com/wxWidgets/wxWidgets/releases/download/v2.8.12/wxMSW-2.8.12-Setup.exe) source for windows.
 
