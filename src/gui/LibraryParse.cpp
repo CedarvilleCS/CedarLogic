@@ -364,11 +364,11 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 
 	bool Negate = false;
 	int stringType = 0;
-	double Scale = 1.0;
+	double Scale = SCALE_NORMAL;
 	dY = CHAR_HEIGHT / 2;
 	for (unsigned int i = 0; i < charCode.size(); i++)
 	{		
-		string specialChars = "~_^-+$&@%!";
+		string specialChars = "~_^-+$|@%!";
 		char c = (char)charCode.c_str()[i];
 		if (specialChars.find(c)==-1) {
 			dX -= CHAR_WIDTH_TOTAL / 2 * Scale;
@@ -389,7 +389,7 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 				// Small
 				Scale = SCALE_SMALL;
 				break;
-			case '&':
+			case '|':
 				// Smaller
 				Scale = SCALE_SMALLER;
 				break;
@@ -445,7 +445,7 @@ bool LibraryParse::parseTextObject(LibraryGate* newGate) {
 			// Small
 			Scale = SCALE_SMALL;
 			continue;
-		case '&':
+		case '|':
 			// Smaller
 			Scale = SCALE_SMALLER;
 			continue;
@@ -1010,7 +1010,7 @@ bool LibraryParse::CreateDynamicGate(string type) {
 				oss << "<input><name>IN_" << i << "</name><point>-4," << ini + i << "</point></input>";
 			ini = -0.5*(outBits - 1);
 			for (unsigned int i = 0; i < outBits; i++)
-				oss << "<output><name>OUT_" << i << "</name><point>4," << ini + i << "</point></input>";
+				oss << "<output><name>OUT_" << i << "</name><point>4," << ini + i << "</point></output>";
 
 			oss << "<shape>";
 
@@ -1098,7 +1098,7 @@ bool LibraryParse::CreateDynamicGate(string type) {
 				oss << "<input><name>IN_" << i << "</name><point>-4," << ini + i << "</point></input>";
 			ini = -0.5*(outBits - 1);
 			for (unsigned int i = 0; i < outBits; i++)
-				oss << "<output><name>OUT_" << i << "</name><point>4," << ini + i << "</point></input>";
+				oss << "<output><name>OUT_" << i << "</name><point>4," << ini + i << "</point></output>";
 
 			oss << "<shape>";
 
@@ -1164,7 +1164,7 @@ bool LibraryParse::CreateDynamicGate(string type) {
 			oss << "<gui_param>CROSS_JUNCTION true</gui_param>";
 			oss << "<param_dlg_data><param><type>BOOL</type><label>Cross junction</label>";
 			oss << "<varname>GUI CROSS_JUNCTION</varname></param>";
-			oss << "<param><type>BOOL</type><label>Force output to ZERO/label>";
+			oss << "<param><type>BOOL</type><label>Force output to ZERO</label>";
 			oss << "<varname>LOGIC FORCE_ZERO</varname></param></param_dlg_data>";
 
 			for (unsigned int i = 0; i < nInputs; i++)

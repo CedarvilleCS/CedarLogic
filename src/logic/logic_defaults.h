@@ -21,11 +21,10 @@
 #ifndef _PRODUCTION_
 #define WARNING(message) \
 	{ do { *logiclog << "Warning: " << message << std::endl << std::flush; } while (0); \
-	_MSGW(message+"\n"); }
+	_MSGW(message); }
 #else
 #define WARNING(message) \
-	{ do { } while (0); \
-	_MSGW(message+"\n"); }
+	_MSGW(message);
 #endif
 
 

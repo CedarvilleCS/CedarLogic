@@ -7,10 +7,10 @@
 #define DBGMSG_H
 
 // Uncomment to use
-#define _MSG_
+//#define _MSG_
 #ifdef _MSG_
 #define _MSGGUI_
-//#define _MSGCOM_
+#define _MSGCOM_
 //#define _MSGW_
 #define DBGID "CL_Msg "
 #define DBGLEN sizeof(DBGID)-1

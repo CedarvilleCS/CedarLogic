@@ -194,7 +194,7 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 
 		// Create a gate of the proper type:
 		if( type == "AND" ) {
-			gateList[thisGateID] = GATE_PTR( new Gate_AND );
+			gateList[thisGateID] = GATE_PTR( new Gate_AND );			
 		} else if( type == "OR" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_OR );
 		} else if( type == "XOR" ) {
@@ -257,10 +257,12 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			WARNING( "Circuit::newGate() - Invalid logic type!" );
 			_MSGW("Logic type: %s\n", type.c_str());
 		}
-
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		// Needed to know logicType in Circuit
+		gateList[thisGateID]->logicType = type;
 	} else {
 		WARNING( "Circuit::newGate() - Re-used gate ID!" );
-		_MSGW("Gate ID: %lld\n", thisGateID);
+		_MSGW("Gate ID: %lld\n", thisGateID);		
 	}
 	
 	return thisGateID;
@@ -468,22 +470,27 @@ IDType Circuit::connectGateOutput( IDType gateID, const string &gateOutputID, ID
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// To manage bidirectional outputs in RAM and REGISTER
-	if ((gateList[gateID])->getParameter("BIDIRECTIONAL_DATA") == "true") {
-		if ((gateList[gateID])->getParameter("DATA_BITS") != "") {								// Gate_RAM
-			for (int i = 0; i < stoi((gateList[gateID])->getParameter("DATA_BITS")); i++)				
-				if (gateOutputID.c_str() == "DATA_OUT_" + to_string(i))
-				{
-					connectGateInput(gateID, "DATA_IN_" + to_string(i),wireID);
-					break;
-				}
-		} else if ((gateList[gateID])->getParameter("INPUT_BITS") != "") {						// Gate_REGISTER
-			for (int i = 0; i < stoi((gateList[gateID])->getParameter("INPUT_BITS")); i++)				
-				if (gateOutputID.c_str() == "OUT_" + to_string(i))
-				{
-					connectGateInput(gateID, "IN_" + to_string(i), wireID);
-					break;
-				}
-		}
+	if ((gateList[gateID])->logicType == "RAM") {								// Gate_RAM
+		if ((gateList[gateID])->getParameter("BIDIRECTIONAL_DATA") == "true")
+			if ((gateList[gateID])->getParameter("DATA_BITS") != "") {
+				for (int i = 0; i < stoi((gateList[gateID])->getParameter("DATA_BITS")); i++)
+					if (gateOutputID == "DATA_OUT_" + to_string(i))
+					{
+						connectGateInput(gateID, "DATA_IN_" + to_string(i), wireID);
+						break;
+					}
+			}
+	}
+	if ((gateList[gateID])->logicType == "REGISTER") {							// Gate_REGISTER
+		if ((gateList[gateID])->getParameter("BIDIRECTIONAL_DATA") == "true")
+			if ((gateList[gateID])->getParameter("INPUT_BITS") != "") {
+				for (int i = 0; i < stoi((gateList[gateID])->getParameter("INPUT_BITS")); i++)
+					if (gateOutputID == "OUT_" + to_string(i))
+					{
+						connectGateInput(gateID, "IN_" + to_string(i), wireID);
+						break;
+					}
+			}
 	}
 	
 	return returnWireID;
@@ -620,9 +627,11 @@ void Circuit::createEvent( TimeType eventTime, IDType wireID, IDType gateID, con
 	myEvent.gateOutputID = gateOutputID;
 	myEvent.newState = newState;
 
+#if defined(_MSG_) || !defined(_PRODUCTION_)
 	ostringstream oss;
 	oss << "Creating event for gate " << gateID << " output " << gateOutputID << " to state " << (int) newState << " at time = " << eventTime << "." << endl;
 	WARNING(oss.str().c_str());
+#endif
 
 	// Push the event onto the event queue:
 	eventQueue.push(myEvent);

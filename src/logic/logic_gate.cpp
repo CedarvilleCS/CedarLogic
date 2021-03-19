@@ -1077,16 +1077,16 @@ Gate_REGISTER::Gate_REGISTER() : Gate_PASS() {
 // Also, when doing a load operation, un-resolvable inputs are defaulted to 0's.
 
 	// Set the default settings:
-	//##syncSet = false; //## true;
-	//##syncClear = false; //## true;
-	//##syncLoad = false; //## true;
-	setParameter("SYNC_SET", "false");
-	setParameter("SYNC_CLEAR", "false");
-	setParameter("SYNC_LOAD", "false");
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// Default false 
+	syncSet = false;
+	syncClear = false;
+	syncLoad = false;
 	
 	disableHold = false;
     unknownOutputs = false;
 	currentValue = 0;
+	carryOut = ZERO;
 	maxCount = 0;
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
@@ -1095,8 +1095,7 @@ Gate_REGISTER::Gate_REGISTER() : Gate_PASS() {
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Carry out on overfow, not on max/min
-	//##CoOnOverflow = false;
-	setParameter("CO_ON_OVERFLOW", "false");		//@@@@ Review
+	CoOnOverflow = false;							//@@@@ Review
 
 	// An initialization value, to make REGISTERs initialize more
 	// nicely when loading them or making new ones:
@@ -1107,8 +1106,7 @@ Gate_REGISTER::Gate_REGISTER() : Gate_PASS() {
 // Handle gate events:
 void Gate_REGISTER::gateProcess( void ) {
 	vector< StateType > outBus;
-	StateType carryOut = ZERO; // Assume that carry out is reset.	
-
+	
 	// If this is the first time this gate has been simulated,
 	// then output the currentValue to the pins:
 	if( firstGateProcess ) {
@@ -1135,7 +1133,7 @@ void Gate_REGISTER::gateProcess( void ) {
 			if (hasClockEdge(syncClear)) {		// Control Set - Clear and async Clear
 				// Clear.
 				currentValue = 0;
-				if (CoOnOverflow) carryOut = ONE;		//@@@@ Review
+				carryOut = ZERO;
 			}
 	} else if( getInputState("SET") == ONE ) {
 		if (getInputState("CONTROL") != ZERO)	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
@@ -1143,7 +1141,7 @@ void Gate_REGISTER::gateProcess( void ) {
 				// Set.
 				vector< StateType > allOnes( inBits, ONE );
 				currentValue = bus_to_ulong(allOnes);
-				if (CoOnOverflow) carryOut = ONE;		//@@@@ Review
+				carryOut = ZERO;
 			}
 	} else if( getInputState("LOAD") == ONE) {
 		if (hasClockEdge(syncLoad)) {			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
@@ -1155,11 +1153,13 @@ void Gate_REGISTER::gateProcess( void ) {
 				}
 			}
 			currentValue = bus_to_ulong( inputBus );
+			carryOut = ZERO;
 		}
 	} else if (OPcode == 1) {
 		if (isRisingEdge("CLOCK")) {
 			// Sync Clear
 			currentValue = 0;
+			carryOut = ZERO;
 		}
 	} else if( getInputState("COUNT_ENABLE") == ONE || OPcode == 2 || OPcode == 3) {
 		// Count.
@@ -1170,13 +1170,17 @@ void Gate_REGISTER::gateProcess( void ) {
 				// Decrement the counter:
 				if( (currentValue == 0) || (currentValue > maxCount) ) {
 					currentValue = maxCount;
+					if (CoOnOverflow) carryOut = ONE;
 				} else {
 					// (currentValue > 0)
 					currentValue--;
+					if (CoOnOverflow) carryOut = ZERO;
 				}
 			} else {
 				// Increment the counter:
 				currentValue = (currentValue + 1) % (maxCount + 1);
+				carryOut = ZERO;
+				if (CoOnOverflow && !currentValue) carryOut = ONE;
 			}
 		} 
 
@@ -1186,16 +1190,14 @@ void Gate_REGISTER::gateProcess( void ) {
 		// Set the carry out bit, regardless of the clock edge:
 		if (getInputState("COUNT_UP") == ZERO || getInputState("COUNT_UP_SHIFT_LEFT") == ZERO || OPcode == 3) {  // Favors "up" if not connected!
 			if (!CoOnOverflow) {
+				carryOut = ZERO;
 				if (currentValue == 0) carryOut = ONE; // Carry out on ZERO count when downcounting and carry out on min/max.
-			} else {
-				if (currentValue == maxCount) carryOut = ONE; // Carry out on MAX count when downcountingand carry out on overflow.
 			}
 		}
 		else {
 			if (!CoOnOverflow) {
+				carryOut = ZERO;
 				if (currentValue == maxCount) carryOut = ONE; // Carry out on MAX count when upcounting and carry out on min/max.
-			} else {
-				if (currentValue == 0) carryOut = ONE; // Carry out on ZERO count when upcounting and carry out on overflow.
 			}
 		}
 
@@ -1268,6 +1270,7 @@ void Gate_REGISTER::gateProcess( void ) {
 				mask += 1;
 			}
 			currentValue = currentValue & mask;
+			carryOut = ZERO;
 		}
 	} else {		
 		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
@@ -1289,6 +1292,7 @@ void Gate_REGISTER::gateProcess( void ) {
 				currentValue = bus_to_ulong(inputBus);
 			}
 		}
+		carryOut = ZERO;
 	}
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
@@ -1434,7 +1438,7 @@ string Gate_REGISTER::getParameter( string paramName ) {
 	} else if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		oss << (bidirectionalDATA ? "true" : "false");		// Bidirectional data lines
 		return oss.str();
-	} else if (paramName == "BIDIRECTIONAL_DATA") {			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	} else if (paramName == "CO_ON_OVERFLOW") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		oss << (CoOnOverflow ? "true" : "false");			// Carry out on overfow, not on max/min
 		return oss.str();
 	} else {
@@ -2178,8 +2182,6 @@ Gate_JKFF::Gate_JKFF() : Gate() {
 	// By default no set parameters
 	syncSet = false;
 	syncClear = false;
-	//##setParameter("SYNC_SET", "false");
-	//##setParameter("SYNC_CLEAR", "false");
 }
 
 
@@ -2278,8 +2280,6 @@ Gate_TFF::Gate_TFF() : Gate() {
 	// By default no set parameters
 	syncSet = false;
 	syncClear = false;
-	//##setParameter("SYNC_SET", "false");
-	//##setParameter("SYNC_CLEAR", "false");
 }
 
 
@@ -2358,7 +2358,6 @@ string Gate_TFF::getParameter(string paramName) {
 
 // Initialize the starting state and the output:
 Gate_RAM::Gate_RAM( ) : Gate() {
-
 	// Declare the stationary pins:
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Uppercase
@@ -2483,11 +2482,13 @@ bool Gate_RAM::setParameter( string paramName, string value ) {
 		iss >> bidirectionalDATAVal;
 
 		bidirectionalDATA = (bidirectionalDATAVal == "true");
+		return true;
 	} else if (paramName == "SYNC_WR") {				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		string syncWRVal;								// Sync asnd Async Write
 		iss >> syncWRVal;
 		
-		syncWR = (syncWRVal == "true");;
+		syncWR = (syncWRVal == "true");
+		return true;
 	} else if( paramName == "ADDRESS_BITS" ) {
 		iss >> addressBits;
 
@@ -3288,12 +3289,12 @@ string Gate_pauseulator::getParameter( string paramName ) {
 // ******************************** FSM GATE ***********************************
 // Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Implement Finite State Machines
-Gate_FSM_SYNC::Gate_FSM_SYNC() : Gate_PASS() {
+Gate_FSM_SYNC::Gate_FSM_SYNC() : Gate() {
+	definedIO = 0;
+
 	// Declare the inputs:
 	declareInput("CLOCK", true);
 	declareInput("CLEAR");
-
-	setParameter("OUTPUT_BITS", "1");
 
 	// Set the default settings:
 	setParameter("CURRENT_STATE", "");
@@ -3357,10 +3358,12 @@ void Gate_FSM_SYNC::gateProcess(void) {
 // Set the parameters:
 bool Gate_FSM_SYNC::setParameter(string paramName, string value) {
 	istringstream iss(value);
+	_MSG("%s %s",paramName.c_str(),value.c_str())
 	if (paramName == "CLEAR_FSM") {
 		states.clear();
 		outputs.clear();
 		nextState.clear();
+		paramStates.clear();
 		resetState = "";
 		currentState = "";
 		currentOutput = "";
@@ -3377,15 +3380,32 @@ bool Gate_FSM_SYNC::setParameter(string paramName, string value) {
 		if (outBits > 0) {
 			declareOutputBus("OUT", outBits);
 		}
+		definedIO |= 1;
+		if (definedIO == 3) procPendingStates();
+		return true;
+	}
+	if (paramName == "INPUT_BITS") {
+		iss >> inBits;
+
+		// Declare the input pins!		
+		if (inBits > 0) {
+			declareInputBus("IN", inBits);
+		}
+		definedIO |= 2;
+		if (definedIO == 3) procPendingStates();
 		return true;
 	}
 	if (paramName.substr(0, 6) == "State:")
 	{
-		if (value!="")
-			procState(paramName, value);
+		if (value != "") {
+			if (definedIO == 7)
+				procState(paramName, value);
+			else
+				paramStates[paramName]=value;
+		}
 		return true;
 	}
-	return Gate_PASS::setParameter(paramName, value);
+	return Gate::setParameter(paramName, value);
 }
 
 // Get the parameters:
@@ -3395,13 +3415,25 @@ string Gate_FSM_SYNC::getParameter(string paramName) {
 		oss << currentState;
 		return oss.str();
 	}
-	else if (paramName == "OUTPUT_BITS") {
+	if (paramName == "OUTPUT_BITS") {
 		oss << outBits;
 		return oss.str();
 	}
-	else {
-		return Gate_PASS::getParameter(paramName);
+	if (paramName == "INPUT_BITS") {
+		oss << inBits;
+		return oss.str();
 	}
+	return Gate::getParameter(paramName);
+}
+
+void Gate_FSM_SYNC::procPendingStates() {
+	map <string,string>::iterator statesWalk = paramStates.begin();
+	while (statesWalk != paramStates.end()) {
+		procState(statesWalk->first, statesWalk->second);
+		statesWalk++;
+	}
+	paramStates.clear();
+	definedIO = 7;
 }
 
 // Process state param string
@@ -3457,10 +3489,10 @@ void Gate_FSM_SYNC::procState(string paramName, string value) {
 			pArrow = trans.find('-');
 			pSlash = trans.find('/');
 			string inputValue = trans.substr(0, pArrow);
-			for (unsigned int inputVal = 0; inputVal < pow(2, inputValue.length()); inputVal++)
+			for (unsigned long inputVal = 0; inputVal < pow(2, inputValue.length()); inputVal++)
 			{
 				string binValue="";
-				unsigned int val= inputVal;
+				unsigned long val= inputVal;
 				for (long i = inputValue.length() - 1; i >= 0; i--)
 				{
 					if (val >= pow(2, i)) {
@@ -3490,9 +3522,9 @@ void Gate_FSM_SYNC::procState(string paramName, string value) {
 // ******************************** CMB GATE ***********************************
 // Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Implement Combinational Blocks
-Gate_CMB::Gate_CMB() : Gate_PASS() {
+Gate_CMB::Gate_CMB() : Gate() {
 
-	setParameter("OUTPUT_BITS", "1");
+	definedIO = 0;
 
 	return;
 }
@@ -3506,7 +3538,6 @@ void Gate_CMB::gateProcess(void) {
 	unsigned long inputValue = bus_to_ulong(inputBus);
 	unsigned long outputValue = outputs[inputValue];
 	outBus = ulong_to_bus(outputValue, outBits);
-
 	if (outBus.size() != 0) setOutputBusState("OUT", outBus);
 }
 
@@ -3520,15 +3551,31 @@ bool Gate_CMB::setParameter(string paramName, string value) {
 		if (outBits > 0) {
 			declareOutputBus("OUT", outBits);
 		}
+		definedIO |= 1;
+		if (definedIO == 3) procPendingFunctions();
+		return true;
+	}
+	if (paramName == "INPUT_BITS") {
+		iss >> inBits;
+
+		// Declare the input pins!		
+		if (inBits > 0) {
+			declareInputBus("IN", inBits);
+		}
+		definedIO |= 2;
+		if (definedIO == 3) procPendingFunctions();
 		return true;
 	}
 	if (paramName.substr(0, 9) == "Function:")
 	{		
 		if (value != "")
-			procFunction(paramName, value);
+			if (definedIO == 7)
+				procFunction(paramName, value);
+			else
+				paramFunctions[paramName] = value;			
 		return true;
 	}
-	return Gate_PASS::setParameter(paramName, value);
+	return Gate::setParameter(paramName, value);
 }
 
 // Get the parameters:
@@ -3538,43 +3585,55 @@ string Gate_CMB::getParameter(string paramName) {
 		oss << outBits;
 		return oss.str();
 	}
-	else {
-		return Gate_PASS::getParameter(paramName);
+	if (paramName == "INPUT_BITS") {
+		oss << inBits;
+		return oss.str();
 	}
+	return Gate::getParameter(paramName);
+}
+
+void Gate_CMB::procPendingFunctions() {
+	map <string, string>::iterator functionsWalk = paramFunctions.begin();
+	while (functionsWalk != paramFunctions.end()) {
+		procFunction(functionsWalk->first, functionsWalk->second);
+		functionsWalk++;
+	}
+	paramFunctions.clear();
+	definedIO = 7;
 }
 
 // Process state param string
 void Gate_CMB::procFunction(string paramName, string value) {
-	int pEqual =value.find('=');
-	unsigned int nFunction = atoi(value.substr(1,pEqual-1).c_str());
+	long pEqual =value.find('=');
+	unsigned long nFunction = atoi(value.substr(1,pEqual-1).c_str());
 	value = value.substr(pEqual + 1);
 
 	bool sum = true;
 	if (value.substr(0) == "0") {
-		for (unsigned int i = 0; i < pow(2, inBits); i++)
+		for (unsigned long i = 0; i < pow(2, inBits); i++)
 			outputs[i] = outputs[i] & ~((unsigned int)pow(2, nFunction));
 		return;
 	} else if (value.substr(0, 1) == "S") {
-			for (unsigned int i = 0; i < pow(2, inBits); i++)
+			for (unsigned long i = 0; i < pow(2, inBits); i++)
 				outputs[i] = outputs[i] & ~((unsigned int)pow(2, nFunction));
 	} else if (value.substr(0, 1) == "P") {
 		sum = false;
-		for (unsigned int i = 0; i < pow(2, inBits); i++)
-			outputs[i] = outputs[i] | (unsigned int)pow(2, nFunction);
+		for (unsigned long i = 0; i < pow(2, inBits); i++)
+			outputs[i] = outputs[i] | (unsigned long)pow(2, nFunction);
 	} else {
-			for (unsigned int i = 0; i < value.length(); i++) {
+			for (unsigned long i = 0; i < value.length(); i++) {
 				char valHex;
 				valHex = value[value.length() - i - 1];
 				if (chkDigits(value.substr(value.length()-i-1, 1)))
 					valHex = value[value.length() - i - 1] - '0';
 				else
 					valHex = value[value.length() - i - 1] - 'A' + 10;
-				for (int j = 3; j >= 0; j--) {
+				for (long j = 3; j >= 0; j--) {
 					if (valHex >= pow(2, j)) {
 						valHex -= pow(2, j);
-						outputs[4 * i + j] = outputs[4 * i + j] | (unsigned int)pow(2, nFunction);
+						outputs[4 * i + j] = outputs[4 * i + j] | (unsigned long)pow(2, nFunction);
 					} else {
-						outputs[4 * i + j] = outputs[4 * i + j] & ~(unsigned int)pow(2, nFunction);
+						outputs[4 * i + j] = outputs[4 * i + j] & ~(unsigned long)pow(2, nFunction);
 					}
 				}
 			}
@@ -3585,13 +3644,13 @@ void Gate_CMB::procFunction(string paramName, string value) {
 
 	istringstream iss(value);
 	while (!iss.eof()) {
-		unsigned int term;
+		unsigned long term;
 		char dump;
 		iss >> term >> dump;		
 		if (sum)
-			outputs[term] = outputs[term] | (unsigned int)pow(2, nFunction);
+			outputs[term] = outputs[term] | (unsigned long)pow(2, nFunction);
 		else
-			outputs[term] = outputs[term] & ~((unsigned int)pow(2, nFunction));
+			outputs[term] = outputs[term] & ~((unsigned long)pow(2, nFunction));
 
 	}
 

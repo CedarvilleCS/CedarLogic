@@ -103,6 +103,10 @@ public:
 	Gate();
 	virtual ~Gate();
 
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// Needed to know logicType in Circuit
+	string logicType;
+
 protected:
 	// Gate "Entity" declaration methods:
 
@@ -480,6 +484,10 @@ protected:
 	unsigned long maxCount;
 
 	unsigned long currentValue;
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// To implement CO_ON_OVERFLOW must remember carryOut
+	StateType carryOut;
 
 	// An initialization value, to make REGISTERs initialize more
 	// nicely when loading them or making new ones:
@@ -966,7 +974,7 @@ public:
 // ******************* FSM Gate *********************
 // Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Implement Finite State Machines
-class Gate_FSM_SYNC : public Gate_PASS
+class Gate_FSM_SYNC : public Gate
 {
 public:
 	Gate_FSM_SYNC();
@@ -984,11 +992,16 @@ private:
 	// Process state param string
 	void procState(string paramName, string value);
 
+	void procPendingStates();
+	unsigned long definedIO;
+	map <string, string> paramStates;
+
 protected:
 	string currentOutput;
 	string currentState;	
 	string resetState;
 	unsigned long outBits;
+	unsigned long inBits;
 	bool asyncrhonous;
 	
 	vector< string > states;
@@ -1009,7 +1022,7 @@ public:
 // ******************* CMB Gate *********************
 // Pedro Casanova (casanova@ujaen.es) 2021/01-03
 // Implement Combinational Blocks
-class Gate_CMB : public Gate_PASS
+class Gate_CMB : public Gate
 {
 public:
 	Gate_CMB();
@@ -1027,8 +1040,13 @@ private:
 	// Process state param string
 	void procFunction(string paramName, string value);
 
+	void procPendingFunctions();
+	unsigned long definedIO;
+	map <string, string> paramFunctions;
+
 protected:
 	unsigned long outBits;
+	unsigned long inBits;
 
 	map< unsigned long, unsigned long > outputs;
 

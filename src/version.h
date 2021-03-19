@@ -2,7 +2,7 @@
 #pragma once
 #include <string>
 
-#define CEDARLOGIC_REVISION "C"
+#define CEDARLOGIC_REVISION "D"
 
 // Get version major, minor, and build date in lexicographically sortable order.
 // It may seem silly to use date instead of version number, but I know we'll forget

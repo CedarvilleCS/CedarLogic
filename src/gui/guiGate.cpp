@@ -267,9 +267,8 @@ void guiGate::draw(bool color, bool drawPalette) {
 
 	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 	// Draw text
-	istringstream iss(gparams["angle"]);
 	GLfloat angle;
-	iss >> angle;
+	istringstream(gparams["angle"]) >> angle;
 	bool mirror = false;
 	if (gparams.find("mirror") != gparams.end())
 		mirror = gparams["mirror"] == "true" ? true : false;
@@ -514,13 +513,17 @@ void guiGate::saveGate(XMLParser* xparse) {
 	while (pParams != gparams.end()) {
 		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		// Avoid to save some gparams
-		if (pParams->first == "angle" && (pParams->second == "0" || pParams->second == "0.0")) { pParams++; continue; }
-		if (pParams->first == "mirror" && pParams->second != "true") { pParams++; continue; }		
 		if (pParams->first == "ORIGINAL_NAME" && pParams->second == "") { pParams++; continue; }
 
 		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
-		// Only GUI params in dialog params are saved, rest of them are obtained from the library
-		if (pParams->first != "angle" && pParams->first != "mirror") {
+		if (pParams->first == "angle" ) {
+			// Avoid to save this gparams if it is 0
+			if (pParams->second == "0" || pParams->second == "0.0") { pParams++; continue; }
+		} else if (pParams->first == "mirror") {
+			// Avoid to save this gparams if it not is true
+			if (pParams->second != "true") { pParams++; continue; }
+		} else {
+			// Only GUI params in dialog params are saved, rest of them are obtained from the library
 			bool found = false;
 			for (unsigned long i = 0; i < lg.dlgParams.size() && !found; i++) {
 				if (!lg.dlgParams[i].isGui) continue;
@@ -554,14 +557,13 @@ void guiGate::saveGate(XMLParser* xparse) {
 		// State: and Function: params saved in saveGateTypeSpecifics to short them		
 		if (pParams->first.substr(0, 6) == "State:") { pParams++; continue; }
 		if (pParams->first.substr(0, 9) == "Function:") { pParams++; continue; }
-		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
-		// Avoid to save some lparams
-		if (pParams->first == "DEFAULT_DELAY" && pParams->second == "1") { pParams++; continue; }
-		if (pParams->first == "CURRENT_STATE" && pParams->second == "") { pParams++; continue; }
 
-		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
-		// Only logic params in dialog params are saved, rest of them are obtained from the library
-		if (pParams->first != "CURRENT_VALUE" && pParams->first != "OUTPUT_NUM" && pParams->first != "CURRENT_STATE") {
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03		
+		if (pParams->first == "CURRENT_VALUE" || pParams->first == "OUTPUT_NUM" || pParams->first == "CURRENT_STATE") {
+			// Avoid to save this lparams if they are empty
+			if (pParams->second == "") { pParams++; continue; }
+		} else {
+			// Only logic params in dialog params are saved, rest of them are obtained from the library
 			bool found = false;
 			for (unsigned long i = 0; i < lg.dlgParams.size() && !found; i++) {
 				if (lg.dlgParams[i].isGui) continue;
@@ -571,7 +573,7 @@ void guiGate::saveGate(XMLParser* xparse) {
 				}
 			}
 			if (!found) { pParams++; continue; }
-		}
+		} 
 		
 		xparse->openTag("lparam");
 		oss.str("");
@@ -811,31 +813,12 @@ void guiGatePLD::draw(bool color, bool drawPalette) {
 }
 
 void guiGatePLD::setGUIParam(string paramName, string value) {
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
 	// <CROSS_JUNCTION> cross junctions in inputs for PLD devices (LAND & LOR gates)
-	if (paramName == "CROSS_JUNCTION")
-		if (this->getLogicType() == "PLD_AND" || this->getLogicType() == "PLD_OR")
-		{
-			if (value != "true" && value != "false")
-				return;
-		}
-		else
-			return;
-
-	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
-	// <CROSS_POINT> point to draw cross junctions in gate for PLD devices (LAND gates)
-	if (paramName == "CROSS_POINT") {
-		if (this->getLogicType() == "PLD_AND" || this->getLogicType() == "PLD_OR")
-		{
-			istringstream iss(value);
-			char dump;
-			iss >> renderInfo_crossPoint.x >> dump >> renderInfo_crossPoint.y;
-		}
-		else
-			return;
-	}
-
+	// <CROSS_POINT> point to draw cross junctions in gate for PLD devices (LAND gates & LOR gates)
 	if (paramName == "CROSS_JUNCTION" || paramName == "CROSS_POINT") {
+		if (value != "true" && value != "false") return;
 		gparams[paramName] = value;
 		// Update the matrices and bounding box:
 		updateConnectionMerges();
@@ -967,10 +950,9 @@ void guiGateKEYPAD::draw(bool color, bool drawPalette) {
 		float x2 = renderInfo_valueBox.end.x;
 		float y2 = renderInfo_valueBox.end.y;
 
-		// To rotate digits
-		istringstream iss(gparams["angle"]);
+		// To rotate digits		
 		GLfloat angle;
-		iss >> angle;
+		istringstream(gparams["angle"]) >> angle;
 		bool mirror = false;
 		if (gparams.find("mirror") != gparams.end())
 			mirror = gparams["mirror"] == "true" ? true : false;
@@ -1144,9 +1126,8 @@ void guiGateREGISTER::draw(bool color, bool drawPalette) {
 	glGetFloatv(GL_LINE_WIDTH, &lineWidthOld);
 	glLineWidth(2.0);
 
-	istringstream iss(gparams["angle"]);
 	GLfloat angle;
-	iss >> angle;
+	istringstream (gparams["angle"]) >> angle;
 	bool mirror = false;
 	if (gparams.find("mirror") != gparams.end())
 		mirror = gparams["mirror"] == "true" ? true : false;

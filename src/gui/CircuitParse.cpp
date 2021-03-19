@@ -343,8 +343,9 @@ bool CircuitParse::parseGateToSend(string type, string ID, string position, vect
 					found = true;
 					break;
 				}
-			if (!found)
+			if (!found) {
 				params.push_back(parameter(lpwalk->first, lpwalk->second, false));
+			}
 			lpwalk++;
 		}
 	}

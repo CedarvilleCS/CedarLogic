@@ -80,7 +80,7 @@ void FSMParamDialog::OnBtnOK(wxCommandEvent& event) {
 
 	while (true)
 	{
-		int posfin = stateText.find('\n');
+		long posfin = stateText.find('\n');
 		if (posfin == -1)
 			posfin = stateText.size() - 1;
 		if (posfin <= 0)
@@ -89,12 +89,12 @@ void FSMParamDialog::OnBtnOK(wxCommandEvent& event) {
 		stateText = stateText.substr(posfin + 1);
 
 		// Remove spaces before and after text
-		for (unsigned int i = 0; i < line.size(); i++)
+		for (unsigned long i = 0; i < line.size(); i++)
 			if (line[i] != ' ') {
 				line = line.substr(i);
 				break;
 			}
-		for (unsigned int i = line.size() - 1; i > 0; i--)
+		for (unsigned long i = line.size() - 1; i > 0; i--)
 			if (line[i] == ' ')
 				line = line.substr(0, i);
 			else
@@ -103,30 +103,29 @@ void FSMParamDialog::OnBtnOK(wxCommandEvent& event) {
 		lines.push_back(line);
 	}
 
-	map < string, string > lParamList;
-	map < string, string > gParamList;
-
 	map <string, string>* logicParams = m_guiGateFSM->getAllLogicParams();
 
-	unsigned int inBits = atoi(logicParams->find("INPUT_BITS")->second.c_str());
+	unsigned long inBits;
+	istringstream(logicParams->find("INPUT_BITS")->second.c_str()) >> inBits;
 	string inX = "";
-	for (unsigned int i = 0; i < inBits; i++)
+	for (unsigned long i = 0; i < inBits; i++)
 		inX = inX + "X";
 
-	unsigned int outBits = atoi(logicParams->find("OUTPUT_BITS")->second.c_str());
+	unsigned long outBits;
+	istringstream(logicParams->find("OUTPUT_BITS")->second.c_str()) >> outBits;
 	string out0 = "";
-	for (unsigned int i = 0; i < outBits; i++)
+	for (unsigned long i = 0; i < outBits; i++)
 		out0 = out0 + "0";
 
-	unsigned int error = 0;
-	unsigned int stateError;
-	unsigned int line;
+	unsigned long error = 0;
+	unsigned long stateError;
+	unsigned long line;
 	vector <string> states;
 	vector <string> nxstates;
 	for (line = 0; line < lines.size(); line++) {
-		int pSpace;
-		int pSlash;
-		int pArrow;
+		long pSpace;
+		long pSlash;
+		long pArrow;
 		string state;
 		string nxstate;
 		string inputs;
@@ -144,7 +143,7 @@ void FSMParamDialog::OnBtnOK(wxCommandEvent& event) {
 			if (pSlash > pArrow) { error = 1; break; }
 			if (inBits>0) { error = 2; break; }
 			state = lines[line].substr(0, pSlash);
-			for (unsigned int i = 0; i < states.size(); i++)
+			for (unsigned long i = 0; i < states.size(); i++)
 				if (state == states[i]) {
 					error = 11;
 					stateError = i;
@@ -182,7 +181,7 @@ void FSMParamDialog::OnBtnOK(wxCommandEvent& event) {
 			else	// EST IN-EST/OUT IN-EST/OUT ...		Mealy
 			{
 				state = lines[line].substr(0, pSpace);
-				for (unsigned int i = 0; i < states.size(); i++)
+				for (unsigned long i = 0; i < states.size(); i++)
 					if (state == states[i]) {
 						error = 11;
 						stateError = i;
@@ -230,9 +229,9 @@ void FSMParamDialog::OnBtnOK(wxCommandEvent& event) {
 	}
 
 	if (!error)
-		for (unsigned int i = 0; i < nxstates.size(); i++) {
+		for (unsigned long i = 0; i < nxstates.size(); i++) {
 			bool found = false;
-			for (unsigned int j = 0; j < states.size(); j++)
+			for (unsigned long j = 0; j < states.size(); j++)
 				if (nxstates[i] == states[j]) {found = true; break;}
 			if (!found)	{ stateError = i;  error = 10; break; }
 		}
@@ -279,6 +278,7 @@ void FSMParamDialog::OnBtnOK(wxCommandEvent& event) {
 		return;
 	}
 
+	map < string, string > lParamList;
 
 	map <string, string>::iterator lparamsWalk = logicParams->begin();
 	while (lparamsWalk != logicParams->end()) {
@@ -288,15 +288,14 @@ void FSMParamDialog::OnBtnOK(wxCommandEvent& event) {
 		lparamsWalk++;
 	}
 
-	for (unsigned int i = 0; i < lines.size(); i++) {
+	for (unsigned long i = 0; i < lines.size(); i++) {
 		ostringstream oss;
 		oss << "State:" << i;
 		lParamList[oss.str()] = lines[i];
 	}
 
-	lParamList["CURRENT_STATE"] = "";
 	lParamList["CLEAR_FSM"] = "true";
-	wxcmd->Submit(new cmdSetParams(guiCircuit, m_guiGateFSM->getID(), paramSet(&gParamList, &lParamList),false));
+	wxcmd->Submit(new cmdSetParams(guiCircuit, m_guiGateFSM->getID(), paramSet(NULL, &lParamList),false));
 
 	EndModal(wxID_OK);
 

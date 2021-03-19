@@ -1156,10 +1156,10 @@ void GUICanvas::OnKeyDown(wxKeyEvent& event) {
 			collisionChecker.removeObject( newDragGate );
 			delete newDragGate;
 			collisionChecker.update();
-		}
-		 else {
-			// Pedro Casanova(casanova@ujaen.es) 2021/01-03
-			// This causes many problems
+		} 
+		// Pedro Casanova(casanova@ujaen.es) 2021/01-03
+		// This causes many problems	
+		/*else {		
 			if (preMove.size() > 0) {
 				saveMove = false;
 				for (unsigned int i = 0; i < preMove.size(); i++) {
@@ -1175,8 +1175,8 @@ void GUICanvas::OnKeyDown(wxKeyEvent& event) {
 					wireList[preMoveWire[i].id]->setSegmentMap(preMoveWire[i].oldWireTree);
 					wireList[preMoveWire[i].id]->select();
 				}
-			}			
-		}
+			}
+		}*/
 		currentDragState = DRAG_NONE;
 		endDrag(BUTTON_LEFT);
 		Refresh();

@@ -77,7 +77,7 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 
 	while (true)
 	{
-		int posfin = functionText.find('\n');
+		long posfin = functionText.find('\n');
 		if (posfin == -1)
 			posfin = functionText.size() - 1;
 		if (posfin <= 0)
@@ -86,12 +86,12 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 		functionText = functionText.substr(posfin + 1);
 
 		// Remove spaces before and after text
-		for (unsigned int i = 0; i < line.size(); i++)
+		for (unsigned long i = 0; i < line.size(); i++)
 			if (line[i] != ' ') {
 				line = line.substr(i);
 				break;
 			}
-		for (unsigned int i = line.size() - 1; i > 0; i--)
+		for (unsigned long i = line.size() - 1; i > 0; i--)
 			if (line[i] == ' ')
 				line = line.substr(0, i);
 			else
@@ -100,13 +100,12 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 		lines.push_back(line);
 	}
 
-	map < string, string > lParamList;
-	map < string, string > gParamList;
-
 	map <string, string>* logicParams = m_guiGateCMB->getAllLogicParams();
 
-	unsigned int inBits = atoi(logicParams->find("INPUT_BITS")->second.c_str());
-	unsigned int outBits = atoi(logicParams->find("OUTPUT_BITS")->second.c_str());
+	unsigned int inBits;
+	istringstream(logicParams->find("INPUT_BITS")->second.c_str()) >> inBits;
+	unsigned int outBits;
+	istringstream(logicParams->find("OUTPUT_BITS")->second.c_str()) >> outBits;
 	unsigned int error = 0;
 	unsigned int line;
 	vector <string> outputs;
@@ -128,7 +127,7 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 			if (!chkDigits(output.substr(1,output.length()-1))) { error = 2; break; }
 			unsigned int nOutput = atoi(output.substr(1).c_str());
 			if (nOutput >= outBits) { error = 2; break; }
-			for(unsigned int i = 0; i < outputs.size();i++)
+			for(unsigned long i = 0; i < outputs.size();i++)
 				if (outputs[i] == output) { error = 6; break; }
 			if (error) break;
 			outputs.push_back(output);
@@ -152,7 +151,7 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 				if (lines[line].substr(pEqual + 1, 1) == "s") lines[line][pEqual + 1] = 'S';
 				istringstream iss(lines[line].substr(pEqual + 3, lines[line].length() - pEqual - 4) + ",");
 				string chkCommas = iss.str();
-				for (unsigned int i = 0; i < chkCommas.length(); i++)
+				for (unsigned long i = 0; i < chkCommas.length(); i++)
 					if (chkCommas[i] == ',')
 						chkCommas[i] = '0';
 				if (!chkDigits(chkCommas)) { error = 4; break; }
@@ -203,16 +202,9 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 		return;
 	}
 
+	map < string, string > lParamList;
 
-	map <string, string>::iterator lparamsWalk = logicParams->begin();
-	while (lparamsWalk != logicParams->end()) {
-		if ((lparamsWalk->first).substr(0, 9) == "Function:") {
-			lParamList[lparamsWalk->first] = "";
-		}
-		lparamsWalk++;
-	}
-
-	for (unsigned int i = 0; i < lines.size(); i++) {
+	for (unsigned long i = 0; i < lines.size(); i++) {
 		for (line = 0; line < outputs.size(); line++)
 			if (atoi(outputs[line].substr(1).c_str()) == i) break;
 
@@ -221,7 +213,7 @@ void CMBParamDialog::OnBtnOK(wxCommandEvent& event) {
 		lParamList[oss.str()] = lines[line];
 	}
 	
-	wxcmd->Submit(new cmdSetParams(guiCircuit, m_guiGateCMB->getID(), paramSet(&gParamList, &lParamList),false));
+	wxcmd->Submit(new cmdSetParams(guiCircuit, m_guiGateCMB->getID(), paramSet(NULL, &lParamList),false));
 
 	EndModal(wxID_OK);
 
