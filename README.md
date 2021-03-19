@@ -22,37 +22,37 @@ In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonr
 ## Getting Ready to Compile
 **TODO:** Automate build process so this is antiquated (infrastructure as code)
 
-1. Install `Visual Studio 2015` or newer. `Visual Studio 2019 Community Edition` is known to work as well.
+1. Install [Visual Studio](https://visualstudio.microsoft.com/downloads/) 2015 or newer. (Tested and works with Visual Studio 2019)
 
 2. Download [wxWidgets 2.8.12](https://github.com/wxWidgets/wxWidgets/releases/download/v2.8.12/wxMSW-2.8.12-Setup.exe) source for windows.
 
 3. Run wxWidgets source installer.
 
-4. (Optional) Set windows environment variable `WXWIN` to point to your wxWidgets directory.
+4. (Optional) [Set windows environment variable](https://www.onmsft.com/how-to/how-to-set-an-environment-variable-in-windows-10) `WXWIN` to point to your wxWidgets directory.
 
 5. Edit `%WXWIN%\include\wx\msw\setup.h` so that `wxUSE_GLCANVAS` is `1` instead of `0`.
 
 6. Edit `%WXWIN%\src\msw\window.cpp` so that it does not include `pbt.h`.
 
-7. Open an `x86 native tools` command prompt and run these commands.
+7. Open [Visual Studio's x86 native tools command prompt](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160#developer_command_prompt_shortcuts) (NOT cmd or Powershell!) and run [nmake](https://docs.microsoft.com/en-us/cpp/build/reference/nmake-reference):
 	
-		cd %WXWIN%\build\msw
-		nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
-		nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
+```PS
+cd %WXWIN%\build\msw
+nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
+nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
+```
 
 ## Compiling and creating an installer.
 
-1. First, you need to install NSIS.
+1. First, you need to install [NSIS](https://nsis.sourceforge.io/Download).
 
-2. Next, go to the root of the git repo.
+2. Next, go to the root of the CedarLogic git repo ([clone](https://www.git-scm.com/docs/git-clone) it if you haven't already).
 
 3. Run `mkdir build && cd build`
 
 3. Run `cmake .. -A Win32` (If you did not set the windows environment variable earlier, also add `-Dwxwin=C:/wxWidgets-2.8.12` to set `wxwin` variable to the base of the wxWidgets install path).
 
-4. There is now a visual studio solution in the `build` directory. Open the solution file.
-
-5. Right-click on the project titled `CedarLogic` and select `Set as Startup Project`.
+4. There is now a Visual Studio Solution File in the `build` directory. Open the solution file with Visual Studio.
 
 6. Select `Release` from the configuration menu.
 
