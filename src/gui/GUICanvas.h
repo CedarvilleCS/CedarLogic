@@ -121,11 +121,12 @@ public:
 	void OnMouseDown( wxMouseEvent& event ) {
 		if( event.LeftDown() || event.LeftDClick() ) {
 			mouseLeftDown( event );
-		} else if( event.RightDown() || event.RightDClick() ) {
-			mouseRightDown( event );
+		} else if (event.RightDown() || event.RightDClick()) {
+			mouseRightDown(event);
 		}
 	};
-    void mouseLeftDown(wxMouseEvent& event);
+
+	void mouseLeftDown(wxMouseEvent& event);
     void mouseRightDown(wxMouseEvent& event);
 
     void OnMouseUp(wxMouseEvent& event);
@@ -143,7 +144,7 @@ public:
 	void deleteSelection();
 	
 	// Render this page
-    void OnRender( bool noColor = false );
+    void OnRender( bool color = true );
 
 	// Update the collision checker and refresh
 	void Update();
@@ -194,6 +195,19 @@ public:
 
 	// Create a command to connect a gate to a gate.
 	klsCommand * createGateConnectionCommand(IDType gate1Id, const string &hotspot1, IDType gate2Id, const string &hotspot2);
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Create a command to connect a wire to a wire.
+	klsCommand * createWireConnectionCommand(IDType wireId1, IDType wireId2);
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// Replace Gate %%_ for his correct type (Dynamics gates)
+	bool addDynamicGate(guiGate* gGate);
+	void replaceGate(guiGate* gGate);
+	string getGate(guiGate* gGate);
+	string getLatch(guiGate* gGate);
+	string getFlipFlop(guiGate* gGate);
+	bool createGatesStruct(guiGate* gGate, string *errorMsg = nullptr);
 
 private:
 

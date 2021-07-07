@@ -22,7 +22,7 @@ using namespace std;
 class paramDialog : public wxDialog {
 public:
     // ctor(s)
-    
+	/** Constructor. Creates a new paramDialog */
     paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, wxCommandProcessor* wxcmd);
 	virtual ~paramDialog();
 	
@@ -30,7 +30,7 @@ public:
 	void OnLoad( wxCommandEvent &evt );
 	void OnSave( wxCommandEvent &evt );
 	void OnTextEntry( wxCommandEvent &evt) { validateData(); };
-	
+
 private:
 	GUICircuit* gCircuit;
 	guiGate* gGate;

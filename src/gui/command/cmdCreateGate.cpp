@@ -19,6 +19,7 @@ cmdCreateGate::cmdCreateGate(GUICanvas* gCanvas, GUICircuit* gCircuit, unsigned 
 }
 
 cmdCreateGate::cmdCreateGate(string def) : klsCommand(true, "Create Gate") {
+	_MSGCOM("Command String: %s\n", def.c_str());	//@@@@
 	istringstream iss(def);
 	string dump;
 	iss >> dump >> gid >> gateType >> x >> y;
@@ -26,8 +27,7 @@ cmdCreateGate::cmdCreateGate(string def) : klsCommand(true, "Create Gate") {
 }
 
 bool cmdCreateGate::Do() {
-	if (wxGetApp().libraries.size() == 0) return false; // No library loaded, so can't create gate
-
+	if (wxGetApp().libraries.size() == 0) return false; // No library loaded, so can't create gate	
 	gCircuit->createGate(gateType, gid, fromString);
 	gCanvas->insertGate(gid, (*(gCircuit->getGates()))[gid], x, y);
 
@@ -58,22 +58,49 @@ bool cmdCreateGate::Do() {
 				}
 			}
 
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// Nedeed only for inputs
+			// Send the isPullUp message:
+			if (libGate.hotspots[i].isPullUp) {
+				if (libGate.hotspots[i].isInput) {
+					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "PULL_UP", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// Nedeed only for inputs
+			// Send the isPullDown message:
+			if (libGate.hotspots[i].isPullDown) {
+				if (libGate.hotspots[i].isInput) {
+					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "PULL_DOWN", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// Nedeed only for inputs
+			// Send the ForceJunction message:
+			if (libGate.hotspots[i].ForceJunction) {
+				if (libGate.hotspots[i].isInput) {
+					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "FORCE_JUNCTION", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// Nedeed only for outputs
 			// Send the logicEInput message:
 			if (libGate.hotspots[i].logicEInput != "") {
-				if (libGate.hotspots[i].isInput) {
-					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(gid, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
-				}
-				else {
+				if (!libGate.hotspots[i].isInput) {
 					gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT_PARAM, new klsMessage::Message_SET_GATE_OUTPUT_PARAM(gid, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
 				}
 			}
+
 		} // for( loop through the hotspots )
 	} // if( logic type is non-null )
-
 
 	for (unsigned int i = 0; i < proxconnects.size(); i++) {
 		proxconnects[i]->Do();
 	}
+	
 	return true;
 }
 

@@ -87,6 +87,7 @@ GLbox guiText::getBoundingBox( void ) {
 	tempBox.right = size.first*scale[0];
 	tempBox.top = -size.second*0.1667*scale[1];
 	tempBox.bottom = -size.second*0.8333*scale[1];
+
 	return tempBox;
 }
 
@@ -106,5 +107,18 @@ void guiText::setSize( GLdouble textHeight, GLdouble aspect ) {
 
 // loadFont - call this for each context after initialization
 void guiText::loadFont(string fontpath) {
-	fontFace.Create(fontpath.c_str(), FONT_TEXTURE_ID);	
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	if (fontpath == "res")
+	{
+		// Font in Resources
+		HANDLE hResource = FindResource(NULL, "ARIAL.GLF", "BIN");
+		DWORD nLen = SizeofResource(NULL, (HRSRC)hResource);
+		hResource = LoadResource(NULL, (HRSRC)hResource);
+		void* lpResData = LockResource(hResource);
+		fontFace.Create(lpResData, FONT_TEXTURE_ID);
+	}
+	else
+	{
+		fontFace.Create(fontpath.c_str(), FONT_TEXTURE_ID);
+	}
 }

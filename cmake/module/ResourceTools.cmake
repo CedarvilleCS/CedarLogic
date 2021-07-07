@@ -15,7 +15,7 @@ cmake_minimum_required(VERSION 3.9)
 # Directory is relative to toplevel CMakeLists.txt.
 # 
 function(install_resources resDir)
-    install(DIRECTORY "${CMAKE_SOURCE_DIR}/${resDir}" DESTINATION ".")
+    install(DIRECTORY "${CMAKE_SOURCE_DIR}/${resDir}" DESTINATION ".")	
 endfunction()
 
 

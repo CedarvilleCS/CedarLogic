@@ -12,6 +12,8 @@
 #include "logic_defaults.h"
 #include "logic_event.h"
 #include "logic_wire.h"
+#include "logic_circuit.h"
+#include "..\gui\guiGate.h"
 
 class Circuit;
 
@@ -27,8 +29,11 @@ using namespace std;
 struct GateInput {
 	IDType wireID;
 	bool inverted;
-	
-	GateInput() : wireID(ID_NONE), inverted(false) {};
+	bool pullup;
+	bool pulldown;
+	bool forcejunction;		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+
+	GateInput() : wireID(ID_NONE), inverted(false), pullup(false), pulldown(false), forcejunction(false) {};
 };
 
 struct GateOutput {
@@ -47,8 +52,10 @@ class Gate
 {
 public:
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added theGUICircuit parameter
 	// Update the gate's outputs:
-	void updateGate( IDType myID, Circuit * theCircuit );
+	void updateGate( IDType myID, Circuit * theCircuit, GUICircuit  * theGUICircuit );
 
 	// Resend the last event to a (probably newly connected) wire:	
 	void resendLastEvent( IDType myID, string outputID, Circuit * theCircuit );
@@ -92,9 +99,13 @@ public:
 
 	// Get the first output of the gate that has a wire attached to it:
 	string getFirstConnectedOutput( void );
-
+	
 	Gate();
 	virtual ~Gate();
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// Needed to know logicType in Circuit
+	string logicType;
 
 protected:
 	// Gate "Entity" declaration methods:
@@ -102,7 +113,7 @@ protected:
 	// Register an input for this gate:
 	// Possibly declare the input as edge triggered, which will cause it
 	// to be tracked to be able to check rising and falling edges.
-	void declareInput( string inputID, bool edgeTriggered = false );
+	void declareInput( string inputID, bool edgeTriggered = false);
 
 	// Return true if an input has been declared. False otherwise.
 	bool inputExists( string inputID ) {
@@ -121,8 +132,6 @@ protected:
 			declareInput( oss.str() );
 		}
 	};
-
-
 
 	// Register an output for this gate :
 	void declareOutput( string name );
@@ -148,7 +157,9 @@ protected:
 	// Set the input to be automatically inverted:
 	void  setInputInverted( string inputID, bool newInv = true ) {
 		if(inputList.find(inputID) == inputList.end()) {
-			WARNING("Gate::setInputState() - Invalid input name.");
+			WARNING("Gate::setInputInverted() - Invalid input name.");
+			_MSGW("Input ID: %s\n", inputID.c_str());
+			_MSGNC(false, "ASSERT END 1.h\n");	//@@@@
 			assert( false );
 			return;
 		}
@@ -157,11 +168,40 @@ protected:
 		this->inputList[inputID].inverted = newInv;
 	};
 
+	// Set the input to be pull-up:
+	void  setInputPullUp(string inputID, bool newPU = true) {
+		if (inputList.find(inputID) == inputList.end()) {
+			WARNING("Gate::setInputPullUp() - Invalid input name.");
+			_MSG("Input ID: %s\n", inputID.c_str());
+			_MSGNC(false, "ASSERT END 2.h\n");	//@@@@
+			assert(false);
+			return;
+		}
+
+		// Set the pullup state:
+		this->inputList[inputID].pullup = newPU;
+	};
+
+	// Set the input to be pull-down:
+	void  setInputPullDown(string inputID, bool newPD = true) {
+		if (inputList.find(inputID) == inputList.end()) {
+			WARNING("Gate::setInputPullDown() - Invalid input name.");
+			_MSG("Input ID: %s\n", inputID.c_str());
+			_MSGNC(false, "ASSERT END 3.h\n");	//@@@@
+			assert(false);
+			return;
+		}
+
+		// Set the pulldown state:
+		this->inputList[inputID].pulldown = newPD;
+	};
 
 	// Set the output to be automatically inverted:
 	void  setOutputInverted( string outputID, bool newInv = true ) {
 		if(outputList.find(outputID) == outputList.end()) {
-			WARNING("Gate::setOutputState() - Invalid output name.");
+			WARNING("Gate::setOutputInverted() - Invalid output name.");
+			_MSG("Output ID: %s\n", outputID.c_str());
+			_MSGNC(false, "ASSERT END 4.h\n");	//@@@@
 			assert( false );
 			return;
 		}
@@ -170,17 +210,30 @@ protected:
 		this->outputList[outputID].inverted = newInv;
 	};
 
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Force the junction in input:
+	void  setInputForceJunction(string inputID, bool newPU = false) {
+		if (inputList.find(inputID) == inputList.end()) {
+			return;
+		}
+		// Set the forcejunction state:
+		this->inputList[inputID].forcejunction = newPU;
+	};
 
-	// Set the output to be automatically inverted:
+	// Set the output Enable Pin:
 	void  setOutputEnablePin( string outputID, string inputID ) {
 		if(outputList.find(outputID) == outputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid output name.");
+			_MSG("Output ID: %s\n", outputID.c_str());
+			_MSGNC(false, "ASSERT END 5.h\n");	//@@@@
 			assert( false );
 			return;
 		}
 
 		if(inputList.find(inputID) == inputList.end()) {
 			WARNING("Gate::setOutputEnablePin() - Invalid input name.");
+			_MSG("Input ID: %s\n", inputID.c_str());
+			_MSGNC(false, "ASSERT END 6.h\n");	//@@@@
 			assert( false );
 			return;
 		}
@@ -211,6 +264,11 @@ protected:
 	// Get the input states of a bus of inputs named "busName_0" through
 	// "busName_x" and return their states as a vector.
 	vector< StateType > getInputBusState( string busName );
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Get the wire states of a bus of output named "busName_0" through
+	// "busName_x" and return their states as a vector.
+	vector< StateType > Gate::getOutputBusWireState(string busName);
 
 	// Get the types of inputs that are represented.
 	vector< bool > groupInputStates( void );
@@ -252,7 +310,9 @@ protected:
 	
 	// A temporary pointer to the Circuit object, used for getting wire states, time info,
 	// and for sending events from gate outputs:
-	Circuit* ourCircuit;
+	Circuit* ourCircuit = NULL;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	GUICircuit* ourGUICircuit = NULL;
 	
 	// A temporary ID used during updates, which represents this gate's ID in the Circuit.
 	IDType myID;
@@ -323,6 +383,27 @@ public:
 	void gateProcess( void );
 };
 
+// ******************* PLD_OR Gate *****************
+class Gate_PLD_OR : public Gate_OR
+{
+public:
+
+	// Initialize the gate's interface:
+	Gate_PLD_OR();
+
+	// Handle gate events:
+	void gateProcess(void);
+
+	// Set the parameters:
+	bool setParameter(string paramName, string value);
+
+	// Get the parameters:
+	string getParameter(string paramName);
+
+protected:
+	bool forceOne;
+};
+
 
 // ******************* AND Gate *********************
 class Gate_AND : public Gate_N_INPUT
@@ -330,9 +411,30 @@ class Gate_AND : public Gate_N_INPUT
 public:
 	// Initialize the gate's interface:
 	Gate_AND();
-	
+
 	// Handle gate events:
 	void gateProcess( void );
+};
+
+// ******************* PLD_AND Gate *****************
+class Gate_PLD_AND : public Gate_AND
+{
+public:
+
+	// Initialize the gate's interface:
+	Gate_PLD_AND();
+
+	// Handle gate events:
+	void gateProcess(void);
+
+	// Set the parameters:
+	bool setParameter(string paramName, string value);
+
+	// Get the parameters:
+	string getParameter(string paramName);
+
+protected:
+	bool forceZero;
 };
 
 // ****************** EQUIVALENCE Gate **************
@@ -383,13 +485,28 @@ protected:
 
 	unsigned long currentValue;
 
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// To implement CO_ON_OVERFLOW must remember carryOut
+	StateType carryOut;
+
 	// An initialization value, to make REGISTERs initialize more
 	// nicely when loading them or making new ones:
 	bool firstGateProcess;
 
 	// The clock pin had a triggering edge and clocking is enabled,
 	// or the register isn't synched to a clock.
-	bool hasClockEdge();
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// syncSignal added to permit set and clear
+	bool hasClockEdge(bool syncSignal = true);
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Bidirectional data lines
+	bool bidirectionalDATA;
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Carry out on overflow, not in min/max
+	bool CoOnOverflow;
+
 };
 
 
@@ -425,10 +542,18 @@ public:
 	// Handle gate events:
 	void gateProcess( void );
 
-	// Set the pulse:
+	// Set the parameters:
 	bool setParameter( string paramName, string value );
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Get the parameters
+	string getParameter(string paramName);
+
 private:
 	TimeType pulseRemaining;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	TimeType pulseWidth;
+	bool High_Z;
 };
 
 
@@ -465,21 +590,30 @@ protected:
 	unsigned long outBits;
 };
 
-// ******************* Priority Encoder Gate *********************
-// Encodes only the highest significant bit value
-class Gate_PRI_ENCODER : public Gate_N_INPUT
+// ******************* Encoder Gate *********************
+// Pedro Casanova (casanova@ujaen.es) 2020/04-07
+// Change name from PRI_ENCODER to ENCODER
+// None, high an low priority
+class Gate_ENCODER : public Gate_N_INPUT
 {
 public:
-	Gate_PRI_ENCODER();
+	Gate_ENCODER();
 
 	// Handle gate events:
 	void gateProcess(void);
 
 	// Set the parameters:
 	bool setParameter(string paramName, string value);
+	
+	// Get the parameters:
+	string getParameter(string paramName);
 
 protected:
 	unsigned long outBits;
+
+	// Pedro Casanova (casanova@ujan.es) 2020/04-12
+	string Priority;
+	unsigned long invalidValue;
 };
 
 
@@ -569,6 +703,30 @@ protected:
 	bool syncSet, syncClear;
 };
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Similar to JKFF
+// ******************* T Flip Flop Gate *********************
+//NOTE: For all inputs, UNKNOWN states are interpreted as 0.
+
+class Gate_TFF : public Gate
+{
+public:
+	// Initialize the gate's interface:
+	Gate_TFF();
+
+	// Handle gate events:
+	void gateProcess( void );
+
+	// Set the parameters:
+	bool setParameter( string paramName, string value );
+
+	// Get the parameters:
+	string getParameter( string paramName );
+
+protected:
+	StateType currentState;
+	bool syncSet, syncClear;
+};
 
 // ***************** n-bit by n-bit RAM Gate *******************
 class Gate_RAM : public Gate
@@ -606,6 +764,13 @@ public:
 protected:
 	unsigned long dataBits;
 	unsigned long addressBits;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Sync and Async write
+	bool syncWR;
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Bidirectional data lines
+	bool bidirectionalDATA;
 
 	map< unsigned long, unsigned long > memory;
 	
@@ -744,21 +909,21 @@ private:
 
 
 
-// ******************* BUS_END Gate *********************
+// ******************* BUSEND Gate *********************
 // This gate is basically a bunch of junctions.
 // It's used as a transition between gui buses and logic wires.
-class Gate_BUS_END : public Gate
+class Gate_BUSEND : public Gate
 {
 public:
 	// Initialize the gate:
 	// Note: Because this gate does some really funky stuff,
 	// it needs a pointer to the circuit to manipulate the Junction
 	// objects.
-	Gate_BUS_END(Circuit *newCircuit);
+	Gate_BUSEND(Circuit *newCircuit);
 
 	// Destroy the gate, and remove the Junction objects from the
 	// Circuit:
-	virtual ~Gate_BUS_END();
+	virtual ~Gate_BUSEND();
 
 	// Handle gate events:
 	void gateProcess();
@@ -806,6 +971,86 @@ public:
 //End of edit****************************************************
 
 
+// ******************* FSM Gate *********************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Implement Finite State Machines
+class Gate_FSM_SYNC : public Gate
+{
+public:
+	Gate_FSM_SYNC();
+
+	// Handle gate events:
+	void gateProcess(void);
+
+	// Set the parameters:
+	bool setParameter(string paramName, string value);
+
+	// Get the parameters:
+	string getParameter(string paramName);
+
+private:
+	// Process state param string
+	void procState(string paramName, string value);
+
+	void procPendingStates();
+	unsigned long definedIO;
+	map <string, string> paramStates;
+
+protected:
+	string currentOutput;
+	string currentState;	
+	string resetState;
+	unsigned long outBits;
+	unsigned long inBits;
+	bool asyncrhonous;
+	
+	vector< string > states;
+	map< string, vector< string > > nextState;
+	map< string, vector< string > > outputs;
+};
+
+// ******************* FSM Gate *********************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Implement Asynchronous Finite State Machines
+// This is a poolled gate
+class Gate_FSM_ASYNC : public Gate_FSM_SYNC
+{
+public:
+	Gate_FSM_ASYNC() : Gate_FSM_SYNC() { asyncrhonous = true; }
+};
+
+// ******************* CMB Gate *********************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Implement Combinational Blocks
+class Gate_CMB : public Gate
+{
+public:
+	Gate_CMB();
+
+	// Handle gate events:
+	void gateProcess(void);
+
+	// Set the parameters:
+	bool setParameter(string paramName, string value);
+
+	// Get the parameters:
+	string getParameter(string paramName);
+
+private:
+	// Process state param string
+	void procFunction(string paramName, string value);
+
+	void procPendingFunctions();
+	unsigned long definedIO;
+	map <string, string> paramFunctions;
+
+protected:
+	unsigned long outBits;
+	unsigned long inBits;
+
+	map< unsigned long, unsigned long > outputs;
+
+};
 
 
 #endif // LOGIC_GATE_H

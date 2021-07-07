@@ -18,6 +18,7 @@ DECLARE_APP(MainApp)
 IMPLEMENT_DYNAMIC_CLASS(GUICircuit, wxDocument)
 
 GUICircuit::GUICircuit() {
+	ourCircuit = NULL;
 	nextGateID = nextWireID = 0;
 	simulate = true;
 	waitToSendMessage = true;
@@ -57,18 +58,25 @@ void GUICircuit::reInitializeLogicCircuit() {
 
 guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	string libName = wxGetApp().gateNameToLibrary[gateName];
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	if (libName == "")
+		if (wxGetApp().libParser.CreateDynamicGate(gateName)) {
+			libName = wxGetApp().gateNameToLibrary[gateName];
+			if (libName == "") return NULL;
+		}
+		else
+			return NULL;
+
+	LibraryGate gateDef = wxGetApp().libraries[libName][gateName];
 	
 	if (id == -1) id = getNextAvailableGateID();
 	guiGate* newGate = NULL;
-	LibraryGate gateDef = wxGetApp().libraries[libName][gateName];
-	//wxGetApp().libraries[libName].getGate(gateName, gateDef);
-	
 
 	string ggt = gateDef.guiType;
 	
 	if (ggt == "REGISTER")
 		newGate = (guiGate*)(new guiGateREGISTER());
-	else if (ggt == "TO" || ggt == "FROM")
+	else if (ggt == "TO" || ggt == "FROM" || ggt == "LINK")		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 		newGate = (guiGate*)(new guiTO_FROM());
 	else if (ggt == "LABEL")
 		newGate = (guiGate*)(new guiLabel());
@@ -80,17 +88,33 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 		newGate = (guiGate*)(new guiGateKEYPAD());
 	else if (ggt == "PULSE")
 		newGate = (guiGate*)(new guiGatePULSE());
-	else if (ggt == "RAM"){
+	else if (ggt == "RAM")
 		newGate = (guiGate*)(new guiGateRAM());
-	}
+	else if (ggt == "WIRE")										// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		newGate = (guiGate*)(new guiGateWIRE());
+	else if (ggt == "PLD")										// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		newGate = (guiGate*)(new guiGatePLD());
+	else if (ggt == "BUSEND")									// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		newGate = (guiGate*)(new guiGateBUSEND());
+	else if (ggt == "FSM")										// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		newGate = (guiGate*)(new guiGateFSM());
+	else if (ggt == "CMB")										// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		newGate = (guiGate*)(new guiGateCMB());
 	else
 		newGate = new guiGate();
 
 	newGate->setLibraryName( libName, gateName );
+	newGate->setGUICircuit(this);
 
 	for (unsigned int i = 0; i < gateDef.shape.size(); i++) {
 		lgLine tempLine = gateDef.shape[i];
-		newGate->insertLine(tempLine.x1, tempLine.y1, tempLine.x2, tempLine.y2);
+		newGate->insertLine(tempLine.x1, tempLine.y1, tempLine.x2, tempLine.y2, tempLine.w);
+	}
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Lines with offset for rotate chars
+	for (unsigned int i = 0; i < gateDef.textShape.size(); i++) {
+		lgOffLine tempLine = gateDef.textShape[i];
+		newGate->insertTextLine(tempLine.x0, tempLine.y0, tempLine.Line.x1, tempLine.Line.y1, tempLine.Line.x2, tempLine.Line.y2, tempLine.Line.w);
 	}
 	for (unsigned int i = 0; i < gateDef.hotspots.size(); i++) {
 		lgHotspot tempHS = gateDef.hotspots[i];
@@ -112,11 +136,13 @@ guiGate* GUICircuit::createGate(string gateName, long id, bool noOscope) {
 	gateList[id] = newGate;
 	gateList[id]->setID(id);
 	
+	// Pedro Casanova (casanova@ujaen.es 2020/04-12
+	// TO, FROM and LINK are valid signal to Oscope
 	// Update the OScope with the new info:
-	if(ggt == "TO" && !noOscope) {
+	if (!noOscope)
+		if (ggt == "TO" || ggt == "FROM" || ggt == "LINK")
 		myOscope->UpdateMenu();
-	}
-	
+
 	return newGate;
 }
 
@@ -127,19 +153,18 @@ void GUICircuit::deleteGate(unsigned long gid, bool waitToUpdate) {
 	
 	if (gateList.find(gid) == gateList.end()) return;
 
+	// Pedro Casanova (casanova@ujaen.es 2020/04-12
+	// TO, FROM and LINK are valid signal to Oscope
 	//Update Oscope
-	if(!waitToUpdate && gateList[gid]->getGUIType() == "TO") {
-		updateMenu = true;
-	}
+	if (!waitToUpdate)
+		if (gateList[gid]->getGUIType() == "TO" || gateList[gid]->getGUIType() == "FROM" || gateList[gid]->getGUIType() == "LINK")
+			updateMenu = true;
 	
 	delete gateList[gid];
 	gateList.erase(gid);
 
 	//Call Update Oscope
-	if(updateMenu)
-	{
-		myOscope->UpdateMenu();
-	}		
+	if (updateMenu) myOscope->UpdateMenu();
 }
 
 guiWire* GUICircuit::createWire(const std::vector<IDType> &wireIds) {
@@ -260,7 +285,7 @@ void GUICircuit::sendMessageToCore(klsMessage::Message message) {
 		
 		if (simulate) {
 			wxGetApp().dGUItoLOGIC.push_back(message);
-		} else{
+		} else {
 			messageQueue.push_back(message);
 		}
 	} else{
@@ -291,5 +316,4 @@ void GUICircuit::printState() {
 		wxGetApp().logfile << "gate " << thisGate->first << endl << flush;
 		thisGate++;
 	}
-	
 }

@@ -54,19 +54,31 @@ void CircuitParse::loadFile(string fileName) {
 vector<GUICanvas*> CircuitParse::parseFile() {
 
 	string firstTag = mParse->readTag();
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found
+	bool notFound = false; 
 
-	// Cedar Logic 2.0 and up has version information to keep old versions
-	// of Cedar Logic from opening new, incompatable files.
+	// CedarLogic 2.0 and up has version information to keep old versions
+	// of CedarLogic from opening new, incompatable files.
 	if (firstTag == "version") {
 		std::string versionNumber = mParse->readTagValue("version");
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Compare version number only "x.y.z"
+		// originally it was: "x.y.z | DATE - TIME"
+		if (versionNumber.find(" ") >= 0)
+			versionNumber = versionNumber.substr(0, versionNumber.find(" "));
 		if (versionNumber > VERSION_NUMBER_STRING()) {
 
 			//show error message!!! And quit.
-			wxMessageBox("This file was made with a newer version of Cedar Logic. "
-				"Go to 'Help\\Download Latest Version...' to open this file."
-				"Close CedarLogic without saving to avoid overwriting your work!!!", "Version Error!");
+			wxMessageBox("This file was made with a newer version of CedarLogic.\n\n"
+				//"Go to 'Help\\Download Latest Version...' to open this file. "
+				//"Close CedarLogic without saving to avoid overwriting your work!!!"
+				"If this circuit operates correctily you can save it with actual version number.\n\n"
+				"If this circuit does not operate correctily close CedarLogic without saving."				
+				, "Version Error!");
 
-			return gCanvases;
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// Can continue if no incompatibility (don't quit)
+			//return gCanvases;
 		}
 		mParse->readCloseTag();
 		firstTag = mParse->readTag();
@@ -89,7 +101,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 			gCanvases.push_back(gCanvas);
 		}
 		else {
-			gCanvas = gCanvases[(int)pageNum];			
+			gCanvas = gCanvases[(int)pageNum];
 		}
 		
 		string pageTag = temp;
@@ -108,7 +120,7 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 				char dump;
 				iss >> topLeft.x >> dump >> topLeft.y >> dump >> bottomRight.x >> dump >> bottomRight.y;
 				gCanvas->setViewport(topLeft, bottomRight);
-
+				gCanvas->getViewport(topLeft, bottomRight);
 				mParse->readCloseTag();
 			}
 			else if (temp == "gate") {
@@ -119,11 +131,10 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 				parameter* pParam;
 				do { // get full gate structure
 					temp = mParse->readTag(); // get tag
-					if (temp == "ID") { // get ID
+					if (temp == "ID") { // get ID						
 						ID = mParse->readTagValue(temp);
 					} else if (temp == "type") { // get type
-						type = mParse->readTagValue(temp);
-						
+						type = mParse->readTagValue(temp);					
 						//***********************************
 						//Edit by Joshua Lansford 4/4/07
 						//We have eliminated a couple of gate
@@ -136,32 +147,47 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						//gate type of the outdated gate
 						//to a new gate type that is supported
 						//without crashing the program.
-						if( type == "AM_RAM_16x16_Single_Port" ){
-							//there is no different between these two types.
-							//the AM_RAM_16x16_Single_Port was an experiment
-							//before we converted all the gates.
-							//Thus no warning needs to be given.
-							type = "AM_RAM_16x16";
-						}else if( type == "AA_DFF" ){
+						if( type == "AM_RAM_16x16_Single_Port" ) type = "AM_RAM_16x16";
+
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+						// Some names are changed for alfabetic order
+						else if (type == "CA_SMALL_TGATE") type = "TA_TGATE";
+											
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+						// Names are changed becuse now the encoder can chage priority type (none, low and high)
+						else if (type == "CB_PRI_ENCODER_4x2") type = "CB_ENCODER_4x2_EN";
+						else if (type == "CC_PRI_ENCODER_8x3") type = "CC_ENCODER_8x3_EN";
+						else if (type == "CD_PRI_ENCODER_16x4") type = "CD_ENCODER_16x4_EN"; 
+												
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+						// Not necesary to deprecate, components are now in library
+						/* else if (type == "AA_DFF") {
 							wxMessageBox("The High Active Reset D flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "AE_DFF_LOW";
-						}else if( type == "BA_JKFF" ){
+						}
+						else if (type == "BA_JKFF") {
 							wxMessageBox("The High Active Reset JK flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "BE_JKFF_LOW";
-						}else if( type == "BA_JKFF_NT" ){
+						}
+						else if (type == "BA_JKFF_NT") {
 							wxMessageBox("The High Active Reset negitive triggered JK flip flop has been deprecated.  Automatically replacing with a Low active version", "Old gate", wxOK | wxICON_ASTERISK, NULL);
 							type = "BE_JKFF_LOW_NT";
-						}
+						}*/
+
 						//**********************************
-						
 					} else if (temp == "position") { // get position
 						position = mParse->readTagValue(temp);
 					} else if (temp == "input") { // get input
 						temp = mParse->readTag(); // get input ID
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
+						// pedro casanova (casasanova@ujaen.es) 2020/04-12
+						// Convert to uppercase and rename
+						for (unsigned long cnt = 0; cnt < gc->connectionID.length(); cnt++)
+							gc->connectionID[cnt] = toupper(gc->connectionID[cnt]);
+						if (gc->connectionID == "ENABLE_0")
+							gc->connectionID = "OUTPUT_ENABLE";
 						mParse->readCloseTag();
-
 						istringstream iss(mParse->readTagValue("input"));
 						IDType tempId;
 						while (iss >> tempId) {
@@ -176,7 +202,10 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						gc = new gateConnector();
 						gc->connectionID = mParse->readTagValue(temp);
 						mParse->readCloseTag();
-
+						// pedro casanova (casasanova@ujaen.es) 2020/04-12
+						// Convert to uppercase
+						for (unsigned long cnt = 0; cnt < gc->connectionID.length(); cnt++)
+							gc->connectionID[cnt] = toupper(gc->connectionID[cnt]);
 						istringstream iss(mParse->readTagValue("output"));
 						IDType tempId;
 						while (iss >> tempId) {
@@ -192,16 +221,32 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 						istringstream iss(paramData);
 						iss >> x;
 						getline(iss, y, '\n');
-						pParam = new parameter(x, y.substr(1,y.size()-1), (temp == "gparam"));
-						params.push_back(*pParam);
-						delete pParam;
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+						// Do not load these gui params, they are obtained from the library
+						if (x != "CROSS_POINT")
+							if (x != "LED_BOX")
+								if (x != "VALUE_BOX")
+									if (x != "CLICK_BOX")
+										if (x.substr(0, 11) != "KEYPAD_BOX_")
+										{
+											// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+											// PULSE_WITH now is a logic param
+											if (x == "PULSE_WIDTH")
+												temp = "lparam";
+											pParam = new parameter(x, y.substr(1, y.size() - 1), (temp == "gparam"));
+											params.push_back(*pParam);
+											delete pParam;
+										}
 					}
 					// ADD OTHER TAGS FOR GATE HERE
-						// ALSO MODIFY parseGateToSend
+					// ALSO MODIFY parseGateToSend
 					mParse->readCloseTag(); // </>
 				} while (!mParse->isCloseTag(mParse->getCurrentIndex()));
 				mParse->readCloseTag(); // >gate
-				parseGateToSend(type, ID, position, inputs, outputs, params);
+				if (parseGateToSend(type, ID, position, inputs, outputs, params)) {
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found
+					notFound = true;
+				}
 			}
 			else if (temp == "wire") {
 				//**********************************
@@ -223,21 +268,52 @@ vector<GUICanvas*> CircuitParse::parseFile() {
 	}
 
 	gCanvas->getCircuit()->getOscope()->UpdateMenu();
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found
+	if (notFound) {
+		wxMessageBox("One or more components has not been found in library.\n\n"
+			"Double click on it to see original component name\n\n"			
+			"Use 'Connections Points' to see orphans connectinos and remove them\n\n"
+			"When you save this circuit information about connections of these components will be lost.\n\n"
+			, "Not found Error!");
+	}
 	return gCanvases;
 }
 
-void CircuitParse::parseGateToSend(string type, string ID, string position, vector < gateConnector > &inputs, vector < gateConnector > &outputs, vector < parameter > &params) {
+bool CircuitParse::parseGateToSend(string type, string ID, string position, vector < gateConnector > &inputs, vector < gateConnector > &outputs, vector < parameter > &params) {
 	// If no library was loaded, then don't try to make a gate from one
-	if (wxGetApp().libraries.size() == 0) return;
+	if (wxGetApp().libraries.size() == 0) return true;
 	ostringstream oss;
 	// Check the gate ID to see if it is taken
 	long id;
 	float x, y;
+	string orgName;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12		If some component not found
+	bool notFound = false;
 	istringstream issb(ID);
 	issb >> id;
-	
-	string logicType = wxGetApp().libParser.getGateLogicType( type );
-	if ( logicType.size() > 0 )
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// To avoid crash when a gate does not exist
+	// Can give problems with orfans hotspots
+	// Must right click on them to unconnect or use Shift/Control click to connect
+	LibraryGate libGate;
+	if (!wxGetApp().libParser.getGate(type, libGate)) {
+		if (type.substr(0, 3) == "@@_") {
+			wxGetApp().libParser.CreateDynamicGate(type);
+		}
+		if (!wxGetApp().libParser.getGate(type, libGate)) {
+			notFound = true;
+			orgName = type;
+			type = "@@_NOT_FOUND";
+			wxGetApp().libParser.getGate(type, libGate);
+			inputs.clear();
+			outputs.clear();
+			notFoundGates.push_back(id);
+		}
+	}
+
+	if (libGate.logicType.size() > 0)
 		gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_CREATE_GATE, new klsMessage::Message_CREATE_GATE(wxGetApp().libraries[wxGetApp().gateNameToLibrary[type]][type].logicType, id)));
 	// Create gate for GUI
 	istringstream issa(position.substr(0,position.find(",")+1));
@@ -245,18 +321,44 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 	issa.str(position.substr(position.find(",")+1,position.size()-position.find(",")-1));
 	issa >> y;
 	guiGate* newGate = gCanvas->getCircuit()->createGate( type, id, true );
-	if (newGate == NULL) return; // IN CASE OF ERROR
+	if (newGate == NULL) return true; // IN CASE OF ERROR
 	gCanvas->insertGate(id, newGate, x, y);
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// To avoid crash when a gate does not exist
+	if (notFound) {
+		newGate->setGUIParam("ORIGINAL_NAME", orgName);
+		return true;
+	}
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// Get library default logic params
+	if (libGate.logicType.size() > 0) {
+		map <string, string> lParams = libGate.logicParams;
+		map < string, string >::iterator lpwalk = lParams.begin();
+		while (lpwalk != lParams.end()) {
+			bool found = false;
+			for (unsigned long i = 0; i < params.size(); i++)
+				if (params[i].paramName == lpwalk->first) {
+					found = true;
+					break;
+				}
+			if (!found) {
+				params.push_back(parameter(lpwalk->first, lpwalk->second, false));
+			}
+			lpwalk++;
+		}
+	}
+	
 	for (unsigned int i = 0; i < params.size(); i++) {
-		if (!(params[i].isGUI)) {
+		if (!(params[i].isGUI)) {			
 			newGate->setLogicParam( params[i].paramName, params[i].paramValue );
 			gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(id, params[i].paramName, params[i].paramValue)));
 		} else newGate->setGUIParam( params[i].paramName, params[i].paramValue );
 	}
-	if( logicType.size() > 0 ) {
+
+	if(libGate.logicType.size() > 0 ) {
 		// Loop through the hotspots and pass logic core hotspot settings:
-		LibraryGate libGate;
-		wxGetApp().libParser.getGate(type, libGate);
 		for( unsigned int i = 0; i < libGate.hotspots.size(); i++ ) {
 
 			// Send the isInverted message:
@@ -268,17 +370,44 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 				}
 			}
 
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// Nedeed only for inputs
+			// Send the isPullUp message:
+			if (libGate.hotspots[i].isPullUp) {
+				if (libGate.hotspots[i].isInput) {
+					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "PULL_UP", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// Nedeed only for inputs
+			// Send the isPullDown message:
+			if (libGate.hotspots[i].isPullDown) {
+				if (libGate.hotspots[i].isInput) {
+					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "PULL_DOWN", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// Nedeed only for inputs
+			// Send the ForceJunction message:
+			if (libGate.hotspots[i].ForceJunction) {
+				if (libGate.hotspots[i].isInput) {
+					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "FORCE_JUNCTION", "TRUE")));
+				}
+			}
+
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// Nedeed only for outputs
 			// Send the logicEInput message:
-			if( libGate.hotspots[i].logicEInput != "" ) {
-				if ( libGate.hotspots[i].isInput ) {
-					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_INPUT_PARAM, new klsMessage::Message_SET_GATE_INPUT_PARAM(id, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
-				} else {
+			if (libGate.hotspots[i].logicEInput != "") {
+				if (!libGate.hotspots[i].isInput) {
 					gCanvas->getCircuit()->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_OUTPUT_PARAM, new klsMessage::Message_SET_GATE_OUTPUT_PARAM(id, libGate.hotspots[i].name, "E_INPUT", libGate.hotspots[i].logicEInput)));
 				}
 			}
+
 		} // for( loop through the hotspots )
 	} // if( logic type is non-null )
-
 
 	// Connect inputs and outputs.
 	GUICircuit *gCircuit = gCanvas->getCircuit();
@@ -300,6 +429,7 @@ void CircuitParse::parseGateToSend(string type, string ID, string position, vect
 
 		gCanvas->insertWire(wire);
 	}
+	return false;
 }
 
 //********************************
@@ -334,7 +464,7 @@ void CircuitParse::parseWireToSend( void ) {
 				temp = mParse->readTag();
 				if (temp == "vsegment") isVertical = true;
 				wireSegment newSeg; newSeg.verticalSeg = isVertical;
-				do {
+				do {					
 					// Within segments you have ID, points, connection, and intersection tags
 					temp = mParse->readTag();
 					if (temp == "ID") {					
@@ -362,12 +492,29 @@ void CircuitParse::parseWireToSend( void ) {
 								mParse->readCloseTag();
 							} else if (temp == "name") {
 								hsName = mParse->readTagValue("name");
+								// pedro casanova (casasanova@ujaen.es) 2020/04-12
+								// Convert to uppercase and rename
+								for (unsigned long cnt = 0; cnt < hsName.length(); cnt++)
+									hsName[cnt] = toupper(hsName[cnt]);
+								if (hsName == "ENABLE_0")
+									hsName = "OUTPUT_ENABLE";
 								mParse->readCloseTag();
 							}
 						}
-						wireConnection nwc; nwc.gid = GID; nwc.connection = hsName;
-						nwc.cGate = (*(gCanvas->getCircuit()->getGates()))[GID];
-						newSeg.connections.push_back( nwc );
+						// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+						// Not found gates don´t connect
+						bool notFound = false;
+						for (unsigned int i = 0; i < notFoundGates.size(); i++)
+							if (GID == notFoundGates[i]) {
+								notFound = true;
+								break;
+							}
+						if (!notFound)
+						{
+							wireConnection nwc; nwc.gid = GID; nwc.connection = hsName;
+							nwc.cGate = (*(gCanvas->getCircuit()->getGates()))[GID];
+							newSeg.connections.push_back(nwc);
+						}
 						mParse->readCloseTag();
 					} else if (temp == "intersection") {
 						// intersections have intersection point and id
@@ -388,20 +535,44 @@ void CircuitParse::parseWireToSend( void ) {
 
 	// Check to make sure the wire exists before we do things to it
 	if ((gCanvas->getCircuit()->getWires())->find(ids.front()) == (gCanvas->getCircuit()->getWires())->end()) return;
-
 	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setIDs(ids);
-	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setSegmentMap( wireShape );
+	(*(gCanvas->getCircuit()->getWires()))[ids.front()]->setSegmentMap(wireShape);
 }
 
 void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsigned int currPage) {
 	ostringstream* ossCircuit = new ostringstream();
 
-	// This is a sentinal circuit definition that is ignored by Cedar Logic 2.0 and newer.
-	// Older versions of Cedar Logic will read this instead of the actual Circuit data.
+	// This is a sentinal circuit definition that is ignored by CedarLogic 2.0 and newer.
+	// Older versions of CedarLogic will read this instead of the actual Circuit data.
 	// This circuit decribes two labels with error messages.
-	// The second label has a link to the download for the latest version of Cedar Logic.
+	// The second label has a link to the download for the latest version of CedarLogic.
 	// I acknowledge that this is a hack...
-	// Versions of Cedar Logic 2.0 and newer have a <version> tag.
+	// Versions of CedarLogic 2.0 and newer have a <version> tag.
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Changed
+	*ossCircuit << R"===(
+<circuit>
+<CurrentPage>0</CurrentPage>
+<page 0>
+<PageViewport>-32.95,39.6893,61.95,-63.2229</PageViewport>
+<gate>
+<ID>2</ID>
+<type>AA_LABEL</type>
+<position>14.5,-13</position>
+<gparam>LABEL_TEXT Go to https://cedar.to/vjyQw7 to download the latest version!</gparam>
+<gparam>TEXT_HEIGHT 2</gparam></gate>
+<gate>
+<ID>3</ID>
+<type>AA_LABEL</type>
+<position>14.5,-9.5</position>
+<gparam>LABEL_TEXT Error: This file was made with a newer version of CedarLogic!</gparam>
+<gparam>TEXT_HEIGHT 2</gparam></gate></page 0>
+</circuit>
+<throw_away></throw_away>
+
+	)===";
+
+/*
 	*ossCircuit << R"===(
 <circuit>
 <CurrentPage>0</CurrentPage>
@@ -418,14 +589,14 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 <ID>3</ID>
 <type>AA_LABEL</type>
 <position>14.5,-9.5</position>
-<gparam>LABEL_TEXT Error: This file was made with a newer version of Cedar Logic!</gparam>
+<gparam>LABEL_TEXT Error: This file was made with a newer version of CedarLogic!</gparam>
 <gparam>TEXT_HEIGHT 2</gparam>
 <gparam>angle 0.0</gparam></gate></page 0>
 </circuit>
 <throw_away></throw_away>
 
 	)===";
-
+*/
 	mParse = new XMLParser(ossCircuit);
 
 	mParse->openTag("version");
@@ -454,7 +625,7 @@ void CircuitParse::saveCircuit(string filename, vector< GUICanvas* > glc, unsign
 		mParse->openTag("PageViewport");
 		oss.str("");
 		oss.clear();
-		GLPoint2f topLeft, bottomRight;
+		GLPoint2f topLeft, bottomRight;		
 		glc[i]->getViewport(topLeft, bottomRight);
 		oss << topLeft.x << "," << topLeft.y << "," << bottomRight.x << "," << bottomRight.y;
 		mParse->writeTag("PageViewport", oss.str());

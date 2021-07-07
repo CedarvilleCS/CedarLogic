@@ -53,6 +53,9 @@ public:
 	//Creates the glFont
 	bool Create (const char *file_name, int tex);
 	bool Create (const std::string &file_name, int tex);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// New overload to load font from resource
+	bool Create (void* fontData, int tex);
 
 	//Destroys the glFont
 	void Destroy (void);
@@ -159,7 +162,7 @@ public:
 
 			//Get pointer to glFont character
 			glfont_char = &header.chars[*i - header.start_char];
-
+			
 			//Get width and height
 			width = glfont_char->dx * header.tex_width;
 			height = glfont_char->dy * header.tex_height;

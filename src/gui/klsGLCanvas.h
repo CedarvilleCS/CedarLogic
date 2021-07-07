@@ -73,7 +73,7 @@ public:
 
 
 	// Print the canvas contents to a bitmap:
-	wxImage renderToImage( unsigned long width, unsigned long height, unsigned long colorDepth = 32, bool noColor = false );
+	wxImage renderToImage( unsigned long width, unsigned long height, unsigned long colorDepth = 32, bool color = true );
 
 	//TODO: Add some scrollbars and some methods for setting the usable canvas size.
 
@@ -81,7 +81,7 @@ public:
     void wxOnPaint(wxPaintEvent& event);
     void wxOnSize(wxSizeEvent& event);
     void wxOnEraseBackground(wxEraseEvent& event);
-    void klsGLCanvasRender( bool noColor = false );
+    void klsGLCanvasRender( bool color = true );
 
     void wxOnMouseEvent(wxMouseEvent& event);
     void wxOnMouseWheel(wxMouseEvent& event);
@@ -105,7 +105,7 @@ public:
     virtual void OnKeyDown( wxKeyEvent& event ) {};
     virtual void OnKeyUp( wxKeyEvent& event ) {};
 
-    virtual void OnRender( bool noColor = false ) {};
+    virtual void OnRender( bool color = true ) {};
 	virtual void OnSize(void) {};
 
 	// Event query methods:

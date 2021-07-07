@@ -32,6 +32,11 @@ class guiWire;
 #include "wx/docview.h"
 
 #include "RamPopupDialog.h"
+#include "FSMParamDialog.h"
+#include "CMBParamDialog.h"
+
+#include "GUICircuit.h"
+#include "../logic/logic_circuit.h"
 
 using namespace std;
 
@@ -85,14 +90,18 @@ protected:
 
 class guiGate : public klsCollisionObject {
 public:
-	guiGate();
+	guiGate();	
 	virtual ~guiGate();
 	void setID(long nid) { gateID = nid; };
 	unsigned long getID() { return gateID; };
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	void setGUICircuit(GUICircuit* theGUICircuit) { ourGUICircuit = theGUICircuit; };
 
 protected:
 	string libName;
 	string libGateName;
+	GUICircuit* ourGUICircuit = NULL;
+
 public:
 	void setLibraryName( string nLibName, string nLibGateName ) {
 		libName = nLibName;
@@ -109,7 +118,7 @@ public:
 
 	string getLogicType();
 	string getGUIType();
-	
+
 	//****************************************************************
 	//Edit by Joshua Lansford 12/25/2006
 	//I made the doParamsDialog method below virtual
@@ -124,26 +133,23 @@ public:
 	//	processor object to assign the setparameters command to.  gc is
 	//	a GUICircuit pointer
 	virtual void doParamsDialog( void* gc, wxCommandProcessor* wxcmd );
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// Show gate propierties
+	virtual void doPropsDialog();
+
 	// Set and get param virtual functions, simply assigns a string
-	virtual void setGUIParam( string paramName, string value ) {
-		gparams[paramName] = value;
-		if( paramName == "angle" ) {
-			// Update the matrices and bounding box:
-			updateConnectionMerges();
-			updateBBoxes();
-		}
-	};
+	virtual void setGUIParam(string paramName, string value);
 	virtual string getGUIParam( string paramName ) { return gparams[paramName]; };
 	map < string, string >* getAllGUIParams() { return &gparams; };
-	virtual void setLogicParam( string paramName, string value ) {
-		lparams[paramName] = value;
-	};
+	virtual void setLogicParam(string paramName, string value) { lparams[paramName] = value; };
 	virtual string getLogicParam( string paramName ) { return lparams[paramName]; };
 	map < string, string >* getAllLogicParams() { return &lparams; };
 
 	void declareInput(string name) { isInput[name] = true; };
 	void declareOutput(string name) { isInput[name] = false; };
-	virtual void draw(bool color = true);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	virtual void draw(bool color = true, bool drawPalette = false);
 	void setGLcoords( float x, float y, bool noUpdateWires = false );
 	void getGLcoords( float &x, float &y );
 	
@@ -166,7 +172,11 @@ public:
 	bool clickSelect( GLfloat x, GLfloat y );
 
 	// Insert a line in the line list.
-	void insertLine( float x1, float y1, float x2, float y2 );
+	void insertLine( float x1, float y1, float x2, float y2, int w = 1 );
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Lines with offset for rotate chars
+	void insertTextLine(float x0, float y0, float x1, float y1, float x2, float y2, int w = 1);
 
 	// Recalculate the bounding box, based on the lines that are included alredy:
 	virtual void calcBBox( void );
@@ -201,9 +211,11 @@ public:
 	}
 
 protected:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added Rotate
 	// Convert model->world coordinates:
-	GLPoint2f modelToWorld( GLPoint2f c );
-	
+	GLPoint2f modelToWorld( GLPoint2f c, bool Rotate = true );
+
 	// Get a world-space bounding box:
 	klsBBox getWorldBBox( void ) { return this->getBBox(); };
 
@@ -259,7 +271,14 @@ protected:
 	// Model space bounding box:
 	klsBBox modelBBox;
 	
-	vector<GLPoint2f> vertices;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Now use lines instead of vertices to contain width
+	//vector<GLPoint2f> vertices;
+	vector<lgLine> lines;
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Lines with offset for rotate chars
+	vector<lgOffLine> textLines;
+
 	// map i/o name to hotspot coord
 	map< string, gateHotspot* > hotspots;
 	// map i/o name to wire id
@@ -271,10 +290,38 @@ protected:
 	map< string, string > lparams;  // Logic params
 };
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// For draw PLD gates (LAND and LOR)
+class guiGatePLD : public guiGate {
+public:
+	guiGatePLD();
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
+
+	void setGUIParam(string paramName, string value);
+
+protected:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Cross in gate for PLD
+	GLPoint2f renderInfo_crossPoint;
+};
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// For draw BUSEND with color 
+class guiGateBUSEND : public guiGate {
+public:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
+};
+
 class guiGateTOGGLE : public guiGate {
 public:
 	guiGateTOGGLE();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 	
 	void setGUIParam( string paramName, string value );
 	void setLogicParam( string paramName, string value );
@@ -291,7 +338,12 @@ protected:
 class guiGateKEYPAD : public guiGate {
 public:
 	guiGateKEYPAD();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Parameter ROTATE for old style KEYPAD can only be true
+	void setGUIParam(string paramName, string value);
 	void setLogicParam( string paramName, string value );
 	
 	// Toggle the output button on and off:
@@ -305,7 +357,9 @@ private:
 class guiGateREGISTER : public guiGate {
 public:
 	guiGateREGISTER();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 	void setGUIParam( string paramName, string value );
 	void setLogicParam( string paramName, string value );
 protected:
@@ -315,30 +369,44 @@ protected:
 	bool renderInfo_drawBlue;
 	int renderInfo_numDigitsToShow;
 	string renderInfo_currentValue;
+	bool display_BCD;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	bool hide_display;	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
 };
 
 class guiGatePULSE : public guiGate {
 public:
-	guiGatePULSE() : guiGate() {
-		// Set the default CLICK box:
-		// Format is: "minx miny maxx maxy"
-		setGUIParam( "CLICK_BOX", "-0.76,-0.76,0.76,0.76" );
-
-		// Default to single pulse width:
-		setGUIParam( "PULSE_WIDTH", "1" );
-	};
+	guiGatePULSE();
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	void setGUIParam(string paramName, string value);
 	
 	klsMessage::Message_SET_GATE_PARAM* checkClick( GLfloat x, GLfloat y );
+
+protected:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// CLICK_BOX limits
+	GLLine2f renderInfo_clickBox;
+
 };
 
 
 class guiGateLED : public guiGate {
 public:
 	guiGateLED();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 	void setGUIParam( string paramName, string value );
 protected:
 	GLLine2f renderInfo_ledBox;
+};
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// For wires
+class guiGateWIRE : public guiGate {
+public:
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 };
 
 
@@ -348,7 +416,9 @@ protected:
 class guiLabel : public guiGate {
 public:
 	guiLabel();
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 
 	// Recalculate the label's bounding box:
 	void calcBBox( void );
@@ -373,26 +443,36 @@ private:
 };
 
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Modified to permit variable labes size.
 // ************************ TO/FROM gate *************************
-#define TO_FROM_TEXT_HEIGHT 1.5
-#define TO_BUFFER 0.4
-#define FROM_BUFFER 0.0
-#define FROM_FIX_SHIFT 0.0
-#define FLIPPED_OFFSET 0.5
-
 class guiTO_FROM : public guiGate {
 public:
 	guiTO_FROM();
 
-	void draw( bool color = true );
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Added drawPalette to do not draw wide outlines in palette
+	void draw(bool color = true, bool drawPalette = false);
 
 	// Recalculate the gate's bounding box:
 	void calcBBox( void );
+
+	// A convenience function that translates
+	// TEXT_HEIGHT parameter into a GLdouble:
+	GLdouble getTextHeight(void) {
+		istringstream iss(gparams["TEXT_HEIGHT"]);
+		GLdouble textHeight = 1.0;
+		iss >> textHeight;
+		
+		return textHeight;
+	};
 	
 	// A custom setParam function is required because
 	// the object must resize it's bounding box 
 	// each time the JUNCTION_ID parameter is set.
 	void setLogicParam( string paramName, string value );
+
+	void setGUIParam(string paramName, string value);
 
 private:
 	guiText theText;
@@ -402,6 +482,8 @@ private:
 // ************************ RAM gate ****************************
 
 //*************************************************
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Modified to limit data size values.
 //Edit by Joshua Lansford 12/25/2006
 //I am creating a guiGate for the RAM so that
 //the ram can have its own special pop-up window
@@ -446,6 +528,8 @@ private:
 	unsigned long dataBits;
 	unsigned long addressBits;
 	map< unsigned long, unsigned long > memory;
+
+
 	
 	//used for highlighting the last read and
 	//written in the pop-up
@@ -454,6 +538,56 @@ private:
 };
 //End of edit
 
+// ************************ FSM gate ****************************
+
+//*************************************************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+//I am creating a guiGate for the FSM so that
+//the FSM can have its own special pop-up window
+class guiGateFSM : public guiGate {
+public:
+	guiGateFSM();
+
+	// Function to show the gate's parameters dialog, takes the command
+	//	processor object to assign the setparameters command to.  gc is
+	//	a GUICircuit pointer
+	virtual void doParamsDialog(void* gc, wxCommandProcessor* wxcmd);
+	virtual void saveGateTypeSpecifics(XMLParser* xparse);
+
+	//Destructor for cleaning up private vars
+	virtual ~guiGateFSM();
+
+private:
+	//The pop-up dialog
+	FSMParamDialog* fsmParamDialog;
+
+};
+//*************************************************
+
+// ************************ CMB gate ****************************
+
+//*************************************************
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+//I am creating a guiGate for the CMB so that
+//the CMB can have its own special pop-up window
+class guiGateCMB : public guiGate {
+public:
+	guiGateCMB();
+
+	// Function to show the gate's parameters dialog, takes the command
+	//	processor object to assign the setparameters command to.  gc is
+	//	a GUICircuit pointer
+	virtual void doParamsDialog(void* gc, wxCommandProcessor* wxcmd);
+	virtual void saveGateTypeSpecifics(XMLParser* xparse);
+
+	//Destructor for cleaning up private vars
+	virtual ~guiGateCMB();
+
+private:
+	//The pop-up dialog
+	CMBParamDialog* cmbParamDialog;
+
+};
 //*************************************************
 
 #endif /*GUIGATE_H_*/

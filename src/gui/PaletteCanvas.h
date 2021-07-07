@@ -24,13 +24,20 @@ virtual	~PaletteCanvas();
 
     void OnPaint( wxPaintEvent &event );
 	void Activate( void );
-	
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// To remember scroll position
+	void Deactivate(void);
+
 private:
 	wxBoxSizer* gateSizer;
 	vector< gateImage* > gates;
 	string libraryName;
 	bool init;
 	bool activate;
+
+	// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+	// To remember scroll position
+	long scrollPos;
 	
 	DECLARE_EVENT_TABLE()
 };

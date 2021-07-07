@@ -141,19 +141,24 @@ void GUICanvas::removeWire(unsigned long wireId) {
 }
 
 // Render the page
-void GUICanvas::OnRender( bool noColor ) {
+void GUICanvas::OnRender( bool color ) {
 	glColor4f( 0.0, 0.0, 0.0, 1.0 );
 	
 	// Draw the wires:
 	glMatrixMode (GL_MODELVIEW);
 	glLoadIdentity ();
-wxStopWatch renderTimer;
+	wxStopWatch renderTimer;
 	glColor4f( 0.0, 0.0, 0.0, 1.0 );
 	
 	// Draw the gates:
 	unordered_map< unsigned long, guiGate* >::iterator thisGate = gateList.begin();
 	while( thisGate != gateList.end() ) {
-		(thisGate->second)->draw(!noColor);
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Deprecated components are show in magenta color
+		if (color && (thisGate->second)->getLibraryName()=="Deprecated" && wxGetApp().appSettings.markDeprecated)
+			glColor4f(1.0f, 0.0f, 1.0f, 1.0f);		// Magenta
+		(thisGate->second)->draw(color);
+		glColor4f(0.0, 0.0, 0.0, 1.0);
 		thisGate++;
 	}
 
@@ -163,12 +168,12 @@ wxStopWatch renderTimer;
 	unordered_map< unsigned long, guiWire* >::iterator thisWire = wireList.begin();
 	while( thisWire != wireList.end() ) {
 		if (thisWire->second != nullptr) {
-			(thisWire->second)->draw(!noColor);
+			(thisWire->second)->draw(color);
 		}
 		thisWire++;
 	}
-renderTime += renderTimer.Time();
-renderNum++;
+	renderTime += renderTimer.Time();
+	renderNum++;
 	
 	
 	// Draw the basic view objects:
@@ -221,10 +226,16 @@ renderNum++;
 	}
 
 	// Collisions
-	bool drawOverlaps = true;
-	if( drawOverlaps ) {
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Components collisions are not a problem. Sometines it prevents components from being together
+	// It is now an application setting: ComponentCollVisible (menu and settings.ini)
+	if(wxGetApp().appSettings.componentCollVisible) {
 		// Draw the alpha-blended selection box over top of the overlap:
-		glColor4f( 0.4f, 0.1f, 0.0f, 0.3f );
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12		Added color
+		if (color)
+			glColor4f(0.4f, 0.1f, 0.0f, 0.3f);			// Brown
+		else
+			glColor4f(0, 0, 0, 0.3f);					// Grey			
 		
 		map< klsCollisionObjectType, CollisionGroup >::iterator ovrLists = collisionChecker.overlaps.begin();
 		while( ovrLists != collisionChecker.overlaps.end() ) {
@@ -311,20 +322,22 @@ renderNum++;
 
 void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	GLPoint2f m = getMouseCoords();
-	bool handled = false;
+
 	// If I am in a paste operation then mouse-up is all I am concerned with
 	if (isWithinPaste) return;
-	
+
+	bool handled = false;
+
 	// Update the mouse collision object
 	klsBBox mBox;
 	float delta = MOUSE_HOVER_DELTA * getZoom();
-	mBox.addPoint( m );
-	mBox.extendTop( delta );
-	mBox.extendBottom( delta );
-	mBox.extendLeft( delta );
-	mBox.extendRight( delta );
-	mouse->setBBox( mBox );
-	
+	mBox.addPoint(m);
+	mBox.extendTop(delta);
+	mBox.extendBottom(delta);
+	mBox.extendLeft(delta);
+	mBox.extendRight(delta);
+	mouse->setBBox(mBox);
+
 	// Do a collision detection on all first-level objects.
 	// The map collisionChecker.overlaps now contains
 	// all of the objects involved in any collisions.
@@ -334,7 +347,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	//	Favor wires over gates
 	CollisionGroup hitThings = mouse->getOverlaps();
 	CollisionGroup::iterator hit = hitThings.begin();
-	while( hit != hitThings.end() && !handled ) {
+	while (hit != hitThings.end() && !handled) {
 		//*************************************
 		//Edit by Joshua Lansford 3/16/07
 		//It has been requested by students that a ctrl
@@ -342,33 +355,85 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 		//a shift click does.
 		//thus I will replace "event.ShiftDown()"
 		//everywere it appears in this file with
-		//"(event.ShiftDown()||event.ControlDown())"
+		//"(isLockedShiftDown()||event.ControlDown())"
 		//************************************
-		
+
+		// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+		// Now permit drag from wires and hotspot
 		if ((*hit)->getType() == COLL_WIRE) {
 			guiWire* hitWire = ((guiWire*)(*hit));
 			bool wasSelected = hitWire->isSelected();
 			hitWire->unselect();
-			if ( hitWire->hover( m.x, m.y, WIRE_HOVER_SCREEN_DELTA * getZoom() )) {
+			if (hitWire->hover(m.x, m.y, WIRE_HOVER_SCREEN_DELTA * getZoom())) {
 				hitWire->select();
-				if ((event.ShiftDown()||event.ControlDown()) && wasSelected) hitWire->unselect();
-				if (!((event.ShiftDown()||event.ControlDown()))) {
+				// ControlDown or ShiftDown to unselect gate or wire
+				if ((event.ShiftDown() || event.ControlDown()) && wasSelected)
+					hitWire->unselect();
+				// Nor ControlDown neither ShiftDown to unselect all
+				if (!(event.ShiftDown() || event.ControlDown())) {
 					unselectAllWires();
 					unselectAllGates();
 					hitWire->select();
 				}
-				if (event.ControlDown() && !(this->isLocked())) {
-					currentConnectionSource.isGate = false;
-					currentConnectionSource.objectID = hitWire->getID();
+
+				// Pedro Casanova (casanova@ujaen.es) 2020/04-12	It was ControlDown Only
+				// ControlDown or ShiftDownto drag connection
+				if ((event.ShiftDown() || event.ControlDown()) && !(this->isLocked())) {
+					if (hotspotHighlight.size() == 0)
+					{
+						// Drag from Wire
+						currentConnectionSource.isGate = false;
+						currentConnectionSource.objectID = hitWire->getID();
+					}
+					else
+					{
+						// Drag from gate hotspot
+						currentConnectionSource.isGate = true;
+						currentConnectionSource.objectID = hotspotGate;
+						currentConnectionSource.connection = hotspotHighlight;
+					}
 					currentDragState = DRAG_CONNECT;
 				}
-				else if (!((event.ShiftDown()||event.ControlDown()))) {
-					wireHoverID = hitWire->getID();
-					if (wireList[wireHoverID]->startSegDrag(snapMouse) && !(this->isLocked())) currentDragState = DRAG_WIRESEG;
-					hitWire->unselect();
+				else {
+					// Nor ControlDown neither ShiftDown to drag wire segment
+					if (!(event.ShiftDown() || event.ControlDown())) {
+#ifdef _MSG_
+						if (hotspotHighlight.size() == 0)
+						{
+							//@@@@
+							_MSGGUI("wireID: %lld\n", hitWire->getID())	//@@@@
+								guiWire *wire = wireList[hitWire->getID()];
+							vector<wireConnection> conn(wire->getConnections());
+							for (int i = 0; i < (int)conn.size(); i++) {
+								_MSGGUI("... gateID: %d (%s)\n", conn[i].gid, conn[i].connection.c_str());	//@@@@
+							}
+							map< long, wireSegment > segm(wire->getSegmentMap());
+							for (int i = 0; i < (int)segm.size(); i++) {
+								_MSGGUI("... segmenID: %d (%s) (%1.1f,%1.1f)-(%1.1f,%1.1f)\n", segm[i].id, segm[i].isVertical() ? "V" : "H", segm[i].begin.x, segm[i].begin.y, segm[i].end.x, segm[i].end.y);	//@@@@
+							}
+							//@@@@
+						}
+						else
+							_MSGGUI("wireID: %lld gateID: %d (%s) (%f,%f)\n", hitWire->getID(), hotspotGate, hotspotHighlight.c_str(), m.x, m.y)	//@@@@
+#endif
+						if (event.AltDown()) {
+#ifdef _MSG_
+							ostringstream oss;
+							oss << "WireID:\t\t" << hitWire->getID() << "\n";
+							wxMessageBox(oss.str(), "Wire properties");
+#endif
+						} else {
+							wireHoverID = hitWire->getID();
+							if (wireList[wireHoverID]->startSegDrag(snapMouse) && !(this->isLocked())) {
+								currentDragState = DRAG_WIRESEG;
+							}
+							hitWire->unselect();
+						}
+					}
 				}
-				handled = true;	
-			} else if (wasSelected && hitThings.size() > 1) hitWire->select(); // probably dragging a selection
+				handled = true;
+			}
+			else if (wasSelected && hitThings.size() > 1) hitWire->select(); // probably dragging a selection
 		}
 		hit++;
 	}
@@ -377,6 +442,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 	if (hotspotHighlight.size() > 0 && currentDragState == DRAG_NONE && !(this->isLocked())) {
 		// Start dragging a new wire:
 		//gateList[hotspotGate]->select();
+		_MSGGUI("gateID: %d (%s)\n", hotspotGate, hotspotHighlight.c_str())	//@@@@
 		unselectAllGates();
 		unselectAllWires();
 		handled = true; // Don't worry about checking other events in this proc
@@ -388,33 +454,41 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 
 	// Now check gate collisions
 	hit = hitThings.begin();
-	while( hit != hitThings.end() && !handled ) {
+	while (hit != hitThings.end() && !handled) {
 		if ((*hit)->getType() == COLL_GATE) {
 			guiGate* hitGate = ((guiGate*)(*hit));
 			bool wasSelected = hitGate->isSelected();
-			if ((event.ShiftDown()||event.ControlDown()) && wasSelected) hitGate->unselect(); // Remove gate from selection
-			else if ((event.ShiftDown()||event.ControlDown()) && !wasSelected) hitGate->select(); // Add gate to selection
-			else if (!((event.ShiftDown()||event.ControlDown())) && !wasSelected) { // Begin new selection group
+			if ((event.ShiftDown() || event.ControlDown()) && wasSelected) {
+				hitGate->unselect(); // Remove gate from selection
+			}
+			else if ((event.ShiftDown() || event.ControlDown()) && !wasSelected) {
+				hitGate->select(); // Add gate to selection
+			}
+			else if (!(event.ShiftDown() || event.ControlDown()) && !wasSelected) {
+				// Begin new selection group
 				unselectAllGates();
 				unselectAllWires();
 				hitGate->select();
 			}
-			if (!((event.ShiftDown()||event.ControlDown())) && !(this->isLocked())) currentDragState = DRAG_SELECTION; // Start dragging
+			if (!(event.ShiftDown() || event.ControlDown()) && !(this->isLocked())) {
+				_MSGGUI("gateID: %d (%s)\n", hitGate->getID(), hitGate->getLibraryGateName().c_str())	//@@@@
+				currentDragState = DRAG_SELECTION; // Start dragging
+			}
 			handled = true;
 		}
 		hit++;
 	}
-
 	// If I am not in a selection group and I haven't handled a selection then unselect everything
-	if (!handled && !((event.ShiftDown()||event.ControlDown()))) {
+	if (!handled && !((event.ShiftDown() || event.ControlDown()))) {
 		unselectAllGates();
 		unselectAllWires();
 	}
-	
-	if (!handled) { // Otherwise initialize drag select
+
+	if (!handled) {
+		// Otherwise initialize drag select
 		currentDragState = DRAG_SELECT;
 	}
-	
+
 	// Show the updates
 	Refresh();
 
@@ -427,7 +501,7 @@ void GUICanvas::mouseLeftDown(wxMouseEvent& event) {
 		if ((thisGate->second)->isSelected()) {
 			// Push back the gate's id, xy pos, angle, and select flag
 			preMove.push_back(GateState((thisGate->first), 0, 0, (thisGate->second)->isSelected()));
-			(thisGate->second)->getGLcoords(preMove[preMove.size()-1].x, preMove[preMove.size()-1].y);
+			(thisGate->second)->getGLcoords(preMove[preMove.size() - 1].x, preMove[preMove.size() - 1].y);
 			selectedGates.push_back((thisGate->first));
 		}
 		thisGate++;
@@ -483,7 +557,8 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 			// disconnect this wire
 			if (gateList[hotspotGate]->getConnection(hotspotHighlight)->numConnections() > 2)
 				gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdDisconnectWire( gCircuit, gateList[hotspotGate]->getConnection(hotspotHighlight)->getID(), hotspotGate, hotspotHighlight )) );
-			else gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdDeleteWire( gCircuit, this, gateList[hotspotGate]->getConnection(hotspotHighlight)->getID() )) );
+			else
+				gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdDeleteWire( gCircuit, this, gateList[hotspotGate]->getConnection(hotspotHighlight)->getID() )) );
 		}
 		currentDragState = DRAG_NONE;
 	} else if (currentDragState == DRAG_NONE) {
@@ -496,35 +571,53 @@ void GUICanvas::mouseRightDown(wxMouseEvent& event) {
 		while( hit != hitThings.end()) {
 			if ((*hit)->getType() == COLL_GATE) {
 				guiGate* hitGate = ((guiGate*)(*hit));
-				// BEGIN WORKAROUND
-				//	Gates that have connections cannot be rotated without sacrificing wire sanity
-				map < string, GLPoint2f > gateHotspots = hitGate->getHotspotList();
-				map < string, GLPoint2f >::iterator ghsWalk = gateHotspots.begin();
-				bool gateConnected = false;
-				while ( ghsWalk !=  gateHotspots.end() ) {
-					if ( hitGate->isConnected( ghsWalk->first ) ) {
-						gateConnected = true;
-						break;
-					}
-					ghsWalk++;
+				if (event.AltDown()) {
+#ifdef _MSG_
+					hitGate->doPropsDialog();
+#endif
 				}
-				if ( gateConnected ) { hit++; continue; }
-				// END WORKAROUND
-				map < string, string > newParams(*(hitGate->getAllGUIParams()));
-				istringstream issAngle(newParams["angle"]);
-				GLfloat angle;
-				issAngle >> angle;
-				angle += 90.0;
-				if (angle >= 360.0) angle -= 360.0;
-				ostringstream ossAngle;
-				ossAngle << angle;
-				newParams["angle"] = ossAngle.str();
-				gCircuit->GetCommandProcessor()->Submit( (wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL) )) );
+				else {
+					// BEGIN WORKAROUND
+					//	Gates that have connections cannot be rotated without sacrificing wire sanity
+					map < string, GLPoint2f > gateHotspots = hitGate->getHotspotList();
+					map < string, GLPoint2f >::iterator ghsWalk = gateHotspots.begin();
+					bool gateConnected = false;
+					while ( ghsWalk !=  gateHotspots.end() ) {
+						if ( hitGate->isConnected( ghsWalk->first ) ) {
+							gateConnected = true;
+							break;
+						}
+						ghsWalk++;
+					}
+					if ( gateConnected ) { hit++; continue; }
+					// END WORKAROUND
+
+					map < string, string > newParams(*(hitGate->getAllGUIParams()));
+					if (!(event.ShiftDown() || event.ControlDown())) {
+						istringstream issAngle(newParams["angle"]);
+						GLfloat angle;
+						issAngle >> angle;
+						angle += 90.0;
+						if (angle >= 360.0) angle -= 360.0;
+						ostringstream ossAngle;
+						ossAngle << angle;
+						newParams["angle"] = ossAngle.str();
+					} else {
+						// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+						// Shift or Control and mouseRightDown to change "mirror" GUI param
+						if (newParams["mirror"] == "true")
+							newParams["mirror"] = "false";
+						else
+							newParams["mirror"] = "true";
+					}
+					gCircuit->GetCommandProcessor()->Submit((wxCommand*)(new cmdSetParams(gCircuit, hitGate->getID(), paramSet(&newParams, NULL))));
+				}
+
 			}
 			hit++;
-		}				
+		}
 	}
-	Refresh();
+	Refresh();	
 }
 
 void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool CtrlDown ) {
@@ -620,7 +713,7 @@ void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool Ct
 			guiGate* hitGate = ((guiGate*)(*hit));
 			
 			// Update the hotspot hover variables:
-			if( hotspotHighlight.size() == 0 ) {
+			if( hotspotHighlight.size() == 0 ) {				
 				if (currentDragState != DRAG_NEWGATE || hitGate->getID() != newDragGate->getID()) hotspotHighlight = hitGate->checkHotspots( m.x, m.y, HOTSPOT_SCREEN_DELTA * getZoom() );
 				if( hotspotHighlight.size() > 0 ) {
 					if (currentDragState != DRAG_NEWGATE || hitGate->getID() != newDragGate->getID()) hotspotGate = hitGate->getID();
@@ -783,39 +876,60 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 
 	// If dragging a new gate then 
 	if (currentDragState == DRAG_NEWGATE) {
-		int newGID = gCircuit->getNextAvailableGateID();
-		float nx, ny;
-		newDragGate->getGLcoords(nx, ny);
+		// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+		// Midified to create dynamics gates
+		if (newDragGate->getLibraryGateName().substr(0, 3) == "%%_") {
+			float nx, ny;
+			newDragGate->getGLcoords(nx, ny);
+			while (true) {
+				newDragGate->setGUIParam("DYNAMIC_GATE", "false");		// Needed to detect "Cancel" pressed in dialog
+				newDragGate->doParamsDialog(gCircuit, gCircuit->GetCommandProcessor());
+				if (newDragGate->getGUIParam("DYNAMIC_GATE") != "true")
+					break;
+				else 
+				{
+					newDragGate->setGLcoords(nx, ny);
+					if (addDynamicGate(newDragGate))
+						break;
+				}
+			}
+		}
+		else {
+			int newGID = gCircuit->getNextAvailableGateID();
+			float nx, ny;
+			newDragGate->getGLcoords(nx, ny);
+			creategatecommand = new cmdCreateGate(this, gCircuit, newGID, newDragGate->getLibraryGateName(), nx, ny);
+			gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatecommand);
+			gateList[newGID]->select();
+			selectedGates.push_back(newGID);
+		}
+
 		gCircuit->getGates()->erase(newDragGate->getID());
-		creategatecommand = new cmdCreateGate( this, gCircuit, newGID, newDragGate->getLibraryGateName(), nx, ny );
-		gCircuit->GetCommandProcessor()->Submit( (wxCommand*)creategatecommand );
-		collisionChecker.removeObject( newDragGate );
+
+		collisionChecker.removeObject(newDragGate);
 		// Only now do a collision detection on all first-level objects since the new gate is in.
 		// The map collisionChecker.overlaps now contains
 		// all of the objects involved in any collisions.
 		collisionChecker.update();
-		cmdSetParams setgateparams( gCircuit, newGID, paramSet((*(gCircuit->getGates()))[newGID]->getAllGUIParams(), (*(gCircuit->getGates()))[newGID]->getAllLogicParams()));
-		setgateparams.Do();
 		delete newDragGate;
-		gateList[newGID]->select();
-		selectedGates.push_back(newGID);
 	}
 	else {
 		// Do a collision detection on all first-level objects.
 		// The map collisionChecker.overlaps now contains
 		// all of the objects involved in any collisions.
 		collisionChecker.update();
-		
 		if ((currentDragState == DRAG_NONE || currentDragState == DRAG_SELECTION) && preMove.size() == 1) {
 			// Loop through all objects hit by the mouse
 			//	Favor wires over gates
-//			CollisionGroup hitThings = mouse->getOverlaps();
-//			CollisionGroup::iterator hit = hitThings.begin();
-//			while( hit != hitThings.end() && !handled ) {
-//				if ((*hit)->getType() == COLL_GATE) {
-//					guiGate* hitGate = ((guiGate*)(*hit));
+			/*CollisionGroup hitThings = mouse->getOverlaps();
+			CollisionGroup::iterator hit = hitThings.begin();
+			while( hit != hitThings.end() && !handled ) {
+				if ((*hit)->getType() == COLL_GATE) {
+					guiGate* hitGate = ((guiGate*)(*hit));*/					
 					guiGate* hitGate = gateList[preMove[0].id];
-					if (!((event.ShiftDown()||event.ControlDown())) && ((event.LeftUp() && currentDragState == DRAG_SELECTION) || event.LeftDClick())) {
+					// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+					// To permit single click in lock mode
+					if ((!(event.ShiftDown() || event.ControlDown()) && (event.LeftUp() && currentDragState == DRAG_SELECTION)) || ((event.LeftUp() && this->isLocked()) || event.LeftDClick())) {
 						// Check for toggle switch
 						float x, y;
 						hitGate->getGLcoords(x,y);
@@ -828,48 +942,118 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 							}
 						}
 						if (event.LeftDClick() && !handled) {
-							hitGate->doParamsDialog( gCircuit, gCircuit->GetCommandProcessor() );
+							if (!(event.ShiftDown() || event.ControlDown())) {
+								hitGate->doParamsDialog(gCircuit, gCircuit->GetCommandProcessor());
+							}
 							currentDragState = DRAG_NONE;
 							// setparams command will handle oscope update
 							handled = true;
 						}
 					}
-//				}
-//				hit++;
-//			}
+/*				}
+				hit++;
+			}*/
 		}
 
 		// If we are dragging something...
 		if (currentDragState == DRAG_CONNECT) {
+			wxCommand *command = nullptr;
+			IDType wireID1, wireID2;
+			bool twoWires = false;
+			
+			// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+			// We can drag from gates and from wires
+			// Oh yeah, we only drag from gates... FALSE
 
-			// Oh yeah, we only drag from gates...
+			// Source is hotspot and target is hotspot:
+			//		if source is connected and target is connected, merge
+			//		if source is connected or target is connected, connect
+			//		if neither is connected then create a wire
+			// Source is hotspot and target is wire:
+			//		if source is connected then merge
+			//		if source is not connected then connect
+			// Source is wire and target is hotspot:
+			//		if target is connected then merge
+			//		if target is not connected then connect
+			// Source is wire and target is wire:
+			//		merge
+
+
 			if (currentConnectionSource.isGate) {
-
-				wxCommand *command = nullptr;
-
-				// Target is a wire...
-				if (drawWireHover) {
-					command = createGateWireConnectionCommand(
-						currentConnectionSource.objectID,
-						currentConnectionSource.connection, wireHoverID);
-				}
-				else {
-
+				// Drag from gate				
+				if (hotspotHighlight.size() > 0) {
 					// Target is a gate...
-					if (hotspotHighlight.size() > 0) {
+					guiGate *gate1 = gateList[currentConnectionSource.objectID];
+					guiGate *gate2 = gateList[hotspotGate];
+					if (!gate1->isConnected(currentConnectionSource.connection) || !gate2->isConnected(hotspotHighlight)) {
 						command = createGateConnectionCommand(
 							currentConnectionSource.objectID,
 							currentConnectionSource.connection,
-							hotspotGate, hotspotHighlight);
+							hotspotGate,
+							hotspotHighlight);
+					} else {
+						// Connection between two diferents wires
+						twoWires = true;
+						wireID1 = gate1->getConnection(currentConnectionSource.connection)->getID();
+						wireID2 = gate2->getConnection(hotspotHighlight)->getID();
 					}
 				}
+				else if (drawWireHover) {
+					// Target is a wire...
+					guiGate *gate = gateList[currentConnectionSource.objectID];
+					if (!gate->isConnected(currentConnectionSource.connection)) {
+						command = createGateWireConnectionCommand(
+							currentConnectionSource.objectID,
+							currentConnectionSource.connection,
+							wireHoverID);
+					} else {
+						// Connection between two diferents wires
+						twoWires = true;
+						wireID1 = gate->getConnection(currentConnectionSource.connection)->getID();
+						wireID2 = (IDType)wireHoverID;
+					}
+				} 
+			} else {
+				// Drag from wire								
+				if (hotspotHighlight.size() > 0) {
+					// Target is a gate...
+					guiGate *gate = gateList[hotspotGate];
+					if (!gate->isConnected(hotspotHighlight)) {
+						command = createGateWireConnectionCommand(
+							hotspotGate,
+							hotspotHighlight,
+							currentConnectionSource.objectID);
+					}
+					else {
+						// Connection between two diferents wires
+						twoWires = true;
+						wireID1 = (IDType)currentConnectionSource.objectID;
+						wireID2 = gate->getConnection(hotspotHighlight)->getID();						
+					}
 
-				if (command != nullptr) {
-					gCircuit->GetCommandProcessor()->Submit(command);
+				}
+				else if (drawWireHover) {
+					// Target is a wire...
+					if (currentConnectionSource.objectID != wireHoverID) {
+						// Connection between two diferents wires
+						twoWires = true;
+						wireID1 = (IDType)currentConnectionSource.objectID;
+						wireID2 = (IDType)wireHoverID;
+					}
 				}
 			}
-		}
+			if (twoWires) {
+				// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+				// Connection between two diferents wires
+				command = createWireConnectionCommand(wireID1, wireID2);
+			}
+			unselectAllWires();
+			unselectAllGates();
 
+			if (command != nullptr) {
+				gCircuit->GetCommandProcessor()->Submit(command);
+			}
+		}
 		collisionChecker.update();
 	}
 
@@ -894,7 +1078,6 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 					while (hsWalk != hshits.end()) {
 						if (!(((guiGate*)(*obj))->isConnected(((gateHotspot*)(*hotspotCollide))->name)) && !(((guiGate*)(*hit))->isConnected(((gateHotspot*)(*hsWalk))->name)) &&
 							(((guiGate*)(*obj))->isSelected() || ((guiGate*)(*hit))->isSelected())) {
-
 							cmdCreateWire* createwire = (cmdCreateWire *)createGateConnectionCommand(
 								((guiGate*)(*obj))->getID(), ((gateHotspot*)(*hotspotCollide))->name,
 								((guiGate*)(*hit))->getID(), ((gateHotspot*)(*hsWalk))->name);
@@ -973,7 +1156,10 @@ void GUICanvas::OnKeyDown(wxKeyEvent& event) {
 			collisionChecker.removeObject( newDragGate );
 			delete newDragGate;
 			collisionChecker.update();
-		} else {
+		} 
+		// Pedro Casanova(casanova@ujaen.es) 2021/01-03
+		// This causes many problems	
+		/*else {		
 			if (preMove.size() > 0) {
 				saveMove = false;
 				for (unsigned int i = 0; i < preMove.size(); i++) {
@@ -989,8 +1175,8 @@ void GUICanvas::OnKeyDown(wxKeyEvent& event) {
 					wireList[preMoveWire[i].id]->setSegmentMap(preMoveWire[i].oldWireTree);
 					wireList[preMoveWire[i].id]->select();
 				}
-			}			
-		}
+			}
+		}*/
 		currentDragState = DRAG_NONE;
 		endDrag(BUTTON_LEFT);
 		Refresh();
@@ -1022,6 +1208,16 @@ void GUICanvas::OnKeyDown(wxKeyEvent& event) {
 	case WXK_SPACE:
 		setZoomAll();
 		break;
+#ifdef _MSG_
+	// Pedro Casanova(casanova@ujaen.es) 2021/01-03
+	// Print info
+	case WXK_TAB:
+		this->printLists();
+		break;
+	case WXK_BACK:
+		gCircuit->printState();
+		break;
+#endif
 	}
 }
 
@@ -1154,7 +1350,7 @@ void GUICanvas::pasteBlockFromClipboard () {
 			}
 		}
 		thisWire++;
-	} 
+	}
 
 	autoScrollDisable();
 	beginDrag(BUTTON_LEFT);
@@ -1217,10 +1413,70 @@ void GUICanvas::printLists() {
 		}
 		thisWire++;
 	}
+#ifdef _MSG_
+	{
+		_MSG("printing lists");
+		unordered_map< unsigned long, guiGate* >::iterator thisGate = gCircuit->getGates()->begin();
+		ostringstream oss;
+		while (thisGate != gCircuit->getGates()->end()) {
+			float x, y;
+			(thisGate->second)->getGLcoords(x, y);
+			oss.str(""); oss.clear();
+			oss << " gate " << thisGate->first << " type " << thisGate->second->getLibraryGateName() << " at " << x << "," << y;
+			_MSG("%s\n", oss.str().c_str());
+			oss.str(""); oss.clear();
+			oss << "  hotspots:";
+			map < string, GLPoint2f > gateHotspots = thisGate->second->getHotspotList();
+			map < string, GLPoint2f >::iterator thisHotspot = gateHotspots.begin();
+			while (thisHotspot != gateHotspots.end()) {
+				oss << thisHotspot->first << " ";
+				thisHotspot++;
+			}
+			_MSG("%s\n", oss.str().c_str());
+			thisGate++;
+		}
+		unordered_map< unsigned long, guiWire* >::iterator thisWire = gCircuit->getWires()->begin();
+		while (thisWire != gCircuit->getWires()->end()) {
+			if (thisWire->second != nullptr) {
+				oss.str(""); oss.clear();
+				oss << "wire " << thisWire->first << " status: " << GetStringState(thisWire->second->getState());
+				_MSG("%s\n", oss.str().c_str());
+				oss.str(""); oss.clear();
+				oss << "  connections: ";
+				for (unsigned int i = 0; i < thisWire->second->getConnections().size(); i++) {					
+					unsigned long index=0;
+					map < string, GLPoint2f > gateHotspots = thisWire->second->getConnections()[i].cGate->getHotspotList();
+					map < string, GLPoint2f >::iterator thisHotspot = gateHotspots.begin();
+					while (thisHotspot != gateHotspots.end()) {
+						if (thisHotspot->first == thisWire->second->getConnections()[i].connection)
+							break;
+						index++;
+						thisHotspot++;
+					}
+					oss << thisWire->second->getConnections()[i].gid << "@" << index;
+					oss << " (" << thisWire->second->getConnections()[i].cGate->getLibraryGateName(); 
+					oss << "@" << thisWire->second->getConnections()[i].connection << ")";
+					if (i < thisWire->second->getConnections().size() - 1) oss << " - ";
+				}
+				_MSG("%s\n", oss.str().c_str());
+				oss.str(""); oss.clear();
+				oss << "  segments: ";
+				for (unsigned int i = 0; i < thisWire->second->getSegmentMap().size(); i++) {
+					oss << "(" << thisWire->second->getSegmentMap()[i].begin.x << "," << thisWire->second->getSegmentMap()[i].begin.y << ")";
+					oss << "-(" << thisWire->second->getSegmentMap()[i].end.x << "," << thisWire->second->getSegmentMap()[i].end.y << ")";
+					if (i < thisWire->second->getSegmentMap().size() - 1) oss << " ";
+				}
+				_MSG("%s\n", oss.str().c_str());
+			}
+			thisWire++;
+		}
+	}
+#endif
 }	
 
 // Update the collision checker and refresh
 void GUICanvas::Update() {
+
 	if (minimap == NULL){
 		return;
 	}
@@ -1247,6 +1503,7 @@ void GUICanvas::Update() {
 	}
 
 	minimap->setLists( &gateList, &wireList );
+	minimap->setCanvas(this);
 	minimap->setCanvas(this);
 	updateMiniMap();
 	Refresh();
@@ -1280,13 +1537,13 @@ klsCommand * GUICanvas::createGateWireConnectionCommand(IDType gateId, const str
 		return nullptr;
 	}
 
-	cmdConnectWire *command = new cmdConnectWire(gCircuit, wireId, gateId, hotspot);
+	cmdConnectWire *connectWire = new cmdConnectWire(gCircuit, wireId, gateId, hotspot);
 
-	if (command->validateBusLines()) {
-		return command;
+	if (connectWire->validateBusLines()) {
+		return connectWire;
 	}
 	else {
-		delete command;
+		delete connectWire;
 		return nullptr;
 	}
 }
@@ -1351,4 +1608,432 @@ klsCommand * GUICanvas::createGateConnectionCommand(IDType gate1Id, const string
 		}
 		return nullptr;
 	}
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Connect two diferents wires
+// Delete the second wire and creates connections between wire1 and each hotspot of wire2
+// Exists a problem: wire2 changes shape
+klsCommand * GUICanvas::createWireConnectionCommand(IDType wireId1, IDType wireId2) {
+
+	// Make sure not already connected.
+	if (wireId1 == wireId2) 
+		return nullptr;
+	
+	vector<IDType> wireIds(wireList[wireId1]->getIDs().size());
+
+	// Get the correct number of new, unique wire ids.
+	for (int i = 0; i < (int)wireIds.size(); i++) {
+		wireIds[i] = gCircuit->getNextAvailableWireID();
+		_MSGGUI("WireID: %lld\n", wireIds[i])	//@@@@
+	}
+
+	cmdMergeWire* mergeWire = new cmdMergeWire(this, gCircuit, wireIds, wireId1, wireId2);
+
+	if (mergeWire->validateBusLines()) {
+		return mergeWire;
+	}
+	else {
+		delete mergeWire;
+		return nullptr;
+	}
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Add Dynamics gates
+bool GUICanvas::addDynamicGate(guiGate* gGate) {
+
+	if (gGate->getLibraryGateName() == "%%_31_GATES" || gGate->getLibraryGateName() == "%%_34_CIRCUIT" || gGate->getLibraryGateName() == "%%_38_PLD") {
+		string msg;
+		if (!createGatesStruct(gGate, &msg)) {
+			wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
+			return false;
+		}
+	}
+	else if (gGate->getLibraryGateName() == "%%_16_WIRES") {
+		createGatesStruct(gGate);
+	}
+	else {
+		replaceGate(gGate);
+	}
+	return true;
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Replace Gate %%_ for his correct type (Dynamics gates)
+void GUICanvas::replaceGate(guiGate* gGate) {
+	// Replace gate	
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	map<string, string> lParamList = *gGate->getAllLogicParams();
+
+	ostringstream type;
+	gGate->unselect();
+	if (gGate->getLibraryGateName() == "%%_11_WIRE") {
+		type << "@@_WIRE_" << gParamList.at("LENGTH");
+	}
+	else if (gGate->getLibraryGateName() == "%%_14_NOWIRE") {
+		type << "@@_NOWIRE_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");
+	}
+	else if (gGate->getLibraryGateName() == "%%_17_BUSEND") {
+		type << "@@_BUSEND" << (gParamList.at("SEPARATION") == "narrow" ? "N_" : "_") << gParamList.at("INPUT_BITS");
+	}
+	else if (gGate->getLibraryGateName() == "%%_21_LAND") {
+		type << "@@_LAND_" << gParamList.at("INPUT_BITS");
+	}
+	else if (gGate->getLibraryGateName() == "%%_24_LOR") {
+		type << "@@_LOR_" << gParamList.at("INPUT_BITS");
+	}
+	else if (gGate->getLibraryGateName() == "%%_43_BLQ") {
+		type << "@@_BLQ_" << gParamList.at("WIDTH") << "X" << gParamList.at("HEIGHT");
+	}
+	else if (gGate->getLibraryGateName() == "%%_40_GATE") {
+		type << getGate(gGate);
+	}
+	else if (gGate->getLibraryGateName() == "%%_41_LATCH") {
+		type << getLatch(gGate);
+	}
+	else if (gGate->getLibraryGateName() == "%%_42_FLIPFLOP") {
+		type << getFlipFlop(gGate);
+	}
+	else if (gGate->getLibraryGateName() == "%%_44_CMB") {
+		type << "@@_CMB_" << lParamList.at("INPUT_BITS") << "X" << lParamList.at("OUTPUT_BITS");
+	}
+	else if (gGate->getLibraryGateName() == "%%_47_FSM") {
+		type << "@@_FSM_" << ((lParamList.at("ASYNCHRONOUS") == "true") ? "A" : "S") << "_"
+			<< lParamList.at("INPUT_BITS") << "X" << lParamList.at("OUTPUT_BITS");
+	}
+	if (type.str() == "") return;
+	int newGID = gCircuit->getNextAvailableGateID();
+	float x, y;
+	gGate->getGLcoords(x, y);
+	cmdCreateGate* creategatecommand = new cmdCreateGate(gCircuit->gCanvas, gCircuit, newGID, type.str(), x, y);
+	gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatecommand);
+	gateList[newGID]->select();
+	selectedGates.push_back(newGID);
+
+}
+
+string GUICanvas::getGate(guiGate* gGate) {
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	string gateType = gParamList.at("GATE_TYPE");
+	unsigned long nInputs = atoi(gParamList.at("N_INPUTS").c_str());
+	ostringstream oss;
+	char index;
+	if (nInputs < 11)
+		index = 47 + nInputs;
+	else
+		index = 54 + nInputs;
+	if (gateType == "AND")
+		oss << "A" << index << "_SAND" << nInputs;
+	else if (gateType == "NAND")
+		oss << "B" << index << "_SNAND" << nInputs;
+	else if (gateType == "OR")
+		oss << "C" << index << "_SOR" << nInputs;
+	else if (gateType == "NOR")
+		oss << "D" << index << "_SNOR" << nInputs;
+	else if (gateType == "XOR")
+		oss << "E" << index << "_SXOR" << nInputs;
+	else if (gateType == "XNOR")
+		oss << "F" << index << "_SXNOR" << nInputs;
+	return oss.str();
+}
+
+string GUICanvas::getLatch(guiGate* gGate) {
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	string latchType = gParamList.at("LATCH_TYPE");
+	bool signallevel = (gParamList.at("SIGNAL_LEVEL") == "high") ? true : false;
+	bool controlLevel = (gParamList.at("CONTROL_LEVEL") == "high") ? true : false;		
+	if (latchType == "SR") {
+		if (signallevel)
+			return "A0_SRLATCH";
+		else
+			return "A1_SRLATCH_LOW";
+	}
+	else if (latchType == "SR-controlled") {
+		if (controlLevel) {
+			if (signallevel)
+				return "A2_SRLATCH_CONTROL";
+			else
+				return "A3_SRLATCH_LOW_CONTROL";
+		}
+		else {
+			if (signallevel)
+				return "A4_SRLATCH_CONTROL_LOW";
+			else
+				return "A5_SRLATCH_LOW_CONTROL_LOW";
+		}
+	}
+	else if (latchType == "D") {
+		if (controlLevel)
+			return "A6_DLATCH";
+		else
+			return "A6_DLATCH_LOW";
+	}
+	return "";
+}
+
+string GUICanvas::getFlipFlop(guiGate* gGate) {
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	string ffType = gParamList.at("FF_TYPE");
+	bool edgeClock = (gParamList.at("EDGE_CLOCK") == "rising") ? true : false;
+	bool levelCP = (gParamList.at("LEVEL_CL_PR") == "high") ? true : false;
+	string presetClear = gParamList.at("PRESET_CLEAR");
+	string prefix;
+	ostringstream oss;
+	
+	if (ffType == "D") prefix = "A";
+	else if (ffType == "JK") prefix = "B";
+	else prefix = "C";
+	
+	oss << prefix;
+
+	if (presetClear == "both") {
+		if (levelCP)
+			oss << "B_" << ffType << "FF";
+		else
+			oss << "C_" << ffType << "FF_LOW";
+	}
+	else if (presetClear == "clear") {
+		if (levelCP)
+			oss << "D_" << ffType << "FF";
+		else
+			oss << "G_" << ffType << "FF_LOW";
+	}
+	else
+		oss << "H_" << ffType << "FF_NCP";
+
+	if (!edgeClock) oss << "_NT";
+
+	return oss.str();
+
+}
+
+// Pedro Casanova (casanova@ujaen.es) 2021/01-03
+// Create two levels gates structs: AND-OR, OR-AND, NAND-NAND or NOR-NOR and wire sets
+// Can add input wires whith links an inverters and connect to first level gate inputs
+bool GUICanvas::createGatesStruct(guiGate* gGate, string *errorMsg) {
+
+	map<string, string> gParamList = *gGate->getAllGUIParams();
+	if (gGate->getLibraryGateName() != "%%_16_WIRES") {
+		if (gGate->getLibraryGateName() == "%%_38_PLD") {
+			string PLDType = gParamList.at("PLD_TYPE");
+			unsigned long inBits = atoi(gParamList.at("INPUT_BITS").c_str());
+			unsigned long outBits = atoi(gParamList.at("OUTPUT_BITS").c_str());
+			unsigned long inORBits = pow(2, inBits);
+			if (PLDType != "PROM")
+				inORBits = atoi(gParamList.at("OR_INPUTS").c_str());
+			unsigned long nAnd;
+			if (PLDType == "PAL")
+				nAnd = inORBits * outBits;
+			else
+				nAnd = inORBits;
+
+			unsigned long linesAND = 0;
+			unsigned long charsAND = 0;
+			unsigned long linesOR = 0;
+			unsigned long charsOR = 0;
+			unsigned long totalLength;
+			if (PLDType == "PROM") {
+				linesOR = outBits;
+				charsOR = pow(2, inBits);
+			}
+			else if (PLDType == "PAL") {
+				linesAND = nAnd;
+				charsAND = 2 * inBits;
+			}
+			else {
+				linesAND = nAnd;
+				charsAND = 2 * inBits;
+				linesOR = outBits;
+				charsOR = nAnd;
+			}
+			totalLength = linesAND * charsAND + linesOR * charsOR;
+
+			string connections = "";
+			unsigned long cntLines = 0;
+			unsigned long cntChars = 0;
+			string paramConnections = gParamList.at("CONNECTIONS");
+			if (paramConnections != "") {
+				paramConnections = paramConnections + "\n";
+				for (unsigned int i = 0; i < paramConnections.length(); i++) {
+					if (paramConnections[i] != '\n') {
+						if (paramConnections[i] != '0' && paramConnections[i] != '1') {
+							*errorMsg = "Invalid char, must be '0' or '1'";
+							return false;
+						}
+						connections = connections + paramConnections[i];
+						cntChars++;
+					} else if (cntChars) {
+						if (PLDType == "PROM") {
+							if (cntChars != charsOR) {
+								*errorMsg = "Invalid connection map line length";
+								return false;
+							}
+						}
+						else if (PLDType == "PAL") {
+							if (cntChars != charsAND) {
+								*errorMsg = "Invalid connection map line length";
+								return false;
+							}
+						}
+						else {
+							if (cntLines < linesAND) {
+								if (cntChars != charsAND) {
+									*errorMsg = "Invalid connection map line length";
+									return false;
+								}
+							}
+							else {
+								if (cntChars != charsOR) {
+									*errorMsg = "Invalid connection map line length";
+									return false;
+								}
+							}
+						}
+						cntChars = 0;
+						cntLines++;
+					}
+				}
+				if (PLDType == "PROM") {
+					if (cntLines != linesOR) {
+						*errorMsg = "Invalid connection map lines";
+						return false;
+					}
+				}
+				else if (PLDType == "PAL") {
+					if (cntLines != linesAND) {
+						*errorMsg = "Invalid connection map lines";
+						return false;
+					}
+				}
+				else {
+					if (cntLines < linesAND + linesOR) {
+						*errorMsg = "Invalid connection map lines";
+						return false;
+					}
+				}
+				if (totalLength != connections.length()) {
+					*errorMsg = "Invalid connection map length";
+					return false;
+				}
+				gGate->setGUIParam("CONNECTIONS", connections);
+			}
+		}
+		else if (gGate->getLibraryGateName() == "%%_31_GATES") {
+			unsigned long nOutputs = 0;
+			for (unsigned int i = 1; i <= 8; i++) {
+				ostringstream oss;
+				oss << "G" << i;
+				if (gParamList.at(oss.str()) != "0") nOutputs++;
+			}
+			if (!nOutputs) {
+				*errorMsg = "No gate has defined inputs";
+				return false;
+			}
+		}
+		else if (gGate->getLibraryGateName() == "%%_34_CIRCUIT") {
+			vector <string> inputNames;
+			unsigned long nInputs = 0;
+			unsigned long nOutputs = 0;			
+			string outputName=gParamList.at("OUTPUT_NAME");
+			removeSpaces(&outputName);
+			gGate->setGUIParam("OUTPUT_NAME", outputName);
+			istringstream iss(gParamList.at("INPUT_NAMES"));
+			while (true) {
+				string inputName;
+				iss >> inputName;
+				if (inputName[inputName.length() - 1] == '-') {
+					inputName = inputName.substr(0, inputName.length() - 1);
+					if (gParamList.at("NO_LINK_INPUT") == "true") {
+						ostringstream error;
+						error << "Input '" << inputName << "' can't have '-' sufix";
+						*errorMsg = error.str();
+						return false;
+					}
+				}
+				if (inputName != "") {
+					for (unsigned int i = 0; i < inputNames.size(); i++)
+						if (inputName == inputNames[i]) {
+							ostringstream error;
+							error << "Duplicate input '" << inputName << "'";
+							*errorMsg = error.str();
+							return false;
+						}
+					inputNames.push_back(inputName);
+					nInputs++;
+				}
+				if (iss.eof()) break;
+			}
+			if (!nInputs) {
+				*errorMsg = "Incorrect number of inputs, must be at least one";
+				return false;
+			}
+			if (nInputs > 16) {
+				*errorMsg = "Incorrect number of inputs, must be less than 16";
+				return false;
+			}
+			for (unsigned int i = 1; i <= 16; i++) {
+				ostringstream oss;
+				oss << "G" << i;
+				if (gParamList.at(oss.str()) != "")
+				{
+					istringstream iss(gParamList.at(oss.str()));
+					unsigned long countInputs = 0;
+					while (true)
+					{
+						string term;
+						iss >> term;
+						if (term != "") {
+							unsigned long termcol;
+							bool found = false;
+							for (unsigned int i = 0; i < nInputs; i++)
+								if (term.substr(0, 1) == "/") {
+									if (term.substr(1) == inputNames.at(i)) {
+										termcol = 2 * i + 1;
+										found = true;
+										break;
+									}
+								}
+								else {
+									if (term == inputNames.at(i)) {
+										termcol = 2 * i;
+										found = true;
+										break;
+									}
+								}
+							if (!found) {
+								ostringstream error;
+								error << "Unknown input name: '" << term << "' at gate " << i;
+								*errorMsg = error.str();
+								return false;
+							}
+							countInputs++;
+						}
+						if (iss.eof()) break;
+					}
+					if (!countInputs) {
+						ostringstream error;
+						error << "Gate " << i << " whithout inputs";
+						*errorMsg = error.str();
+						return false;
+					}
+					nOutputs++;
+				}
+			}
+			if (!nOutputs) {
+				*errorMsg = "No gate has defined inputs";
+				return false;
+			}
+		}
+		else {
+			*errorMsg = "Incorrect Gate";
+			return false;
+		}
+	}
+
+	cmdCreateGateStruct* creategatestruct = new cmdCreateGateStruct(gCircuit->gCanvas, gCircuit, gGate);
+	gCircuit->GetCommandProcessor()->Submit((wxCommand*)creategatestruct);
+	//creategatestruct->Do();
+
+	return true;
 }

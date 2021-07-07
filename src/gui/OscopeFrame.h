@@ -51,6 +51,7 @@ public:
 	void UpdateMenu(void);
 	
 	void OnToggleButton( wxCommandEvent& event );
+	void OnCopy(wxCommandEvent& event);
 	void OnExport( wxCommandEvent& event );
 	void OnLoad( wxCommandEvent& event );
 	void OnSave( wxCommandEvent& event );
@@ -151,6 +152,7 @@ private:
 	wxGridSizer* buttonSizer;
 	wxToggleButton* pauseButton;
 	wxButton* exportButton;
+	wxButton* copyButton;
 	wxButton* loadButton;
 	wxButton* saveButton;
 	

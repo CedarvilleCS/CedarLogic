@@ -7,11 +7,14 @@ namespace {
 	const int VERSION_MAJOR = CEDARLOGIC_MAJOR;
 	const int VERSION_MINOR = CEDARLOGIC_MINOR;
 	const int VERSION_PATCH = CEDARLOGIC_PATCH;
+	const string VERSION_REVISION = CEDARLOGIC_REVISION;
 }
 
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Now VERSION_NUMBER_STRING has VERSION only, not DATE and TIME
 string VERSION_NUMBER_STRING() {
 
-	// Date in format: "MMM DD YYYY"
+/*	// Date in format: "MMM DD YYYY"
 	static string date = __DATE__;
 
 	// Time in format: "HH:MM:SS"
@@ -43,11 +46,21 @@ string VERSION_NUMBER_STRING() {
 	return std::to_string(VERSION_MAJOR) + "." +
 		std::to_string(VERSION_MINOR) + "." +
 		std::to_string(VERSION_PATCH) + " | " +
-		year + "-" + month + "-" + day + " " + hms;
+		//year + "-" + month + "-" + day + " " + hms;*/
+		// Version in format: "MAJOR.MINOR|YYYY-MM-DD HH:MM:SS"
+	return std::to_string(VERSION_MAJOR) + "." +
+		std::to_string(VERSION_MINOR) + "." +
+		std::to_string(VERSION_PATCH);
+}
+
+string VERSION_REVISION_STRING() {
+	if (VERSION_REVISION == "A")
+		return "";
+	return " Rev. "+ VERSION_REVISION;
 }
 
 string VERSION_TITLE() {
-	return "Cedar Logic " + VERSION_NUMBER_STRING();
+	return "CedarLogic " + VERSION_NUMBER_STRING() + VERSION_REVISION_STRING();
 }
 
 string VERSION_ABOUT_TEXT() {
@@ -58,6 +71,7 @@ string VERSION_ABOUT_TEXT() {
 Copyright (c) 2007, Cedarville University, Benjamin Sprague, Matthew Lewellyn, David Knierim, Joshua Lansford, Nathan Harro.
 Copyright (c) 2017, Cedarville University, Tyler Drake, Julian Pernia, Jackson Vaugn, Colin Broberg.
 Copyright (c) 2018, Cedarville University, Tyler Drake.
+Copyright (c) 2020, Universidad de Jaen, Pedro Casanova.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

@@ -24,19 +24,34 @@
 #include "LibraryParse.h"
 #include "gl_defs.h"
 #include "klsMessage.h"
+#include "settings_values.h"
 #include <deque>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <cmath>
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// To search "My Documents" directory
+#include <shlobj.h>
+
+// Pedro Casanova (casanova@ujaen.es) 2020/01-02
+// Functions used in some modules
+bool chkDigits(string number);
+bool chkHexDigits(string* number, bool uppercase = false);
+bool chkBits(string* bits, bool uppercase = false);
+void removeSpaces(string* text);
+float Round_half(float v);
+float Round(float v);
+string GetStringState(vector<StateType> states);
 
 class MainFrame;
 
 using namespace std;
 
 struct ApplicationSettings {
-	string gateLibFile;
-	string textFontFile;
+	string mainGateLibFile;
+	string userGateLibFile;
+	string textFontFile;						// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Font is now in resources 
 	string helpFile;
 	string lastDir;
 	unsigned int mainFrameWidth;
@@ -44,10 +59,16 @@ struct ApplicationSettings {
 	int mainFrameLeft;
 	int mainFrameTop;
 	unsigned int timePerStep;
-	int refreshRate;
-    float wireConnRadius;
-    bool wireConnVisible;
-    bool gridlineVisible;
+	int refreshRate;    
+	bool gridlineVisible;
+    bool wireConnVisible; 
+	bool wideOutline;
+	bool componentCollVisible;
+	bool adjustBitmap;
+	bool markDeprecated;
+	float wireConnRadius;
+	bool mainFrameMaximized;
+	bool settingsInReg = SETTINGS_IN_REG;		// Pedro Casanova (casanova@ujaen.es) 2020/04-12	Settings in register
 };
 
 class MainApp : public wxApp {
@@ -110,7 +131,12 @@ public:
 	bool doingBitmapExport;
 	
 private:
-	void loadSettings( void );
+
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// Settings now in windows register
+	void loadSettingsFile(void);
+	void loadSettingsReg(void);
+	void loadSettings(bool Reg);	
 };
 
 #endif /*MAINAPP_H_*/

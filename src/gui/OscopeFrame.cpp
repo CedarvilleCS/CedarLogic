@@ -27,6 +27,7 @@
 #define ID_TEXTCTRL 5951
 #define ID_LOAD 5953
 #define ID_SAVE 5954
+#define ID_COPY 5955
 
 
 DECLARE_APP(MainApp)
@@ -35,6 +36,7 @@ BEGIN_EVENT_TABLE(OscopeFrame, wxFrame)
 	EVT_TOGGLEBUTTON(ID_PAUSE_BUTTON, OscopeFrame::OnToggleButton)
 	EVT_COMBOBOX(ID_COMBOBOX, OscopeFrame::OnComboUpdate)
 	EVT_BUTTON(ID_EXPORT, OscopeFrame::OnExport)
+	EVT_BUTTON(ID_COPY, OscopeFrame::OnCopy)
 	EVT_BUTTON(ID_LOAD, OscopeFrame::OnLoad)
 	EVT_BUTTON(ID_SAVE, OscopeFrame::OnSave)
 	
@@ -77,6 +79,9 @@ OscopeFrame::OscopeFrame(wxWindow *parent, const wxString& title, GUICircuit* gC
 
 	exportButton = new wxButton(this, ID_EXPORT, "Export", wxDefaultPosition, wxDefaultSize);
 	buttonSizer->Add(exportButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
+
+	copyButton = new wxButton(this, ID_COPY, "Copy", wxDefaultPosition, wxDefaultSize);
+	buttonSizer->Add(copyButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0));
 
 	loadButton = new wxButton(this, ID_LOAD, "Load", wxDefaultPosition, wxDefaultSize);
 	buttonSizer->Add(loadButton, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL).Border(wxALL, 0) );
@@ -251,6 +256,33 @@ void OscopeFrame::OnExport( wxCommandEvent& event ){
 	}
  }
 
+void OscopeFrame::OnCopy(wxCommandEvent& event) {
+	wxSize imageSize = theCanvas->GetClientSize();
+	wxImage circuitImage = theCanvas->generateImage();
+	wxBitmap circuitBitmap(circuitImage);
+
+	wxMemoryDC memDC;
+	wxBitmap labelBitmap(theCanvas->GetPosition().x + theCanvas->GetSize().GetWidth(), getFeedYPos(numberOfFeeds() - 1));
+	memDC.SelectObject(labelBitmap);
+	memDC.SetBackground(*wxWHITE_BRUSH);
+	memDC.Clear();
+	wxFont font(10, wxFONTFAMILY_DEFAULT, wxNORMAL, wxFONTWEIGHT_NORMAL);
+	memDC.SetFont(font);
+	memDC.SetTextForeground(*wxBLACK);
+	memDC.SetTextBackground(*wxWHITE);
+	//JoshEdit 3/15/07
+	for (unsigned int i = 0; i < numberOfFeeds() - 1; ++i) {
+		memDC.DrawText((const wxChar *)getFeedName(i).c_str(), wxPoint(5, getFeedYPos(i))); // KAS
+	}
+	memDC.DrawBitmap(circuitBitmap, theCanvas->GetPosition().x, 0, false);
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxBitmapDataObject(labelBitmap));
+		wxTheClipboard->Close();
+	}
+}
+
+
 void OscopeFrame::OnLoad( wxCommandEvent& event ){ 
 	wxString caption = "Open an O-scope Layout";
 	wxString wildcard = "CEDAR O-scope Layout files (*.cdo)|*.cdo";
@@ -387,12 +419,11 @@ int OscopeFrame::getFeedYPos( int i ){
 //This will cause the OscopeFrame
 //to update the list of
 void OscopeFrame::updatePossableFeeds( vector< string >* newPossabilities ){ 
-
 	//refresh the combo boxes and set their values to [None] if they
 	//are not valid anymore.
 	for( unsigned int i = 0; i < numberOfFeeds(); ++i ){
 		//clear dumps the current value also
-		string currentFeedName = getFeedName( i );
+		string currentFeedName = getFeedName( i );		
 		
 		comboBoxes[i]->Clear();
 		
@@ -408,7 +439,7 @@ void OscopeFrame::updatePossableFeeds( vector< string >* newPossabilities ){
 			}
 		}
 		
-		comboBoxes[i]->Append((const wxChar *)encodeFeedName(NONE_STR).c_str()); // KAS
+		comboBoxes[i]->Append((const wxChar *)encodeFeedName(NONE_STR).c_str()); // KAS		
 		if( numberOfFeeds() > 1 ){
 			comboBoxes[i]->Append((const wxChar *)encodeFeedName(RMOVE_STR).c_str()); // KAS
 		}

@@ -22,11 +22,15 @@ class guiGate;
 class XMLParser;
 
 float distanceToLine(GLPoint2f p, GLPoint2f l1, GLPoint2f l2);
+// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+// Round 0.1 precision
+float Round(float v);
 
 struct glWireRenderInfo {
 	vector< GLPoint2f > vertexPoints;
 	vector< GLPoint2f > intersectPoints;
 	vector< GLLine2f > lineSegments;
+	vector< GLPoint2f > crossPoints;
 };
 
 class guiWire : public klsCollisionObject {
@@ -135,11 +139,13 @@ private:
 	void removeZeroLengthSegments();  // TODO
 
 	// Take existing segments and merge concurrent segments
-	void mergeSegments();
-	void generateRenderInfo();  // TODO
+	void mergeSegments ();
 
+	void generateRenderInfo();
 
-
+	// Pedro Casanova (casanova@ujaen.es) 2020/04-12
+	// To check if a point is yet in the list
+	bool guiWire::checkPointInList(float x, float y, vector<GLPoint2f> ListPoints);
 
 	// Store the tree in a non-pointered way for easy copy
 	map < long, wireSegment > segMap;
