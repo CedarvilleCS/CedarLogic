@@ -5,3 +5,5 @@ build
 *.aps
 res/settings.ini
 res/KLS_Logic.chw
+/.vs
+/CMakeSettings.json
