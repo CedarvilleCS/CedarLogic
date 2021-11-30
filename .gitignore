@@ -8,3 +8,4 @@ res/KLS_Logic.chw
 /.vs
 /CMakeSettings.json
 *.TMP
+.vscode/
