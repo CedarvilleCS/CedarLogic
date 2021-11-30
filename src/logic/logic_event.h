@@ -1,10 +1,3 @@
-/*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
-*****************************************************************************/
 
 // logic_event.h: interface for the Event class.
 // Ben Sprague, 10-15-2005
@@ -12,8 +5,7 @@
 // Moved code to source.
 // Move existing comparator from global namespace to class.
 
-#ifndef LOGIC_EVENT_H
-#define LOGIC_EVENT_H
+#pragma once
 
 #include "logic_defaults.h"
 
@@ -46,5 +38,3 @@ private:
 	static TimeType globalCreationTime;
 };
 
-
-#endif // LOGIC_EVENT_H

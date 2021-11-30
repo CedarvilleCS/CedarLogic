@@ -1,23 +1,10 @@
-/*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
-*****************************************************************************/
 
 // logic_wire.h: interface for the Wire class.
 // Ben Sprague, 10-15-2005
 //////////////////////////////////////////////////////////////////////
 
-#ifndef LOGIC_WIRE_H
-#define LOGIC_WIRE_H
-
-#include "logic_defaults.h"	// Added by ClassView
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
+#include "logic_defaults.h"	// Added by ClassView
 
 class Wire;
 class Junction;
@@ -142,5 +129,3 @@ protected:
 	// A list of junctions that this wire connects to.
 	ID_SET< IDType > junctionList;
 };
-
-#endif // LOGIC_WIRE_H

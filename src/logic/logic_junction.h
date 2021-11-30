@@ -1,15 +1,8 @@
 /*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
-
    logic_junction: Implements junction objects for the logic core
 *****************************************************************************/
 
-#ifndef LOGIC_JUNCTION_H_
-#define LOGIC_JUNCTION_H_
+#pragma once
 
 #include "logic_defaults.h"
 
@@ -56,5 +49,3 @@ protected:
 	// you have to remove it twice to completely get rid of it.)
 	multiset< IDType > wireList;
 };
-
-#endif /*LOGIC_JUNCTION_H_*/

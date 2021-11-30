@@ -1,13 +1,4 @@
-/*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
-*****************************************************************************/
-
-#ifndef LOGIC_GATE_H
-#define LOGIC_GATE_H
+#pragma once
 
 #include "logic_defaults.h"
 #include "logic_event.h"
@@ -15,14 +6,11 @@
 
 class Circuit;
 
-#include <cassert>  // KAS 2016
+#include <cassert>
 #include <string>
 #include <sstream>
 using namespace std;
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
 
 struct GateInput {
 	IDType wireID;
@@ -47,44 +35,50 @@ class Gate
 {
 public:
 
+	// Used to indicate if changes require an update (clock edge?) to show up in output.
+	typedef bool requiresUpdate;
+	typedef string error;
+
 	// Update the gate's outputs:
 	void updateGate( IDType myID, Circuit * theCircuit );
 
 	// Resend the last event to a (probably newly connected) wire:	
-	void resendLastEvent( IDType myID, string outputID, Circuit * theCircuit );
+	void resendLastEvent( IDType myID, string destID, Circuit * theCircuit );
 
-	// Set a gate parameter:
-	// (If the parameter change requires the gate to be updated to change its
-	// output state, then return "true".)
-	virtual bool setParameter( string paramName, string value );
-	virtual bool setInputParameter( string inputID, string paramName, string value );
-	virtual bool setOutputParameter( string outputID, string paramName, string value );
+	// Set a gate parameter, returns boolean "change requires update to change output state"
+	virtual requiresUpdate setParameter( string paramName, string value );
+
+	// Set an input parameter, returns boolean "change requires update to change output state"
+	virtual requiresUpdate setInputParameter( string myInputID, string paramName, string value );
+
+	// Set an output parameter, returns boolean "change requires update to change output state"
+	virtual requiresUpdate setOutputParameter( string myOutputID, string paramName, string value );
 
 	// Get the value of a gate parameter:
 	virtual string getParameter( string paramName );
 
-	// ********* Standard Gate mutator functions ************
-
 	// Connect a wire to the input of this gate:
-	virtual void connectInput( string inputID, IDType wireID );
+	virtual void connectInput( string myInputID, IDType wireID );
 
 	// Connect a wire to the output of this gate:
-	virtual void connectOutput( string outputID, IDType wireID );
+	virtual void connectOutput( string myOutputID, IDType wireID );
 
-	// Return the wire ID of a connected wire, or ID_NONE:
-	virtual IDType getInputWire( string inputID ) {
-		return (inputList.find( inputID ) == inputList.end()) ? ID_NONE : inputList[inputID].wireID;
-	};
-	virtual IDType getOutputWire( string outputID ) {
-		return (outputList.find( outputID ) == outputList.end()) ? ID_NONE : outputList[outputID].wireID;
+	// If input exists return wireID else ID_NONE
+	virtual IDType getInputWire( string myInputID ) {
+		return (inputExists(myInputID)) ? ID_NONE : inputList[myInputID].wireID;
 	};
 
-	// Disconnect a wire from the input of this gate:
-	// (Returns the wireID of the wire that was connected.)
+	// If output exists return wireID else ID_NONE
+	virtual IDType getOutputWire( string myOutputID ) {
+		return (outputExists(myOutputID)) ? ID_NONE : outputList[myOutputID].wireID;
+	};
+
+	// Disconnect a wire from the given input
+	// Returns the disconnected wire's wireID
 	virtual IDType disconnectInput( string inputID );
 
-	// Disconnect a wire from the output of this gate:
-	// (Returns the wireID of the wire that was connected.)
+	// Disconnect a wire from the given output
+	// Returns the disconnected wire's wireID
 	virtual IDType disconnectOutput( string outputID );
 
 	// Get the first input of the gate:
@@ -104,10 +98,8 @@ protected:
 	// to be tracked to be able to check rising and falling edges.
 	void declareInput( string inputID, bool edgeTriggered = false );
 
-	// Return true if an input has been declared. False otherwise.
-	bool inputExists( string inputID ) {
-		return (inputList.find(inputID) != inputList.end());
-	};
+	// Return true if given input exists, else false.
+	bool inputExists(string myInputID);
 
 	// Register a bus of inputs for this gate. They will be named
 	// "busName_0" through "busName_<busWidth-1>". They cannot be
@@ -123,14 +115,11 @@ protected:
 	};
 
 
-
 	// Register an output for this gate :
 	void declareOutput( string name );
 
-	// Return true if an input has been declared. False otherwise.
-	bool outputExists( string outputID ) {
-		return (outputList.find(outputID) != outputList.end());
-	};
+	// Return true if given input exists, else false.
+	bool outputExists(string myOutputID);
 
 	// Register a bus of outputs for this gate. They will be named
 	// "busName_0" through "busName_<busWidth-1>". They cannot be
@@ -805,7 +794,3 @@ public:
 };
 //End of edit****************************************************
 
-
-
-
-#endif // LOGIC_GATE_H

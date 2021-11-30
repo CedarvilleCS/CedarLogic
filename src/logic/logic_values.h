@@ -4,8 +4,8 @@
 // These are the only features of logic_defaults used outside of the logic_ files.
 // This file is designed to be crazy light-weight.
 
-#ifndef LOGIC_VALUES_H
-#define LOGIC_VALUES_H
+#pragma once
+
 #include <climits>
 
 // Wire state type:
@@ -44,5 +44,3 @@ const TimeType DEFAULT_GATE_DELAY = 1;
 
 // The ID that represents an unconnected wire or gate:
 const IDType ID_NONE = ULLONG_MAX;
-
-#endif

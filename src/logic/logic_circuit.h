@@ -1,10 +1,3 @@
-/*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
-*****************************************************************************/
 
 // logic_circuit.h: interface for the Circuit class.
 //
@@ -20,7 +13,7 @@
 #include "logic_junction.h"
 
 #include<queue>
-#include<functional>  // KAS 2016
+#include<functional>
 #include<vector>
 
 #if _MSC_VER > 1000

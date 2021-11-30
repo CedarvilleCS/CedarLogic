@@ -1,21 +1,11 @@
-/*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
-*****************************************************************************/
 
 // logic_defaults.h: Default standards for the logic engine.
 // Ben Sprague, 10-15-2005
 // Tyler Drake, 10-03-2016 - replace preprocessor defines with constants.
 
-#ifndef LOGIC_DEFAULTS_H
-#define LOGIC_DEFAULTS_H
-
+#pragma once
 
 #include "logic_values.h"
-
 
 // Warning message macro:
 #ifndef _PRODUCTION_
@@ -65,5 +55,3 @@ typedef std::shared_ptr<Junction> JUNC_PTR;
 #include <cmath>
 using namespace std;
 
-
-#endif // LOGIC_DEFAULTS_H
