@@ -17,7 +17,6 @@
 #include "gate_junction.h"
 #include "gate_T.h"
 #include "gate_node.h"
-#include "gate_equivalence.h"
 #include "gate_pauselator.h"
 
 // logic_circuit.cpp: implementation of the Circuit class.

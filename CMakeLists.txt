@@ -137,8 +137,6 @@ set(Sources
 	src/logic/gate_decoder.h
 	src/logic/gate_driver.cpp
 	src/logic/gate_driver.h
-	src/logic/gate_equivalence.cpp
-	src/logic/gate_equivalence.h
 	src/logic/gate_jk_flip_flop.cpp
 	src/logic/gate_jk_flip_flop.h
 	src/logic/gate_junction.cpp
