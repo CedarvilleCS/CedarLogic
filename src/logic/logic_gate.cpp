@@ -142,12 +142,12 @@ void Gate::connectOutput( string myOutputID, IDType wireID )
 
 // If input exists return wireID else ID_NONE
 IDType Gate::getInputWire(string myInputID) {
-	return (inputExists(myInputID)) ? ID_NONE : gateInputMap[myInputID].wireID;
+	return (inputExists(myInputID)) ? gateInputMap[myInputID].wireID: ID_NONE;
 };
 
 // If output exists return wireID else ID_NONE
 IDType Gate::getOutputWire(string myOutputID) {
-	return (outputExists(myOutputID)) ? ID_NONE : gateOutputMap[myOutputID].wireID;
+	return (outputExists(myOutputID)) ? gateOutputMap[myOutputID].wireID: ID_NONE;
 };
 
 // Return true if given input exists, else false.
@@ -194,13 +194,13 @@ void  Gate::setOutputInverted(string outputID, bool newInv) {
 
 // Set the output to be automatically inverted:
 void  Gate::setOutputEnablePin(string outputID, string inputID) {
-	if (gateOutputMap.find(outputID) == gateOutputMap.end()) {
+	if (!outputExists(outputID)) {
 		WARNING("Gate::setOutputEnablePin() - Invalid output name.");
 		assert(false);
 		return;
 	}
 
-	if (inputExists(inputID)) {
+	if (!inputExists(inputID)) {
 		WARNING("Gate::setOutputEnablePin() - Invalid input name.");
 		assert(false);
 		return;
@@ -378,7 +378,7 @@ TimeType Gate::getSimTime( void ) {
 StateType Gate::getInputState( string inputID ) {
 	assert(ourCircuit != NULL);
 
-	if(inputExists(inputID)) {
+	if(!inputExists(inputID)) {
 		WARNING("Gate::getInputState() - Invalid input name.");
 		assert( false );
 		return ZERO;
