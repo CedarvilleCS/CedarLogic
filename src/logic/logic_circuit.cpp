@@ -1,10 +1,24 @@
-/*****************************************************************************
-   Project: CEDAR Logic Simulator
-   Copyright 2006 Cedarville University, Benjamin Sprague,
-                     Matt Lewellyn, and David Knierim
-   All rights reserved.
-   For license information see license.txt included with distribution.   
-*****************************************************************************/
+#include "gate_and.h"
+#include "gate_or.h"
+#include "gate_xor.h"
+#include "gate_pass.h"
+#include "gate_mux.h"
+#include "gate_decoder.h"
+#include "gate_priority_encoder.h"
+#include "gate_bus_end.h"
+#include "gate_clock.h"
+#include "gate_pulse.h"
+#include "gate_driver.h"
+#include "gate_adder.h"
+#include "gate_compare.h"
+#include "gate_jk_flip_flop.h"
+#include "gate_ram.h"
+#include "gate_register.h"
+#include "gate_junction.h"
+#include "gate_T.h"
+#include "gate_node.h"
+#include "gate_equivalence.h"
+#include "gate_pauselator.h"
 
 // logic_circuit.cpp: implementation of the Circuit class.
 //
@@ -48,10 +62,6 @@ Circuit::~Circuit()
 	gateList.clear();
 }
 
-// **************** The visible interface of the circuit ********************
-
-
-
 void Circuit::stepOnlyGates(){
 	// Update the gates that have been connected or disconnected or had a 
 	// parameter change within the last call to step() so that they can
@@ -63,7 +73,6 @@ void Circuit::stepOnlyGates(){
 	}
 	gateUpdateList.clear();
 }
-//End of Edit*****************************
 
 
 void Circuit::step(ID_SET< IDType > *changedWires)
@@ -232,8 +241,6 @@ IDType Circuit::newGate(const string &type, IDType gateID ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_T( this ) );
 		} else if( type == "NODE" ) {
 			gateList[thisGateID] = GATE_PTR( new Gate_NODE( this ) );
-		} else if( type == "EQUIVALENCE" ) {
-			gateList[thisGateID] = GATE_PTR( new Gate_EQUIVALENCE );
 		} else if( type == "Pauseulator" ){
 			gateList[thisGateID] = GATE_PTR( new Gate_pauseulator() );
 		} else {

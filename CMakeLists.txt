@@ -121,6 +121,50 @@ set(Sources
 	src/logic/logic_values.h
 	src/logic/logic_wire.cpp
 	src/logic/logic_wire.h
+	src/logic/gate_T.cpp
+	src/logic/gate_T.h
+	src/logic/gate_adder.cpp
+	src/logic/gate_adder.h
+	src/logic/gate_and.cpp
+	src/logic/gate_and.h
+	src/logic/gate_bus_end.cpp
+	src/logic/gate_bus_end.h
+	src/logic/gate_clock.cpp
+	src/logic/gate_clock.h
+	src/logic/gate_compare.cpp
+	src/logic/gate_compare.h
+	src/logic/gate_decoder.cpp
+	src/logic/gate_decoder.h
+	src/logic/gate_driver.cpp
+	src/logic/gate_driver.h
+	src/logic/gate_equivalence.cpp
+	src/logic/gate_equivalence.h
+	src/logic/gate_jk_flip_flop.cpp
+	src/logic/gate_jk_flip_flop.h
+	src/logic/gate_junction.cpp
+	src/logic/gate_junction.h
+	src/logic/gate_mux.cpp
+	src/logic/gate_mux.h
+	src/logic/gate_n_input.cpp
+	src/logic/gate_n_input.h
+	src/logic/gate_node.cpp
+	src/logic/gate_node.h
+	src/logic/gate_or.cpp
+	src/logic/gate_or.h
+	src/logic/gate_pass.cpp
+	src/logic/gate_pass.h
+	src/logic/gate_pauselator.cpp
+	src/logic/gate_pauselator.h
+	src/logic/gate_priority_encoder.cpp
+	src/logic/gate_priority_encoder.h
+	src/logic/gate_pulse.cpp
+	src/logic/gate_pulse.h
+	src/logic/gate_ram.cpp
+	src/logic/gate_ram.h
+	src/logic/gate_register.cpp
+	src/logic/gate_register.h
+	src/logic/gate_xor.cpp
+	src/logic/gate_xor.h
 )
 
 
