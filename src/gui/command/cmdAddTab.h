@@ -1,5 +1,5 @@
-
 #pragma once
+
 #include "klsCommand.h"
 
 class wxAuiNotebook;

@@ -1,5 +1,5 @@
-
 #pragma once
+
 #include "klsCommand.h"
 
 // cmdConnectWire - connects a wire to a gate hotspot

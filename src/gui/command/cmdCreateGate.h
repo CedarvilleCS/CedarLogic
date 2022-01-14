@@ -1,5 +1,5 @@
-
 #pragma once
+
 #include "klsCommand.h"
 
 // cmdCreateGate - creates a gate on a given canvas at position (x,y)
