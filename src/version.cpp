@@ -1,12 +1,13 @@
 
+#include "CedarLogic.h"
 #include "version.h"
 #include <map>
 using namespace std;
 
 namespace {
-	const int VERSION_MAJOR = CEDARLOGIC_MAJOR;
-	const int VERSION_MINOR = CEDARLOGIC_MINOR;
-	const int VERSION_PATCH = CEDARLOGIC_PATCH;
+	const int VERSION_MAJOR = CedarLogic_VERSION_MAJOR;
+	const int VERSION_MINOR = CedarLogic_VERSION_MAJOR;
+	const int VERSION_PATCH = CedarLogic_VERSION_MAJOR;
 }
 
 string VERSION_NUMBER_STRING() {

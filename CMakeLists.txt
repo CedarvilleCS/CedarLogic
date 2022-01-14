@@ -1,18 +1,9 @@
 
 cmake_minimum_required(VERSION 3.8)
-project(CedarLogic)
 
+project(CedarLogic VERSION 2.3.7)
 
-set(CEDARLOGIC_MAJOR 2)
-set(CEDARLOGIC_MINOR 3)
-set(CEDARLOGIC_PATCH 6)
-
-add_definitions(
-	-DCEDARLOGIC_MAJOR=${CEDARLOGIC_MAJOR}
-	-DCEDARLOGIC_MINOR=${CEDARLOGIC_MINOR}
-	-DCEDARLOGIC_PATCH=${CEDARLOGIC_PATCH}
-)
-
+configure_file(CedarLogic.h.in CedarLogic.h)
 
 ### 
 ### *.cpp and *.h files
@@ -182,6 +173,7 @@ target_link_libraries(CedarLogic
 target_include_directories(CedarLogic
     PRIVATE
         src
+		"${PROJECT_BINARY_DIR}"
         "${wxwin}/include/msvc"
         "${wxwin}/contrib/include"
 )
@@ -232,9 +224,9 @@ set(CPACK_PACKAGE_NAME "CedarLogic")
 # UPDATE: You can change 'bin' to '.' by setting  CPACK_NSIS_EXECUTABLES_DIRECTORY.
 set(CPACK_PACKAGE_EXECUTABLES ..\\\\CedarLogic "CedarLogic" ..\\\\Uninstall "Uninstall CedarLogic")
 set(CPACK_PACKAGE_VENDOR "Cedarville University")
-set(CPACK_PACKAGE_VERSION_MAJOR "${CEDARLOGIC_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${CEDARLOGIC_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${CEDARLOGIC_PATCH}")
+# set(CPACK_PACKAGE_VERSION_MAJOR "${CEDARLOGIC_MAJOR}")
+# set(CPACK_PACKAGE_VERSION_MINOR "${CEDARLOGIC_MINOR}")
+# set(CPACK_PACKAGE_VERSION_PATCH "${CEDARLOGIC_PATCH}")
 set(CPACK_PACKAGE_ICON ${CMAKE_SOURCE_DIR}/cmake\\\\InstallSmall.bmp)
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/res/LICENSE.txt)
 set(CPACK_NSIS_MUI_ICON ${CMAKE_SOURCE_DIR}/cmake\\\\icon.ico)
