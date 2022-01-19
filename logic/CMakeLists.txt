@@ -24,6 +24,7 @@ target_include_directories(Logic PUBLIC "${PROJECT_SOURCE_DIR}/include")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Bring in the Catch2 framework
 Include(FetchContent)
 
 FetchContent_Declare(
@@ -33,5 +34,9 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(Catch2)
+
+# Add a executable to run the tests
 add_executable(test_logic tests/test.cpp)
+
+# Add the libraries the test executable will need to run
 target_link_libraries(test_logic PRIVATE Catch2::Catch2WithMain Logic)
