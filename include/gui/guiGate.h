@@ -24,7 +24,7 @@ class guiWire;
 #include <string>
 #include <fstream>
 #include "wx/glcanvas.h"
-#include "../logic/logic_values.h"
+#include "logic_values.h"
 #include "XMLParser.h"
 #include "guiText.h"
 #include "klsCollisionChecker.h"

@@ -13,11 +13,11 @@
 #include <sstream>
 #include "wx/timer.h"
 
-#include "../logic/logic_defaults.h"
-#include "../logic/logic_wire.h"
-#include "../logic/logic_gate.h"
-#include "../logic/logic_circuit.h"
-#include "../logic/logic_event.h"
+#include "logic_defaults.h"
+#include "logic_wire.h"
+#include "logic_gate.h"
+#include "logic_circuit.h"
+#include "logic_event.h"
 #include <string>
 
 

@@ -1,0 +1,4 @@
+// the configured options and settings for Logic
+#define Logic_VERSION_MAJOR @Logic_VERSION_MAJOR@
+#define Logic_VERSION_MINOR @Logic_VERSION_MINOR@
+#define Logic_VERSION_PATCH @Logic_VERSION_PATCH@

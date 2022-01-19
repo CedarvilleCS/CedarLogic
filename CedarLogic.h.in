@@ -1,0 +1,4 @@
+// the configured options and settings for CedarLogic
+#define CedarLogic_VERSION_MAJOR @CedarLogic_VERSION_MAJOR@
+#define CedarLogic_VERSION_MINOR @CedarLogic_VERSION_MINOR@
+#define CedarLogic_VERSION_PATCH @CedarLogic_VERSION_PATCH@

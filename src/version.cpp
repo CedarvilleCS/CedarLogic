@@ -1,13 +1,8 @@
 
+#include "CedarLogic.h"
 #include "version.h"
 #include <map>
 using namespace std;
-
-namespace {
-	const int VERSION_MAJOR = CEDARLOGIC_MAJOR;
-	const int VERSION_MINOR = CEDARLOGIC_MINOR;
-	const int VERSION_PATCH = CEDARLOGIC_PATCH;
-}
 
 string VERSION_NUMBER_STRING() {
 
@@ -40,9 +35,9 @@ string VERSION_NUMBER_STRING() {
 	string day = date.substr(4, 2);
 
 	// Version in format: "MAJOR.MINOR|YYYY-MM-DD HH:MM:SS"
-	return std::to_string(VERSION_MAJOR) + "." +
-		std::to_string(VERSION_MINOR) + "." +
-		std::to_string(VERSION_PATCH) + " | " +
+	return std::to_string(CedarLogic_VERSION_MAJOR) + "." +
+		std::to_string(CedarLogic_VERSION_MINOR) + "." +
+		std::to_string(CedarLogic_VERSION_PATCH) + " | " +
 		year + "-" + month + "-" + day + " " + hms;
 }
 
@@ -55,17 +50,7 @@ string VERSION_ABOUT_TEXT() {
 	return
 		VERSION_TITLE() + "\n"
 		R"===(
-Copyright (c) 2007, Cedarville University, Benjamin Sprague, Matthew Lewellyn, David Knierim, Joshua Lansford, Nathan Harro.
-Copyright (c) 2017, Cedarville University, Tyler Drake, Julian Pernia, Jackson Vaugn, Colin Broberg.
-Copyright (c) 2018, Cedarville University, Tyler Drake.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-* Neither the name of the Cedarville University, Benjamin Sprague, Matthew Lewellyn, David Knierim, nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+Protected under the GNU General Public License v3.0.
+See https://github.com/CedarvilleCS/CedarLogic for more information.
 )===";
 }
