@@ -1,6 +1,7 @@
 
 # Note: updating to 3.15 breaks ms_static_runtime_libs or something around it such that we get a bunch of
-# linker errors where the MT and MD mismatch.
+# linker errors where the MT and MD mismatch. Below 3.11 breaks the FetchContent capability used to pull in 
+# Catch2, the unit testing framework.
 cmake_minimum_required(VERSION 3.11)
 
 # Name project, and set version. If updating version, change it here, and then re-generate your Visual
