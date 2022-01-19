@@ -1,7 +1,7 @@
 
 # Note: updating to 3.15 breaks ms_static_runtime_libs or something around it such that we get a bunch of
 # linker errors where the MT and MD mismatch.
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.11)
 
 # Name project, and set version. If updating version, change it here, and then re-generate your Visual
 # Studio solution.
