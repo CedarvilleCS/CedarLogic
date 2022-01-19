@@ -34,4 +34,4 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 add_executable(test_logic tests/test.cpp)
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(test_logic PRIVATE Catch2::Catch2WithMain Logic)
