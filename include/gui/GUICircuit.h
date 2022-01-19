@@ -21,7 +21,7 @@
 #include "wx/docview.h"
 #include "gl_wrapper.h"
 #include "klsMessage.h"
-#include "../logic/logic_values.h"
+#include "logic_values.h"
 using namespace std;
 
 class GUICanvas;

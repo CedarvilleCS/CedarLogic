@@ -59,7 +59,7 @@ import_libraries(${Libraries})
 ### Build Config.
 ###
 
-link_directories("${wxwin}/lib/vc_lib")
+link_directories("${wxwin}/lib/vc_lib" Logic)
 
 # Glob all the source files to be added when CedarLogic executable is added later.
 file(GLOB SRC_FILES 
@@ -78,8 +78,10 @@ file(GLOB SRC_FILES
 add_executable(CedarLogic WIN32 "${SRC_FILES}")
 
 # Add the external libraries for CedarLogic
-target_link_libraries(CedarLogic
-    PRIVATE ${Libraries})
+target_link_libraries(CedarLogic PRIVATE 
+    ${Libraries}
+    Logic
+)
 
 # This is for internal headers
 include_directories(	
@@ -88,6 +90,10 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/include/logic/"
 	"${PROJECT_SOURCE_DIR}/include/gui/command/"
 	"${PROJECT_SOURCE_DIR}/include/gui/GLFont/"
+)
+
+add_subdirectory(
+    "${PROJECT_SOURCE_DIR}/logic/"
 )
 
 # These are for external headers

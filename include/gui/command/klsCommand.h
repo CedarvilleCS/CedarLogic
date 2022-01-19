@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include "wx/cmdproc.h"
-#include "../../logic/logic_values.h"
+#include "logic_values.h"
 
 class GUICircuit;
 class GUICanvas;

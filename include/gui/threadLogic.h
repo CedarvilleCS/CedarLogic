@@ -15,7 +15,7 @@
 #include "wx/wx.h"
 #include "wx/thread.h"
 #include "klsMessage.h"
-#include "../logic/logic_values.h"
+#include "logic_values.h"
 #include <fstream>
 #include <map>
 

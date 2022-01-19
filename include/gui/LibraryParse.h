@@ -18,7 +18,7 @@
 #include <map>
 #include <sstream>
 
-#include "../logic/logic_values.h"
+#include "logic_values.h"
 #include "float.h"
 
 using namespace std;
