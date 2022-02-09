@@ -1,6 +1,7 @@
 #include "entities.hpp"
 
-bool Network::has_junction(junction_ref j) const
+bool Network::has_junction(uint32_t j) const
 {
-    return outputs.find(j) != outputs.end() || inputs.find(j) != inputs.end();
+    return output_junction_indexes.find(j) != output_junction_indexes.end() || 
+        input_junction_indexes.find(j) != input_junction_indexes.end();
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdint.h>
 #include <set>
 #include <vector>
@@ -10,12 +12,6 @@
 // This circuit assumes that the rebuild networks
 // function will be called at the end of any time-step
 // where anything was removed?
-
-typedef reference wire_ref; // Reference to a circuit wire
-typedef reference gate_ref; // Reference to a circuit gate
-typedef reference junction_ref; // Reference to a circuit junction
-typedef reference network_ref;	// Reference to a circuit network
-typedef reference gui_junction_ref; // Reference to a GUI circuit junction
 
 class Circuit {
 public:
@@ -69,11 +65,11 @@ private:
 	// of lost junctions (re-use functionality). Rarely would I need to do a full rebuild.
 	// bool dirty = false;
 
-	std::vector<std::unique_ptr<Gate>> gates;
-	std::vector<std::unique_ptr<GUI_Junction>> gui_junctions;
-	std::vector<std::unique_ptr<Junction>> junctions;
-	std::set<std::unique_ptr<Network>> networks;
-	std::vector<std::unique_ptr<Wire>> wires;
+	std::vector<Gate> gates;
+	std::vector<GUI_Junction> gui_junctions;
+	std::vector<Junction> junctions;
+	std::set<Network> networks;
+	std::vector<Wire> wires;
 
 	//// Rebuild all the networks and reset get_state func ptrs, and add events to queue.
 	//void rebuild_networks();

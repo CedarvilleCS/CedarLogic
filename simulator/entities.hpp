@@ -1,22 +1,22 @@
 #pragma once
+
 #include <vector>
 #include <set>
 #include "logic.hpp"
 #include <queue>
 #include <tuple>
-#include "event.hpp"
 
 class Network {
 public:
 	// Get the state of the network
 	const Logic_Value get_state() const { return state; }
 
-	bool has_junction(junction_ref j) const;
+	bool has_junction(uint32_t junction_index) const;
 
 	Logic_Value state;
-	std::set<junction_ref> inputs;
-	std::set<junction_ref> outputs;
-	std::set<wire_ref> wires;
+	std::set<uint32_t> input_junction_indexes;
+	std::set<uint32_t> output_junction_indexes;
+	std::set<uint32_t> wire_indexes;
 };
 
 // A wire is the "line" between two junction "points"
@@ -27,12 +27,15 @@ struct Wire {
 
 	// Construct a wire between two junctions.
 	// Wire manages relationship with junctions from construction through destruction.
-	Wire(junction_ref a, junction_ref b) : j1(a), j2(b) {};
+	Wire(uint32_t junction_index_a, uint32_t junction_index_b) : 
+		junction_index_a(junction_index_a),
+		junction_index_b(junction_index_b)
+	{};
 
 	~Wire() {}
 
-	const junction_ref j1;
-	const junction_ref j2;
+	const uint32_t junction_index_a;
+	const uint32_t junction_index_b;
 };
 
 // This is the only place where you can connect and disconnect wires.
@@ -84,22 +87,22 @@ private:
 	const Logic_Value(*stateFunction)();
 };
 
-const struct Gate {
+struct Gate {
 	// A gate cannot exist without a logicFunction and it's junctions
 	Gate() = delete;
 
 	// Pass the gate the logic function it should use, it's inputs and output junction(s).
-	Gate(const Logic_Value(*logicFunc)(std::vector<Logic_Value>), std::vector<junction_ref> in, junction_ref out) :
+	Gate(const Logic_Value(*logicFunc)(std::vector<Logic_Value>), std::vector<uint32_t> input_junction_indexes, uint32_t output_junction_index) :
 		logicFunction(logicFunc),
-		inputs(in),
-		output(out)
+		input_junction_indexes(input_junction_indexes),
+		output_junction_index(output_junction_index)
 		{}
 
 	// index 0 is LSB
-	const std::vector<junction_ref> inputs;
+	const std::vector<uint32_t> input_junction_indexes;
 		
 	// one bit output junction
-	const junction_ref output;
+	const uint32_t output_junction_index;
 
 	// Function pointer to a function that takes a vector of inputs and returns
 	// a single output
@@ -107,14 +110,14 @@ const struct Gate {
 };
 
 // A GUI_Junction is a set of Circuit junctions, often four, which have internal wires connecting them all.
-const struct GUI_Junction {
+struct GUI_Junction {
 	// A GUI_Junction cannot exist without some number of connections
 	GUI_Junction() = delete;
 
 	// Pass the number of connections, cannot be zero. Also pass wires connecting all the junctions together
 	// TODO factory method?
-	GUI_Junction(std::vector<junction_ref> connections, std::vector<wire_ref> wires) : connections(connections), internal_wires(wires) {}
+	GUI_Junction(std::vector<uint32_t> junction_indexes, std::vector<uint32_t> internal_wire_indexes) : junction_indexes(junction_indexes), internal_wire_indexes(internal_wire_indexes) {}
 
-	const std::vector<junction_ref> connections;
-	const std::vector<wire_ref> internal_wires;
+	const std::vector<uint32_t> junction_indexes;
+	const std::vector<uint32_t> internal_wire_indexes;
 };

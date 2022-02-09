@@ -2,10 +2,7 @@
 
 #include <stdint.h>
 #include <optional>
-
-enum class Logic_Value {
-	ZERO, ONE, HI_Z, CONFLICT, UNKNOWN
-};
+#include <logic.hpp>
 
 enum class Entities {
 	AND, OR, XOR, NAND, NOR, NOT, WIRE, GUI_JUNCTION
@@ -30,4 +27,8 @@ struct Event {
 
 	// Logic state
 	Logic_Value state;
+
+	uint8_t n_inputs;
+
+	uint8_t n_outputs;
 };

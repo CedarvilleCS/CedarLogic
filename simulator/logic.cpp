@@ -1,6 +1,7 @@
 #include "logic.hpp"
 #include <cmath>
 #include "circuit.hpp"
+#include <cassert>
 
 namespace logic {
 	const Logic_Value AND(std::vector<Logic_Value> inputs)
@@ -143,7 +144,9 @@ namespace logic {
 				std::vector<Logic_Value> top_half;
 				std::vector<Logic_Value> bottom_half;
 				std::vector<Logic_Value> new_select;
-				uint16_t half_size = pow(2, (power - 1));
+				double tmp = pow(2, (power - 1));
+				assert(tmp < UINT16_MAX);
+				uint16_t half_size = (uint16_t)tmp;
 				for (int32_t i = 0; i < half_size; i++) {
 					bottom_half.push_back(values[i]);
 				}
@@ -162,14 +165,16 @@ namespace logic {
 
 	const std::vector<Logic_Value> decode(std::vector<Logic_Value> input, Logic_Value enable)
 	{
-		int output_size = pow(2, input.size());
+		auto tmp = pow(2, input.size());
+		assert(tmp < INT32_MAX);
+		int32_t output_size = (int32_t)tmp;
 		std::vector<Logic_Value> output;
-		for (int i = 0; i < output_size; i++) {
+		for (int32_t i = 0; i < output_size; i++) {
 			output.push_back(Logic_Value::ZERO);
 		}
 		if (enable == Logic_Value::ONE) {
-			int num = 0;
-			for (int i = 0; i < input.size(); i++) {
+			int32_t num = 0;
+			for (int32_t i = 0; i < input.size(); i++) {
 				if (input[i] == Logic_Value::ONE) {
 					num += pow(2, i);
 				}
@@ -192,7 +197,7 @@ namespace logic {
 	// Increment the bits, returns vector of equal size with carry-out bit
 	// TODO: Confirm CedarLogic 2.3.5 is a bug when lights carry-out on F instead of 0 during increment
 	std::pair<std::vector<Logic_Value>, Logic_Value> increment(std::vector <Logic_Value> inputs) {
-		int i = 0;
+		int32_t i = 0;
 		bool set_one = false;
 		auto carry_out = Logic_Value::ZERO;
 		while (set_one == false) {
@@ -215,7 +220,7 @@ namespace logic {
 	// TODO: Confirm CedarLogic 2.3.5 is bug when lights carry-out at zero during decrement
 	// TODO: carry-out should never light up during decrement?
 	std::pair<std::vector<Logic_Value>, Logic_Value> decrement(std::vector <Logic_Value> inputs) {
-		int i = 0;
+		int32_t i = 0;
 		bool set_one = false;
 		auto carry_out = Logic_Value::ZERO;
 		while (set_one == false) {

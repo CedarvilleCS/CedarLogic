@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 
 enum class Logic_Value {
