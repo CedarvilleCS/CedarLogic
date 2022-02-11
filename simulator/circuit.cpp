@@ -1,22 +1,30 @@
 #include "circuit.hpp"
+#include <string>
 
+std::vector<Event> Circuit::simulate(const std::vector<Event>& n_plus_1) {
 
-// For reference
-//void Gate::process()
-//{
-//    std::vector<Logic_Value> logic_inputs;
-//    for (int i = 0; i < inputs.size(); i++)
-//    {
-//        logic_inputs.push_back(inputs[i]->get_state());
-//    }
-//    output->set_state(logicFunction(logic_inputs));
-//}
+	std::vector<Event> output_e;
+	
+	for (uint32_t i = 0; i < n_plus_1.size(); i++) {
+		auto e = this->process(n_plus_1[i]);
+		if (e.has_value()) output_e.push_back(e.value());
+	}
 
-//std::vector<std::unique_ptr<Outgoing_Event>> Circuit::simulate(std::vector<std::unique_ptr<Incoming_Event>> n_plus_1)
-//{
-//	std::vector<std::unique_ptr<Outgoing_Event>> events;
-//	std::unique_ptr<Added_Gate> e = std::make_unique<Added_Gate>(0, 0);
-//
-//	events.push_back(std::move(e));
-//	return std::move(events);
-//}
+	return output_e;
+}
+
+std::optional<Event> Circuit::process(const Event e)
+{
+	switch (e.action) {
+	case (Action::Add): {
+		if (is_gate(e.entity_type)) return add_gate(e, data);
+		else return error_event("Unimplemented Add: " + to_string(e.entity_type), e);
+	}
+	case(Action::Remove): {
+		if (is_gate(e.entity_type)) return remove_gate(e, data);
+		else return error_event("Unimplemented Remove: " + to_string(e.entity_type), e);
+	}
+	default:
+		return std::nullopt;
+	}
+}

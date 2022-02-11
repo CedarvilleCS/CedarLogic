@@ -1,6 +1,5 @@
 #include "logic.hpp"
 #include <cmath>
-#include "circuit.hpp"
 #include <cassert>
 
 namespace logic {
