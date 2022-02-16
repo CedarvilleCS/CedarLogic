@@ -10,6 +10,7 @@
 #include <cassert>
 #include <memory>
 
+
 // A wire is the "line" between two junction "points"
 struct Wire {
 
@@ -24,6 +25,8 @@ struct Wire {
 
 	const uint32_t junction_index_a;
 	const uint32_t junction_index_b;
+
+	bool has_junction(uint32_t index) const;
 };
 
 // This is the only place where you can connect and disconnect wires.
@@ -37,6 +40,8 @@ public:
 // An output is a junction with it's own driven state.
 class Output : public Junction {
 public:
+	// Default constructor
+	Output();
 
 	// Get the logic value of this junction
 	const Logic_Value get_state() const { return driven_state; };
@@ -76,6 +81,8 @@ public:
 	const Logic_Value get_state() const { return state; }
 
 	bool has_junction(uint32_t junction_index) const;
+
+	bool has_wire(uint32_t wire_index) const;
 
 	// One of it's junctions has been deleted since last this was cleared
 	bool dirty = false;
@@ -154,6 +161,11 @@ std::vector<uint32_t> add_x_input_junctions(uint32_t x, Circuit_Data& data);
 std::vector<uint32_t> add_x_output_junctions(uint32_t x, Circuit_Data& data);
 
 /**
+* Remove junction, also deletes connected wires
+*/
+std::vector<Event> remove_junction(uint32_t index, Circuit_Data& data);
+
+/**
 * Return whether or not the given entity is a kind of gate.
 */
 bool is_gate(Entities e);
@@ -162,5 +174,24 @@ bool is_gate(Entities e);
 Event add_gate(Event e, Circuit_Data& data);
 
 // Remove the gate and all it's subcomponents
-Event remove_gate(Event e, Circuit_Data& data);
+std::vector<Event> remove_gate(Event e, Circuit_Data& data);
 
+/**
+* Remove gate by index.
+*/
+std::vector<Event> remove_gate(uint32_t index, Circuit_Data& data);
+
+/**
+* Add wire, returns wire's index.
+*/
+uint32_t add_wire(uint32_t j_index_a, uint32_t j_index_b, Circuit_Data& data);
+
+/**
+* Remove wire by event
+*/
+Event remove_wire(Event e, Circuit_Data& data);
+
+/**
+* Remove wire by index
+*/
+Event remove_wire(uint32_t index, Circuit_Data& data);

@@ -36,7 +36,7 @@ public:
 	}
 
 	// Exposed for testing, may not leave so exposed.
-	std::optional<Event> process(const Event e);
+	std::vector<Event> process(const Event e);
 
 private:
 	Circuit_Data data;

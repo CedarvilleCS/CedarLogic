@@ -13,8 +13,8 @@ TEST_CASE("I can add a gate to the circuit", "[CIRCUIT]") {
 	e.state = Logic_Value::ZERO;
 
 	auto ret = c.process(e);
-	CHECK(ret.has_value());
-	auto ret_e = ret.value();
+	CHECK(!ret.empty());
+	auto ret_e = ret[0];
 
 	CHECK(ret_e.action == Action::Added);
 	CHECK(ret_e.entity_type == Entities::AND);
