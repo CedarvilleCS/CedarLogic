@@ -3,38 +3,45 @@
 #include <vector>
 #include <set>
 #include "logic.hpp"
-#include "event.hpp"
-#include <queue>
-#include <tuple>
-#include <string>
-#include <cassert>
-#include <memory>
+#include <optional>
+
+enum class Gates {
+	AND, XOR, OR, NAND, NOR // XNOR not implemented
+};
 
 
 // A wire is the "line" between two junction "points"
 struct Wire {
 
-	// Default constructor leaves object in invalid state so no default constructor
-	Wire() = delete;
+	bool has_junction(uint32_t index) {
+		return junction_indexes.find(index) != junction_indexes.end();
+	}
 
-	// Construct a wire between two junctions.
-	// Wire manages relationship with junctions from construction through destruction.
-	Wire(uint32_t junction_index_a, uint32_t junction_index_b);
-
-	~Wire() {}
-
-	const uint32_t junction_index_a;
-	const uint32_t junction_index_b;
-
-	bool has_junction(uint32_t index) const;
+	// keeps track of all connected junctions
+	std::set<uint32_t> junction_indexes;
 };
 
 // This is the only place where you can connect and disconnect wires.
 // Except, if a wire disappears, we need to know if the network is still sound.
 class Junction {
 public:
-	// Get the logic value of this junction
-	virtual const Logic_Value get_state() const = 0;
+	enum class Type {
+		Input, Output
+	};
+
+	// Child classes must supply their type on construction.
+	Junction() = delete;
+
+	// This class must know it's type from birth.
+	Junction(Type type) : type(type) {}
+
+	// Get the type of junction this is.
+	const Type get_type() const {
+		return type;
+	}
+
+private:
+	Type type;
 };
 
 // An output is a junction with it's own driven state.
@@ -43,14 +50,6 @@ public:
 	// Default constructor
 	Output();
 
-	// Get the logic value of this junction
-	const Logic_Value get_state() const { return driven_state; };
-
-	// TODO: make it so only the entity who owns the output can change this.
-	// TODO: likely will guarantee by circuit construction
-	void set_state(Logic_Value val) { driven_state = val; };
-
-private:
 	Logic_Value driven_state;
 };
 
@@ -59,20 +58,10 @@ class Input : public Junction {
 public:
 
 	// Inputs must know what to call to get their state.
-	Input() : stateFunction(nullptr) {};
+	Input();
 
-	// Pass me the function I should call when I need to know my state
-	Input(const Logic_Value(*stateFunc)()) : stateFunction(stateFunc) {};
-
-	// get state
-	const Logic_Value get_state() const;
-
-	// Set state function
-	void set_state_function(const Logic_Value(*stateFunc)());
-
-private:
 	// Using a function ptr so Inputs doesn't need to have an awareness of networks.
-	const Logic_Value(*stateFunction)();
+	std::optional<uint32_t> network_index;
 };
 
 class Network {
@@ -84,10 +73,10 @@ public:
 
 	bool has_wire(uint32_t wire_index) const;
 
-	// One of it's junctions has been deleted since last this was cleared
+	// One of it's wires or junctions has been deleted since last this was cleared
 	bool dirty = false;
 
-	Logic_Value state;
+	Logic_Value state = Logic_Value::HI_Z;
 	std::set<uint32_t> input_junction_indexes;
 	std::set<uint32_t> output_junction_indexes;
 	std::set<uint32_t> wire_indexes;
@@ -130,25 +119,11 @@ struct GUI_Junction {
 };
 
 struct Circuit_Data {
-	std::vector< std::unique_ptr<Gate>> gates;
-	std::vector< std::unique_ptr<GUI_Junction>> gui_junctions;
-	std::vector< std::unique_ptr<Junction>> junctions;
-	std::set< std::unique_ptr<Network>> networks;
-	std::vector<std::unique_ptr<Wire>> wires;
+	std::vector<Gate*> gates;
+	std::vector<Junction*> junctions;
+	std::vector<Network*> networks;
+	std::vector<Wire*> wires;
 };
-
-// Create error event with given string and original event
-Event error_event(const std::string& err, const Event e);
-
-/**
-* Create Added event with index and original event
-*/
-Event added_event(uint32_t index, const Event e);
-
-/**
-* Create Removed event with index and original event
-*/
-Event removed_event(const Event e);
 
 /**
 * Add x input junctions to circuit and return their indexes
@@ -161,37 +136,40 @@ std::vector<uint32_t> add_x_input_junctions(uint32_t x, Circuit_Data& data);
 std::vector<uint32_t> add_x_output_junctions(uint32_t x, Circuit_Data& data);
 
 /**
-* Remove junction, also deletes connected wires
+* Remove junction
+* 
+* Returns indexes of consequently deleted wires.
 */
-std::vector<Event> remove_junction(uint32_t index, Circuit_Data& data);
+std::vector<uint32_t> remove_junction(uint32_t index, Circuit_Data& data);
 
-/**
-* Return whether or not the given entity is a kind of gate.
-*/
-bool is_gate(Entities e);
 
-// Add a gate to the given data from an event and return an event
-Event add_gate(Event e, Circuit_Data& data);
-
-// Remove the gate and all it's subcomponents
-std::vector<Event> remove_gate(Event e, Circuit_Data& data);
+// Add a gate, returns it's index.
+uint32_t add_gate(uint32_t n_inputs, Gates type, Circuit_Data& data);
 
 /**
 * Remove gate by index.
+* 
+* Returns indexes of consequently deleted wires.
 */
-std::vector<Event> remove_gate(uint32_t index, Circuit_Data& data);
+std::vector<uint32_t> remove_gate(uint32_t index, Circuit_Data& data);
 
 /**
 * Add wire, returns wire's index.
 */
-uint32_t add_wire(uint32_t j_index_a, uint32_t j_index_b, Circuit_Data& data);
-
-/**
-* Remove wire by event
-*/
-Event remove_wire(Event e, Circuit_Data& data);
+uint32_t add_wire(std::set<uint32_t> wire_indexes, Circuit_Data& data);
 
 /**
 * Remove wire by index
+* 
+* Will dirty it's network.
+* 
+* TODO: remove_junction also dirties network and it calls this function
+* provide a version that doesn't duplicate that work?
 */
-Event remove_wire(uint32_t index, Circuit_Data& data);
+void remove_wire(uint32_t index, Circuit_Data& data);
+
+
+void process_gates(Circuit_Data& data);
+
+// Return the indexes of every network with a new state.
+std::vector<uint32_t> process_networks(Circuit_Data& data);

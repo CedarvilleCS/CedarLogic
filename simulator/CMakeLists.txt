@@ -15,8 +15,6 @@ add_library(Simulator STATIC
   "${PROJECT_SOURCE_DIR}/event.hpp"
   "${PROJECT_SOURCE_DIR}/logic.cpp"
   "${PROJECT_SOURCE_DIR}/logic.hpp"
-  "${PROJECT_SOURCE_DIR}/simulator.cpp"
-  "${PROJECT_SOURCE_DIR}/simulator.hpp"
 )
 
 set_target_properties(Simulator PROPERTIES LINKER_LANGUAGE CXX_STANDARD)

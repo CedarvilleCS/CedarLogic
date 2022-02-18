@@ -11,53 +11,14 @@ bool Network::has_wire(uint32_t wire_index) const
 	return wire_indexes.find(wire_index) != wire_indexes.end();
 }
 
-Wire::Wire(uint32_t junction_index_a, uint32_t junction_index_b) :
-	junction_index_a(junction_index_a),
-	junction_index_b(junction_index_b)
-{}
-bool Wire::has_junction(uint32_t index) const
-{
-	return index == junction_index_a || index == junction_index_b;
-}
+Output::Output() : driven_state(Logic_Value::HI_Z), Junction(Type::Output) {};
 
-Output::Output() : driven_state(Logic_Value::HI_Z) {};
-
-const Logic_Value Input::get_state() const {
-	if (stateFunction == nullptr) return Logic_Value::HI_Z;
-	else return stateFunction();
-}
-
-void Input::set_state_function(const Logic_Value(*stateFunc)()) {
-	stateFunction = stateFunc;
-}
+Input::Input() : Junction(Type::Input) {}
 
 GUI_Junction::GUI_Junction(std::vector<uint32_t> junction_indexes, std::vector<uint32_t> internal_wire_indexes) : 
 	junction_indexes(junction_indexes), 
 	internal_wire_indexes(internal_wire_indexes) 
 {}
-
-Event error_event(const std::string& err, const Event e) {
-	Event ret(e);
-	ret.err = err;
-	ret.action = Action::Error;
-	return ret;
-}
-
-Event added_event(uint32_t index, const Event e) {
-	Event ret(e);
-	ret.circuit_ref = index;
-	ret.action = Action::Added;
-	ret.err.clear();
-	return ret;
-}
-
-Event removed_event(const Event e)
-{
-	Event ret(e);
-	ret.action = Action::Removed;
-	ret.err.clear();
-	return ret;
-}
 
 /**
 * Add x input junctions to circuit and return their indexes
@@ -65,7 +26,7 @@ Event removed_event(const Event e)
 std::vector<uint32_t> add_x_input_junctions(uint32_t x, Circuit_Data& data) {
 	std::vector<uint32_t> ret;
 	for (uint32_t i = 0; i < x; i++) {
-		data.junctions.push_back(std::make_unique<Input>());
+		data.junctions.push_back(new Input());
 		ret.push_back(data.junctions.size());
 	}
 	return ret;
@@ -77,15 +38,15 @@ std::vector<uint32_t> add_x_input_junctions(uint32_t x, Circuit_Data& data) {
 std::vector<uint32_t> add_x_output_junctions(uint32_t x, Circuit_Data& data) {
 	std::vector<uint32_t> ret;
 	for (uint32_t i = 0; i < x; i++) {
-		data.junctions.push_back(std::make_unique<Output>());
+		data.junctions.push_back(new Output());
 		ret.push_back(data.junctions.size());
 	}
 	return ret;
 }
 
-std::vector<Event> remove_junction(uint32_t index, Circuit_Data& data)
+std::vector<uint32_t> remove_junction(uint32_t index, Circuit_Data& data)
 {
-	std::vector<Event> resulting_events;
+	std::vector<uint32_t> deleted_wires;
 
 	// Delete my wires
 	std::vector<uint32_t> my_wires;
@@ -95,152 +56,181 @@ std::vector<Event> remove_junction(uint32_t index, Circuit_Data& data)
 	}
 
 	for (uint32_t i = 0; i < my_wires.size(); i++) {
-		Event e = remove_wire(my_wires[i], data);
-		resulting_events.push_back(e);
+		remove_wire(my_wires[i], data);
+		deleted_wires.push_back(i);
 	}
 		
-	// Dirty my network so it get's rebuilt at the end of this frame.
-	for (auto iter = data.networks.begin(); iter != data.networks.end(); iter++)
-	{
-		if ((*iter)->has_junction(index)) {
-			(*iter)->dirty = true;
-			break;
-		}
-	}
+	// Do not need to concern with updating any networks since they will 
+	// have been affected when wires were deleted. If no wires were connected
+	// To junction, then junction wasn't part of a network. Again, no worries.
 
 	// Delete the junction
-	data.junctions[index].reset();
+	delete data.junctions[index];
+	data.junctions[index] = nullptr;
 
-	return resulting_events;
+	return deleted_wires;
 }
 
-/**
-* Return whether or not the given entity is a kind of gate.
-*/
-bool is_gate(Entities e) {
-	switch (e) {
-	case(Entities::AND):
-	case(Entities::NAND):
-	case(Entities::OR):
-	case(Entities::NOR):
-	case(Entities::XOR):
-		return true;
-	default:
-		return false;
-	}
-}
-
-Event add_gate(Event e, Circuit_Data& data) {
-	assert(is_gate(e.entity_type));
-	if (e.n_outputs != 1) return error_event("n_ouptuts must be == 1", e);
-	if (e.n_inputs < 2) return error_event("n_inputs must be > 1", e);
-
-	std::vector<uint32_t> input_js = add_x_input_junctions(e.n_inputs, data);
+uint32_t add_gate(uint32_t n_inputs, Gates type, Circuit_Data& data)
+{
+	std::vector<uint32_t> input_js = add_x_input_junctions(n_inputs, data);
 	std::vector<uint32_t> output_js = add_x_output_junctions(1, data);
 
-	switch (e.entity_type) {
-	case(Entities::AND):
-		data.gates.push_back(std::make_unique < Gate>(logic::AND, input_js, output_js[0]));
+	switch (type) {
+	case(Gates::AND):
+		data.gates.push_back(new Gate(logic::AND, input_js, output_js[0]));
 		break;
-	case(Entities::NAND):
-		data.gates.push_back(std::make_unique < Gate>(logic::NAND, input_js, output_js[0]));
+	case(Gates::NAND):
+		data.gates.push_back(new Gate(logic::NAND, input_js, output_js[0]));
 		break;
-	case(Entities::OR):
-		data.gates.push_back(std::make_unique < Gate>(logic::OR, input_js, output_js[0]));
+	case(Gates::OR):
+		data.gates.push_back(new Gate(logic::OR, input_js, output_js[0]));
 		break;
-	case(Entities::NOR):
-		data.gates.push_back(std::make_unique<Gate>(logic::NOR, input_js, output_js[0]));
+	case(Gates::NOR):
+		data.gates.push_back(new Gate(logic::NOR, input_js, output_js[0]));
 		break;
-	case(Entities::XOR):
-		data.gates.push_back(std::make_unique < Gate>(logic::XOR, input_js, output_js[0]));
+	case(Gates::XOR):
+		data.gates.push_back(new Gate(logic::XOR, input_js, output_js[0]));
 		break;
 	}
-	return added_event(data.gates.size() - 1, e);
+
+	// Return the index of the new gate (which is the end of the vector)
+	return data.gates.size() - 1;
 }
 
-std::vector<Event> remove_gate(Event e, Circuit_Data& data) {
-	assert(is_gate(e.entity_type));
 
-	if (e.circuit_ref >= data.gates.size()) {
-		return std::vector<Event>{error_event("Gate does not exist.", e)};
-	}
-
-	auto v = remove_gate(e.circuit_ref, data);
-
-	Event ret_e;
-	ret_e.action = Action::Removed;
-	ret_e.entity_type = e.entity_type;
-	ret_e.circuit_ref = e.circuit_ref;
-	v.push_back(ret_e);
-	return v;
-}
-
-std::vector<Event> remove_gate(uint32_t index, Circuit_Data& data)
+std::vector<uint32_t> remove_gate(uint32_t index, Circuit_Data& data)
 {
-	std::vector<Event> resulting_events;
-
+	
 	std::vector<uint32_t> junctions_to_delete = data.gates[index]->input_junction_indexes;
 	junctions_to_delete.push_back(data.gates[index]->output_junction_index);
 
+	std::vector<uint32_t> deleted_wire_indexes;
 	while (!junctions_to_delete.empty()) {
 		uint32_t index = junctions_to_delete.back();
 		junctions_to_delete.pop_back();
 
-		std::vector<Event> events = remove_junction(index, data);
-		resulting_events.insert(resulting_events.end(), events.begin(), events.end());
+		auto v = remove_junction(index, data);
+		deleted_wire_indexes.insert(deleted_wire_indexes.begin(), v.begin(), v.end());
 	}
 
-	data.gates[index].reset();
+	delete data.gates[index];
+	data.gates[index] = nullptr;
 
-	return resulting_events;
+	return deleted_wire_indexes;
 }
 
-uint32_t add_wire(uint32_t j_index_a, uint32_t j_index_b, Circuit_Data& data)
+void add_junction_to_network(uint32_t junction_index, uint32_t network_index, Circuit_Data& data) {	
+	auto type = data.junctions[junction_index]->get_type();
+
+	if (type == Junction::Type::Input) {
+		// Add junction index to network as input junction
+		data.networks[network_index]->input_junction_indexes.insert(junction_index);
+
+		// Add network pointer to input junction so input junction can find it's state.
+		Junction* j_ptr = data.junctions[junction_index];
+		Input* input_j_ptr = static_cast<Input*>(j_ptr);
+		input_j_ptr->network_index = network_index;
+	}
+
+	else {
+		// Add junction index to network as input junction
+		data.networks[network_index]->output_junction_indexes.insert(junction_index);
+	}
+}
+
+void add_wire_to_network(uint32_t wire_index, uint32_t network_index, Circuit_Data& data)
 {
-	// Create the wire
-	data.wires.push_back(std::make_unique<Wire>(j_index_a, j_index_b));
 
-	// Get the index of the wire
-	uint32_t index = data.wires.size() - 1;
 
-	// Add it to it's network(s) and mark network(s) as dirty (likely a merge)
-	for (auto iter = data.networks.begin(); iter != data.networks.end(); iter++) {
-		if ((*iter)->has_junction(j_index_a) || (*iter)->has_junction(j_index_b)) {
-			(*iter)->dirty = true;
-			(*iter)->wire_indexes.insert(index);
-		}
-	}
-
-	return index;
 }
 
-Event remove_wire(Event e, Circuit_Data& data)
+uint32_t add_wire(std::set<uint32_t> wire_indexes, Circuit_Data& data)
 {
-	assert(e.entity_type == Entities::WIRE);
+	//// Create the wire
+	//data.wires.push_back(new Wire{ wire_indexes });
 
-	if (e.circuit_ref >= data.wires.size()) {
-		return error_event("Gate does not exist.", e);
-	}
+	//// Get the index of the wire
+	//uint32_t wire_index = data.wires.size() - 1;
 
-	return remove_wire(e.circuit_ref, data);
+	//// Add it to it's network(s) and mark network(s) as dirty (find network via junctions)
+	//bool network_found = false;
+	//for (uint32_t i = 0; i < data.networks.size(); i++) {
+	//	if (data.networks[i] != nullptr) {
+	//		Network* net = data.networks[i];
+	//		if (net->has_junction(j_index_a) || net->has_junction(j_index_b)) {
+	//			net->wire_indexes.insert(wire_index);
+	//			add_junction_to_network(j_index_a, i, data); // one of these at least
+	//			add_junction_to_network(j_index_b, i, data); // will have no effect
+	//			// data.wires.push_back(j_index_a)
+	//			net->dirty = true;
+	//			network_found = true;
+	//		}
+	//	}
+	//}
+
+	//// Junctions were part of no pre-existing networks so create new network.
+	//if (network_found == false) {
+	//	// Create new network
+	//	data.networks.push_back(new Network());
+
+	//	// Get that index
+	//	uint32_t network_index = data.networks.size() - 1;
+
+	//	// Add it's wire
+	//	data.networks[network_index]->wire_indexes.insert(wire_index);
+
+	//	// Give it its junctions
+	//	add_junction_to_network(j_index_a, network_index, data);
+	//	add_junction_to_network(j_index_b, network_index, data);
+	//	
+	//}
+
+	//return wire_index;
+	return 0;
 }
 
-Event remove_wire(uint32_t index, Circuit_Data& data)
+void remove_wire_from_network(uint32_t wire_index, uint32_t network_index, Circuit_Data& data) {
+	// Remove myself from network
+	// If I was the last wire, delete network,
+	// else:
+	// Tell network to see if any junctions which I connected it too are now disconnected from it
+	// If so, notify junction it has no network index (if an input junction)
+}
+
+void remove_wire(uint32_t index, Circuit_Data& data)
 {
 	// Remove myself from my network
-	for (auto iter = data.networks.begin(); iter != data.networks.end(); iter++) {
-		if ((*iter)->has_wire(index)) {
-			(*iter)->wire_indexes.erase(index);
+	for (uint32_t i = i; i < data.networks.size(); i++) {
+		if (data.networks[i]->has_wire(index)) {
+			remove_wire_from_network(index, i, data);
 			break;
 		}
 	}
 
 	// Delete myself from the circuit data
-	data.wires[index].reset();
+	delete data.wires[index];
+	data.wires[index] = nullptr;
+}
 
-	Event e;
-	e.action = Action::Removed;
-	e.entity_type = Entities::WIRE;
-	e.circuit_ref = index;
-	return e;
+std::vector<uint32_t> process_networks(Circuit_Data& data)
+{
+	std::vector<uint32_t> networks_with_state_change;
+	// For every network, 
+		// Find new state
+		// if new state != old state
+			// push my index onto networks_with_state_change
+		// Set network.state = new_state
+	//return 
+	return std::vector<uint32_t>();
+}
+
+void process_gates(Circuit_Data& data)
+{
+	// for (uint32_t i = 0; i < data.gates.size())
+	
+	// for every gate
+	// turn vector of input junctions into input value vector
+	// pass to logic function
+	// set output junction value to result of logic function.
 }
