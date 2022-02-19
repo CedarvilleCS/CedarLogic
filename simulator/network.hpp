@@ -153,3 +153,44 @@ public:
 private:
   Data data;
 };
+
+/**
+ * @brief A collection of networks
+ *
+ * Useful to encapsulate complicated and expensive function calls.
+ *
+ */
+struct Networks {
+public:
+  /**
+   * @brief Notify networks of junctions about to be removed
+   *
+   * Networks are responsible to ensure networks are solid before
+   * they are used, but may not immediately update them.
+   *
+   * @param j to-be deleted junction pointer, not valid after return
+   */
+  void deleting_junction(Junction *j);
+
+  /**
+   * @brief Notify networks of wire about to be removed
+   *
+   * Networks is responsible to ensure its networks are solid before
+   * they are used, but may not immediately update them.
+   *
+   * @param ws to-be deleted wire pointer, not valid after return
+   */
+  void deleting_wire(Wire *ws);
+
+private:
+  /**
+   * @note They are encapsulated in unique_ptrs so it can be obvious when
+   * ownership is transferred to Network's static functions which will new and
+   * delete Network instances.
+   *
+   * @note They are held in a set rather than vector because they are created
+   * and deleted more frequently than any other object and so a vector would be
+   * expected to result in much more wasted space.
+   */
+  std::set<std::unique_ptr<Network>> nets;
+};

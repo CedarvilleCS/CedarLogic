@@ -1,4 +1,7 @@
 ---
+# 
+# Created via command: clang-format -style=llvm -dump-config > .clang-format
+#  
 Language:        Cpp
 # BasedOnStyle:  LLVM
 AccessModifierOffset: -2

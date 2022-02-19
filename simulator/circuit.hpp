@@ -73,16 +73,8 @@ private:
 
   /**
    * @brief All circuit's networks.
-   *
-   * @note They are encapsulated in unique_ptrs so it can be obvious when
-   * ownership is transferred to Network's static functions which will new and
-   * delete Network instances.
-   *
-   * @note They are held in a set rather than vector because they are created
-   * and deleted more frequently than any other object and so a vector would be
-   * expected to result in much more wasted space.
    */
-  std::set<std::unique_ptr<Network>> networks;
+  Networks networks;
 
   /**
    * @brief All the circuit's wires.
@@ -129,6 +121,19 @@ private:
   std::pair<bool, std::vector<uint32_t>> delete_junction(uint32_t index);
 
   /**
+   * @brief delete the wires identified by the indexes.
+   *
+   * @param index
+   *
+   * @note will propogate function calls to remove all references to
+   * wires in circuit, whether by index or by direct reference (ptr).
+   *
+   * @note will propogate function calls to ensure whole circuit is in a
+   * good state before returning.
+   */
+  void delete_wires(std::vector<uint32_t> indexes);
+
+  /**
    * @brief delete the wire identified by the index.
    *
    * @param index
@@ -149,6 +154,9 @@ private:
    * @param n_inputs The number of inputs it has.
    * @param type The type of gate.
    * @return uint32_t The index of the gate.
+   *
+   * @note will call new_input_junctions
+   * @note will call new_output_junctions
    */
   uint32_t new_gate(uint32_t n_inputs, Gates type);
 

@@ -30,46 +30,83 @@ std::vector<Event> Circuit::simulate(const std::vector<Event> &n_plus_1) {
   return std::vector<Event>();
 }
 
-// std::vector<event> circuit::process(const event e)
-//{
-//	switch (e.action) {
-//	case (action::add): {
-//		if (is_gate(e.entity_type)) return
-//std::vector<event>{add_gate(e, data)}; 		else return
-// std::vector<event>{error_event("unimplemented add: " +
-// to_string(e.entity_type), e)};
-//	}
-//	case(action::remove): {
-//		if (is_gate(e.entity_type)) return remove_gate(e, data);
-//		else return std::vector<event>{error_event("unimplemented
-//remove: " + to_string(e.entity_type), e)};
-//	}
-//	default:
-//		return std::vector<event>();
-//	}
-//}
+std::pair<bool, std::vector<uint32_t>> Circuit::delete_gate(uint32_t index) {
+  // the order of this boolean check matters to prevent segfault
+  if (gates.size() > index && gates[index] != nullptr) {
+    auto ret = std::make_pair(true, std::vector<uint32_t>());
 
-// Event add_gate(Event e, Circuit_Data& data) {
-// 	assert(is_gate(e.entity_type));
-// 	if (e.n_outputs != 1) return error_event("n_ouptuts must be == 1", e);
-// 	if (e.n_inputs < 2) return error_event("n_inputs must be > 1", e);
+    /* Delete the input junctions and save IDs of any deleted wires. */
+    auto in_js = gates[index]->get_input_j_ids();
+    for (uint i = 0; i < in_js.size(); i++) {
+      auto v = this->delete_junction(in_js[i]).second;
+      ret.second.insert(ret.second.end(), v.begin(), v.end());
+    }
 
-// 	std::vector<uint32_t> input_js = add_x_input_junctions(e.n_inputs,
-// data); 	std::vector<uint32_t> output_js = add_x_output_junctions(1,
-// data);
+    /* Delete the output junctions and save IDs of any deleted wires. */
+    auto v = this->delete_junction(gates[index]->get_output_j_id()).second;
+    ret.second.insert(ret.second.end(), v.begin(), v.end());
 
-// 	switch (e.entity_type) {
-// 	case(Entities::AND):
-// 		data.gates.push_back(std::make_unique < Gate>(logic::AND,
-// input_js, output_js[0])); 		break; 	case(Entities::NAND):
-// 		data.gates.push_back(std::make_unique < Gate>(logic::NAND,
-// input_js, output_js[0])); 		break; 	case(Entities::OR):
-// 		data.gates.push_back(std::make_unique < Gate>(logic::OR,
-// input_js, output_js[0])); 		break; 	case(Entities::NOR):
-// 		data.gates.push_back(std::make_unique<Gate>(logic::NOR,
-// input_js, output_js[0])); 		break; 	case(Entities::XOR):
-// 		data.gates.push_back(std::make_unique < Gate>(logic::XOR,
-// input_js, output_js[0])); 		break;
-// 	}
-// 	return added_event(data.gates.size() - 1, e);
-// }
+    /* Delete the gate itself */
+    delete gates[index];
+    gates[index] = nullptr;
+
+    /* return statement that gate existed and vector of deleted wire indexes. */
+    return ret;
+  } else {
+    /* return statement that gate did not exist. */
+    return std::make_pair(false, std::vector<uint32_t>());
+  }
+}
+
+std::pair<bool, std::vector<uint32_t>>
+Circuit::delete_junction(uint32_t index) {
+  if (junctions.size() > index && junctions[index] != nullptr) {
+    auto ret = std::make_pair(true, std::vector<uint32_t>());
+
+    /* get all wires with only two junctions where this is one of them */
+    std::vector<uint32_t> connected_wires_two_js;
+    for (uint i = 0; i < wires.size(); i++) {
+      if (wires[i]->has_junction(junctions[index]) &&
+          wires[i]->junction_ptrs.size() <= 2) {
+        connected_wires_two_js.push_back(i);
+      }
+    }
+
+    /* Delete those wires since every wire must have at least 2 junctions */
+    this->delete_wires(connected_wires_two_js);
+
+    /* Notify the networks that this junction will soon be deleted. */
+    networks.deleting_junction(junctions[index]);
+
+    /* Delete the junction itself */
+    delete junctions[index];
+    junctions[index] = nullptr;
+  } else {
+    /* Junction did not exist */
+    return std::make_pair(false, std::vector<uint32_t>());
+  }
+}
+
+void Circuit::delete_wires(std::vector<uint32_t> indexes) {
+  /* Just loop through the vector and delete them individually. */
+  for (uint32_t i = 0; i < indexes.size(); i++) {
+    this->delete_wire(indexes[i]);
+  }
+}
+
+bool Circuit::delete_wire(uint32_t index) {
+  if (wires.size() > index && wires[index] != nullptr) {
+    /* Notify the networks this wire sill soon be deleted. */
+    networks.deleting_wire(wires[index]);
+
+    /* Delete the wire itself */
+    delete wires[index];
+    wires[index] = nullptr;
+
+    /* return that the wire existed */
+    return true;
+  } else {
+    /* return that the wire did not exist */
+    return false;
+  }
+}
