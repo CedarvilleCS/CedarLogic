@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <stdint.h>
 #include "logic.hpp"
 
 using namespace logic;

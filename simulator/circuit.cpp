@@ -19,13 +19,13 @@ bool is_gate(Entities e) {
 
 std::vector<Event> Circuit::simulate(const std::vector<Event>& n_plus_1) {
 	// Set all output junctions given their input junction values
-	process_gates(data);
+	process_gates();
 
 	// Process all the incoming user-events
 
 	// Get all the networks with a state change so we can create events with the new state for each
 	// internal wire.
-	auto v = process_networks(data);
+	auto v = process_networks();
 
 	return std::vector<Event>();
 }
@@ -76,3 +76,5 @@ std::vector<Event> Circuit::simulate(const std::vector<Event>& n_plus_1) {
 //	}
 //	return added_event(data.gates.size() - 1, e);
 //}
+
+

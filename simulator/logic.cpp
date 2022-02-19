@@ -1,4 +1,5 @@
 #include "logic.hpp"
+#include <stdint.h>
 #include <cmath>
 #include <cassert>
 

@@ -11,9 +11,6 @@ enum class Entities {
 
 std::string to_string(Entities e);
 
-typedef uint32_t req_id;	// An incoming request ID, used in response requests
-typedef uint32_t reference; // Reference to a circuit object instance
-
 enum class Action {
 	Add, Remove, Update, Added, Removed, Updated, Error
 };
@@ -23,10 +20,10 @@ struct Event {
 	Entities entity_type;
 
 	// Request ID
-	req_id req_id;
+	uint32_t req_id;
 
 	// Circuit reference
-	reference circuit_ref;
+	uint32_t circuit_ref;
 
 	Action action;
 

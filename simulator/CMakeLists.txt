@@ -9,14 +9,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_library(Simulator STATIC 
   "${PROJECT_SOURCE_DIR}/circuit.cpp"
   "${PROJECT_SOURCE_DIR}/circuit.hpp"
-  "${PROJECT_SOURCE_DIR}/entities.cpp"
-  "${PROJECT_SOURCE_DIR}/entities.hpp"
   "${PROJECT_SOURCE_DIR}/event.cpp"
   "${PROJECT_SOURCE_DIR}/event.hpp"
+  "${PROJECT_SOURCE_DIR}/gate.hpp"
+  "${PROJECT_SOURCE_DIR}/junction.hpp"
   "${PROJECT_SOURCE_DIR}/logic.cpp"
   "${PROJECT_SOURCE_DIR}/logic.hpp"
+  "${PROJECT_SOURCE_DIR}/network.hpp"
+  "${PROJECT_SOURCE_DIR}/wire.hpp"
 )
-
 
 # To build this library you must include it's headers
 include_directories(	
@@ -40,8 +41,6 @@ FetchContent_MakeAvailable(Catch2)
 # Add a executable to run the tests
 add_executable(test_Simulator 
 	tests/test_logic.cpp
-	tests/test_circuit.cpp
-	tests/test_entities.cpp
 )
 
 # Add the libraries the test executable will need to run
