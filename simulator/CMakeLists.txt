@@ -11,7 +11,9 @@ add_library(Simulator STATIC
   "${PROJECT_SOURCE_DIR}/circuit.hpp"
   "${PROJECT_SOURCE_DIR}/event.cpp"
   "${PROJECT_SOURCE_DIR}/event.hpp"
+  "${PROJECT_SOURCE_DIR}/gate.cpp"
   "${PROJECT_SOURCE_DIR}/gate.hpp"
+  "${PROJECT_SOURCE_DIR}/junction.cpp"
   "${PROJECT_SOURCE_DIR}/junction.hpp"
   "${PROJECT_SOURCE_DIR}/logic.cpp"
   "${PROJECT_SOURCE_DIR}/logic.hpp"
@@ -41,6 +43,8 @@ FetchContent_MakeAvailable(Catch2)
 # Add a executable to run the tests
 add_executable(test_Simulator 
 	tests/test_logic.cpp
+  tests/test_gate.cpp
+  tests/test_junction.cpp
 )
 
 # Add the libraries the test executable will need to run

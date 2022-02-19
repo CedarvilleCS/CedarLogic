@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include "logic.hpp"
 
 /**
@@ -57,6 +58,16 @@ public:
      */
     const uint32_t index_id;
 
+    /**
+     * @brief Turn a vector of junctions into a vector of values.
+     * 
+     * @note preserves LSB as index 0 in both.
+     * 
+     * @param js vector of junction pointers
+     * @return std::vector<Logic_Value> vector of logic values
+     */
+    static std::vector<Logic_Value> to_values(const std::vector<Junction*>& js);
+
 protected:
 
 	/**
@@ -88,10 +99,11 @@ struct Output : public Junction {
 public:
 
     /**
-     * @brief Construct a new Output object - deleted so we can always have id.
+     * @brief Construct a new Output object
      * 
+     * We cannot delete the default constructor or we lose the ability to put it in a vector.
      */
-    Output() = delete;
+    Output() : Output(0) {};
 
 	/**
 	 * @brief Construct a new Output object
@@ -99,6 +111,16 @@ public:
 	 * @param id the junction's numerical id 
 	 */
 	Output(uint32_t id) : Junction(Junction::Type::Output, id) {};
+
+    /**
+     * @brief Turn a vector of outputs into a vector of values.
+     * 
+     * @note preserves LSB as index 0 in both.
+     * 
+     * @param js vector of junction pointers
+     * @return std::vector<Logic_Value> vector of logic values
+     */
+    static std::vector<Logic_Value> to_values(const std::vector<Output*>& js);
 };
 
 /**
@@ -111,10 +133,10 @@ struct Input : public Junction {
 public:
 
     /**
-     * @brief Construct a new Input object - deleted so we can alway shave id.
+     * @brief Construct a new Input object
      * 
      */
-    Input() = delete;
+    Input() : Input(0) {};
 
 	/**
 	 * @brief Construct a new Input object
@@ -122,4 +144,14 @@ public:
 	 * @param id the junction's numerical id 
 	 */
 	Input(uint32_t id) : Junction(Junction::Type::Input, id) {};
+
+    /**
+     * @brief Turn a vector of inputs into a vector of values.
+     * 
+     * @note preserves LSB as index 0 in both.
+     * 
+     * @param js vector of junction pointers
+     * @return std::vector<Logic_Value> vector of logic values
+     */
+    static std::vector<Logic_Value> to_values(const std::vector<Input*>& js);
 };

@@ -4,7 +4,7 @@
 #include <cassert>
 
 namespace logic {
-	const Logic_Value AND(std::vector<Logic_Value> inputs)
+	Logic_Value AND(std::vector<Logic_Value> inputs)
 	{
 		bool hasLow = false;
 		bool hasOdd = false;
@@ -17,7 +17,7 @@ namespace logic {
 		else return Logic_Value::ONE; // all inputs were high
 	}
 
-	const Logic_Value OR(std::vector<Logic_Value> inputs)
+	Logic_Value OR(std::vector<Logic_Value> inputs)
 	{
 		bool hasHigh = false;
 		bool hasOdd = false;
@@ -42,7 +42,7 @@ namespace logic {
 		}
 	}
 
-	const Logic_Value XOR(std::vector<Logic_Value> inputs)
+	Logic_Value XOR(std::vector<Logic_Value> inputs)
 	{
 		// TODO: Clarify correct formula
 		auto size = inputs.size();
@@ -70,24 +70,24 @@ namespace logic {
 		}
 	}
 
-	const Logic_Value NAND(std::vector<Logic_Value> inputs)
+	Logic_Value NAND(std::vector<Logic_Value> inputs)
 	{
 		return NOT(AND(inputs));
 	}
 
-	const Logic_Value NOR(std::vector<Logic_Value> inputs)
+	Logic_Value NOR(std::vector<Logic_Value> inputs)
 	{
 		return NOT(OR(inputs));
 	}
 
-	const Logic_Value NOT(Logic_Value input)
+	Logic_Value NOT(Logic_Value input)
 	{
 		if (input == Logic_Value::ONE) return Logic_Value::ZERO;
 		else if (input == Logic_Value::ZERO) return Logic_Value::ONE;
 		else return Logic_Value::UNKNOWN;
 	}
 
-	const Logic_Value tri_state_buffer_high_active(Logic_Value input, Logic_Value enable)
+	Logic_Value tri_state_buffer_high_active(Logic_Value input, Logic_Value enable)
 	{
 		if (enable == Logic_Value::ONE) {
 			return input;
@@ -97,12 +97,12 @@ namespace logic {
 		}
 	}
 
-	const Logic_Value tri_state_buffer_low_active(Logic_Value input, Logic_Value enable)
+	Logic_Value tri_state_buffer_low_active(Logic_Value input, Logic_Value enable)
 	{
 		return tri_state_buffer_high_active(input, NOT(enable));
 	}
 
-	const Logic_Value JK_next_Q(Logic_Value j, Logic_Value k, Logic_Value q)
+	Logic_Value JK_next_Q(Logic_Value j, Logic_Value k, Logic_Value q)
 	{
 		if (j == Logic_Value::ZERO && k == Logic_Value::ZERO) {
 			// latch
@@ -126,7 +126,7 @@ namespace logic {
 		}
 	}
 
-	const Logic_Value mux(std::vector<Logic_Value> values, std::vector<Logic_Value> select) {
+	Logic_Value mux(std::vector<Logic_Value> values, std::vector<Logic_Value> select) {
 		auto power = select.size();
 		if (values.size() != pow(2, power)) {
 			// TODO: log error
@@ -163,7 +163,7 @@ namespace logic {
 		}
 	}
 
-	const std::vector<Logic_Value> decode(std::vector<Logic_Value> input, Logic_Value enable)
+	std::vector<Logic_Value> decode(std::vector<Logic_Value> input, Logic_Value enable)
 	{
 		auto tmp = pow(2, input.size());
 		assert(tmp < INT32_MAX);
@@ -186,11 +186,11 @@ namespace logic {
 			return output;
 		}
 	}
-	const Logic_Value simple_nMOS(Logic_Value source, Logic_Value gate)
+	Logic_Value simple_nMOS(Logic_Value source, Logic_Value gate)
 	{
 		return tri_state_buffer_high_active(source, gate);
 	}
-	const Logic_Value simple_pMOS(Logic_Value source, Logic_Value gate)
+	Logic_Value simple_pMOS(Logic_Value source, Logic_Value gate)
 	{
 		return tri_state_buffer_low_active(source, gate);
 	}
@@ -239,7 +239,7 @@ namespace logic {
 		}
 		return std::make_pair(inputs, carry_out);
 	}
-	const std::pair<std::vector<Logic_Value>, Logic_Value> counting_register(std::pair<std::vector<Logic_Value>, Logic_Value> output, std::vector<Logic_Value> inputs, Logic_Value load, Logic_Value count, Logic_Value up)
+	std::pair<std::vector<Logic_Value>, Logic_Value> counting_register(std::pair<std::vector<Logic_Value>, Logic_Value> output, std::vector<Logic_Value> inputs, Logic_Value load, Logic_Value count, Logic_Value up)
 	{
 		if (load == Logic_Value::ONE) {
 			return std::make_pair(inputs, Logic_Value::ZERO);

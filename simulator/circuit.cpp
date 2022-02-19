@@ -48,33 +48,33 @@ std::vector<Event> Circuit::simulate(const std::vector<Event>& n_plus_1) {
 //}
 
 
-//
-//Event add_gate(Event e, Circuit_Data& data) {
-//	assert(is_gate(e.entity_type));
-//	if (e.n_outputs != 1) return error_event("n_ouptuts must be == 1", e);
-//	if (e.n_inputs < 2) return error_event("n_inputs must be > 1", e);
-//
-//	std::vector<uint32_t> input_js = add_x_input_junctions(e.n_inputs, data);
-//	std::vector<uint32_t> output_js = add_x_output_junctions(1, data);
-//
-//	switch (e.entity_type) {
-//	case(Entities::AND):
-//		data.gates.push_back(std::make_unique < Gate>(logic::AND, input_js, output_js[0]));
-//		break;
-//	case(Entities::NAND):
-//		data.gates.push_back(std::make_unique < Gate>(logic::NAND, input_js, output_js[0]));
-//		break;
-//	case(Entities::OR):
-//		data.gates.push_back(std::make_unique < Gate>(logic::OR, input_js, output_js[0]));
-//		break;
-//	case(Entities::NOR):
-//		data.gates.push_back(std::make_unique<Gate>(logic::NOR, input_js, output_js[0]));
-//		break;
-//	case(Entities::XOR):
-//		data.gates.push_back(std::make_unique < Gate>(logic::XOR, input_js, output_js[0]));
-//		break;
-//	}
-//	return added_event(data.gates.size() - 1, e);
-//}
+
+// Event add_gate(Event e, Circuit_Data& data) {
+// 	assert(is_gate(e.entity_type));
+// 	if (e.n_outputs != 1) return error_event("n_ouptuts must be == 1", e);
+// 	if (e.n_inputs < 2) return error_event("n_inputs must be > 1", e);
+
+// 	std::vector<uint32_t> input_js = add_x_input_junctions(e.n_inputs, data);
+// 	std::vector<uint32_t> output_js = add_x_output_junctions(1, data);
+
+// 	switch (e.entity_type) {
+// 	case(Entities::AND):
+// 		data.gates.push_back(std::make_unique < Gate>(logic::AND, input_js, output_js[0]));
+// 		break;
+// 	case(Entities::NAND):
+// 		data.gates.push_back(std::make_unique < Gate>(logic::NAND, input_js, output_js[0]));
+// 		break;
+// 	case(Entities::OR):
+// 		data.gates.push_back(std::make_unique < Gate>(logic::OR, input_js, output_js[0]));
+// 		break;
+// 	case(Entities::NOR):
+// 		data.gates.push_back(std::make_unique<Gate>(logic::NOR, input_js, output_js[0]));
+// 		break;
+// 	case(Entities::XOR):
+// 		data.gates.push_back(std::make_unique < Gate>(logic::XOR, input_js, output_js[0]));
+// 		break;
+// 	}
+// 	return added_event(data.gates.size() - 1, e);
+// }
 
 
