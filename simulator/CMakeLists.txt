@@ -17,7 +17,6 @@ add_library(Simulator STATIC
   "${PROJECT_SOURCE_DIR}/logic.hpp"
 )
 
-set_target_properties(Simulator PROPERTIES LINKER_LANGUAGE CXX_STANDARD)
 
 # To build this library you must include it's headers
 include_directories(	
