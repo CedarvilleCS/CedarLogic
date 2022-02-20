@@ -30,3 +30,8 @@ make  # Just execute the default make command to compile it.
 
 Note, I saw something in VS-Code about treating Cmake as a first-class build system and it looked like it wanted to do the cmake configure and build
 steps itself. I haven't investigated further but that's to say the steps above aren't the only way to do it.
+
+If that's breaking because things aren't installed on your system, you'll want the following however you need to get them:
+- Clang and/or GCC (I prefer clang)
+- CMake
+- Make

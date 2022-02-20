@@ -10,6 +10,8 @@
  */
 struct Wire {
 
+  Wire(uint32_t id) : id(id) {} 
+
   /**
    * @brief Determine if wire is connected to the given junction.
    *
@@ -17,7 +19,7 @@ struct Wire {
    * @return true
    * @return false
    */
-  bool has_junction(const Junction *ptr) {
+  bool has_junction(const Junction *ptr) const {
     return junction_ptrs.find(ptr) != junction_ptrs.end();
   }
 
@@ -29,9 +31,9 @@ struct Wire {
   std::set<const Junction *> junction_ptrs;
 
   /**
-   * @brief the wire's circuit index
+   * @brief the wire's unique id number
    *
-   * Useful to provide a quick ptr -> index mapping.
+   * Useful to provide a quick ptr -> index mapping when talking with Circuit.
    */
-  uint32_t index_id;
+  const uint32_t id;
 };

@@ -182,7 +182,7 @@ private:
    * @param junction_indexes The junctions this wire connects to.
    * @return uint32_t The index of the wire.
    */
-  uint32_t new_wire(std::set<uint32_t> junction_indexes);
+  uint32_t new_wire(std::vector<uint32_t> junction_indexes);
 
   /**
    * @brief Execute every gate's process function.
@@ -190,15 +190,4 @@ private:
    * @note call this before process_networks()
    */
   void process_gates();
-
-  /**
-   * @brief Execute every network's refresh function and get every wire id
-   * whose state changed (so we can update the GUI).
-   *
-   * @note only call this after every entity (such as the gates) have
-   * updated their output junctions.
-   *
-   * @return std::vector<uint32_t> changed_wires_indexes
-   */
-  std::vector<uint32_t> process_networks();
 };

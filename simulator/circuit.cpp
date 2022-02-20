@@ -18,16 +18,21 @@ bool is_gate(Entities e) {
 }
 
 std::vector<Event> Circuit::simulate(const std::vector<Event> &n_plus_1) {
-  // Set all output junctions given their input junction values
+  
+  /* Add/remove everything the user asked for since last loop */
+
+  /* Tell every entity in the circuit to update it's output j */
   process_gates();
 
-  // Process all the incoming user-events
+  /* Get every wire with a change state and that wire's new state */
+  std::vector<std::pair<uint32_t, Logic_Value>> v = networks.step();
 
-  // Get all the networks with a state change so we can create events with the
-  // new state for each internal wire.
-  auto v = process_networks();
+  /* Turn all the updated wire pairs into update events */
 
-  return std::vector<Event>();
+  /* Combine updated wire events and added/removed events */
+
+  /* Return all events from this step to the GUI */
+  return std::vector<Event>(); 
 }
 
 std::pair<bool, std::vector<uint32_t>> Circuit::delete_gate(uint32_t index) {
@@ -81,6 +86,9 @@ Circuit::delete_junction(uint32_t index) {
     /* Delete the junction itself */
     delete junctions[index];
     junctions[index] = nullptr;
+
+	/* Return the result */
+	return ret;
   } else {
     /* Junction did not exist */
     return std::make_pair(false, std::vector<uint32_t>());
@@ -109,4 +117,88 @@ bool Circuit::delete_wire(uint32_t index) {
     /* return that the wire did not exist */
     return false;
   }
+}
+
+uint32_t Circuit::new_gate(uint32_t n_inputs, Gates type) {
+  /* Get the input and output junctions for the gate */
+  auto i_v = this->new_input_junctions(n_inputs);
+  Output *o_j =
+      static_cast<Output *>(junctions[this->new_output_junctions(1)[0]]);
+
+  /* Turn the input indexes into ptrs */
+  std::vector<Input *> i_v_ptrs;
+  for (uint32_t i = 0; i < i_v.size(); i++) {
+	auto index = i_v[i];
+    i_v_ptrs.push_back(static_cast<Input *>(junctions[index]));
+  }
+
+  /* Create the gate itself with the junctions as parameters */
+  switch (type) {
+  case Gates::AND:
+    gates.push_back(new GateAND(i_v_ptrs, o_j));
+    break;
+  case Gates::XOR:
+    gates.push_back(new GateAND(i_v_ptrs, o_j));
+    break;
+  case Gates::OR:
+    gates.push_back(new GateAND(i_v_ptrs, o_j));
+    break;
+  case Gates::NAND:
+    gates.push_back(new GateAND(i_v_ptrs, o_j));
+    break;
+  case Gates::NOR:
+    gates.push_back(new GateAND(i_v_ptrs, o_j));
+    break;
+  }
+
+  /* Return the gate's index */
+  return gates.size() - 1;
+}
+
+std::vector<uint32_t> Circuit::new_input_junctions(uint32_t x) {
+	std::vector<uint32_t> ret;
+	for (uint32_t i = 0; i < x; i++) {
+		auto index = junctions.size();
+		junctions.push_back(new Input(index));
+		ret.push_back(index);
+	}
+	return ret;
+}
+
+std::vector<uint32_t> Circuit::new_output_junctions(uint32_t x) {
+	std::vector<uint32_t> ret;
+	for (uint32_t i = 0; i < x; i++) {
+		auto index = junctions.size();
+		junctions.push_back(new Output(index));
+		ret.push_back(index);
+	}
+	return ret;
+}
+
+uint32_t Circuit::new_wire(std::vector<uint32_t> junction_indexes) {
+    /* Create the wire instance */
+	uint32_t index = wires.size();
+	Wire* w = new Wire(index);
+
+	/* Add all the wire's junctions */
+	for (uint32_t i = 0; i < junction_indexes.size(); i++) {
+		auto index = junction_indexes[i];
+		auto ptr = junctions[index];
+		w->junction_ptrs.insert(ptr);
+	}
+
+	/* Notify network of new wire so it can update it's internal networks. */
+	networks.created_wire(w);
+
+	/* Store it and return the index. */
+	wires.push_back(w);
+	return index;
+}
+
+void Circuit::process_gates() {
+	for (uint i = 0; i < gates.size(); i++) {
+		if (gates[i] != nullptr) { // filter out the deleted gates
+			gates[i]->process();
+		}
+	}
 }

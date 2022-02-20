@@ -11,12 +11,6 @@
  *
  * A network is a contiguous grouping of wires and junctions.
  *
- * The network stores junction pointers
- *
- * Whenever a wire is added a new network may be created, or 2..n networks may
- * be merged. Whenever a junction or wire is removed a network may be destroyed,
- * split into 2..n sub-networks or only reduced by that wire and some subset of
- * it's junctions.
  */
 class Network {
 public:
@@ -87,69 +81,6 @@ public:
    */
   bool has_wire(Wire *wire_ptr) const;
 
-  /**
-   * Remove given wire from given network and receive back all resulting
-   * networks.
-   *
-   * @param network: unique_ptr to a network, function takes ownership of
-   * network and will likely delete it.
-   * @param wire_ptr: a const (so immutable) ptr to a wire.
-   *
-   * @return a vector of unique_ptrs to new Networks resulting from the removal.
-   * Per the meaning of the `unique_ptr`, the caller assumes ownership.
-   */
-  static std::vector<std::unique_ptr<Network>>
-  remove_wires_from_network(std::unique_ptr<Network> network,
-                            const Wire *wire_ptr);
-
-  /**
-   * Remove given junction from given network and receive back all resulting
-   * networks.
-   *
-   * @param network: unique_ptr to a network, function takes ownership of
-   * network and will likely delete it.
-   * @param junction_ptr: a const (so immutable) ptr to a junction.
-   *
-   * @return a vector of unique_ptrs to new Networks resulting from the removal.
-   * Per the meaning of the `unique_ptr`, the caller assumes ownership.
-   */
-  static std::vector<std::unique_ptr<Network>>
-  remove_junction_from_network(std::unique_ptr<Network> network,
-                               const Junction *junction_ptr);
-
-  /**
-   * Compose all possible networks out of the given wires and junctions.
-   *
-   * @param ws: const Wire pointers. New network(s) will store these, but cannot
-   * modify them (hence cost)
-   * @param js: non-const Junction pointers. When refreshing, the new network(s)
-   * will set the input junction states.
-   *
-   * @return a vector of unique_ptrs to new Networks resulting from the removal.
-   * Per the meaning of the `unique_ptr`, the caller assumes ownership.
-   */
-  static std::vector<std::unique_ptr<Network>>
-  compose_networks(const std::vector<const Wire *> &ws,
-                   const std::vector<Junction *> &js);
-
-  /**
-   * Compose all possible networks out of the given networks and wire. Useful
-   * when adding a wire that affects a set of networks. Function is valid
-   * regardless.
-   *
-   * @param networks: networks which this function takes ownership of.
-   * Ordinarily, these would be every network which has a junction a new wire
-   * touches.
-   * @param wire: a const Wire pointer. Under the expected use-case, this wire
-   * has been added and affects the provided networks.
-   *
-   * @return a vector of unique_ptrs to new Networks resulting from the removal.
-   * Per the meaning of the `unique_ptr`, the caller assumes ownership.
-   */
-  static std::vector<std::unique_ptr<Network>>
-  compose_networks(std::vector<std::unique_ptr<Network>> networks,
-                   const Wire *wire);
-
 private:
   Data data;
 };
@@ -157,16 +88,41 @@ private:
 /**
  * @brief A collection of networks
  *
- * Useful to encapsulate complicated and expensive function calls.
- *
+ * This class's job, for the circuit, is to provide an elegant solution for:
+ * 1. Getting every wire who's state changed.
+ * 2. Making sure the input junctions always have the correct state.
+ * 
+ * The circuit does not interact with the Network struct above. Further, the circuit
+ * only requires the network interface to remain the same. Anything else can change.
+ * 
+ * Memory:
+ * 	- Networks and all it's functions may not `new` or `delete` Junction or Wire instances
+ *  - Networks may not change any attribute of Junction or Wire instances with one exception:
+ * 		it must and is expected to set the `state` attribute of every Input junction which is
+ * 		in a network.
  */
 struct Networks {
 public:
+
   /**
-   * @brief Notify networks of junctions about to be removed
+   * @brief Notify networks of newly created wire.
+   * 
+   * The circuit calls this function when it creates a new wire. The 
+   * Networks object probably wants to record the pointer somewhere.
+   * 
+   * The circuit does not give Networks permission to ever delete or modify this wire.
+   */
+  void created_wire(const Wire *);
+
+  /**
+   * @brief Notify networks of junction about to be removed.
    *
-   * Networks are responsible to ensure networks are solid before
-   * they are used, but may not immediately update them.
+   * The circuit calls this function when it is about to delete a junction.
+   * For the duration of the function call (until you return) that pointer
+   * is valid. While Networks may keep a copy of the pointer afterwards (it may
+   * be a useful key in a map or set) Networks promises not to dereference that
+   * pointer - doing so may cause a seg fault. Get any information you need about
+   * the junction out during this function call.
    *
    * @param j to-be deleted junction pointer, not valid after return
    */
@@ -175,22 +131,34 @@ public:
   /**
    * @brief Notify networks of wire about to be removed
    *
-   * Networks is responsible to ensure its networks are solid before
-   * they are used, but may not immediately update them.
+   * The circuit calls this function when it is about to delete a wire.
+   * For the duration of the function call (until you return) that pointer
+   * is valid. While Networks may keep a copy of the pointer afterwards (it may
+   * be a useful key in a map or set) Networks promises not to dereference that
+   * pointer - doing so may cause a seg fault. Get any information you need about
+   * the wire (like what it's junctions are) out during this function call.
    *
    * @param ws to-be deleted wire pointer, not valid after return
    */
-  void deleting_wire(Wire *ws);
+  void deleting_wire(const Wire *ws);
+  
+  /**
+   * @brief Simulate one step in the network.
+   * 
+   * Do not confuse a step here with a clock signal "step". It just means:
+   * 1. Fix the networks in response to add/delete actions (if not already done)
+   * 2. For every network, check all it's output junctions and determine it's state as a result
+   * 3. For every network, for every input junction, set state to network's state.
+   * 4. For every network whose state changed, add all it's wire's id numbers to a vector with their new state.
+   * 5. Return that vector with the id number/state pairs of every wire with a state change.
+   * 
+   * Note, if you aren't much familiar with std::pairs, search Simulator for other usages 
+   * and just know that to make a pair you call `std::make_pair(id_number, logic_value)`. 
+   *
+   * @return std::vector<std::pair<uint32_t, Logic_Value>> (wire id number, it's logic state)
+   */
+  std::vector<std::pair<uint32_t, Logic_Value>> step();
 
 private:
-  /**
-   * @note They are encapsulated in unique_ptrs so it can be obvious when
-   * ownership is transferred to Network's static functions which will new and
-   * delete Network instances.
-   *
-   * @note They are held in a set rather than vector because they are created
-   * and deleted more frequently than any other object and so a vector would be
-   * expected to result in much more wasted space.
-   */
-  std::set<std::unique_ptr<Network>> nets;
+  std::set<Network*> nets;
 };
