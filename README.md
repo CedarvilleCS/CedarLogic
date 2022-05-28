@@ -7,9 +7,9 @@ Please feel free to contribute tickets and pull requests. Currently the only mai
 ## History
 CedarLogic was developed by [Cedarville University](https://www.cedarville.edu/) professors for classroom instruction. It was released on [Source Forge](https://sourceforge.net/projects/cedarlogic/) in 2006 where  it's enjoyed long-lived popularity, over 20,000 downloads in 2019 alone.
 
-The latest version availible on Source Forge was released in 2011/12 and has been the public face of CedarLogic. That [version](https://sourceforge.net/projects/cedarlogic/files/) is still by far the most stable version of CedarLogic. Internally, senior design teams took a couple shots at improving it with added features, unfortunately accompanied by added bugs. The code-base at present is the has their improvements but also the accompanying instabilities.
+The latest version available on Source Forge was released in 2011/12 and has been the public face of CedarLogic. That [version](https://sourceforge.net/projects/cedarlogic/files/) is still by far the most stable version of CedarLogic. Internally, senior design teams took a couple shots at improving it with added features, unfortunately accompanied by added bugs. The code-base at present has their improvements but also the accompanying instabilities.
 
-In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonrichard heading up  the project. As of this writing, the chief objective is to fix any known bugs and stabalize the product before considering further improvements.
+In February 2020 Cedarville Unversity agreed to move it to GitHub with @joe-sonrichard heading up the project. As of this writing, the chief objective is to fix any known bugs and stabilize the product before considering further improvements.
 
 ### Original Developers
  - [Dr. Keith Shomper](https://www.cedarville.edu/Academic-Schools-and-Departments/Engineering-and-Computer-Science/Faculty/Faculty/Shomper-Keith.aspx) 
@@ -56,7 +56,7 @@ nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
 
 6. Select `Release` from the configuration menu.
 
-7. Right click on the `Package` target to create a new installer in the `build` directory.
+7. Right click on the `Package` target and choose `Build` to create a new installer in the `build` directory.
 
 8. There is now a CedarLogic installer executable in the `build` directory.
 
@@ -70,7 +70,7 @@ v2.2017.01.16 - Buggy first release with busses.
 
 v2.2017.01.18 - Fixed bugs.
 
-v2.2017.05.02 - Borken version with lots of good, but enough bad to warrant abandonment.
+v2.2017.05.02 - Broken version with lots of good, but enough bad to warrant abandonment.
 
 v2.2018.01.26 - Branch from v2.2017.01.18, stable bus support with an installer and file associations.
 
