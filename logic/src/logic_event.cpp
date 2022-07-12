@@ -25,9 +25,8 @@ bool Event::operator > (const Event &other) const {
 	if (eventTime == other.eventTime) {
 		return (getCreationTime() > other.getCreationTime());
 	}
-	else {
-		return (eventTime > other.eventTime);
-	}
+
+	return (eventTime > other.eventTime);
 }
 
 TimeType Event::globalCreationTime = 0;

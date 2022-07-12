@@ -2,7 +2,148 @@
 #include "XMLParser.h"
 #include <iostream>
 #include <sstream>
+#include "logic_gate.h"
+#include "logic_circuit.h"
+#include "logic_event.h"
+#include "logic_junction.h"
 
+TEST_CASE("Logic event, [LogicEvent]") {
+
+    SECTION("Logic event comparison when simulation time differs") {
+        Event e1, e2;
+        e1.eventTime = 2;
+        e2.eventTime = 1;
+        REQUIRE(e1 > e2);
+    }
+
+    SECTION("When simulation time is the same then the object created later is greater") {
+        Event e1, e2;
+        e1.eventTime = 10;
+        e2.eventTime = 10;
+        REQUIRE(e2 > e1);
+    }
+}
+
+TEST_CASE("Logic junction, [LogicJunction]") {
+
+    SECTION("Logic junction defaults to enabled state") {
+        Junction junc{123};
+        REQUIRE(junc.getEnableState());
+    }
+
+    SECTION("Setting enable state works") {
+        Junction junc{7};
+        REQUIRE(junc.getEnableState());
+        junc.setEnableState(false);
+        REQUIRE_FALSE(junc.getEnableState());
+        junc.setEnableState(true);
+        REQUIRE(junc.getEnableState());
+    }
+
+    SECTION("GetWires returns an empty list for empty junction") {
+        Junction junc{123};
+        auto wires{junc.getWires()};
+        REQUIRE(wires.empty());
+    }
+
+    SECTION("ConnectWire connects wire to junction") {
+        Junction junc{123};
+        junc.connectWire(17);
+        junc.connectWire(42);
+        auto wires{junc.getWires()};
+        REQUIRE(wires.size() == 2);
+        REQUIRE(wires.count(17) == 1);
+        REQUIRE(wires.count(42) == 1);
+    }
+
+    SECTION("DisconnectWire returns true when the final instance of a wire is removed from the junction") {
+        Junction junc{7};
+        junc.connectWire(17);
+        junc.connectWire(42);
+        junc.connectWire(42);
+
+        bool wasLastConnection = junc.disconnectWire(42);
+        REQUIRE_FALSE(wasLastConnection);
+
+        wasLastConnection = junc.disconnectWire(17);
+        REQUIRE(wasLastConnection);
+
+        // Causes log statement attempt to file which crashes test!
+        // bool falseOnDisconnectedWire = junc.disconnectWire(17);
+        // REQUIRE_FALSE(falseOnDisconnectedWire);
+
+        auto wires{junc.getWires()};
+        REQUIRE(wires.size() == 1);
+        REQUIRE(wires.count(17) == 0);
+        REQUIRE(wires.count(42) == 1);
+
+        wasLastConnection = junc.disconnectWire(42);
+        REQUIRE(wasLastConnection);
+        auto wires2{junc.getWires()};
+        REQUIRE(wires2.empty());
+    }
+}
+
+TEST_CASE("Logic gate setParameter during construction, [LogicGate]") {
+    
+    SECTION("N_INPUT") {
+        Gate_N_INPUT ngate;
+        REQUIRE(ngate.getParameter("INPUT_BITS") == "0");
+    }
+
+    SECTION("COMPARE") {
+        Gate_COMPARE cgate;
+        REQUIRE(cgate.getParameter("INPUT_BITS") == "0");
+    }
+    
+    SECTION("GATE PASS") {
+        Gate_PASS pgate;
+        REQUIRE(pgate.getParameter("INPUT_BITS") == "1");
+    }
+
+    SECTION("GATE MUX") {
+        Gate_MUX mgate;
+        REQUIRE(mgate.getParameter("INPUT_BITS") == "0");
+    }
+
+    SECTION("GATE DRIVER") {
+        Gate_DRIVER driver_gate;
+        REQUIRE(driver_gate.getParameter("OUTPUT_BITS") == "0");
+    }
+
+    SECTION("GATE DECODER") {
+        Gate_DECODER decoder_gate;
+        REQUIRE(decoder_gate.getParameter("INPUT_BITS") == "0");
+    }
+
+    SECTION("GATE PRI ENCODER") {
+        Gate_PRI_ENCODER encoder_gate;
+        REQUIRE(encoder_gate.getParameter("INPUT_BITS") == "0");
+    }
+
+    SECTION("GATE ADDER") {
+        Gate_ADDER adder_gate;
+        REQUIRE(adder_gate.getParameter("INPUT_BITS") == "0");
+    }
+
+    SECTION("GATE JFKK") {
+        Gate_JKFF JFKK_gate;
+        REQUIRE(JFKK_gate.getParameter("SYNC_SET") == "false");
+        REQUIRE(JFKK_gate.getParameter("SYNC_CLEAR") == "false");
+    }
+
+    SECTION("GATE RAM") {
+        Gate_RAM RAM_gate;
+        REQUIRE(RAM_gate.getParameter("ADDRESS_BITS") == "0");
+        REQUIRE(RAM_gate.getParameter("DATA_BITS") == "0");
+    }
+
+    SECTION("GATE Junction") {
+        Circuit cir;
+        Gate_JUNCTION junction_gate(&cir);
+        REQUIRE(junction_gate.getParameter("JUNCTION_ID") == "NONE");
+    }
+}
 
 TEST_CASE("XMLParser writing, [XMLParser]") {
     std::ostringstream oss;
