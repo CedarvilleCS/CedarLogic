@@ -6,6 +6,7 @@
 #include "logic_circuit.h"
 #include "logic_event.h"
 #include "logic_junction.h"
+#include "logic_wire.h"
 
 TEST_CASE("Logic event, [LogicEvent]") {
 
@@ -81,6 +82,32 @@ TEST_CASE("Logic junction, [LogicJunction]") {
         REQUIRE(wasLastConnection);
         auto wires2{junc.getWires()};
         REQUIRE(wires2.empty());
+    }
+}
+
+TEST_CASE("Logic wire, [LogicWire]") {
+
+    SECTION("Wires are created in high-impedance state") {
+        Wire w;
+        REQUIRE(w.getState() == HI_Z);
+    }
+
+    SECTION("WireInput operator < works primarily on gateID, secondarily on gateOutputID") {
+        WireInput wi1{2, "a"};
+        WireInput wi2{3, "b"};
+        WireInput wi3{2, "b"};
+        WireInput wi4{2, "a"};
+        WireInput wi5{1, "b"};
+        
+        REQUIRE(wi1 < wi2);
+        REQUIRE(wi5 < wi4);
+        REQUIRE(wi3 < wi2);
+        REQUIRE_FALSE(wi4 < wi5);
+        REQUIRE_FALSE(wi2 < wi1);
+        REQUIRE_FALSE(wi2 < wi3);
+        REQUIRE(wi1 < wi3);
+        REQUIRE_FALSE(wi3 < wi1);
+        REQUIRE_FALSE(wi1 < wi1);
     }
 }
 

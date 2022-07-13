@@ -25,7 +25,9 @@ bool operator < (const WireInput &left, const WireInput &right) {
 		return false;
 	} else if( left.gateOutputID < right.gateOutputID ) {
 		return true;
-	} else return false;
+	}
+	
+	return false;
 }
 
 
