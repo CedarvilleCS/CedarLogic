@@ -109,6 +109,64 @@ TEST_CASE("Logic wire, [LogicWire]") {
         REQUIRE_FALSE(wi3 < wi1);
         REQUIRE_FALSE(wi1 < wi1);
     }
+
+    SECTION("WireOutput operator < works primarily on gateID, secondarily on gateInputID") {
+        WireOutput wo1{2, "a"};
+        WireOutput wo2{3, "b"};
+        WireOutput wo3{2, "b"};
+        WireOutput wo4{2, "a"};
+        WireOutput wo5{1, "b"};
+        
+        REQUIRE(wo1 < wo2);
+        REQUIRE(wo5 < wo4);
+        REQUIRE(wo3 < wo2);
+        REQUIRE_FALSE(wo4 < wo5);
+        REQUIRE_FALSE(wo2 < wo1);
+        REQUIRE_FALSE(wo2 < wo3);
+        REQUIRE(wo1 < wo3);
+        REQUIRE_FALSE(wo3 < wo1);
+        REQUIRE_FALSE(wo1 < wo1);
+    }
+
+    // TODO: WIRE_PTR operator <
+
+    SECTION("Wire can be forced to a given state") {
+        // !StateType is just unsigned char so values 5->
+        // are theoretically possible...
+
+        // Range of values:
+        // const StateType ZERO = 0;
+        // const StateType ONE = 1;
+        // const StateType HI_Z = 2;
+        // const StateType CONFLICT = 3;
+        // const StateType UNKNOWN = 4;
+
+        Wire w;
+        REQUIRE(w.getState() == HI_Z);
+        w.forceState(ZERO);
+        REQUIRE(w.getState() == ZERO);
+        w.forceState(ONE);
+        REQUIRE(w.getState() == ONE);
+        w.forceState(CONFLICT);
+        REQUIRE(w.getState() == CONFLICT);
+        w.forceState(UNKNOWN);
+        REQUIRE(w.getState() == UNKNOWN);
+        w.forceState(HI_Z);
+        REQUIRE(w.getState() == HI_Z);
+    }
+
+    SECTION("Wire getFirstInput returns first (sorted) non-NONE input or junk") {
+
+        Wire w, w2;
+        REQUIRE(w.getFirstInput().gateID == ID_NONE);
+        w.connectInput(7, "bb");
+        w.connectInput(3, "a");
+        REQUIRE(w.getFirstInput().gateID == 3);
+
+        w2.connectInput(ID_NONE, "asd");
+        auto wi2 = w2.getFirstInput();
+        REQUIRE(((wi2.gateID == ID_NONE) and (wi2.gateOutputID == "")));
+    }
 }
 
 TEST_CASE("Logic gate setParameter during construction, [LogicGate]") {

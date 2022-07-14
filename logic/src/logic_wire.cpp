@@ -39,7 +39,9 @@ bool operator < (const WireOutput &left, const WireOutput &right) {
 		return false;
 	} else if( left.gateInputID < right.gateInputID ) {
 		return true;
-	} else return false;
+	}
+	
+	return false;
 }
 
 
@@ -221,8 +223,8 @@ void Wire::disconnectOutput( IDType gateID, string gateInputID ) {
 // Get the first non-external input of the wire:
 // If there are no non-external inputs, then it returns a WireInput with gateID == ID_NONE;
 WireInput Wire::getFirstInput( void ) {
-	ID_SET< WireInput >::iterator inP = inputList.begin();
-	
+	auto inP = inputList.begin();
+
 	while( inP != inputList.end() ) {
 		WireInput temp = *(inputList.begin());
 		if( temp.gateID != ID_NONE ) {
