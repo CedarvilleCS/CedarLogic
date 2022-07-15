@@ -167,6 +167,14 @@ TEST_CASE("Logic wire, [LogicWire]") {
         auto wi2 = w2.getFirstInput();
         REQUIRE(((wi2.gateID == ID_NONE) and (wi2.gateOutputID == "")));
     }
+
+    SECTION("Wire getFirstOutput returns first (sorted) output or junk") {
+        Wire w;
+        REQUIRE(w.getFirstOutput().gateID == ID_NONE);
+        w.connectOutput(8, "some-gate");
+        w.connectOutput(5, "other-gate");
+        REQUIRE(w.getFirstOutput().gateID == 5);
+    }
 }
 
 TEST_CASE("Logic gate setParameter during construction, [LogicGate]") {

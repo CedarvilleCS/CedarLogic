@@ -244,10 +244,9 @@ WireOutput Wire::getFirstOutput( void ) {
 	if( outputList.empty() ) {
 		WireOutput junk( ID_NONE, "" );
 		return junk;
-	} else {
-		WireOutput temp = *(outputList.begin());
-		return temp;
 	}
+
+	return *(outputList.begin());
 }
 
 
