@@ -175,6 +175,17 @@ TEST_CASE("Logic wire, [LogicWire]") {
         w.connectOutput(5, "other-gate");
         REQUIRE(w.getFirstOutput().gateID == 5);
     }
+
+    SECTION("Wire getOutputGates") {
+        Wire w;
+        REQUIRE(w.getOutputGates().empty());
+        w.connectOutput(55, "some-gate");
+        w.connectOutput(78, "other-gate");
+        auto gates = w.getOutputGates();
+        REQUIRE(gates.size() == 2);
+        REQUIRE(gates.front() == 55);
+        REQUIRE(gates.back() == 78);
+    }
 }
 
 TEST_CASE("Logic gate setParameter during construction, [LogicGate]") {
