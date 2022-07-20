@@ -10,6 +10,20 @@
 
 TEST_CASE("Logic event, [LogicEvent]") {
 
+    SECTION("Logic event is initialized properly") {
+        Event e1, e2;
+        REQUIRE_FALSE(e1.isJunctionEvent);
+        REQUIRE_FALSE(e1.newJunctionState);
+        REQUIRE(e1.junctionID == ID_NONE);
+        REQUIRE(e1.wireID == ID_NONE);
+        REQUIRE(e1.gateID == ID_NONE);
+        REQUIRE(e1.newState == UNKNOWN);
+        REQUIRE(e1.eventTime == TIME_NONE);
+        REQUIRE(e1.gateOutputID == "");
+        REQUIRE(e1.getCreationTime() == 0);
+        REQUIRE(e2.getCreationTime() == 1);
+    }
+
     SECTION("Logic event comparison when simulation time differs") {
         Event e1, e2;
         e1.eventTime = 2;
