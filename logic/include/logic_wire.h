@@ -78,7 +78,7 @@ public:
 	vector< IDType > getOutputGates( void );
 
 	// Return the current state of the wire:
-	StateType getState( void );
+	StateType getState() const;
 
 	// Connect a gate output to this wire:
 	void connectInput( IDType gateID, string gateOutputID );
@@ -100,7 +100,9 @@ public:
 	// If there are no outputs, then it returns a WireOutput with gateID == ID_NONE;
 	WireOutput getFirstOutput( void );
 
-	Wire();
+	// Always initialize new wires to high-impedance since they are floating
+	// until they are connected to a gate:
+	Wire() : wireState(HI_Z) {}
 	virtual ~Wire();
 
 protected:

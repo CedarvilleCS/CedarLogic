@@ -55,14 +55,6 @@ bool operator < (const WIRE_PTR &left, const WIRE_PTR &right) {
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-Wire::Wire()
-{
-	// Always initialize new wires to high-impedance since they are floating
-	// until they are connected to a gate:
-	wireState = HI_Z;
-}
-
-
 Wire::~Wire()
 {
 
@@ -163,7 +155,7 @@ std::vector<IDType> Wire::getOutputGates()
 
 
 // Return the current state of the wire:
-StateType Wire::getState( void )
+StateType Wire::getState() const
 {
 	return wireState;
 }
