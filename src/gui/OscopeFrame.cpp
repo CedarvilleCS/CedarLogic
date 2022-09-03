@@ -114,9 +114,9 @@ void OscopeFrame::OnClose( wxCloseEvent& event ){
 void OscopeFrame::OnToggleButton( wxCommandEvent& event ){ 
 	if( !(pauseButton->GetValue()) ) {
 		theCanvas->clearData();
-		pauseButton->SetLabel((const wxChar *)"Pause"); // KAS
+		pauseButton->SetLabel("Pause");
 	} else {
-		pauseButton->SetLabel((const wxChar *)"Reset"); // KAS
+		pauseButton->SetLabel("Reset");
 	}
 }
 
@@ -241,7 +241,7 @@ void OscopeFrame::OnExport( wxCommandEvent& event ){
 	memDC.SetTextBackground(*wxWHITE);
 	//JoshEdit 3/15/07
 	for( unsigned int i = 0; i < numberOfFeeds()-1; ++i ){
-		memDC.DrawText((const wxChar *)getFeedName(i).c_str(), wxPoint(5, getFeedYPos(i))); // KAS
+		memDC.DrawText(getFeedName(i), wxPoint(5, getFeedYPos(i)));
 	}
 	memDC.DrawBitmap(circuitBitmap, theCanvas->GetPosition().x, 0, false);
 	
@@ -332,13 +332,13 @@ void OscopeFrame::verifyReferenceOrder(){
 //and appends it to the end.
 void OscopeFrame::appendNewFeed( string newName ){
 	wxArrayString strings;
-	strings.Add((const wxChar *)encodeFeedName(NONE_STR).c_str());  // KAS
+	strings.Add(encodeFeedName(NONE_STR));
 	if( numberOfFeeds() > 0 ){
-		strings.Add((const wxChar *)encodeFeedName( RMOVE_STR ).c_str()); // KAS
+		strings.Add(encodeFeedName( RMOVE_STR ));
 	}
 	
-	wxComboBox* newCombo = new wxComboBox(this, ID_COMBOBOX, (const wxChar *)encodeFeedName(newName).c_str(), wxDefaultPosition, wxDefaultSize, strings,
-	      wxCB_READONLY  | wxCB_DROPDOWN | wxCB_SORT );  // KAS
+	wxComboBox* newCombo = new wxComboBox(this, ID_COMBOBOX, encodeFeedName(newName), wxDefaultPosition, wxDefaultSize, strings,
+	      wxCB_READONLY  | wxCB_DROPDOWN | wxCB_SORT );
 	comboBoxes.push_back( newCombo );
 
 	//Adds vertical box to canvas
@@ -347,7 +347,7 @@ void OscopeFrame::appendNewFeed( string newName ){
 
 //this renames an existing feed
 void OscopeFrame::setFeedName( int i, string newName ){
-	comboBoxes[i]->SetValue((const wxChar *)encodeFeedName(newName).c_str()); // KAS
+	comboBoxes[i]->SetValue(encodeFeedName(newName));
 	//feedNames[i] = newName;
 }
 
@@ -402,15 +402,15 @@ void OscopeFrame::updatePossableFeeds( vector< string >* newPossabilities ){
 		//box and checking if any of them match the current name which is being
 		//used as the feed.
 		for( vector< string >::iterator I = newPossabilities->begin(); I != newPossabilities->end(); ++I ){
-			comboBoxes[i]->Append((const wxChar *)encodeFeedName(*I).c_str()); // KAS
+			comboBoxes[i]->Append(encodeFeedName(*I));
 			if( (*I) == currentFeedName ){
 				valueValid = true;
 			}
 		}
 		
-		comboBoxes[i]->Append((const wxChar *)encodeFeedName(NONE_STR).c_str()); // KAS
+		comboBoxes[i]->Append(encodeFeedName(NONE_STR));
 		if( numberOfFeeds() > 1 ){
-			comboBoxes[i]->Append((const wxChar *)encodeFeedName(RMOVE_STR).c_str()); // KAS
+			comboBoxes[i]->Append(encodeFeedName(RMOVE_STR));
 		}
 		
 		//if the value wasn't valid anymore, then we set it to [None]

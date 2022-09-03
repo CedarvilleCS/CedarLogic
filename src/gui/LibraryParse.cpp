@@ -22,9 +22,7 @@ LibraryParse::LibraryParse(string fileName) {
 	if (!x) {
 		// Error loading file, don't bother trying to parse.
 		wxString msg;
-		ostringstream ossError;
-		ossError << "The library file " << fileName << " does not exist.";
-		msg.Printf((const wxChar *)ossError.str().c_str());  // remove  macro; added cast KAS
+		cout << "The library file " << fileName << " does not exist." << "\n";
 		wxMessageBox(msg, "Error - Missing File", wxOK | wxICON_ERROR, NULL);
 
 		return;

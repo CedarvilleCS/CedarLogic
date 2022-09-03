@@ -50,7 +50,7 @@ RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM,
 	loadBtn = new wxButton( this, wxID_OPEN );
 	saveBtn = new wxButton( this, wxID_SAVE );
 	
-	hexOrDecCB = new wxCheckBox(this, ID_CHECKBOX, (const wxChar *)"Show Decimal"); // KAS
+	hexOrDecCB = new wxCheckBox(this, ID_CHECKBOX, "Show Decimal");
 	
 	wxGridTableBase* gridTable = new virtualGrid(addressSize, dataSize, m_guiGateRAM, gUICircuit ,hexOrDecCB); 
 	memContents = new wxGrid(this, ID_MEMCONTENTS);
@@ -173,7 +173,7 @@ wxString virtualGrid::GetValue (int row, int col) {
 	} else {
 		stream << hex << uppercase << setw ( dataSize ) << setfill ( '0' ) << data;
 	}
-	return (const wxChar *)stream.str().c_str(); // KAS
+	return stream.str();
 }
 
 void virtualGrid::SetValue (int row, int col, const wxString& value) {
@@ -236,11 +236,11 @@ wxString virtualGrid::GetRowLabelValue(int row) {
 	//set row titles
 	ostringstream stream;
 	stream << "0x" << hex << uppercase << setw( addressSize - 1 ) << setfill( '0' ) << row << 'X';
-	return (const wxChar *)stream.str().c_str(); // KAS
+	return stream.str();
 }
 
 wxString virtualGrid::GetColLabelValue(int col) {
 	ostringstream oss;
 	oss << uppercase << hex << col;
-	return (const wxChar *)oss.str().c_str(); // KAS
+	return oss.str();
 }
