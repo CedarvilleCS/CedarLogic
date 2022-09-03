@@ -29,12 +29,9 @@ class Circuit;
 // enabling disconnecting wires to work correctly.
 class WireInput {
 public:
-	WireInput( IDType gateID, string gateOutputID, StateType inputState = UNKNOWN ) {
-		this->gateID = gateID;
-		this->gateOutputID = gateOutputID;
-		this->inputState = inputState;
-	}
-	
+	WireInput(IDType gateID, string gateOutputID, StateType inputState = UNKNOWN)
+		: gateID(gateID), gateOutputID(gateOutputID), inputState(inputState) {}
+
 	IDType gateID;
 	string gateOutputID;
 
@@ -47,10 +44,8 @@ bool operator < (const WireInput &left, const WireInput &right);
 // Wire outputs, which connect a gate and a gateInput together:
 class WireOutput {
 public:
-	WireOutput( IDType gateID, string gateInputID ) {
-		this->gateID = gateID;
-		this->gateInputID = gateInputID;
-	}
+	WireOutput(IDType gateID, string gateInputID) 
+		: gateID(gateID), gateInputID(gateInputID) {}
 
 	IDType gateID;
 	string gateInputID;
@@ -83,7 +78,7 @@ public:
 	vector< IDType > getOutputGates( void );
 
 	// Return the current state of the wire:
-	StateType getState( void );
+	StateType getState() const;
 
 	// Connect a gate output to this wire:
 	void connectInput( IDType gateID, string gateOutputID );
@@ -105,7 +100,9 @@ public:
 	// If there are no outputs, then it returns a WireOutput with gateID == ID_NONE;
 	WireOutput getFirstOutput( void );
 
-	Wire();
+	// Always initialize new wires to high-impedance since they are floating
+	// until they are connected to a gate:
+	Wire() : wireState(HI_Z) {}
 	virtual ~Wire();
 
 protected:
