@@ -19,7 +19,9 @@
 XMLParser::XMLParser(fstream* strIO, bool writing)
 {
 	mStream = strIO;
-	if (writing) return;
+	if (writing) {
+		return;
+	}
 	string temp;
 	while (!mStream->eof()) {
 	    getline(*mStream, temp, '\n');
@@ -49,8 +51,9 @@ XMLParser::~XMLParser()
 // Return the current token, and scan for the next one
 Token XMLParser::getNextToken() {
 	Token returnToken = nextToken;
-	if (nextToken.tokenType != XML_EOF)
+	if (nextToken.tokenType != XML_EOF) {
 		nextToken = scanNextToken();
+	}
 	return returnToken;
 }
 
@@ -80,7 +83,9 @@ Token XMLParser::scanNextToken() {
 					getNextChar(); // munch the closing indicator
 					state = 4; // yup, closing tag
 				}
-				else state = 2; // nope, this is an open tag
+				else {
+					state = 2;
+				} // nope, this is an open tag
 			}
 			else if (peekChar == '#') { // Comment?
 				getNextChar(); // munch the #
@@ -90,18 +95,18 @@ Token XMLParser::scanNextToken() {
 				tokenType = XML_EOF;
 				done = true;
 			}
-			else if (peekChar == '\n') getNextChar(); // simply munch an endline
-			else state = 1; // Guess we're a tag value
+			else if (peekChar == '\n') {getNextChar();} // simply munch an endline
+			else {state = 1;} // Guess we're a tag value
 			break;
 		case 1: // TAG VAL
 			addChar = peekChar;
-			if (addChar == 0x07) addChar = '<'; // Check for substitute char because of scanning for '<'
-			if (peekChar != '\n' && peekChar != '<' && peekChar != '#') tokenData += addChar; // don't hold endlines
+			if (addChar == 0x07) {addChar = '<';} // Check for substitute char because of scanning for '<'
+			if (peekChar != '\n' && peekChar != '<' && peekChar != '#') {tokenData += addChar;} // don't hold endlines
 			if (peekChar == '<' || peekChar == '#') { // apparently this is the end of the value
 				tokenType = XML_VALUE;
 				done = true;
 			}
-			else getNextChar(); // munch the next char so we can look at it next time around
+			else {getNextChar();} // munch the next char so we can look at it next time around
 			break;
 		case 2: // TAG
 			if (peekChar == '>') { // are we done?
@@ -109,11 +114,11 @@ Token XMLParser::scanNextToken() {
 				tokenType = XML_TAG;
 				done = true;
 			}
-			else if (peekChar == '\n') getNextChar(); // ignore newline
-			else tokenData += getNextChar(); // otherwise just munch it and go on
+			else if (peekChar == '\n') {getNextChar();} // ignore newline
+			else {tokenData += getNextChar();} // otherwise just munch it and go on
 			break;
 		case 3: // COMMENT
-			if (peekChar == '\n') state = 0; // on newline goto state 0
+			if (peekChar == '\n') {state = 0;} // on newline goto state 0
 			getNextChar(); // otherwise just munch
 			break;
 		case 4: // CLOSE TAG
@@ -122,8 +127,8 @@ Token XMLParser::scanNextToken() {
 				tokenType = XML_CTAG;
 				done = true;
 			}
-			else if (peekChar == '\n') getNextChar(); // ignore newline
-			else tokenData += getNextChar(); // otherwise munch it
+			else if (peekChar == '\n') {getNextChar();} // ignore newline
+			else {tokenData += getNextChar();} // otherwise munch it
 			break;
 		}
 	}
@@ -135,10 +140,12 @@ Token XMLParser::scanNextToken() {
 char XMLParser::peekNextChar() {
     string checkLine = lines[lineIdx];
     int tempLineIdx = lineIdx;
-    int tempLinePtr = linePtr+1;
+    int tempLinePtr = linePtr + 1;
     if (tempLinePtr == (int)(checkLine.size())) {// We're at the end of the line
         tempLineIdx++;
-        if (tempLineIdx == (int)(lines.size())) return (char)-1;
+        if (tempLineIdx == (int)(lines.size())) {
+			return (char)-1;
+		}
         checkLine = lines[tempLineIdx];
         tempLinePtr = 0;
     }
@@ -152,7 +159,9 @@ char XMLParser::getNextChar() {
     linePtr++;
     if (linePtr == (int)(checkLine.size())) {// We're at the end of the line
         lineIdx++;
-        if (lineIdx == (int)(lines.size())) return (char)-1;
+        if (lineIdx == (int)(lines.size())) {
+			return (char)-1;
+		}
         checkLine = lines[lineIdx];
         linePtr = 0;
     }
@@ -162,7 +171,9 @@ char XMLParser::getNextChar() {
 // openTag writes an opening tag
 //		<tagName>
 void XMLParser::openTag(string tagName) {
-	if (!openTags.empty()) *writeStream << endl;
+	if (!openTags.empty()) {
+		*writeStream << endl;
+	}
 	*writeStream << "<" << tagName << ">";
 	openTags.push(tagName);
 }
@@ -216,7 +227,10 @@ string XMLParser::readTag() {
 	while (nextToken.tokenType == XML_VALUE) {
 		getNextToken();
 	}
-	if (nextToken.tokenType == XML_CTAG) return ""; // don't advance
+
+	if (nextToken.tokenType == XML_CTAG) {	// don't advance
+		return "";
+	}
 	Token returnToken = getNextToken(); // otherwise advance it
 	return returnToken.data;
 }
@@ -225,7 +239,9 @@ string XMLParser::readTag() {
 string XMLParser::readTagValue(string tagName) {
 	// Is the current token a value?  If not then don't
 	//	do anything so we don't lose tags
-	if (nextToken.tokenType != XML_VALUE) return "";
+	if (nextToken.tokenType != XML_VALUE) {
+		return "";
+	}
 	Token returnToken = getNextToken(); // make sure to munch it
 	return returnToken.data;
 }
@@ -233,13 +249,16 @@ string XMLParser::readTagValue(string tagName) {
 // readCloseTag closes the most open tag
 string XMLParser::readCloseTag() {
 	// Look for a close tag and then munch it
-	while (nextToken.tokenType != XML_CTAG) getNextToken();
+	while (nextToken.tokenType != XML_CTAG) {
+		getNextToken();
+	}
 	Token returnToken = getNextToken();
 	return returnToken.data;
 }
 
 // Debug function used to print out the vector of lines
 void XMLParser::printAllLines(ostream& oss) {
-	for (unsigned int i = 0; i < lines.size(); i++)
+	for (unsigned int i = 0; i < lines.size(); i++) {
 		oss << lines[i] << endl;
+	}
 }

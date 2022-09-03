@@ -9,7 +9,6 @@ file(GLOB SRC_FILES
 	"${PROJECT_SOURCE_DIR}/include/*.h"
 )
 
-
 add_library(Logic STATIC "${SRC_FILES}")
 
 # To build this library you must include it's headers
@@ -35,8 +34,12 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
+add_library(XMLParser STATIC "../src/gui/XMLParser.cpp")
+target_include_directories(XMLParser PUBLIC "../include/gui/")
+target_compile_options(XMLParser PUBLIC -Wall -pedantic -Wextra)
+
 # Add a executable to run the tests
 add_executable(test_logic tests/test.cpp)
 
 # Add the libraries the test executable will need to run
-target_link_libraries(test_logic PRIVATE Catch2::Catch2WithMain Logic)
+target_link_libraries(test_logic PRIVATE Catch2::Catch2WithMain Logic XMLParser)
