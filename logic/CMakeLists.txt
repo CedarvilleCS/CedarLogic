@@ -36,7 +36,7 @@ FetchContent_MakeAvailable(Catch2)
 
 add_library(XMLParser STATIC "../src/gui/XMLParser.cpp")
 target_include_directories(XMLParser PUBLIC "../include/gui/")
-target_compile_options(XMLParser PUBLIC -Wall -pedantic -Wextra)
+target_compile_options(XMLParser PUBLIC -Wall -pedantic)
 
 # Add a executable to run the tests
 add_executable(test_logic tests/test.cpp)
