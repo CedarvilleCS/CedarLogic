@@ -19,29 +19,25 @@
 
 // Definition of operator for WireInput (Allows it to be stored in maps).
 bool operator < (const WireInput &left, const WireInput &right) {
-	if (left.gateID < right.gateID) {
+	if( left.gateID < right.gateID ) {
 		return true;
-	} else if (left.gateID > right.gateID) {
+	} else if( left.gateID > right.gateID ) {
 		return false;
-	} else if (left.gateOutputID < right.gateOutputID) {
+	} else if( left.gateOutputID < right.gateOutputID ) {
 		return true;
-	}
-
-	return false;
+	} else return false;
 }
 
 
 // Definition of operator for WireOutput (Allows it to be stored in maps).
 bool operator < (const WireOutput &left, const WireOutput &right) {
-	if (left.gateID < right.gateID) {
+	if( left.gateID < right.gateID ) {
 		return true;
-	} else if (left.gateID > right.gateID) {
+	} else if( left.gateID > right.gateID ) {
 		return false;
-	} else if (left.gateInputID < right.gateInputID) {
+	} else if( left.gateInputID < right.gateInputID ) {
 		return true;
-	}
-
-	return false;
+	} else return false;
 }
 
 
@@ -54,6 +50,14 @@ bool operator < (const WIRE_PTR &left, const WIRE_PTR &right) {
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+
+Wire::Wire()
+{
+	// Always initialize new wires to high-impedance since they are floating
+	// until they are connected to a gate:
+	wireState = HI_Z;
+}
+
 
 Wire::~Wire()
 {
@@ -134,19 +138,20 @@ StateType Wire::calculateState( set< WIRE_PTR > wireGroup )
 }
 
 // Force the wire to change state (used when a wire is in a junction group):
-void Wire::forceState(StateType newState) {
+void Wire::forceState( StateType newState ) {
 	wireState = newState;
 }
 
 
 // Returns a list of output gates that this wire affects.
-std::vector<IDType> Wire::getOutputGates()
+vector< IDType > Wire::getOutputGates()
 {
-	std::vector<IDType> outputGates;
-	auto thisGate = outputList.begin();
+	vector< IDType > outputGates;
+	
+	ID_SET< WireOutput >::iterator thisGate = outputList.begin();
 
-	while (thisGate != outputList.end()) {
-		outputGates.push_back(thisGate->gateID);
+	while( thisGate != outputList.end() ) {
+		outputGates.push_back( thisGate->gateID );
 		thisGate++;
 	}
 
@@ -155,7 +160,7 @@ std::vector<IDType> Wire::getOutputGates()
 
 
 // Return the current state of the wire:
-StateType Wire::getState() const
+StateType Wire::getState( void )
 {
 	return wireState;
 }
@@ -213,31 +218,32 @@ void Wire::disconnectOutput( IDType gateID, string gateInputID ) {
 
 // Get the first non-external input of the wire:
 // If there are no non-external inputs, then it returns a WireInput with gateID == ID_NONE;
-WireInput Wire::getFirstInput() {
-	auto inP = inputList.begin();
-
-	while (inP != inputList.end()) {
+WireInput Wire::getFirstInput( void ) {
+	ID_SET< WireInput >::iterator inP = inputList.begin();
+	
+	while( inP != inputList.end() ) {
 		WireInput temp = *(inputList.begin());
-		if (temp.gateID != ID_NONE) {
+		if( temp.gateID != ID_NONE ) {
 			return temp;
 		}
 		inP++;
 	}
 
-	WireInput junk(ID_NONE, "");
+	WireInput junk( ID_NONE, "" );
 	return junk;
 }
 
 
 // Get the first output of the wire:
 // If there are no outputs, then it returns a WireOutput with gateID == ID_NONE;
-WireOutput Wire::getFirstOutput() {
-	if (outputList.empty()) {
-		WireOutput junk(ID_NONE, "");
+WireOutput Wire::getFirstOutput( void ) {
+	if( outputList.empty() ) {
+		WireOutput junk( ID_NONE, "" );
 		return junk;
+	} else {
+		WireOutput temp = *(outputList.begin());
+		return temp;
 	}
-
-	return *(outputList.begin());
 }
 
 

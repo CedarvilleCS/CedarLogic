@@ -15,6 +15,13 @@
 #include <iostream>
 using namespace std;
 
+Junction::Junction( IDType newID )
+{
+	// Junctions default to enabled state:
+	isEnabled = true;
+	myID = newID;
+}
+
 Junction::~Junction()
 {
 }

@@ -18,13 +18,12 @@ class Wire;
 class Junction  
 {
 public:
-	// Junctions default to enabled state:
-	Junction(IDType newID) : myID(newID), isEnabled(true) {}
+	Junction( IDType newID );
 	virtual ~Junction();
 
 	// Set/get enable state of the junction:
 	void setEnableState( bool newState );
-	bool getEnableState() const { return isEnabled; };
+	bool getEnableState( void ) { return isEnabled; };
 
 	// Connect a wire to this junction:
 	void connectWire( IDType wireID );
