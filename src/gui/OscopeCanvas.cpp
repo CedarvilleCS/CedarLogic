@@ -183,11 +183,7 @@ void OscopeCanvas::OnRender(){
 
 void OscopeCanvas::OnPaint(wxPaintEvent& event){ 
 	wxPaintDC dc(this);
-#ifndef __WXMOTIF__
-	if (!GetContext()) return;
-#endif
-
-	SetCurrent();
+	wxGetApp().SetCurrentCanvas(this);
 	// Init OpenGL once, but after SetCurrent
 	if (!m_init)
 	{

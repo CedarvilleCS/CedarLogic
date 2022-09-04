@@ -28,6 +28,7 @@ MainApp::MainApp()
     showDragImage = false;
     mainframe = NULL;
     doingBitmapExport = false;
+	glContext = NULL;
 }
 
 bool MainApp::OnInit()
@@ -220,4 +221,11 @@ void MainApp::loadSettings() {
 		}
 
 	}
+}
+
+void MainApp::SetCurrentCanvas(wxGLCanvas *canvas)
+{
+	if (!glContext)
+		glContext = new wxGLContext(canvas);
+	glContext->SetCurrent(*canvas);
 }
