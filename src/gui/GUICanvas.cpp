@@ -696,12 +696,8 @@ void GUICanvas::OnMouseMove( GLdouble glX, GLdouble glY, bool ShiftDown, bool Ct
 	if (currentDragState == DRAG_SELECTION || currentDragState == DRAG_SELECT || currentDragState == DRAG_CONNECT || currentDragState == DRAG_WIRESEG) shouldRender = true;
 	
 	// Only render if necessary
-	//	REFRESH DOESN'T SEEM TO UPDATE IN TIME FOR MOUSE MOVE
 	if (shouldRender) {
-		klsGLCanvasRender();
-		// Show the new buffer:
-		glFlush();
-		SwapBuffers();
+		Refresh();
 	}
 	
 	// clean up the selected gates vector
