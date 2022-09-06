@@ -25,13 +25,25 @@
 
 DECLARE_APP(MainApp)
 
+class clipboardCtx {
+public:
+	bool valid;
+
+	clipboardCtx() {
+		valid = wxTheClipboard->Open();
+	}
+
+	virtual ~clipboardCtx() {
+		if (valid) wxTheClipboard->Close();
+	}
+};
+
 cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanvas ) {
-	// TODO: the clipboard can be opened multiple times in some cases
-	if (!wxTheClipboard->Open()) return NULL;
-	if ( !wxTheClipboard->IsSupported(wxDF_UNICODETEXT) ) {
-		wxTheClipboard->Close();
+	clipboardCtx clipboard;
+	if ( !clipboard.valid || !wxTheClipboard->IsSupported(wxDF_UNICODETEXT) ) {
 		return NULL;
 	}
+
     wxTextDataObject text;
     vector < klsCommand* > cmdList;
     if ( wxTheClipboard->GetData(text) ) {
