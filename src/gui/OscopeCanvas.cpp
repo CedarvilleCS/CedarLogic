@@ -27,8 +27,8 @@ BEGIN_EVENT_TABLE(OscopeCanvas, wxGLCanvas)
 END_EVENT_TABLE()
 
 OscopeCanvas::OscopeCanvas(wxWindow *parent, GUICircuit* gCircuit, wxWindowID id,
-    const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-	: wxGLCanvas( parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxSUNKEN_BORDER ) {
+	const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+	: wxGLCanvas( parent, id, NULL, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxSUNKEN_BORDER ) {
 
 	this->gCircuit = gCircuit;
 	m_init = false;

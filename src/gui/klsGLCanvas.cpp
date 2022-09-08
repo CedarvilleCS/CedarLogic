@@ -40,8 +40,8 @@ END_EVENT_TABLE()
 
 
 klsGLCanvas::klsGLCanvas(wxWindow *parent, const wxString& name, wxWindowID id,
-						const wxPoint& pos, const wxSize& size, long style ) : 
-						wxGLCanvas(parent, (wxGLCanvas*) NULL, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxWANTS_CHARS, name ) {
+						const wxPoint& pos, const wxSize& size, long style ) :
+						wxGLCanvas(parent, id, NULL, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxWANTS_CHARS, name) {
 
 	// Zoom and OpenGL coordinate of upper-left corner of this canvas:
 	viewZoom = DEFAULT_ZOOM;
