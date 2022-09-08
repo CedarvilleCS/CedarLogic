@@ -23,7 +23,6 @@ DECLARE_APP(MainApp)
 
 BEGIN_EVENT_TABLE(OscopeCanvas, wxGLCanvas)
     EVT_PAINT(OscopeCanvas::OnPaint)
-    EVT_SIZE(OscopeCanvas::OnSize)
     EVT_ERASE_BACKGROUND(OscopeCanvas::OnEraseBackground)
 END_EVENT_TABLE()
 
@@ -208,24 +207,7 @@ void OscopeCanvas::OnPaint(wxPaintEvent& event){
 	SwapBuffers();
 }
 
-void OscopeCanvas::OnSize(wxSizeEvent& event)
-{
-    // this is also necessary to update the context on some platforms
-    wxGLCanvas::OnSize(event);
-
-    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
-#ifndef __WXMOTIF__
-    if (GetContext())
-#endif
-    {
-        Refresh();
-        //Render();
-    }
-}
-
-
-void OscopeCanvas::UpdateData(void){ 	
-	
+void OscopeCanvas::UpdateData(void){
 	//Declaration of variables
 	deque<StateType> temp;
 
