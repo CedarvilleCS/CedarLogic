@@ -259,7 +259,7 @@ void OscopeFrame::OnLoad( wxCommandEvent& event ){
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		ifstream inFile(path.c_str());
+		ifstream inFile(path.ToStdString());
 		string lineFile;
 		getline(inFile, lineFile, '\n');
 		if (lineFile != "OSCOPE LAYOUT FILE") return;
@@ -274,7 +274,7 @@ void OscopeFrame::OnLoad( wxCommandEvent& event ){
 
 		for (unsigned int i = 0; i < numLines; i++) {
 			getline(inFile, lineFile, '\n');
-			appendNewFeed( lineFile.c_str() );
+			appendNewFeed(lineFile);
 		}		
 		//Call layout function
 		Layout();
@@ -290,8 +290,8 @@ void OscopeFrame::OnSave( wxCommandEvent& event ){
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string openedFilename = (const char *)path.c_str(); // KAS
-		ofstream outFile(openedFilename.c_str());
+		string openedFilename = path.ToStdString();
+		ofstream outFile(openedFilename);
 		outFile << "OSCOPE LAYOUT FILE" << endl;
 		outFile << numberOfFeeds() << " : following lines are order of inputs" << endl;
 		for (unsigned int i = 0; i < numberOfFeeds(); i++) outFile << getFeedName(i) << endl;
@@ -367,7 +367,7 @@ void OscopeFrame::removeFeed( int i ){
 //Returns the name of feed i.  i.e. the current
 //contents in the ith combo box
 string OscopeFrame::getFeedName( int i ){
-	return decodeFeedName((const char *)comboBoxes[i]->GetValue().c_str()); // KAS
+	return decodeFeedName(comboBoxes[i]->GetValue().ToStdString());
 }
 
 //Removes the feed from the list.

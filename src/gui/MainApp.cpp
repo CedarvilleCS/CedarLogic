@@ -62,8 +62,7 @@ bool MainApp::OnInit()
     //}	
     string cmdFilename;
 	if( argc >= 2 ){
-		// inserted the cast  KAS
-		cmdFilename = (const char *)argv[1];
+		cmdFilename = argv[1].ToStdString();
 //		logfile << "cmdFilename = " << cmdFilename << endl;
 	}
 	//End of edit

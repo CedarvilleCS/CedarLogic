@@ -85,7 +85,7 @@ void RamPopupDialog::OnBtnLoad( wxCommandEvent& event ){
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string mempath = (const char *)path.c_str(); // KAS
+		string mempath = path.ToStdString();
 		gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "READ_FILE", mempath)));
 		gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_UPDATE_GATES)); //make sure we get an update of the new file
 	}
@@ -100,7 +100,7 @@ void RamPopupDialog::OnBtnSave( wxCommandEvent& event ){
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string mempath = (const char *)path.c_str();  // KAS
+		string mempath = path.ToStdString();
 		gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "WRITE_FILE", mempath)));
 	}
 }
@@ -179,7 +179,7 @@ wxString virtualGrid::GetValue (int row, int col) {
 void virtualGrid::SetValue (int row, int col, const wxString& value) {
 
 	int newValue = 0;
-	istringstream istream( (string)((const char *)value.c_str()) ); // double cast KAS
+	istringstream istream(value.ToStdString());
 	
 	//determine if we should interperate it as hex or decimal
 	if( hexOrDecCB->IsChecked() ){

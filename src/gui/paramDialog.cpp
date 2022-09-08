@@ -108,7 +108,7 @@ void paramDialog::OnLoad( wxCommandEvent &evt ) {
 		}
 	}
 	if (parmID == paramVals.size()+1) return;
-	string paramName = (const char *)paramNames[parmID]->GetLabel().c_str(); // KAS
+	string paramName = paramNames[parmID]->GetLabel().ToStdString();
 	
 	wxString caption = "Open a memory file";
 	//Edit by Joshua Lansford 1/24/06  Added the option to select Intel-hex files
@@ -119,7 +119,7 @@ void paramDialog::OnLoad( wxCommandEvent &evt ) {
 	LibraryGate* gateDef = &(wxGetApp().libraries[gGate->getLibraryName()][gGate->getLibraryGateName()]);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string mempath = (const char *)path.c_str(); // KAS
+		string mempath = path.ToStdString();
 		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gGate->getID(), gateDef->dlgParams[parmID].name, mempath)));
 	}
 }
@@ -134,7 +134,7 @@ void paramDialog::OnSave( wxCommandEvent &evt ) {
 		}
 	}
 	if (parmID == paramVals.size()+1) return;
-	string paramName = (const char *) paramNames[parmID]->GetLabel().c_str(); // KAS
+	string paramName = paramNames[parmID]->GetLabel().ToStdString();
 	
 	wxString caption = "Open a memory file";
 	wxString wildcard = "CEDAR Memory files (*.cdm)|*.cdm";
@@ -144,7 +144,7 @@ void paramDialog::OnSave( wxCommandEvent &evt ) {
 	LibraryGate* gateDef = &(wxGetApp().libraries[gGate->getLibraryName()][gGate->getLibraryGateName()]);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string mempath = (const char *)path.c_str(); // KAS
+		string mempath = path.ToStdString();
 		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gGate->getID(), gateDef->dlgParams[parmID].name, mempath)));
 	}
 }
@@ -173,11 +173,11 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 			oss << ((wxSpinCtrl*)(paramVals[i]))->GetValue();
 			pValue = oss.str();
 		} else if ( gateDef->dlgParams[i].type == "STRING") {
-			pValue = (string)((const char *)((wxTextCtrl*)(paramVals[i]))->GetValue().c_str());  // KAS
+			pValue = ((wxTextCtrl*)(paramVals[i]))->GetValue();
 		} else if ( gateDef->dlgParams[i].type == "FLOAT" ) {
 			ostringstream oss;
 			// Check range:
-			pValue = (string)((const char *)((wxTextCtrl*)(paramVals[i]))->GetValue().c_str()); // kAS
+			pValue = ((wxTextCtrl*)paramVals[i])->GetValue().ToStdString();
 			istringstream iss(pValue);
 			float fVal;
 			iss >> fVal;

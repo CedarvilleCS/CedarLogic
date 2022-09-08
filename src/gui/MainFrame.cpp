@@ -532,7 +532,7 @@ void MainFrame::OnOpen(wxCommandEvent& event) {
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		lastDirectory = dialog.GetDirectory();
-		loadCircuitFile((const char *)dialog.GetPath().c_str());  // KAS
+		loadCircuitFile(dialog.GetPath().ToStdString());
 	}
     currentCanvas->Update(); // Render();
 	currentCanvas->getCircuit()->setSimulate(true);
@@ -565,7 +565,7 @@ void MainFrame::loadCircuitFile( string fileName ){
 		canvases.erase(canvases.end()-1);
 	}
 	
-    CircuitParse cirp((const char *)path.c_str(), canvases); // KAS
+    CircuitParse cirp(path.ToStdString(), canvases);
 	canvases = cirp.parseFile();
 	
 	//JV - Put pages back into canvas book
@@ -877,7 +877,7 @@ void MainFrame::saveSettings() {
 	
 	string settingsIni = wxGetApp().pathToExe + "res/settings.ini";
 	
-	ofstream iniFile(settingsIni.c_str(), ios::out);
+	ofstream iniFile(settingsIni, ios::out);
 	iniFile << "GateLib=" << wxGetApp().appSettings.gateLibFile.substr(numCharAbsolute) << endl;
 	iniFile << "HelpFile=" << wxGetApp().appSettings.helpFile.substr(numCharAbsolute) << endl;
 	iniFile << "TextFont=" << wxGetApp().appSettings.textFontFile.substr(numCharAbsolute) << endl;
@@ -887,7 +887,7 @@ void MainFrame::saveSettings() {
 	iniFile << "FrameTop=" << this->GetPosition().y << endl;
 	iniFile << "TimeStep=" << wxGetApp().timeStepMod << endl;
 	iniFile << "RefreshRate=" << wxGetApp().appSettings.refreshRate << endl;
-	iniFile << "LastDirectory=" << lastDirectory.c_str() << endl;
+	iniFile << "LastDirectory=" << lastDirectory << endl;
 	iniFile << "WireConnRadius=" << wxGetApp().appSettings.wireConnRadius << endl;
 	iniFile << "WireConnVisible=" << wxGetApp().appSettings.wireConnVisible << endl;
 	iniFile << "GridlineVisible=" << wxGetApp().appSettings.gridlineVisible << endl;
