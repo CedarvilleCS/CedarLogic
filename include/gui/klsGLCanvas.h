@@ -184,6 +184,9 @@ public:
 	// Retrieves the current viewport (left/top and right/bottom)
 	void getViewport(GLPoint2f&, GLPoint2f&);
 
+	// map a point in surface local coordinates to coordinates on the canvas
+	GLPoint2f mapToCanvas(wxPoint m);
+
 	void autoScrollEnable(void) { autoScrollActive = true; };
 	void autoScrollDisable(void) { autoScrollActive = false; };
 	bool isAutoScrollOn(void) { return autoScrollActive; };

@@ -14,6 +14,7 @@
 #include "klsGLCanvas.h"
 #include "guiText.h"
 #include <fstream>
+#include <wx/dnd.h>
 #include "glToImage.h"
 
 BEGIN_EVENT_TABLE(gateImage, wxWindow)
@@ -64,7 +65,16 @@ void gateImage::OnPaint(wxPaintEvent &event) {
 
 void gateImage::mouseCallback( wxMouseEvent& event) {
 	if (event.LeftDown()) {
+#ifdef _WINDOWS
 		wxGetApp().newGateToDrag = gateName;
+#else
+		// start drag operation
+		wxTextDataObject textData(gateName);
+		wxDropSource source(textData, this);
+
+		int flags = 0;
+		source.DoDragDrop(flags);
+#endif
 	} else if (event.LeftUp()) {
 		wxGetApp().newGateToDrag = "";
 	}

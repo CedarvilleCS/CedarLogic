@@ -14,6 +14,8 @@
 #include "klsClipboard.h"
 #include "guiWire.h"
 
+#include <wx/dnd.h>
+
 // Included to use the min() and max() templates:
 #include <algorithm>
 #include <iostream>
@@ -24,6 +26,28 @@ DECLARE_APP(MainApp)
 
 unsigned int renderTime = 0;
 unsigned int renderNum = 0;
+
+// TODO: this should probably get it's own file
+class DnDText : public wxTextDropTarget {
+public:
+	DnDText(GUICanvas* canvas) { m_canvas = canvas; }
+
+	bool OnDropText(wxCoord x, wxCoord y, const wxString& text) wxOVERRIDE {
+		string gateName = text.ToStdString();
+
+		// Make sure the gate exists
+		if (wxGetApp().gateNameToLibrary.count(gateName) == 0) {
+			return false;
+		}
+
+		wxPoint m(x, y);
+		m_canvas->addGate(gateName, m_canvas->mapToCanvas(m));
+		return true;
+	};
+
+private:
+	GUICanvas* m_canvas;
+};
 
 // GUICanvas constructor - defaults grid size to 1 unit square
 GUICanvas::GUICanvas(wxWindow *parent, GUICircuit* gCircuit, wxWindowID id,
@@ -49,6 +73,8 @@ GUICanvas::GUICanvas(wxWindow *parent, GUICircuit* gCircuit, wxWindowID id,
 	// Add drag selection box to collision checker
 	dragselectbox = new klsCollisionObject( COLL_SELBOX );
 	collisionChecker.addObject( dragselectbox );
+
+	SetDropTarget(new DnDText(this));
 }
 
 GUICanvas::~GUICanvas() {
@@ -930,6 +956,28 @@ void GUICanvas::OnMouseUp(wxMouseEvent& event) {
 	currentDragState = DRAG_NONE;
 	
 	Update();
+}
+
+// Add a gate from a drag and drop operation.
+//
+// The way this was originally done relied on mouse events switching from the
+// selector pane to the main canvas, which doesn't happen when using gtk.
+//
+// This is a hacky solution, but it avoids needing to refactor the OnMouseUp
+// event.
+void GUICanvas::addGate(string gate, GLPoint2f m) {
+	newDragGate = gCircuit->createGate(gate, -1);
+	if (newDragGate == NULL) return;
+
+	newDragGate->setGLcoords(m.x, m.y);
+	currentDragState = DRAG_NEWGATE;
+
+	unselectAllGates();
+	newDragGate->select();
+	collisionChecker.addObject( newDragGate );
+
+	wxMouseEvent ev = wxMouseEvent(wxEVT_LEFT_UP);
+	OnMouseUp(ev);
 }
 
 void GUICanvas::OnMouseEnter(wxMouseEvent& event) {

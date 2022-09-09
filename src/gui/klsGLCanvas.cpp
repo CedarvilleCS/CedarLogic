@@ -216,6 +216,16 @@ void klsGLCanvas::getViewport( GLPoint2f& p1, GLPoint2f& p2 ) {
 	p2.y = panY - (sz.GetHeight()*viewZoom);
 }
 
+GLPoint2f klsGLCanvas::mapToCanvas(wxPoint m) {
+	int w, h;
+	GetClientSize(&w, &h);
+
+	float glX = panX + (m.x * viewZoom);
+	float glY = panY - (m.y * viewZoom);
+
+	return GLPoint2f(glX, glY);
+}
+
 void klsGLCanvas::klsGLCanvasRender( bool noColor ) {
 	int w, h;
 	GetClientSize(&w, &h);
@@ -752,13 +762,7 @@ void klsGLCanvas::disableVertGrid() {
 }
 
 void klsGLCanvas::setMouseCoords() {
-	int w, h;
-	GetClientSize(&w, &h);
-	wxPoint m = getMouseScreenCoords();
-	float glX = panX + (m.x * viewZoom);
-	float glY = panY - (m.y * viewZoom);
-
-	setMouseCoords(GLPoint2f(glX, glY));
+	setMouseCoords(mapToCanvas(getMouseScreenCoords()));
 }
 
 //Julian: Added to allow for zoom to mouse
