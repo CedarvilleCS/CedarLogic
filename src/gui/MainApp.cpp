@@ -29,6 +29,11 @@ MainApp::MainApp()
     mainframe = NULL;
     doingBitmapExport = false;
 	glContext = NULL;
+#ifdef __WXGTK__
+	// On Linux with wayland, wxGTK doesn't position glCanvas frames correctly.
+	// This env var has to be set explicitly to instruct gtk to only use X11.
+	::setenv("GDK_BACKEND", "x11", /* replace */ true);
+#endif
 }
 
 bool MainApp::OnInit()
