@@ -96,9 +96,8 @@ bool MainApp::OnInit()
 void MainApp::loadSettings() {
 
 	// Get app full path.
-	HMODULE hModule = GetModuleHandle(NULL);
-	CHAR path[MAX_PATH];
-	GetModuleFileName(hModule, path, MAX_PATH);
+	char path[MAX_PATH];
+	GetModuleFileNameA(NULL, path, MAX_PATH);
 
 	// Find path to exe so that files can be loaded relative to it
 	// even when the program is run from somewhere else.
