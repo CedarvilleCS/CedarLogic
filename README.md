@@ -13,46 +13,20 @@ Linux builds are possible, but it is painful, and a succesful route is not docum
 
 - [ ] [Visual Studio](https://visualstudio.microsoft.com/downloads/) 2015 or newer. Used to build and edit code.
 - [ ] [CMake](https://cmake.org/download/) used to generate Visual Studio build file from CMake cross-platform build definition.
-
-### Build Dependencies
-
-- Install [NSIS](https://nsis.sourceforge.io/Download) (used to build installer)
-
-### Build wxWidgets 2.8.12
-
-1. Download [wxWidgets 2.8.12](https://github.com/wxWidgets/wxWidgets/releases/download/v2.8.12/wxMSW-2.8.12-Setup.exe) source for windows.
-1. Run wxWidgets source installer.
-1. (Optional) [Set windows environment variable](https://www.onmsft.com/how-to/how-to-set-an-environment-variable-in-windows-10) `WXWIN` to point to your wxWidgets directory.
-1. Edit `%WXWIN%\include\wx\msw\setup.h` so that `wxUSE_GLCANVAS` is `1` instead of `0`.
-1. Edit `%WXWIN%\src\msw\window.cpp` so that it does not include `pbt.h`.
-1. Open the Developer Command Prompt for Visual Studio - not Powershell. If Visual Studio is installed, this is installed too. If not, google.
-(NOT cmd or Powershell!) and run [nmake](https://docs.microsoft.com/en-us/cpp/build/reference/nmake-reference):
-	
-```PS
-cd %WXWIN%\build\msw
-nmake /f makefile.vc               USE_OPENGL=1 RUNTIME_LIBS=static
-nmake /f makefile.vc BUILD=release USE_OPENGL=1 RUNTIME_LIBS=static
-```
+- [ ] [NSIS](https://nsis.sourceforge.io/Download) used to build installer
 
 ### Build CedarLogic Installer
 
-1. Clone the CedarLogic git repo ([clone](https://www.git-scm.com/docs/git-clone) it if you haven't already.
+1. Open the Developer Command Prompt for Visual Studio - not Powershell. If Visual Studio is installed, this is installed too. If not, google.
+(NOT cmd or Powershell!) and run [nmake](https://docs.microsoft.com/en-us/cpp/build/reference/nmake-reference):
 
-3. In the repo root, make the build directory: `mkdir build && cd build`. (If you are unfamiliar with this ecosystem, yes you do need this, the alternative makes a massive mess)
+2. Next, go to the root of the CedarLogic git repo ([clone](https://www.git-scm.com/docs/git-clone) it if you haven't already).
 
-3. Run `cmake .. -A Win32` (If you did not set the windows environment variable earlier, also add `-Dwxwin=C:/wxWidgets-2.8.12` to set `wxwin` variable to the base of the wxWidgets install path).
+3. Run `cmake -B build -A Win32`, note replacing `-A Win32` with `-G "Ninja Multi-Config"` makes building faster, but isn't officially supported
 
-4. There is now a Visual Studio Solution File in the `build` directory. Open the solution file with Visual Studio.
+4. Run `cmake --build build --config Release --target package`
 
-5. Select the `CedarLogic` solution (there are many)
-
-6. Select `Release` from the configuration menu.
-
-7. Right click on the `PACKAGE` target and choose `Build` to create a new installer in the `build` directory.
-
-8. There is now a CedarLogic installer executable in the `build` directory. If you run
-the installer, you will have the latest semi-stable version of CedarLogic installed. See
-the next section for development.
+5. There is now a CedarLogic installer executable in the `build` directory. If you run the installer, you will have the latest semi-stable version of CedarLogic installed. See the next section for development.
 
 ## Developing CedarLogic
 
