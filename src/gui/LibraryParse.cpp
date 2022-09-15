@@ -22,7 +22,7 @@ LibraryParse::LibraryParse(string fileName) {
 	if (!x) {
 		// Error loading file, don't bother trying to parse.
 		wxString msg;
-		cout << "The library file " << fileName << " does not exist." << "\n";
+		msg << "The library file " << fileName << " does not exist.";
 		wxMessageBox(msg, "Error - Missing File", wxOK | wxICON_ERROR, NULL);
 
 		return;
