@@ -165,7 +165,7 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 			if (((wxSpinCtrl*)(paramVals[i]))->GetValue() < (int)(gateDef->dlgParams[i].Rmin) ||
 				((wxSpinCtrl*)(paramVals[i]))->GetValue() > (int)(gateDef->dlgParams[i].Rmax)) {
 				// ERROR
-				cout << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
+				msg << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
 				wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
 				return;
 			}
@@ -183,7 +183,7 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 			iss >> fVal;
 			if (fVal < gateDef->dlgParams[i].Rmin || fVal > gateDef->dlgParams[i].Rmax) {
 				// ERROR
-				cout << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
+				msg << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
 				wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
 				return;
 			}
