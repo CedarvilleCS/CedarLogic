@@ -71,7 +71,7 @@ bool MainApp::OnInit()
 	
 
     // create the main application window
-    MainFrame *frame = new MainFrame(VERSION_TITLE(), cmdFilename.c_str());
+    MainFrame *frame = new MainFrame(VERSION_TITLE(), cmdFilename);
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)
     frame->Show(true);
