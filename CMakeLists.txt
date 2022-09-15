@@ -16,7 +16,6 @@ configure_file(CedarLogic.h.in CedarLogic.h)
 # each is a .cmake file in the CMAKE_MODULE_PATH and we include them below
 # so we can use their functions later on.
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/module")
-include(LibraryTools) 
 include(ResourceTools)
 include(VsSourceGroups)
 
