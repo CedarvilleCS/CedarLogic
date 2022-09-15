@@ -52,9 +52,9 @@ void gateImage::OnPaint(wxPaintEvent &event) {
 	wxBitmap gatebitmap(gImage);
 	dc.DrawBitmap(gatebitmap, 0, 0, true);	
 	if (inImage) {
-		dc.SetPen(wxPen(*wxBLUE, 2, wxSOLID));
+		dc.SetPen(wxPen(*wxBLUE, 2, wxPENSTYLE_SOLID));
 	} else {
-		dc.SetPen(wxPen(*wxWHITE, 2, wxSOLID));
+		dc.SetPen(wxPen(*wxWHITE, 2, wxPENSTYLE_SOLID));
 	}
 		dc.SetBrush(wxBrush(*wxTRANSPARENT_BRUSH));
 		dc.DrawRectangle(0,0,IMAGESIZE,IMAGESIZE);
