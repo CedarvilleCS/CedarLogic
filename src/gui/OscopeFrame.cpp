@@ -244,6 +244,7 @@ void OscopeFrame::OnExport( wxCommandEvent& event ){
 		memDC.DrawText(getFeedName(i), wxPoint(5, getFeedYPos(i)));
 	}
 	memDC.DrawBitmap(circuitBitmap, theCanvas->GetPosition().x, 0, false);
+	memDC.SelectObject(wxNullBitmap);
 	
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(labelBitmap));
