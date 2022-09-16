@@ -235,7 +235,7 @@ void OscopeFrame::OnExport( wxCommandEvent& event ){
 	memDC.SelectObject(labelBitmap);
 	memDC.SetBackground(*wxWHITE_BRUSH);
 	memDC.Clear();
-	wxFont font(10, wxFONTFAMILY_DEFAULT, wxNORMAL, wxFONTWEIGHT_NORMAL);
+	wxFont font(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 	memDC.SetFont( font );
 	memDC.SetTextForeground(*wxBLACK);
 	memDC.SetTextBackground(*wxWHITE);
