@@ -1,8 +1,6 @@
-
-# Note: updating to 3.15 breaks ms_static_runtime_libs or something around it such that we get a bunch of
-# linker errors where the MT and MD mismatch. Below 3.11 breaks the FetchContent capability used to pull in 
-# Catch2, the unit testing framework.
-cmake_minimum_required(VERSION 3.11)
+# Note: Below 3.11 breaks the FetchContent capability used to pull in Catch2,
+# the unit testing framework.
+cmake_minimum_required(VERSION 3.23)
 
 # Name project, and set version. If updating version, change it here, and then re-generate your Visual
 # Studio solution.
@@ -10,57 +8,55 @@ project(CedarLogic VERSION 2.3.7)
 
 # This configure file is where we store version info that's auto-populated by cmake configure.
 # This file is not considered part of the source code and it's stored in the build directory
-# It is made visible as an external header when we add PROJECT_BINARY_DIR (build) in 
-# target_include_directories. This may seem odd, but it's how they do it in the official cmake tutorial.
+# It is made visible as an external header when we add CMAKE_CURRENT_BINARY_DIR (build) in 
+# include_directories. This may seem odd, but it's how they do it in the official cmake tutorial.
 configure_file(CedarLogic.h.in CedarLogic.h)
 
 # CMake modules, that is, files specifying functions we can use in CMake
 # each is a .cmake file in the CMAKE_MODULE_PATH and we include them below
 # so we can use their functions later on.
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/module")
-include(LibraryTools) 
 include(ResourceTools)
 include(VsSourceGroups)
-include(MsStaticRuntimeLibs)
 
 ##
 # Connect external libraries
 ##
 
 # Use static runtime libs.
-ms_static_runtime_libs()
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-# Read environment variable, but if it is not set, use installer default location.
-if ("$ENV{WXWIN}" STREQUAL "")
-    set(ENV{WXWIN} "C:/wxWidgets-2.8.12")
-endif()
-set(wxwin "$ENV{WXWIN}" CACHE STRING "Path to wxWidgets install folder.")
+# Build wxWidgets from source
+include(FetchContent)
 
-# Set special variables read-in by functions from LibraryTools module.
-set(wx_widgets_include
-    "${wxwin}/include"
-)
-set(wx_widgets_linklibs
-    "comctl32.lib"
-    "rpcrt4.lib"
-    "winmm.lib"
-    "wsock32.lib"
-    "opengl32.lib"
-    "glu32.lib"
+FetchContent_Declare(
+   wxWidgets_fetch
+   GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets.git
+   GIT_TAG 97e99707c5d2271a70cb686720b48dbf34ced496 # 3.2.1
+   GIT_SHALLOW 1
 )
 
-# Use the variables above to define the cmake library targets.
-set(Libraries
-    wx_widgets
-)
-import_libraries(${Libraries})
+set(wxBUILD_INSTALL OFF)
+set(wxBUILD_SHARED OFF)
+set(wxUSE_GLCANVAS ON)
+set(wxBUILD_USE_STATIC_RUNTIME ON)
 
+# Disabled because they break the windows build
+set(wxUSE_SOCKETS OFF)
+set(wxUSE_PROTOCOL OFF)
+set(wxUSE_URL OFF)
+set(wxUSE_FS_INET OFF)
+set(wxUSE_PROTOCOL_FTP OFF)
+set(wxUSE_PROTOCOL_HTTP OFF)
+
+FetchContent_MakeAvailable(wxWidgets_fetch)
+set(wxWidgets_LIBRARIES wx::html wx::aui wx::adv wx::gl wx::core wx::base)
+
+find_package(OpenGL REQUIRED)
 
 ###
 ### Build Config.
 ###
-
-link_directories("${wxwin}/lib/vc_lib" Logic)
 
 # Glob all the source files to be added when CedarLogic executable is added later.
 file(GLOB SRC_FILES 
@@ -80,42 +76,31 @@ add_executable(CedarLogic WIN32 "${SRC_FILES}")
 
 # Add the external libraries for CedarLogic
 target_link_libraries(CedarLogic PRIVATE 
-    ${Libraries}
     Logic
+    ${OPENGL_opengl_LIBRARY}
+    ${OPENGL_glu_LIBRARY}
+    ${wxWidgets_LIBRARIES}
 )
 
 # This is for internal headers
-include_directories(	
+include_directories(
 	"${PROJECT_SOURCE_DIR}/include/"
 	"${PROJECT_SOURCE_DIR}/include/gui/"
 	"${PROJECT_SOURCE_DIR}/include/logic/"
 	"${PROJECT_SOURCE_DIR}/include/gui/command/"
 	"${PROJECT_SOURCE_DIR}/include/gui/GLFont/"
+	"${CMAKE_CURRENT_BINARY_DIR}"
 )
 
 add_subdirectory(
     "${PROJECT_SOURCE_DIR}/logic/"
 )
 
-# These are for external headers
-# Including PROJECT_BINARY_DIR gets CedarLogic.h with the version info.
-target_include_directories(CedarLogic
-    PRIVATE
-        "${PROJECT_BINARY_DIR}"
-        "${wxwin}/include/msvc"
-        "${wxwin}/contrib/include"
-)
-
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-target_compile_options(CedarLogic
-    PRIVATE
-        /FI"${wxwin}/include/msvc/wx/setup.h"
-        /FI"${wxwin}/include/wx/wxprec.h"
-        /MP
-)
+target_compile_options(CedarLogic PRIVATE /MP)
 
 target_compile_definitions(CedarLogic
     PRIVATE

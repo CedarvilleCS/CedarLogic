@@ -23,13 +23,12 @@ DECLARE_APP(MainApp)
 
 BEGIN_EVENT_TABLE(OscopeCanvas, wxGLCanvas)
     EVT_PAINT(OscopeCanvas::OnPaint)
-    EVT_SIZE(OscopeCanvas::OnSize)
     EVT_ERASE_BACKGROUND(OscopeCanvas::OnEraseBackground)
 END_EVENT_TABLE()
 
 OscopeCanvas::OscopeCanvas(wxWindow *parent, GUICircuit* gCircuit, wxWindowID id,
-    const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-	: wxGLCanvas( parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxSUNKEN_BORDER ) {
+	const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+	: wxGLCanvas( parent, id, NULL, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxSUNKEN_BORDER ) {
 
 	this->gCircuit = gCircuit;
 	m_init = false;
@@ -183,11 +182,7 @@ void OscopeCanvas::OnRender(){
 
 void OscopeCanvas::OnPaint(wxPaintEvent& event){ 
 	wxPaintDC dc(this);
-#ifndef __WXMOTIF__
-	if (!GetContext()) return;
-#endif
-
-	SetCurrent();
+	wxGetApp().SetCurrentCanvas(this);
 	// Init OpenGL once, but after SetCurrent
 	if (!m_init)
 	{
@@ -212,24 +207,7 @@ void OscopeCanvas::OnPaint(wxPaintEvent& event){
 	SwapBuffers();
 }
 
-void OscopeCanvas::OnSize(wxSizeEvent& event)
-{
-    // this is also necessary to update the context on some platforms
-    wxGLCanvas::OnSize(event);
-
-    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
-#ifndef __WXMOTIF__
-    if (GetContext())
-#endif
-    {
-        Refresh();
-        //Render();
-    }
-}
-
-
-void OscopeCanvas::UpdateData(void){ 	
-	
+void OscopeCanvas::UpdateData(void){
 	//Declaration of variables
 	deque<StateType> temp;
 

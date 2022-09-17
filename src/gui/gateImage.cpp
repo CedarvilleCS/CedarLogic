@@ -15,7 +15,7 @@
 #include "guiText.h"
 #include <fstream>
 
-BEGIN_EVENT_TABLE(gateImage, wxStaticBitmap)
+BEGIN_EVENT_TABLE(gateImage, wxWindow)
     EVT_PAINT(gateImage::OnPaint)
     EVT_ENTER_WINDOW( gateImage::OnEnterWindow )
     EVT_LEAVE_WINDOW( gateImage::OnLeaveWindow )
@@ -41,7 +41,7 @@ gateImage::gateImage( string gateName, wxWindow *parent, wxWindowID id,
 	update();
 
 	delete m_gate;
-	this->SetToolTip((const wxChar *)wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption.c_str()); // added cast KAS
+	SetToolTip(wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption);
 }
 
 gateImage::~gateImage() {
@@ -52,9 +52,9 @@ void gateImage::OnPaint(wxPaintEvent &event) {
 	wxBitmap gatebitmap(gImage);
 	dc.DrawBitmap(gatebitmap, 0, 0, true);	
 	if (inImage) {
-		dc.SetPen(wxPen(*wxBLUE, 2, wxSOLID));
+		dc.SetPen(wxPen(*wxBLUE, 2, wxPENSTYLE_SOLID));
 	} else {
-		dc.SetPen(wxPen(*wxWHITE, 2, wxSOLID));
+		dc.SetPen(wxPen(*wxWHITE, 2, wxPENSTYLE_SOLID));
 	}
 		dc.SetBrush(wxBrush(*wxTRANSPARENT_BRUSH));
 		dc.DrawRectangle(0,0,IMAGESIZE,IMAGESIZE);

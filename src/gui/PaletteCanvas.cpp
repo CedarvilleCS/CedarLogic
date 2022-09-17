@@ -28,7 +28,7 @@ PaletteCanvas::PaletteCanvas( wxWindow *parent, wxWindowID id, wxString &libName
     SetCursor(wxCursor(wxCURSOR_ARROW));
 	SetBackgroundColour(* wxWHITE);
 
-	libraryName = (string)((const char *)libName.c_str());  // KAS
+	libraryName = libName.ToStdString();
 	gateSizer = NULL;
 	
 	init = false;

@@ -28,6 +28,7 @@ MainApp::MainApp()
     showDragImage = false;
     mainframe = NULL;
     doingBitmapExport = false;
+	glContext = NULL;
 }
 
 bool MainApp::OnInit()
@@ -62,8 +63,7 @@ bool MainApp::OnInit()
     //}	
     string cmdFilename;
 	if( argc >= 2 ){
-		// inserted the cast  KAS
-		cmdFilename = (const char *)argv[1];
+		cmdFilename = argv[1].ToStdString();
 //		logfile << "cmdFilename = " << cmdFilename << endl;
 	}
 	//End of edit
@@ -71,7 +71,7 @@ bool MainApp::OnInit()
 	
 
     // create the main application window
-    MainFrame *frame = new MainFrame(VERSION_TITLE(), cmdFilename.c_str());
+    MainFrame *frame = new MainFrame(VERSION_TITLE(), cmdFilename);
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)
     frame->Show(true);
@@ -96,9 +96,8 @@ bool MainApp::OnInit()
 void MainApp::loadSettings() {
 
 	// Get app full path.
-	HMODULE hModule = GetModuleHandle(NULL);
-	CHAR path[MAX_PATH];
-	GetModuleFileName(hModule, path, MAX_PATH);
+	char path[MAX_PATH];
+	GetModuleFileNameA(NULL, path, MAX_PATH);
 
 	// Find path to exe so that files can be loaded relative to it
 	// even when the program is run from somewhere else.
@@ -221,4 +220,11 @@ void MainApp::loadSettings() {
 		}
 
 	}
+}
+
+void MainApp::SetCurrentCanvas(wxGLCanvas *canvas)
+{
+	if (!glContext)
+		glContext = new wxGLContext(canvas);
+	glContext->SetCurrent(*canvas);
 }
