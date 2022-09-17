@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.23)
 
 # Name project, and set version. If updating version, change it here, and then re-generate your Visual
 # Studio solution.
-project(CedarLogic VERSION 2.3.7)
+project(CedarLogic VERSION 2.3.8)
 
 # This configure file is where we store version info that's auto-populated by cmake configure.
 # This file is not considered part of the source code and it's stored in the build directory
