@@ -26,32 +26,46 @@ include(VsSourceGroups)
 # Use static runtime libs.
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-# Build wxWidgets from source
-include(FetchContent)
+# Linking to the system version of wxWidgets is usually preferred on linux, and
+# it makes the build much faster.
+if (CMAKE_SYSTEM_NAME STREQUAL Linux)
+    set(USE_SYSWX_DEF TRUE)
+else()
+    set(USE_SYSWX_DEF FALSE)
+endif()
+set(USE_SYSTEM_WXWIDGETS "${USE_SYSWX_DEF}" CACHE BOOL
+    "Use the system version of wxWidgets or build it from soruce")
 
-FetchContent_Declare(
-   wxWidgets_fetch
-   GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets.git
-   GIT_TAG 97e99707c5d2271a70cb686720b48dbf34ced496 # 3.2.1
-   GIT_SHALLOW 1
-)
+if (USE_SYSTEM_WXWIDGETS)
+    find_package(wxWidgets 3.2.0 COMPONENTS html aui adv gl core base REQUIRED)
+    include("${wxWidgets_USE_FILE}")
+else()
+    include(FetchContent)
 
-set(wxBUILD_INSTALL OFF)
-set(wxBUILD_SHARED OFF)
-set(wxUSE_GLCANVAS ON)
-set(wxBUILD_USE_STATIC_RUNTIME ON)
-set(wxUSE_OLE ON)  # Required to use wxUSE_DRAG_AND_DROP
+    FetchContent_Declare(
+       wxWidgets_fetch
+       GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets.git
+       GIT_TAG 97e99707c5d2271a70cb686720b48dbf34ced496 # 3.2.1
+       GIT_SHALLOW 1
+    )
 
-# Disabled because they break the windows build
-set(wxUSE_SOCKETS OFF)
-set(wxUSE_PROTOCOL OFF)
-set(wxUSE_URL OFF)
-set(wxUSE_FS_INET OFF)
-set(wxUSE_PROTOCOL_FTP OFF)
-set(wxUSE_PROTOCOL_HTTP OFF)
+    set(wxBUILD_INSTALL OFF)
+    set(wxBUILD_SHARED OFF)
+    set(wxUSE_GLCANVAS ON)
+    set(wxBUILD_USE_STATIC_RUNTIME ON)
+    set(wxUSE_OLE ON)  # Required to use wxUSE_DRAG_AND_DROP
 
-FetchContent_MakeAvailable(wxWidgets_fetch)
-set(wxWidgets_LIBRARIES wx::html wx::aui wx::adv wx::gl wx::core wx::base)
+    # Disabled because they break the windows build
+    set(wxUSE_SOCKETS OFF)
+    set(wxUSE_PROTOCOL OFF)
+    set(wxUSE_URL OFF)
+    set(wxUSE_FS_INET OFF)
+    set(wxUSE_PROTOCOL_FTP OFF)
+    set(wxUSE_PROTOCOL_HTTP OFF)
+
+    FetchContent_MakeAvailable(wxWidgets_fetch)
+    set(wxWidgets_LIBRARIES wx::html wx::aui wx::adv wx::gl wx::core wx::base)
+endif()
 
 find_package(OpenGL REQUIRED)
 
@@ -101,19 +115,21 @@ add_subdirectory(
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-target_compile_options(CedarLogic PRIVATE)
+target_compile_definitions(CedarLogic PRIVATE "_PRODUCTION_")
 
-target_compile_definitions(CedarLogic
-    PRIVATE
-        "_PRODUCTION_"
-        "WIN32"
-        "STRICT"
-        "__WXMSW__"
-        "__WX__"
-        "__WXDEBUG__"
-        "_WINDOWS"
-        "_CRT_SECURE_NO_DEPRECATE"
-)
+if (WIN32)
+    target_compile_options(CedarLogic PRIVATE /MP)
+    target_compile_definitions(CedarLogic PRIVATE
+	"WIN32"
+	"STRICT"
+	"__WXMSW__"
+	"__WX__"
+	"__WXDEBUG__"
+	"_WINDOWS"
+	"_CRT_SECURE_NO_DEPRECATE"
+    )
+endif()
+
 
 ###
 ### Dev Setup.
