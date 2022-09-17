@@ -40,6 +40,15 @@ private:
 		GLFontChar *chars;
 	} header;
 
+	#pragma pack (push, 1)
+	struct headerEnc {
+		int32_t tex;
+		int32_t tex_width, tex_height;
+		int32_t start_char, end_char;
+		int32_t _padding;
+	};
+	#pragma pack (pop)
+
 public:
 
 	//Constructor

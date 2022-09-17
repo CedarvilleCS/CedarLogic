@@ -57,7 +57,14 @@ bool GLFont::Create (const char *file_name, int tex)
 		return false;
 
 	//Read the header from file
-	input.read((char *)&header, sizeof(header));
+	headerEnc fileHeader;
+	input.read((char *)&fileHeader, sizeof(fileHeader));
+
+	header.tex_width  = fileHeader.tex_width;
+	header.tex_height = fileHeader.tex_height;
+	header.start_char = fileHeader.start_char;
+	header.end_char   = fileHeader.end_char;
+
 	header.tex = tex;
 
 	//Allocate space for character array
