@@ -1,6 +1,6 @@
 # Note: Below 3.11 breaks the FetchContent capability used to pull in Catch2,
 # the unit testing framework.
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.11)
 
 # Name project, and set version. If updating version, change it here, and then re-generate your Visual
 # Studio solution.
@@ -40,6 +40,7 @@ set(wxBUILD_INSTALL OFF)
 set(wxBUILD_SHARED OFF)
 set(wxUSE_GLCANVAS ON)
 set(wxBUILD_USE_STATIC_RUNTIME ON)
+set(wxUSE_OLE ON)  # Required to use wxUSE_DRAG_AND_DROP
 
 # Disabled because they break the windows build
 set(wxUSE_SOCKETS OFF)
@@ -100,7 +101,7 @@ add_subdirectory(
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-target_compile_options(CedarLogic PRIVATE /MP)
+target_compile_options(CedarLogic PRIVATE)
 
 target_compile_definitions(CedarLogic
     PRIVATE
