@@ -179,7 +179,7 @@ TEST_CASE("Logic wire, [LogicWire]") {
 
         w2.connectInput(ID_NONE, "asd");
         auto wi2 = w2.getFirstInput();
-        REQUIRE(((wi2.gateID == ID_NONE) and (wi2.gateOutputID == "")));
+        REQUIRE(((wi2.gateID == ID_NONE) && (wi2.gateOutputID == "")));
     }
 
     SECTION("Wire getFirstOutput returns first (sorted) output or junk") {
