@@ -628,7 +628,9 @@ void klsGLCanvas::beginDrag( mouseButton whichButton ) {
 	SetFocus();
 
 	// Bind all mouse events to this window:
-	CaptureMouse();
+	if (!HasCapture()) {
+		CaptureMouse();
+	}
 	
 	// Set the dragging start coordinates:
 	setDragStartCoords( getMouseCoords(), whichButton );
