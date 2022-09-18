@@ -23,7 +23,7 @@ Building CedarLogic on Linux and Windows is possible. Doing so on MacOS should b
 
 5. There is now a CedarLogic installer executable in the `build` directory. If you run the installer, you will have the latest semi-stable version of CedarLogic installed. See the next section for development.
 
-## Linux (assumes Ubuntu)
+## Linux
 
 ### Required Programs
 
@@ -31,7 +31,9 @@ Building CedarLogic on Linux and Windows is possible. Doing so on MacOS should b
 - [ ] [CMake](https://cmake.org/download/) (probably use the version from your package manager)
 - [ ] A C++ compiler.
 
-### Required Libraries
+### Dependencies
+
+#### Debian based distributions 
 
 ```bash
 # Install GTK-3
@@ -48,12 +50,8 @@ sudo apt-get install -y mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-de
 From within the root of the CedarLogic repo:
 
 ```bash
-mkdir -b build  # create build directory
-cd build/
-cmake --config Release --target package ../  # Assuming you want a release build, could be debug
-make  -j 8 # to run the actual build (assuming Makefiles are your default in the build chain) ( the -j 8 piece tells Make to multi-thread up to 8 threads)
-
-# This doesn't quite work ^ can't find io.h
+cmake -B build -DCMAKE_BUILD_TYPE=Release # Assuming you want a release build, could be debug
+make -C build -j 8 # to run the actual build (assuming Makefiles are your default in the build chain) ( the -j 8 piece tells Make to multi-thread up to 8 threads)
 ```
 
 There is now a CedarLogic executable in the `build` directory.
