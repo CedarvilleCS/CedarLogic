@@ -40,11 +40,11 @@ struct ApplicationSettings {
 	string textFontFile;
 	string helpFile;
 	string lastDir;
-	unsigned int mainFrameWidth;
-	unsigned int mainFrameHeight;
+	int mainFrameWidth;
+	int mainFrameHeight;
 	int mainFrameLeft;
 	int mainFrameTop;
-	unsigned int timePerStep;
+	int timePerStep;
 	int refreshRate;
     float wireConnRadius;
     bool wireConnVisible;

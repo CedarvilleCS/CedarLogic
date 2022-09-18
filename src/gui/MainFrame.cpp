@@ -18,6 +18,7 @@
 #include "wx/toolbar.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"
+#include "wx/config.h"
 #include "CircuitParse.h"
 #include "OscopeFrame.h"
 #include "wx/docview.h"
@@ -874,24 +875,28 @@ void MainFrame::saveSettings() {
 	//adding substring on the end of the relative paths to knock
 	//of the part I put on.
 	int numCharAbsolute = wxGetApp().pathToExe.length();
+	wxConfigBase *conf = wxConfigBase::Get();
+	auto settings = wxGetApp().appSettings;
 	
-	string settingsIni = wxGetApp().pathToExe + "res/settings.ini";
-	
-	ofstream iniFile(settingsIni, ios::out);
-	iniFile << "GateLib=" << wxGetApp().appSettings.gateLibFile.substr(numCharAbsolute) << endl;
-	iniFile << "HelpFile=" << wxGetApp().appSettings.helpFile.substr(numCharAbsolute) << endl;
-	iniFile << "TextFont=" << wxGetApp().appSettings.textFontFile.substr(numCharAbsolute) << endl;
-	iniFile << "FrameWidth=" << this->GetSize().GetWidth() << endl;
-	iniFile << "FrameHeight=" << this->GetSize().GetHeight() << endl;
-	iniFile << "FrameLeft=" << this->GetPosition().x << endl;
-	iniFile << "FrameTop=" << this->GetPosition().y << endl;
-	iniFile << "TimeStep=" << wxGetApp().timeStepMod << endl;
-	iniFile << "RefreshRate=" << wxGetApp().appSettings.refreshRate << endl;
-	iniFile << "LastDirectory=" << lastDirectory << endl;
-	iniFile << "WireConnRadius=" << wxGetApp().appSettings.wireConnRadius << endl;
-	iniFile << "WireConnVisible=" << wxGetApp().appSettings.wireConnVisible << endl;
-	iniFile << "GridlineVisible=" << wxGetApp().appSettings.gridlineVisible << endl;
-	iniFile.close();
+	wxString str = settings.gateLibFile.substr(numCharAbsolute);
+	conf->Write("GateLib", str);
+
+	str = settings.helpFile.substr(numCharAbsolute);
+	conf->Write("HelpFile", str);
+
+	str = settings.textFontFile.substr(numCharAbsolute);
+	conf->Write("TextFont", str);
+
+	conf->Write("FrameWidth", GetSize().GetWidth());
+	conf->Write("FrameHeight", GetSize().GetHeight());
+	conf->Write("FrameLeft", GetPosition().x);
+	conf->Write("FrameTop", GetPosition().y);
+	conf->Write("TimeStep", wxGetApp().timeStepMod);
+	conf->Write("RefreshRate", settings.refreshRate);
+	conf->Write("LastDirectory", lastDirectory);
+	conf->Write("WireConnRadius", settings.wireConnRadius);
+	conf->Write("WireConnVisible", settings.wireConnVisible);
+	conf->Write("GridlineVisible", settings.gridlineVisible);
 }
 
 void MainFrame::ResumeExecution() {
