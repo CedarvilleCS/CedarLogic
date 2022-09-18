@@ -101,43 +101,33 @@ bool MainApp::OnInit()
 }
 
 void MainApp::loadSettings() {
+	wxStandardPathsBase& stdp = wxStandardPaths::Get();
+	stdp.SetFileLayout(wxStandardPaths::FileLayout_XDG);
 
-	// Get app full path.
-	char path[MAX_PATH];
-	GetModuleFileNameA(NULL, path, MAX_PATH);
-
-	// Find path to exe so that files can be loaded relative to it
-	// even when the program is run from somewhere else.
-	pathToExe = path;
-	while (!pathToExe.empty()) {
-		if (pathToExe.back() != '/' && pathToExe.back() != '\\') {
-			pathToExe.pop_back();
+	if (const char* r_dir = getenv("CEDARLOGIC_RESOURCES_DIR")) {
+		resourcesDir = r_dir;
+		if (!resourcesDir.empty()) {
+			resourcesDir += "/";
 		}
-		else {
-			break;
-		}
+	} else {
+		resourcesDir = stdp.GetResourcesDir() + "/";
 	}
 
-	if (pathToExe.find("Debug") != string::npos || pathToExe.find("Release") != string::npos) {
-		pathToExe = "";
-	}
-
-	wxStandardPaths::Get().SetFileLayout(wxStandardPaths::FileLayout_XDG);
 	wxFileConfig *conf = new wxFileConfig("CedarLogic");
 	wxConfigBase::Set(conf);
 	wxConfigBase::DontCreateOnDemand();
 
 	wxString str;
 	conf->Read("GateLib", &str, "res/cl_gatedefs.xml");
-	appSettings.gateLibFile = pathToExe + str;
+	appSettings.gateLibFile = resourcesDir + str;
 
 	conf->Read("HelpFile", &str, "res/KLS_Logic.chm");
-	appSettings.helpFile = pathToExe + str;
+	appSettings.helpFile = resourcesDir + str;
 
 	conf->Read("TextFont", &str, "res/arial.glf");
-	appSettings.textFontFile = pathToExe + str;
+	appSettings.textFontFile = resourcesDir + str;
 
-	conf->Read("LastDirectory", &str);
+	conf->Read("LastDirectory", &str, "");
 	appSettings.lastDir = str;
 
 	conf->Read("FrameWidth", &appSettings.mainFrameWidth, 600);

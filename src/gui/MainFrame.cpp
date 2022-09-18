@@ -167,7 +167,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	wxBitmap *bmp[15];
 
 	for (int  i = 0; i < 15; i++) {
-		bitmaps[i] = wxGetApp().pathToExe + "res/bitmaps/" + bitmaps[i] + ".bmp";
+		bitmaps[i] = wxGetApp().resourcesDir + "res/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
 	}
@@ -874,7 +874,7 @@ void MainFrame::saveSettings() {
 	//needs to be relative.
 	//adding substring on the end of the relative paths to knock
 	//of the part I put on.
-	int numCharAbsolute = wxGetApp().pathToExe.length();
+	int numCharAbsolute = wxGetApp().resourcesDir.length();
 	wxConfigBase *conf = wxConfigBase::Get();
 	auto settings = wxGetApp().appSettings;
 	

@@ -62,14 +62,13 @@ If you figure it out (and it should be do-able) please fill in the docs! Until t
 
 ## Developing Notes
 
-It is time-intensive to re-install CedarLogic each time you wish to test a code change. 
-There is also an executable in the `build/<whatever build type you picked, like Release>`
-folder. That executable would run, except a library or two aren't in the correct 
-relative paths for it to do so. You can reconstruct the correct dependency relationships
-by copying everything from the CedarLogic program directory (where it was installed) 
-into your `build/Release` or `build/Debug` folders. As of this writing, that is just the
-`res` directory. With the `res` directory copied into `build/Release`, that CedarLogic
-executable should run.
+It is time-intensive to re-install CedarLogic each time you wish to test a code
+change. There is also an executable in the `build/<whatever build type you
+picked, like Release>` folder. That executable would run, except a library or
+two aren't in the correct relative paths for it to do so. You can tell
+CedarLogic where to find them by by setting the `CEDARLOGIC_RESOURCES_DIR`
+environment variable to your build directory. On linux this can be usually be
+done with `export CEDARLOGIC_RESOURCES_DIR="./build"`.
 
 You can do the same thing for `Debug` builds and the like.
 
