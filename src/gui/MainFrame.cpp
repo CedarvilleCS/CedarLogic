@@ -1004,6 +1004,10 @@ void MainFrame::load(string filename) {
 	loadCircuitFile(filename);
 }
 
+void MainFrame::PreGateDrag() {
+	currentCanvas->CaptureMouse();
+}
+
 //JV - Make new canvas and add it to canvases and canvasBook
 //TODO - Find a way to put a tab button in correct place
 void MainFrame::OnNewTab(wxCommandEvent& event) {

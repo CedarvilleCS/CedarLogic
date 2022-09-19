@@ -16,6 +16,7 @@
 #include <fstream>
 #include <wx/dnd.h>
 #include "glToImage.h"
+#include "MainFrame.h"
 
 BEGIN_EVENT_TABLE(gateImage, wxWindow)
     EVT_PAINT(gateImage::OnPaint)
@@ -65,10 +66,23 @@ void gateImage::OnPaint(wxPaintEvent &event) {
 
 void gateImage::mouseCallback( wxMouseEvent& event) {
 	if (event.LeftDown()) {
-#ifdef _WINDOWS
+#ifndef USE_WX_DRAGDROP
 		wxGetApp().newGateToDrag = gateName;
+
+#ifdef __WXGTK__
+		// In gtk the canvas doesn't get mouse events when dragging over
+		// it, so we have to tell it to capture the mouse.
+		wxGetApp().mainframe->PreGateDrag();
+
+		// Stop drawing the border
+		inImage = false;
+		Refresh();
+#endif
+
 #else
-		// start drag operation
+		// If USE_WX_DRAGDROP is defined, we use the wxwidgets native
+		// drag and drop. This seems more likely to work cross platform,
+		// but it doesn't provide a preview of the gate being dragged.
 		wxTextDataObject textData(gateName);
 		wxDropSource source(textData, this);
 
