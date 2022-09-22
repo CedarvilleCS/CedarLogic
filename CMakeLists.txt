@@ -18,6 +18,7 @@ configure_file(CedarLogic.h.in CedarLogic.h)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/module")
 include(ResourceTools)
 include(VsSourceGroups)
+include(GNUInstallDirs)
 
 ##
 # Connect external libraries
@@ -143,7 +144,11 @@ vs_source_groups(src ${Sources})
 ### Installation.
 ###
 
-install(TARGETS CedarLogic RUNTIME DESTINATION ".")
+if (WIN32)
+    install(TARGETS CedarLogic RUNTIME DESTINATION ".")
+else()
+    install(TARGETS CedarLogic RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
+endif()
 
 install_resources(res)
 
