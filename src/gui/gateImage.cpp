@@ -91,6 +91,9 @@ void gateImage::mouseCallback( wxMouseEvent& event) {
 #endif
 	} else if (event.LeftUp()) {
 		wxGetApp().newGateToDrag = "";
+	} else {
+		// This is required to pass scroll events through
+		event.Skip();
 	}
 }
 
