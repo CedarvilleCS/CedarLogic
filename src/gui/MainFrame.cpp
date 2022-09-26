@@ -277,7 +277,10 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	g_printData->SetOrientation(wxLANDSCAPE);
 	
 	this->SetSize( wxGetApp().appSettings.mainFrameLeft, wxGetApp().appSettings.mainFrameTop, wxGetApp().appSettings.mainFrameWidth, wxGetApp().appSettings.mainFrameHeight );
-	
+
+	// Show the main window
+	Show(true);
+
 	doOpenFile = (cmdFilename.size() > 0);
 	this->openedFilename = cmdFilename;
 
