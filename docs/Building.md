@@ -33,16 +33,16 @@ Building CedarLogic on Linux and Windows is possible. Doing so on MacOS should b
 
 ### Dependencies
 
-#### Debian based distributions 
+#### Debian based distributions
 
 ```bash
-# Install GTK-3
-sudo apt-get install -y libgtk-3-dev 
-# may require
-# sudo apt-get update && sudo apt-get install libgtk-3-dev --fix-missing
+sudo apt install build-essential cmake git libwxgtk3.2-dev
+```
 
-# Install OpenGL 3
-sudo apt-get install -y mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+#### Arch
+
+```bash
+sudo pacman -S --needed base-devel wxwidgets-gtk3 glu git cmake
 ```
 
 ### Build CedarLogic Executable
@@ -51,7 +51,7 @@ From within the root of the CedarLogic repo:
 
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release # Assuming you want a release build, could be debug
-make -C build -j 8 # to run the actual build (assuming Makefiles are your default in the build chain) ( the -j 8 piece tells Make to multi-thread up to 8 threads)
+cmake --build build -j
 ```
 
 There is now a CedarLogic executable in the `build` directory.
