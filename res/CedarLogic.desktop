@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Cedar Logic
+Comment=Digital Logic Simulator
+Type=Application
+Exec=CedarLogic %f
+Icon=CedarLogic
+MimeType=application/x-cedarlogic-circuit;
+# A list of common categories can be found at
+# https://specifications.freedesktop.org/menu-spec/menu-spec-1.0.html#category-registry
+Categories=Education;Development;ComputerScience;
+Keywords=logic;simulator;circuit;
