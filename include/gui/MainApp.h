@@ -40,11 +40,11 @@ struct ApplicationSettings {
 	string textFontFile;
 	string helpFile;
 	string lastDir;
-	unsigned int mainFrameWidth;
-	unsigned int mainFrameHeight;
+	int mainFrameWidth;
+	int mainFrameHeight;
 	int mainFrameLeft;
 	int mainFrameTop;
-	unsigned int timePerStep;
+	int timePerStep;
 	int refreshRate;
     float wireConnRadius;
     bool wireConnVisible;
@@ -104,7 +104,7 @@ public:
 	
 	//this string is necisary when the working directory
 	//is not were the executeable is.
-	string pathToExe;
+	string resourcesDir;
 
 	// OK, honestly, this shouldn't be here
 	//	Basically exporting bitmaps doesn't like GL display

@@ -19,18 +19,13 @@ DECLARE_APP(MainApp)
 
 BEGIN_EVENT_TABLE(klsMiniMap, wxPanel)
 	EVT_PAINT(klsMiniMap::OnPaint)
-	
-	//Josh Edit 4/9/07
-    EVT_ERASE_BACKGROUND(klsMiniMap::OnEraseBackground)
 	EVT_MOUSE_EVENTS(klsMiniMap::OnMouseEvent)
 END_EVENT_TABLE()
 
 klsMiniMap::klsMiniMap(wxWindow *parent, wxWindowID id,
-        const wxPoint& pos,
-        const wxSize& size,
-        long style, const wxString& name) :
-	wxPanel(parent, id, pos, size, style|wxSUNKEN_BORDER, name ) {
-	m_init = false;
+        const wxPoint& pos, const wxSize& size,
+        long style, const wxString& name)
+		: wxGLCanvas(parent, id, NULL, pos, size, style|wxSUNKEN_BORDER, name) {
 	currentCanvas = NULL;
 }
 
@@ -99,45 +94,7 @@ void klsMiniMap::setViewport() {
 
 // Print the canvas contents to a bitmap:
 void klsMiniMap::generateImage() {
-//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
-// DIB Section OpenGL rendering.
-
 	wxSize sz = GetClientSize();
-
-	// Create a DIB section.
-	// (The Windows wxBitmap implementation will create a DIB section for a bitmap if you set
-	// a color depth of 24 or greater.)
-	wxBitmap theBM( sz.GetWidth(), sz.GetHeight(), 32 );
-	
-	// Get a memory hardware device context for writing to the bitmap DIB Section:
-	wxMemoryDC myDC;
-	myDC.SelectObject(theBM);
-	WXHDC theHDC = myDC.GetHDC();
-
-	// The basics of setting up OpenGL to render to the bitmap are found at:
-	// http://www.nullterminator.net/opengl32.html
-	// http://www.codeguru.com/cpp/g-m/opengl/article.php/c5587/
-
-    PIXELFORMATDESCRIPTOR pfd;
-    int iFormat;
-
-    // set the pixel format for the DC
-    ::ZeroMemory( &pfd, sizeof( pfd ) );
-    pfd.nSize = sizeof( pfd );
-    pfd.nVersion = 1;
-    pfd.dwFlags = PFD_DRAW_TO_BITMAP | PFD_SUPPORT_OPENGL | PFD_SUPPORT_GDI;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.cColorBits = 32;
-    pfd.cDepthBits = 16;
-    pfd.iLayerType = PFD_MAIN_PLANE;
-    iFormat = ::ChoosePixelFormat( (HDC) theHDC, &pfd );
-    ::SetPixelFormat( (HDC) theHDC, iFormat, &pfd );
-
-    // create and enable the render context (RC)
-    HGLRC hRC = ::wglCreateContext( (HDC) theHDC );
-    HGLRC oldhRC = ::wglGetCurrentContext();
-    HDC oldDC = ::wglGetCurrentDC();
-    ::wglMakeCurrent( (HDC) theHDC, hRC );
 
 	// Setup the viewport for rendering:
 	setViewport();
@@ -168,14 +125,7 @@ void klsMiniMap::generateImage() {
 
 	// Flush the OpenGL buffer to make sure the rendering has happened:	
 	glFlush();
-	
-	// Destroy the OpenGL rendering context, release the memDC, and
-	// convert the DIB Section into a wxImage to return to the caller:
-    ::wglMakeCurrent( oldDC, oldhRC );
-    //::wglMakeCurrent( NULL, NULL );
-    ::wglDeleteContext( hRC );
-	myDC.SelectObject(wxNullBitmap);
-	mapImage = theBM.ConvertToImage();
+	SwapBuffers();
 }
 
 void klsMiniMap::renderMap() {
@@ -222,56 +172,14 @@ void klsMiniMap::renderMap() {
 }
 
 void klsMiniMap::update(GLPoint2f origin, GLPoint2f endpoint) {
-	//wxClientDC dc(this);
-	//dc.FloodFill(0, 0, *wxWHITE);
 	this->origin = origin;
 	this->endpoint = endpoint;
-	
-	generateImage();
-	
-	//*****************************
-	//Edit by Joshua Lansford 4/9/07
-	//In search of determineing the
-	//cause of the miniMap spazz bug
-	//I refactored update and
-	//OnPaint.
-	//Instead of update doing both
-	//jobs, I now have OnPaint
-	//handling the painting
-	//and update handling the update-
-	//ing.  It didn't seem right
-	//for the update to be grabbing
-	//the hardware and rendering
-	//to it when we were not servicing
-	//a onPaint request.
-	//***************************
-	
-	
-	//wxBitmap mapBitmap(mapImage);
-	//dc.DrawBitmap(mapBitmap, 0, 0, true);
-	Refresh( false );
-	//Update makes it so that we don't lag
-	//when the user is moveing the cavase around
-	wxWindow::Update();
+	Refresh();
 }
 
 void klsMiniMap::OnPaint(wxPaintEvent& evt) {
-	//Josh Edit 4/9/07 see coment put in update
-	
-	//update();
-	
-	wxPaintDC dc(this);
-	//dc.FloodFill(0, 0, *wxWHITE);
-	wxBitmap mapBitmap(mapImage);
-	dc.DrawBitmap(mapBitmap, 0, 0, true);
-	
-	evt.Skip();
-}
-
-//Josh Edit 4/9/07 We were flickering, so I put this in here.
-void klsMiniMap::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
-{
-  // Do nothing, to avoid flashing.
+	wxGetApp().SetCurrentCanvas(this);
+	generateImage();
 }
 
 void klsMiniMap::OnMouseEvent(wxMouseEvent& evt) {

@@ -120,6 +120,8 @@ public:
 	void save(string filename);
 	void load(string filename);
 
+	void PreGateDrag();
+
 	//Julian: Added to simplify exporting and copying to clipboard
 	wxBitmap getBitmap(bool withGrid);
 	

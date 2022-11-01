@@ -23,7 +23,7 @@ Building CedarLogic on Linux and Windows is possible. Doing so on MacOS should b
 
 5. There is now a CedarLogic installer executable in the `build` directory. If you run the installer, you will have the latest semi-stable version of CedarLogic installed. See the next section for development.
 
-## Linux (assumes Ubuntu)
+## Linux
 
 ### Required Programs
 
@@ -31,16 +31,21 @@ Building CedarLogic on Linux and Windows is possible. Doing so on MacOS should b
 - [ ] [CMake](https://cmake.org/download/) (probably use the version from your package manager)
 - [ ] A C++ compiler.
 
-### Required Libraries
+### Dependencies
+
+#### Debian based distributions
 
 ```bash
-# Install GTK-3
-sudo apt-get install -y libgtk-3-dev 
-# may require
-# sudo apt-get update && sudo apt-get install libgtk-3-dev --fix-missing
+sudo apt install build-essential cmake git libwxgtk3.2-dev -y
+```
 
-# Install OpenGL 3
-sudo apt-get install -y mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+Note, if you don't have at least libwxgtk3.2 or later, you can get around this by adding this flag to your cmake build command:
+`-DUSE_SYSTEM_WXWIDGETS=0`.
+
+#### Arch
+
+```bash
+sudo pacman -S --needed base-devel wxwidgets-gtk3 glu git cmake
 ```
 
 ### Build CedarLogic Executable
@@ -48,12 +53,10 @@ sudo apt-get install -y mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-de
 From within the root of the CedarLogic repo:
 
 ```bash
-mkdir -b build  # create build directory
-cd build/
-cmake --config Release --target package ../  # Assuming you want a release build, could be debug
-make  -j 8 # to run the actual build (assuming Makefiles are your default in the build chain) ( the -j 8 piece tells Make to multi-thread up to 8 threads)
+# If you struggled to get a late enough version of wxWidgets, this is the command you add `-DUSE_SYSTEM_WXWIDGETS=0` to.
+cmake -B build -DCMAKE_BUILD_TYPE=Release # Assuming you want a release build, could be debug
 
-# This doesn't quite work ^ can't find io.h
+cmake --build build -j8
 ```
 
 There is now a CedarLogic executable in the `build` directory.
@@ -64,14 +67,13 @@ If you figure it out (and it should be do-able) please fill in the docs! Until t
 
 ## Developing Notes
 
-It is time-intensive to re-install CedarLogic each time you wish to test a code change. 
-There is also an executable in the `build/<whatever build type you picked, like Release>`
-folder. That executable would run, except a library or two aren't in the correct 
-relative paths for it to do so. You can reconstruct the correct dependency relationships
-by copying everything from the CedarLogic program directory (where it was installed) 
-into your `build/Release` or `build/Debug` folders. As of this writing, that is just the
-`res` directory. With the `res` directory copied into `build/Release`, that CedarLogic
-executable should run.
+It is time-intensive to re-install CedarLogic each time you wish to test a code
+change. There is also an executable in the `build/<whatever build type you picked, like Release>`
+folder. That executable would run, except a library or
+two aren't in the correct relative paths for it to do so. You can tell
+CedarLogic where to find them by by setting the `CEDARLOGIC_RESOURCES_DIR`
+environment variable to your build directory. On linux this can be usually be
+done with `export CEDARLOGIC_RESOURCES_DIR="./build"`.
 
 You can do the same thing for `Debug` builds and the like.
 

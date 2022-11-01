@@ -24,7 +24,7 @@ using namespace std;
 class guiWire;
 class guiGate;
 
-class klsMiniMap : public wxPanel {
+class klsMiniMap : public wxGLCanvas {
 public:
 	klsMiniMap(wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
@@ -43,7 +43,7 @@ public:
 	void OnMouseEvent(wxMouseEvent& evt);
 	
 	//Josh Edit 4/9/07
-	void OnEraseBackground(wxEraseEvent& WXUNUSED(event));
+	/* void OnEraseBackground(wxEraseEvent& WXUNUSED(event)); */
 	
 private:
 	void setViewport();
@@ -57,7 +57,6 @@ private:
 	unordered_map< unsigned long, guiWire* >* wireList;
 	
 	wxImage mapImage;
-	bool m_init;
 
 	klsGLCanvas* currentCanvas;	
 	

@@ -157,6 +157,9 @@ public:
 	void removeGate(unsigned long);
 	void insertWire(guiWire*);
 	void removeWire(unsigned long);
+
+	// Add a gate
+	void addGate(string gate, GLPoint2f m);
 	
 	// Remove the selection flag from all gates or wires on the canvas
 	void unselectAllGates();

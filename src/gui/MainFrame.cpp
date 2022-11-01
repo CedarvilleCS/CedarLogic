@@ -18,6 +18,7 @@
 #include "wx/toolbar.h"
 #include "wx/clipbrd.h"
 #include "wx/dataobj.h"
+#include "wx/config.h"
 #include "CircuitParse.h"
 #include "OscopeFrame.h"
 #include "wx/docview.h"
@@ -166,7 +167,7 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	wxBitmap *bmp[15];
 
 	for (int  i = 0; i < 15; i++) {
-		bitmaps[i] = wxGetApp().pathToExe + "res/bitmaps/" + bitmaps[i] + ".bmp";
+		bitmaps[i] = wxGetApp().resourcesDir + "res/bitmaps/" + bitmaps[i] + ".bmp";
 		wxFileInputStream in(bitmaps[i]);
 		bmp[i] = new wxBitmap(wxImage(in, wxBITMAP_TYPE_BMP));
 	}
@@ -276,7 +277,10 @@ MainFrame::MainFrame(const wxString& title, string cmdFilename)
 	g_printData->SetOrientation(wxLANDSCAPE);
 	
 	this->SetSize( wxGetApp().appSettings.mainFrameLeft, wxGetApp().appSettings.mainFrameTop, wxGetApp().appSettings.mainFrameWidth, wxGetApp().appSettings.mainFrameHeight );
-	
+
+	// Show the main window
+	Show(true);
+
 	doOpenFile = (cmdFilename.size() > 0);
 	this->openedFilename = cmdFilename;
 
@@ -873,25 +877,29 @@ void MainFrame::saveSettings() {
 	//needs to be relative.
 	//adding substring on the end of the relative paths to knock
 	//of the part I put on.
-	int numCharAbsolute = wxGetApp().pathToExe.length();
+	int numCharAbsolute = wxGetApp().resourcesDir.length();
+	wxConfigBase *conf = wxConfigBase::Get();
+	auto settings = wxGetApp().appSettings;
 	
-	string settingsIni = wxGetApp().pathToExe + "res/settings.ini";
-	
-	ofstream iniFile(settingsIni, ios::out);
-	iniFile << "GateLib=" << wxGetApp().appSettings.gateLibFile.substr(numCharAbsolute) << endl;
-	iniFile << "HelpFile=" << wxGetApp().appSettings.helpFile.substr(numCharAbsolute) << endl;
-	iniFile << "TextFont=" << wxGetApp().appSettings.textFontFile.substr(numCharAbsolute) << endl;
-	iniFile << "FrameWidth=" << this->GetSize().GetWidth() << endl;
-	iniFile << "FrameHeight=" << this->GetSize().GetHeight() << endl;
-	iniFile << "FrameLeft=" << this->GetPosition().x << endl;
-	iniFile << "FrameTop=" << this->GetPosition().y << endl;
-	iniFile << "TimeStep=" << wxGetApp().timeStepMod << endl;
-	iniFile << "RefreshRate=" << wxGetApp().appSettings.refreshRate << endl;
-	iniFile << "LastDirectory=" << lastDirectory << endl;
-	iniFile << "WireConnRadius=" << wxGetApp().appSettings.wireConnRadius << endl;
-	iniFile << "WireConnVisible=" << wxGetApp().appSettings.wireConnVisible << endl;
-	iniFile << "GridlineVisible=" << wxGetApp().appSettings.gridlineVisible << endl;
-	iniFile.close();
+	wxString str = settings.gateLibFile.substr(numCharAbsolute);
+	conf->Write("GateLib", str);
+
+	str = settings.helpFile.substr(numCharAbsolute);
+	conf->Write("HelpFile", str);
+
+	str = settings.textFontFile.substr(numCharAbsolute);
+	conf->Write("TextFont", str);
+
+	conf->Write("FrameWidth", GetSize().GetWidth());
+	conf->Write("FrameHeight", GetSize().GetHeight());
+	conf->Write("FrameLeft", GetPosition().x);
+	conf->Write("FrameTop", GetPosition().y);
+	conf->Write("TimeStep", wxGetApp().timeStepMod);
+	conf->Write("RefreshRate", settings.refreshRate);
+	conf->Write("LastDirectory", lastDirectory);
+	conf->Write("WireConnRadius", settings.wireConnRadius);
+	conf->Write("WireConnVisible", settings.wireConnVisible);
+	conf->Write("GridlineVisible", settings.gridlineVisible);
 }
 
 void MainFrame::ResumeExecution() {
@@ -997,6 +1005,10 @@ void MainFrame::unlock() {
 
 void MainFrame::load(string filename) {
 	loadCircuitFile(filename);
+}
+
+void MainFrame::PreGateDrag() {
+	currentCanvas->CaptureMouse();
 }
 
 //JV - Make new canvas and add it to canvases and canvasBook
