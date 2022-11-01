@@ -2,6 +2,7 @@
 #pragma once
 #include "klsCommand.h"
 #include <stack>
+#include <vector>
 
 class wxAuiNotebook;
 

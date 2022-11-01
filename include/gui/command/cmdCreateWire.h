@@ -1,6 +1,7 @@
 
 #pragma once
 #include "klsCommand.h"
+#include <vector>
 
 class cmdConnectWire;
 

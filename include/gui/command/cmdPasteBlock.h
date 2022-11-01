@@ -1,6 +1,7 @@
 
 #pragma once
 #include "klsCommand.h"
+#include <vector>
 
 // cmdPasteBlock - Paste's a block of gates/wires
 class cmdPasteBlock : public klsCommand {
