@@ -5,11 +5,11 @@ CedarLogic is a digital logic simulator made for university classroom instructio
 
 ## Contributing
 
-All improvements, especially to stability, are welcome. Please see [Contributing](../docs/Contributing.md) for more.
+All improvements, especially to stability, are welcome. Please see [Contributing](./docs/Contributing.md) for more.
 
 ## Building
 
 To build the source code yourself, [clone the repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-and read the [Building](../docs/Building.md) instructions.
+and read the [Building](./docs/Building.md) instructions.
 
 Building doc also includes a few notes for development.
