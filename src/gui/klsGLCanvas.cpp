@@ -12,6 +12,7 @@
 #include "MainApp.h"
 #include "paramDialog.h"
 #include "GLFont/glfont2.h"
+#include "glToImage.h"
 
 // Included to use the min() and max() templates:
 #include <algorithm>
@@ -40,8 +41,8 @@ END_EVENT_TABLE()
 
 
 klsGLCanvas::klsGLCanvas(wxWindow *parent, const wxString& name, wxWindowID id,
-						const wxPoint& pos, const wxSize& size, long style ) : 
-						wxGLCanvas(parent, (wxGLCanvas*) NULL, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxWANTS_CHARS, name ) {
+						const wxPoint& pos, const wxSize& size, long style ) :
+						wxGLCanvas(parent, id, NULL, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxWANTS_CHARS, name) {
 
 	// Zoom and OpenGL coordinate of upper-left corner of this canvas:
 	viewZoom = DEFAULT_ZOOM;
@@ -105,41 +106,8 @@ void klsGLCanvas::updateMiniMap() {
 
 // Print the canvas contents to a bitmap:
 wxImage klsGLCanvas::renderToImage( unsigned long width, unsigned long height, unsigned long colorDepth, bool noColor ) {
-//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
-// DIB Section OpenGL rendering.
-
-	// Create a DIB section.
-	// (The Windows wxBitmap implementation will create a DIB section for a bitmap if you set
-	// a color depth of 24 or greater.)
-	wxBitmap theBM( width, height, colorDepth );
-	
-	// Get a memory hardware device context for writing to the bitmap DIB Section:
-	wxMemoryDC myDC;
-	myDC.SelectObject(theBM);
-	WXHDC theHDC = myDC.GetHDC();
-
-	// The basics of setting up OpenGL to render to the bitmap are found at:
-	// http://www.nullterminator.net/opengl32.html
-	// http://www.codeguru.com/cpp/g-m/opengl/article.php/c5587/
-
-    PIXELFORMATDESCRIPTOR pfd;
-    int iFormat;
-
-    // set the pixel format for the DC
-    ::ZeroMemory( &pfd, sizeof( pfd ) );
-    pfd.nSize = sizeof( pfd );
-    pfd.nVersion = 1;
-    pfd.dwFlags = PFD_DRAW_TO_BITMAP | PFD_SUPPORT_OPENGL | PFD_SUPPORT_GDI;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.cColorBits = colorDepth;
-    pfd.cDepthBits = 16;
-    pfd.iLayerType = PFD_MAIN_PLANE;
-    iFormat = ::ChoosePixelFormat( (HDC) theHDC, &pfd );
-    ::SetPixelFormat( (HDC) theHDC, iFormat, &pfd );
-
-    // create and enable the render context (RC)
-    HGLRC hRC = ::wglCreateContext( (HDC) theHDC );
-    ::wglMakeCurrent( (HDC) theHDC, hRC );
+	wxGetApp().SetCurrentCanvas(this);
+	glImageCtx glCtx((int)width, (int)height, this);
 
 	// Setup the viewport for rendering:
 	reclaimViewport();
@@ -174,22 +142,9 @@ wxImage klsGLCanvas::renderToImage( unsigned long width, unsigned long height, u
 
 	// Flush the OpenGL buffer to make sure the rendering has happened:	
 	glFlush();
-	
-	// Destroy the OpenGL rendering context, release the memDC, and
-	// convert the DIB Section into a wxImage to return to the caller:
-    ::wglMakeCurrent( NULL, NULL );
-    ::wglDeleteContext( hRC );
-	myDC.SelectObject(wxNullBitmap);
-	
-	// Set the OpenGL context back to the klsGLCanvas' context, rather
-	// than NULL. (Gates depend on having an OpenGL context live in order
-	// to do their translation matrix setup.):
-	SetCurrent();
-	
-	return theBM.ConvertToImage();
+
+	return glCtx.getImage();
 }
-
-
 
 // Setup the GL matrices for this canvas:
 // (This needs to be called everytime that the matrices will be used.)
@@ -259,6 +214,16 @@ void klsGLCanvas::getViewport( GLPoint2f& p1, GLPoint2f& p2 ) {
 	p1.y = panY;
 	p2.x = panX + (sz.GetWidth()*viewZoom);
 	p2.y = panY - (sz.GetHeight()*viewZoom);
+}
+
+GLPoint2f klsGLCanvas::mapToCanvas(wxPoint m) {
+	int w, h;
+	GetClientSize(&w, &h);
+
+	float glX = panX + (m.x * viewZoom);
+	float glY = panY - (m.y * viewZoom);
+
+	return GLPoint2f(glX, glY);
 }
 
 void klsGLCanvas::klsGLCanvasRender( bool noColor ) {
@@ -383,11 +348,7 @@ void klsGLCanvas::klsGLCanvasRender( bool noColor ) {
 
 void klsGLCanvas::wxOnPaint(wxPaintEvent& event) {
 	wxPaintDC dc(this);
-#ifndef __WXMOTIF__
-	if (!GetContext()) return;
-#endif
-
-	SetCurrent();
+	wxGetApp().SetCurrentCanvas(this);
 	// Init OpenGL once, but after SetCurrent
 	if (!glInitialized)
 	{
@@ -418,7 +379,6 @@ void klsGLCanvas::wxOnPaint(wxPaintEvent& event) {
 		glInitialized = true;
 	}
 
-	SetCurrent();
 	reclaimViewport();
 	klsGLCanvasRender();
 	
@@ -436,26 +396,8 @@ void klsGLCanvas::wxOnEraseBackground(wxEraseEvent& WXUNUSED(event))
 
 void klsGLCanvas::wxOnSize(wxSizeEvent& event)
 {
-    // this is also necessary to update the context on some platforms
-    wxGLCanvas::OnSize(event);
-
-    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
-	#ifndef __WXMOTIF__
-		if (GetContext())
-	#endif
-    {
-        SetCurrent();
-        Refresh();
-    }
-
-	/**********
-	 * Edit by David Riggleman 5/22/11
-	 * 	These methods seemed to be causing flickering on resize events upon startup
-	 * 	so I commented them out
-	 */
-	//OnSize();
-    //event.Skip();
-
+	wxGetApp().SetCurrentCanvas(this);
+	Refresh();
 }
 
 
@@ -604,7 +546,7 @@ void klsGLCanvas::wxOnMouseEvent(wxMouseEvent& event) {
 			wxSize sz = GetClientSize();
 			wxImage screenShot = renderToImage(sz.GetWidth(), sz.GetHeight());
 			wxBitmap myBMP( screenShot );
-			myBMP.SaveFile((const wxChar *)"screen_shot.bmp", wxBITMAP_TYPE_BMP);  // added cast KAS
+			myBMP.SaveFile("screen_shot.bmp", wxBITMAP_TYPE_BMP);
 		}
 		
 	} else if( event.MiddleUp() ) {
@@ -696,7 +638,9 @@ void klsGLCanvas::beginDrag( mouseButton whichButton ) {
 	SetFocus();
 
 	// Bind all mouse events to this window:
-	CaptureMouse();
+	if (!HasCapture()) {
+		CaptureMouse();
+	}
 	
 	// Set the dragging start coordinates:
 	setDragStartCoords( getMouseCoords(), whichButton );
@@ -818,13 +762,7 @@ void klsGLCanvas::disableVertGrid() {
 }
 
 void klsGLCanvas::setMouseCoords() {
-	int w, h;
-	GetClientSize(&w, &h);
-	wxPoint m = getMouseScreenCoords();
-	float glX = panX + (m.x * viewZoom);
-	float glY = panY - (m.y * viewZoom);
-
-	setMouseCoords(GLPoint2f(glX, glY));
+	setMouseCoords(mapToCanvas(getMouseScreenCoords()));
 }
 
 //Julian: Added to allow for zoom to mouse

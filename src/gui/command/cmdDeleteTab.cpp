@@ -60,9 +60,9 @@ bool cmdDeleteTab::Do() {
 bool cmdDeleteTab::Undo() {
 	unsigned int canSize = canvases->size();
 	canvases->insert(canvases->begin() + canvasID, gCanvas);
-	std::ostringstream oss;
+	wxString oss;
 	oss << "Page " << canvasID + 1;
-	canvasBook->InsertPage(canvasID, gCanvas, (const wxChar *)oss.str().c_str(), (false));
+	canvasBook->InsertPage(canvasID, gCanvas, oss, false);
 	if (canvasID < (canSize)) {
 		for (unsigned int i = canvasID + 1; i < canSize + 1; i++) {
 			std::string text = "Page " + to_string(i + 1);

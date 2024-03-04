@@ -46,7 +46,7 @@ paramDialog::paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, 
 	SetSizer(dlgSizer);
 	
 	for (unsigned int i = 0; i < numParams; i++) {
-		paramNames.push_back(new wxStaticText(this, wxID_ANY, (const wxChar *)gateDef->dlgParams[i].textLabel.c_str()));
+		paramNames.push_back(new wxStaticText(this, wxID_ANY, gateDef->dlgParams[i].textLabel));
 		dlgSizer->Add( paramNames[paramNames.size()-1], 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxALL, 3 );
 		string initialString;
 		// Generate control from type. Type can be: STRING, INT, BOOL, FLOAT, FILE_IN, FILE_OUT.
@@ -57,13 +57,13 @@ paramDialog::paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, 
 			istringstream initVal(initialString);
 			int initValInt;
 			initVal >> initValInt;
-			paramVals.push_back(new wxSpinCtrl(this, ID_TEXT, (wxString)((const wxChar *)initialString.c_str()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, (int)(gateDef->dlgParams[i].Rmin), (int)(gateDef->dlgParams[i].Rmax), initValInt)); // KAS
+			paramVals.push_back(new wxSpinCtrl(this, ID_TEXT, initialString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, (int)(gateDef->dlgParams[i].Rmin), (int)(gateDef->dlgParams[i].Rmax), initValInt));
 //			wxGenericValidator* gv = new wxGenericValidator(wxFILTER_INCLUDE_CHAR_LIST, ((wxSpinCtrl*)(paramVals[paramVals.size()-1]))->GetValue())
 //			paramVals[paramVals.size()-1]->SetValidator(gv);
 		} else if ( gateDef->dlgParams[i].type == "STRING" ) {
 			if ( gateDef->dlgParams[i].isGui ) initialString = gGate->getGUIParam(gateDef->dlgParams[i].name);
 			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
-			paramVals.push_back(new wxTextCtrl(this, wxID_ANY, (const wxChar *)initialString.c_str())); // KAS
+			paramVals.push_back(new wxTextCtrl(this, wxID_ANY, initialString));
 		} else if ( gateDef->dlgParams[i].type == "BOOL" ) {
 			paramVals.push_back( new wxCheckBox( this, wxID_ANY, "" ) );
 			// Retrieve the current param setting
@@ -73,7 +73,7 @@ paramDialog::paramDialog(const wxString& title, void* gCircuit, guiGate* gGate, 
 		} else if ( gateDef->dlgParams[i].type == "FLOAT" ) {
 			if ( gateDef->dlgParams[i].isGui ) initialString = gGate->getGUIParam(gateDef->dlgParams[i].name);
 			else initialString = gGate->getLogicParam(gateDef->dlgParams[i].name);
-			paramVals.push_back(new wxTextCtrl(this, ID_TEXT, (const wxChar *)initialString.c_str())); // KAS
+			paramVals.push_back(new wxTextCtrl(this, ID_TEXT, initialString));
 		} else if ( gateDef->dlgParams[i].type == "FILE_IN" ) {
 			paramVals.push_back( new wxButton( this, ID_LOAD, "Load File" ) );
 		} else if ( gateDef->dlgParams[i].type == "FILE_OUT" ) {
@@ -108,7 +108,7 @@ void paramDialog::OnLoad( wxCommandEvent &evt ) {
 		}
 	}
 	if (parmID == paramVals.size()+1) return;
-	string paramName = (const char *)paramNames[parmID]->GetLabel().c_str(); // KAS
+	string paramName = paramNames[parmID]->GetLabel().ToStdString();
 	
 	wxString caption = "Open a memory file";
 	//Edit by Joshua Lansford 1/24/06  Added the option to select Intel-hex files
@@ -119,7 +119,7 @@ void paramDialog::OnLoad( wxCommandEvent &evt ) {
 	LibraryGate* gateDef = &(wxGetApp().libraries[gGate->getLibraryName()][gGate->getLibraryGateName()]);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string mempath = (const char *)path.c_str(); // KAS
+		string mempath = path.ToStdString();
 		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gGate->getID(), gateDef->dlgParams[parmID].name, mempath)));
 	}
 }
@@ -134,7 +134,7 @@ void paramDialog::OnSave( wxCommandEvent &evt ) {
 		}
 	}
 	if (parmID == paramVals.size()+1) return;
-	string paramName = (const char *) paramNames[parmID]->GetLabel().c_str(); // KAS
+	string paramName = paramNames[parmID]->GetLabel().ToStdString();
 	
 	wxString caption = "Open a memory file";
 	wxString wildcard = "CEDAR Memory files (*.cdm)|*.cdm";
@@ -144,7 +144,7 @@ void paramDialog::OnSave( wxCommandEvent &evt ) {
 	LibraryGate* gateDef = &(wxGetApp().libraries[gGate->getLibraryName()][gGate->getLibraryGateName()]);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string mempath = (const char *)path.c_str(); // KAS
+		string mempath = path.ToStdString();
 		gCircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(gGate->getID(), gateDef->dlgParams[parmID].name, mempath)));
 	}
 }
@@ -165,8 +165,7 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 			if (((wxSpinCtrl*)(paramVals[i]))->GetValue() < (int)(gateDef->dlgParams[i].Rmin) ||
 				((wxSpinCtrl*)(paramVals[i]))->GetValue() > (int)(gateDef->dlgParams[i].Rmax)) {
 				// ERROR
-				oss << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
-				msg.Printf((const wxChar *)oss.str().c_str()); // KAS
+				msg << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
 				wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
 				return;
 			}
@@ -174,18 +173,17 @@ void paramDialog::OnOK( wxCommandEvent &evt ) {
 			oss << ((wxSpinCtrl*)(paramVals[i]))->GetValue();
 			pValue = oss.str();
 		} else if ( gateDef->dlgParams[i].type == "STRING") {
-			pValue = (string)((const char *)((wxTextCtrl*)(paramVals[i]))->GetValue().c_str());  // KAS
+			pValue = ((wxTextCtrl*)(paramVals[i]))->GetValue();
 		} else if ( gateDef->dlgParams[i].type == "FLOAT" ) {
 			ostringstream oss;
 			// Check range:
-			pValue = (string)((const char *)((wxTextCtrl*)(paramVals[i]))->GetValue().c_str()); // kAS
+			pValue = ((wxTextCtrl*)paramVals[i])->GetValue().ToStdString();
 			istringstream iss(pValue);
 			float fVal;
 			iss >> fVal;
 			if (fVal < gateDef->dlgParams[i].Rmin || fVal > gateDef->dlgParams[i].Rmax) {
 				// ERROR
-				oss << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
-				msg.Printf((const wxChar *)oss.str().c_str()); // KAS
+				msg << "ERROR: Parameter " << gateDef->dlgParams[i].textLabel << " is out of range.";
 				wxMessageBox(msg, "Error", wxOK | wxICON_ERROR, NULL);
 				return;
 			}

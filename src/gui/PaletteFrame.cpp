@@ -26,7 +26,7 @@ PaletteFrame::PaletteFrame( wxWindow *parent, wxWindowID id, const wxPoint &pos,
 	paletteSizer = new wxBoxSizer( wxVERTICAL );
 	map < string, map < string, LibraryGate > >::iterator libWalk = wxGetApp().libraries.begin();
 	while (libWalk != wxGetApp().libraries.end()) {
-		strings.Add((const wxChar *)((libWalk->first).c_str())); // KAS
+		strings.Add(libWalk->first);
 		libWalk++;
 	}
 	listBox = new wxListBox(this, ID_LISTBOX, wxDefaultPosition, wxSize(0,strings.GetCount()*14), strings, wxLB_SINGLE);

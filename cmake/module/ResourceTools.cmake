@@ -15,7 +15,11 @@ cmake_minimum_required(VERSION 3.9)
 # Directory is relative to toplevel CMakeLists.txt.
 # 
 function(install_resources resDir)
-    install(DIRECTORY "${CMAKE_SOURCE_DIR}/${resDir}" DESTINATION ".")
+    if (WIN32)
+        install(DIRECTORY "${CMAKE_SOURCE_DIR}/${resDir}" DESTINATION ".")
+    else()
+        install(DIRECTORY "${CMAKE_SOURCE_DIR}/${resDir}" DESTINATION "${CMAKE_INSTALL_DATADIR}/CedarLogic")
+    endif()
 endfunction()
 
 

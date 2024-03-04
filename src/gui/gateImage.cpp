@@ -14,8 +14,11 @@
 #include "klsGLCanvas.h"
 #include "guiText.h"
 #include <fstream>
+#include <wx/dnd.h>
+#include "glToImage.h"
+#include "MainFrame.h"
 
-BEGIN_EVENT_TABLE(gateImage, wxStaticBitmap)
+BEGIN_EVENT_TABLE(gateImage, wxWindow)
     EVT_PAINT(gateImage::OnPaint)
     EVT_ENTER_WINDOW( gateImage::OnEnterWindow )
     EVT_LEAVE_WINDOW( gateImage::OnLeaveWindow )
@@ -41,7 +44,7 @@ gateImage::gateImage( string gateName, wxWindow *parent, wxWindowID id,
 	update();
 
 	delete m_gate;
-	this->SetToolTip((const wxChar *)wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption.c_str()); // added cast KAS
+	SetToolTip(wxGetApp().libraries[wxGetApp().gateNameToLibrary[gateName]][gateName].caption);
 }
 
 gateImage::~gateImage() {
@@ -52,9 +55,9 @@ void gateImage::OnPaint(wxPaintEvent &event) {
 	wxBitmap gatebitmap(gImage);
 	dc.DrawBitmap(gatebitmap, 0, 0, true);	
 	if (inImage) {
-		dc.SetPen(wxPen(*wxBLUE, 2, wxSOLID));
+		dc.SetPen(wxPen(*wxBLUE, 2, wxPENSTYLE_SOLID));
 	} else {
-		dc.SetPen(wxPen(*wxWHITE, 2, wxSOLID));
+		dc.SetPen(wxPen(*wxWHITE, 2, wxPENSTYLE_SOLID));
 	}
 		dc.SetBrush(wxBrush(*wxTRANSPARENT_BRUSH));
 		dc.DrawRectangle(0,0,IMAGESIZE,IMAGESIZE);
@@ -63,9 +66,34 @@ void gateImage::OnPaint(wxPaintEvent &event) {
 
 void gateImage::mouseCallback( wxMouseEvent& event) {
 	if (event.LeftDown()) {
+#ifndef USE_WX_DRAGDROP
 		wxGetApp().newGateToDrag = gateName;
+
+#ifdef __WXGTK__
+		// In gtk the canvas doesn't get mouse events when dragging over
+		// it, so we have to tell it to capture the mouse.
+		wxGetApp().mainframe->PreGateDrag();
+
+		// Stop drawing the border
+		inImage = false;
+		Refresh();
+#endif
+
+#else
+		// If USE_WX_DRAGDROP is defined, we use the wxwidgets native
+		// drag and drop. This seems more likely to work cross platform,
+		// but it doesn't provide a preview of the gate being dragged.
+		wxTextDataObject textData(gateName);
+		wxDropSource source(textData, this);
+
+		int flags = 0;
+		source.DoDragDrop(flags);
+#endif
 	} else if (event.LeftUp()) {
 		wxGetApp().newGateToDrag = "";
+	} else {
+		// This is required to pass scroll events through
+		event.Skip();
 	}
 }
 
@@ -123,45 +151,7 @@ void gateImage::setViewport() {
 
 // Print the canvas contents to a bitmap:
 void gateImage::generateImage() {
-//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
-// DIB Section OpenGL rendering.
-
-	wxSize sz = GetClientSize();
-
-	// Create a DIB section.
-	// (The Windows wxBitmap implementation will create a DIB section for a bitmap if you set
-	// a color depth of 24 or greater.)
-	wxBitmap theBM( GATEIMAGESIZE, GATEIMAGESIZE, 32 );
-	
-	// Get a memory hardware device context for writing to the bitmap DIB Section:
-	wxMemoryDC myDC;
-	myDC.SelectObject(theBM);
-	WXHDC theHDC = myDC.GetHDC();
-
-	// The basics of setting up OpenGL to render to the bitmap are found at:
-	// http://www.nullterminator.net/opengl32.html
-	// http://www.codeguru.com/cpp/g-m/opengl/article.php/c5587/
-
-    PIXELFORMATDESCRIPTOR pfd;
-    int iFormat;
-
-    // set the pixel format for the DC
-    ::ZeroMemory( &pfd, sizeof( pfd ) );
-    pfd.nSize = sizeof( pfd );
-    pfd.nVersion = 1;
-    pfd.dwFlags = PFD_DRAW_TO_BITMAP | PFD_SUPPORT_OPENGL | PFD_SUPPORT_GDI;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.cColorBits = 32;
-    pfd.cDepthBits = 16;
-    pfd.iLayerType = PFD_MAIN_PLANE;
-    iFormat = ::ChoosePixelFormat( (HDC) theHDC, &pfd );
-    ::SetPixelFormat( (HDC) theHDC, iFormat, &pfd );
-
-    // create and enable the render context (RC)
-    HGLRC hRC = ::wglCreateContext( (HDC) theHDC );
-    HGLRC oldhRC = ::wglGetCurrentContext();
-    HDC oldDC = ::wglGetCurrentDC();
-    ::wglMakeCurrent( (HDC) theHDC, hRC );
+	glImageCtx glCtx(GATEIMAGESIZE, GATEIMAGESIZE, this);
 
 	// Setup the viewport for rendering:
 	setViewport();
@@ -184,7 +174,7 @@ void gateImage::generateImage() {
 	//*********************************
 	//Edit by Joshua Lansford 4/09/07
 	//anti-alis ing is nice
-	//glEnable( GL_LINE_SMOOTH );
+	glEnable( GL_LINE_SMOOTH );
 	//End of edit
 
 	// Load the font texture
@@ -195,14 +185,8 @@ void gateImage::generateImage() {
 
 	// Flush the OpenGL buffer to make sure the rendering has happened:	
 	glFlush();
-	
-	// Destroy the OpenGL rendering context, release the memDC, and
-	// convert the DIB Section into a wxImage to return to the caller:
-    ::wglMakeCurrent( oldDC, oldhRC );
-    //::wglMakeCurrent( NULL, NULL );
-    ::wglDeleteContext( hRC );
-	myDC.SelectObject(wxNullBitmap);
-	gImage = theBM.ConvertToImage();
+
+	gImage = glCtx.getImage();
 }
 
 void gateImage::renderMap() {

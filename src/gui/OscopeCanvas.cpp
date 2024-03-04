@@ -15,6 +15,8 @@
 #include "OscopeFrame.h"
 #include "guiWire.h"
 
+#include "glToImage.h"
+
 // Included to use the min() and max() templates:
 #include <algorithm>
 using namespace std;
@@ -23,13 +25,12 @@ DECLARE_APP(MainApp)
 
 BEGIN_EVENT_TABLE(OscopeCanvas, wxGLCanvas)
     EVT_PAINT(OscopeCanvas::OnPaint)
-    EVT_SIZE(OscopeCanvas::OnSize)
     EVT_ERASE_BACKGROUND(OscopeCanvas::OnEraseBackground)
 END_EVENT_TABLE()
 
 OscopeCanvas::OscopeCanvas(wxWindow *parent, GUICircuit* gCircuit, wxWindowID id,
-    const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-	: wxGLCanvas( parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxSUNKEN_BORDER ) {
+	const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+	: wxGLCanvas( parent, id, NULL, pos, size, style|wxFULL_REPAINT_ON_RESIZE|wxSUNKEN_BORDER ) {
 
 	this->gCircuit = gCircuit;
 	m_init = false;
@@ -183,11 +184,7 @@ void OscopeCanvas::OnRender(){
 
 void OscopeCanvas::OnPaint(wxPaintEvent& event){ 
 	wxPaintDC dc(this);
-#ifndef __WXMOTIF__
-	if (!GetContext()) return;
-#endif
-
-	SetCurrent();
+	wxGetApp().SetCurrentCanvas(this);
 	// Init OpenGL once, but after SetCurrent
 	if (!m_init)
 	{
@@ -212,24 +209,7 @@ void OscopeCanvas::OnPaint(wxPaintEvent& event){
 	SwapBuffers();
 }
 
-void OscopeCanvas::OnSize(wxSizeEvent& event)
-{
-    // this is also necessary to update the context on some platforms
-    wxGLCanvas::OnSize(event);
-
-    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
-#ifndef __WXMOTIF__
-    if (GetContext())
-#endif
-    {
-        Refresh();
-        //Render();
-    }
-}
-
-
-void OscopeCanvas::UpdateData(void){ 	
-	
+void OscopeCanvas::UpdateData(void){
 	//Declaration of variables
 	deque<StateType> temp;
 
@@ -449,46 +429,9 @@ void OscopeCanvas::UpdateMenu()
 }
 
 // Print the canvas contents to a bitmap:
-wxImage OscopeCanvas::generateImage(){ 
-//WARNING!!! Heavily platform-dependent code ahead! This only works in MS Windows because of the
-// DIB Section OpenGL rendering.
-
+wxImage OscopeCanvas::generateImage(){
 	wxSize sz = GetClientSize();
-
-	// Create a DIB section.
-	// (The Windows wxBitmap implementation will create a DIB section for a bitmap if you set
-	// a color depth of 24 or greater.)
-	wxBitmap theBM( sz.GetWidth(), sz.GetHeight(), 32 );
-	
-	// Get a memory hardware device context for writing to the bitmap DIB Section:
-	wxMemoryDC myDC;
-	myDC.SelectObject(theBM);
-	WXHDC theHDC = myDC.GetHDC();
-
-	// The basics of setting up OpenGL to render to the bitmap are found at:
-	// http://www.nullterminator.net/opengl32.html
-	// http://www.codeguru.com/cpp/g-m/opengl/article.php/c5587/
-
-    PIXELFORMATDESCRIPTOR pfd;
-    int iFormat;
-
-    // set the pixel format for the DC
-    ::ZeroMemory( &pfd, sizeof( pfd ) );
-    pfd.nSize = sizeof( pfd );
-    pfd.nVersion = 1;
-    pfd.dwFlags = PFD_DRAW_TO_BITMAP | PFD_SUPPORT_OPENGL | PFD_SUPPORT_GDI;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.cColorBits = 32;
-    pfd.cDepthBits = 16;
-    pfd.iLayerType = PFD_MAIN_PLANE;
-    iFormat = ::ChoosePixelFormat( (HDC) theHDC, &pfd );
-    ::SetPixelFormat( (HDC) theHDC, iFormat, &pfd );
-
-    // create and enable the render context (RC)
-    HGLRC hRC = ::wglCreateContext( (HDC) theHDC );
-    HGLRC oldhRC = ::wglGetCurrentContext();
-    HDC oldDC = ::wglGetCurrentDC();
-    ::wglMakeCurrent( (HDC) theHDC, hRC );
+	glImageCtx glCtx(sz.GetWidth(), sz.GetHeight(), this);
 
 	// Setup the viewport for rendering:
 //	setViewport();
@@ -515,12 +458,6 @@ wxImage OscopeCanvas::generateImage(){
 
 	// Flush the OpenGL buffer to make sure the rendering has happened:	
 	glFlush();
-	
-	// Destroy the OpenGL rendering context, release the memDC, and
-	// convert the DIB Section into a wxImage to return to the caller:
-    ::wglMakeCurrent( oldDC, oldhRC );
-    //::wglMakeCurrent( NULL, NULL );
-    ::wglDeleteContext( hRC );
-	myDC.SelectObject(wxNullBitmap);
-	return theBM.ConvertToImage();
+
+	return glCtx.getImage();
 }

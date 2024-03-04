@@ -2,6 +2,7 @@
 #pragma once
 #include "klsCommand.h"
 #include <stack>
+#include <vector>
 
 // cmdDeleteSelection - Deletes a selection of gates/wires
 class cmdDeleteSelection : public klsCommand {

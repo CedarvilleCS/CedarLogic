@@ -50,7 +50,7 @@ RamPopupDialog::RamPopupDialog( guiGateRAM* newM_guiGateRAM,
 	loadBtn = new wxButton( this, wxID_OPEN );
 	saveBtn = new wxButton( this, wxID_SAVE );
 	
-	hexOrDecCB = new wxCheckBox(this, ID_CHECKBOX, (const wxChar *)"Show Decimal"); // KAS
+	hexOrDecCB = new wxCheckBox(this, ID_CHECKBOX, "Show Decimal");
 	
 	wxGridTableBase* gridTable = new virtualGrid(addressSize, dataSize, m_guiGateRAM, gUICircuit ,hexOrDecCB); 
 	memContents = new wxGrid(this, ID_MEMCONTENTS);
@@ -85,7 +85,7 @@ void RamPopupDialog::OnBtnLoad( wxCommandEvent& event ){
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string mempath = (const char *)path.c_str(); // KAS
+		string mempath = path.ToStdString();
 		gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "READ_FILE", mempath)));
 		gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_UPDATE_GATES)); //make sure we get an update of the new file
 	}
@@ -100,7 +100,7 @@ void RamPopupDialog::OnBtnSave( wxCommandEvent& event ){
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string mempath = (const char *)path.c_str();  // KAS
+		string mempath = path.ToStdString();
 		gUICircuit->sendMessageToCore(klsMessage::Message(klsMessage::MT_SET_GATE_PARAM, new klsMessage::Message_SET_GATE_PARAM(m_guiGateRAM->getID(), "WRITE_FILE", mempath)));
 	}
 }
@@ -173,13 +173,13 @@ wxString virtualGrid::GetValue (int row, int col) {
 	} else {
 		stream << hex << uppercase << setw ( dataSize ) << setfill ( '0' ) << data;
 	}
-	return (const wxChar *)stream.str().c_str(); // KAS
+	return stream.str();
 }
 
 void virtualGrid::SetValue (int row, int col, const wxString& value) {
 
 	int newValue = 0;
-	istringstream istream( (string)((const char *)value.c_str()) ); // double cast KAS
+	istringstream istream(value.ToStdString());
 	
 	//determine if we should interperate it as hex or decimal
 	if( hexOrDecCB->IsChecked() ){
@@ -236,11 +236,11 @@ wxString virtualGrid::GetRowLabelValue(int row) {
 	//set row titles
 	ostringstream stream;
 	stream << "0x" << hex << uppercase << setw( addressSize - 1 ) << setfill( '0' ) << row << 'X';
-	return (const wxChar *)stream.str().c_str(); // KAS
+	return stream.str();
 }
 
 wxString virtualGrid::GetColLabelValue(int col) {
 	ostringstream oss;
 	oss << uppercase << hex << col;
-	return (const wxChar *)oss.str().c_str(); // KAS
+	return oss.str();
 }

@@ -18,6 +18,7 @@
 #include "wx/docview.h"
 #include "wx/help.h"
 #include "wx/fs_zip.h"
+#include "wx/glcanvas.h"
 #include "threadLogic.h"
 #include "autoSaveThread.h"
 #include "logic_values.h"
@@ -39,11 +40,11 @@ struct ApplicationSettings {
 	string textFontFile;
 	string helpFile;
 	string lastDir;
-	unsigned int mainFrameWidth;
-	unsigned int mainFrameHeight;
+	int mainFrameWidth;
+	int mainFrameHeight;
 	int mainFrameLeft;
 	int mainFrameTop;
-	unsigned int timePerStep;
+	int timePerStep;
 	int refreshRate;
     float wireConnRadius;
     bool wireConnVisible;
@@ -54,6 +55,7 @@ class MainApp : public wxApp {
 public:
 	MainApp();
 	virtual bool OnInit();
+	void SetCurrentCanvas(wxGLCanvas *canvas);
 
 public:
     // crit section protects access to all of the arrays below
@@ -102,7 +104,7 @@ public:
 	
 	//this string is necisary when the working directory
 	//is not were the executeable is.
-	string pathToExe;
+	string resourcesDir;
 
 	// OK, honestly, this shouldn't be here
 	//	Basically exporting bitmaps doesn't like GL display
@@ -111,6 +113,9 @@ public:
 	
 private:
 	void loadSettings( void );
+
+	// opengl context used for all rendering
+	wxGLContext *glContext;
 };
 
 #endif /*MAINAPP_H_*/

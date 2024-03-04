@@ -114,9 +114,9 @@ void OscopeFrame::OnClose( wxCloseEvent& event ){
 void OscopeFrame::OnToggleButton( wxCommandEvent& event ){ 
 	if( !(pauseButton->GetValue()) ) {
 		theCanvas->clearData();
-		pauseButton->SetLabel((const wxChar *)"Pause"); // KAS
+		pauseButton->SetLabel("Pause");
 	} else {
-		pauseButton->SetLabel((const wxChar *)"Reset"); // KAS
+		pauseButton->SetLabel("Reset");
 	}
 }
 
@@ -235,15 +235,16 @@ void OscopeFrame::OnExport( wxCommandEvent& event ){
 	memDC.SelectObject(labelBitmap);
 	memDC.SetBackground(*wxWHITE_BRUSH);
 	memDC.Clear();
-	wxFont font(10, wxFONTFAMILY_DEFAULT, wxNORMAL, wxFONTWEIGHT_NORMAL);
+	wxFont font(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 	memDC.SetFont( font );
 	memDC.SetTextForeground(*wxBLACK);
 	memDC.SetTextBackground(*wxWHITE);
 	//JoshEdit 3/15/07
 	for( unsigned int i = 0; i < numberOfFeeds()-1; ++i ){
-		memDC.DrawText((const wxChar *)getFeedName(i).c_str(), wxPoint(5, getFeedYPos(i))); // KAS
+		memDC.DrawText(getFeedName(i), wxPoint(5, getFeedYPos(i)));
 	}
 	memDC.DrawBitmap(circuitBitmap, theCanvas->GetPosition().x, 0, false);
+	memDC.SelectObject(wxNullBitmap);
 	
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->SetData(new wxBitmapDataObject(labelBitmap));
@@ -259,7 +260,7 @@ void OscopeFrame::OnLoad( wxCommandEvent& event ){
 	
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		ifstream inFile(path.c_str());
+		ifstream inFile(path.ToStdString());
 		string lineFile;
 		getline(inFile, lineFile, '\n');
 		if (lineFile != "OSCOPE LAYOUT FILE") return;
@@ -274,7 +275,7 @@ void OscopeFrame::OnLoad( wxCommandEvent& event ){
 
 		for (unsigned int i = 0; i < numLines; i++) {
 			getline(inFile, lineFile, '\n');
-			appendNewFeed( lineFile.c_str() );
+			appendNewFeed(lineFile);
 		}		
 		//Call layout function
 		Layout();
@@ -290,8 +291,8 @@ void OscopeFrame::OnSave( wxCommandEvent& event ){
 	wxFileDialog dialog(this, caption, wxEmptyString, defaultFilename, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxString path = dialog.GetPath();
-		string openedFilename = (const char *)path.c_str(); // KAS
-		ofstream outFile(openedFilename.c_str());
+		string openedFilename = path.ToStdString();
+		ofstream outFile(openedFilename);
 		outFile << "OSCOPE LAYOUT FILE" << endl;
 		outFile << numberOfFeeds() << " : following lines are order of inputs" << endl;
 		for (unsigned int i = 0; i < numberOfFeeds(); i++) outFile << getFeedName(i) << endl;
@@ -332,13 +333,13 @@ void OscopeFrame::verifyReferenceOrder(){
 //and appends it to the end.
 void OscopeFrame::appendNewFeed( string newName ){
 	wxArrayString strings;
-	strings.Add((const wxChar *)encodeFeedName(NONE_STR).c_str());  // KAS
+	strings.Add(encodeFeedName(NONE_STR));
 	if( numberOfFeeds() > 0 ){
-		strings.Add((const wxChar *)encodeFeedName( RMOVE_STR ).c_str()); // KAS
+		strings.Add(encodeFeedName( RMOVE_STR ));
 	}
 	
-	wxComboBox* newCombo = new wxComboBox(this, ID_COMBOBOX, (const wxChar *)encodeFeedName(newName).c_str(), wxDefaultPosition, wxDefaultSize, strings,
-	      wxCB_READONLY  | wxCB_DROPDOWN | wxCB_SORT );  // KAS
+	wxComboBox* newCombo = new wxComboBox(this, ID_COMBOBOX, encodeFeedName(newName), wxDefaultPosition, wxDefaultSize, strings,
+	      wxCB_READONLY  | wxCB_DROPDOWN | wxCB_SORT );
 	comboBoxes.push_back( newCombo );
 
 	//Adds vertical box to canvas
@@ -347,7 +348,7 @@ void OscopeFrame::appendNewFeed( string newName ){
 
 //this renames an existing feed
 void OscopeFrame::setFeedName( int i, string newName ){
-	comboBoxes[i]->SetValue((const wxChar *)encodeFeedName(newName).c_str()); // KAS
+	comboBoxes[i]->SetValue(encodeFeedName(newName));
 	//feedNames[i] = newName;
 }
 
@@ -367,7 +368,7 @@ void OscopeFrame::removeFeed( int i ){
 //Returns the name of feed i.  i.e. the current
 //contents in the ith combo box
 string OscopeFrame::getFeedName( int i ){
-	return decodeFeedName((const char *)comboBoxes[i]->GetValue().c_str()); // KAS
+	return decodeFeedName(comboBoxes[i]->GetValue().ToStdString());
 }
 
 //Removes the feed from the list.
@@ -402,15 +403,15 @@ void OscopeFrame::updatePossableFeeds( vector< string >* newPossabilities ){
 		//box and checking if any of them match the current name which is being
 		//used as the feed.
 		for( vector< string >::iterator I = newPossabilities->begin(); I != newPossabilities->end(); ++I ){
-			comboBoxes[i]->Append((const wxChar *)encodeFeedName(*I).c_str()); // KAS
+			comboBoxes[i]->Append(encodeFeedName(*I));
 			if( (*I) == currentFeedName ){
 				valueValid = true;
 			}
 		}
 		
-		comboBoxes[i]->Append((const wxChar *)encodeFeedName(NONE_STR).c_str()); // KAS
+		comboBoxes[i]->Append(encodeFeedName(NONE_STR));
 		if( numberOfFeeds() > 1 ){
-			comboBoxes[i]->Append((const wxChar *)encodeFeedName(RMOVE_STR).c_str()); // KAS
+			comboBoxes[i]->Append(encodeFeedName(RMOVE_STR));
 		}
 		
 		//if the value wasn't valid anymore, then we set it to [None]

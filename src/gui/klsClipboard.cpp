@@ -25,16 +25,29 @@
 
 DECLARE_APP(MainApp)
 
+class clipboardCtx {
+public:
+	bool valid;
+
+	clipboardCtx() {
+		valid = wxTheClipboard->Open();
+	}
+
+	virtual ~clipboardCtx() {
+		if (valid) wxTheClipboard->Close();
+	}
+};
+
 cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanvas ) {
-	if (!wxTheClipboard->Open()) return NULL;
-	if ( !wxTheClipboard->IsSupported(wxDF_TEXT) ) {
-		wxTheClipboard->Close();
+	clipboardCtx clipboard;
+	if ( !clipboard.valid || !wxTheClipboard->IsSupported(wxDF_UNICODETEXT) ) {
 		return NULL;
 	}
+
     wxTextDataObject text;
     vector < klsCommand* > cmdList;
     if ( wxTheClipboard->GetData(text) ) {
-    	string pasteText = (char*)(text.GetText().c_str());
+    	string pasteText = text.GetText().ToStdString();
     	if (pasteText.find('\n',0) == string::npos) return NULL;
     	istringstream iss(pasteText);
     	string temp;
@@ -82,7 +95,7 @@ cmdPasteBlock* klsClipboard::pasteBlock( GUICircuit* gCircuit, GUICanvas* gCanva
 						temp += s; // Add it back to temp string
 						*newPasteText += s + "\n";
 
-						wxTheClipboard->AddData(new wxTextDataObject((wxChar*)newPasteText->c_str())); // Update clipboard data so subsequent pastes carry 
+						wxTheClipboard->AddData(new wxTextDataObject(*newPasteText)); // Update clipboard data so subsequent pastes carry 
 					/* END OF EDIT */
 					}
 
@@ -192,6 +205,6 @@ void klsClipboard::copyBlock( GUICircuit* gCircuit, GUICanvas* gCanvas, vector <
 		delete copyWires[i];
 	}
 	if (!wxTheClipboard->Open()) return;
-	wxTheClipboard->AddData(new wxTextDataObject((wxChar*)(oss.str().c_str())));
+	wxTheClipboard->AddData(new wxTextDataObject(oss.str()));
 	wxTheClipboard->Close();
 }

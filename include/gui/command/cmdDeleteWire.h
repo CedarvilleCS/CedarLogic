@@ -2,6 +2,7 @@
 #pragma once
 #include "klsCommand.h"
 #include <stack>
+#include <vector>
 
 // cmdDeleteWire - Deletes a wire
 class cmdDeleteWire : public klsCommand {
