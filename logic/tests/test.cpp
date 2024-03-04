@@ -353,7 +353,7 @@ TEST_CASE("XMLParser writing, [XMLParser]") {
 }
 
 TEST_CASE("XMLParser reading, [XMLParser]") {
-    std::fstream ifs("../tests/testxml.txt", std::ios::in);
+    std::fstream ifs("../tests/testxml.txt", std::ios::in);  // TODO: get this test file auto-copied over
     XMLParser parser(&ifs, false);
 
     if (ifs.is_open())
