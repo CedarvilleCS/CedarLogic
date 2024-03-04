@@ -19,15 +19,7 @@
 
 // Definition of operator for WireInput (Allows it to be stored in maps).
 bool operator < (const WireInput &left, const WireInput &right) {
-	if (left.gateID < right.gateID) {
-		return true;
-	} else if (left.gateID > right.gateID) {
-		return false;
-	} else if (left.gateOutputID < right.gateOutputID) {
-		return true;
-	}
-
-	return false;
+	return left.gateID < right.gateID || (left.gateID == right.gateID && left.gateOutputID < right.gateOutputID)
 }
 
 
