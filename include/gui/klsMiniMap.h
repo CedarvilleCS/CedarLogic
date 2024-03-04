@@ -42,9 +42,6 @@ public:
 	void OnPaint(wxPaintEvent& evt);
 	void OnMouseEvent(wxMouseEvent& evt);
 	
-	//Josh Edit 4/9/07
-	/* void OnEraseBackground(wxEraseEvent& WXUNUSED(event)); */
-	
 private:
 	void setViewport();
 	void generateImage();
