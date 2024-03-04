@@ -18,7 +18,8 @@ Building CedarLogic on Linux and Windows is possible. Doing so on MacOS should b
 
 3. Run `cmake --build build --config Release --target package`
 
-4. There is now a CedarLogic installer executable in the `build` directory. If you run the installer, you will have the latest semi-stable version of CedarLogic installed. See the next section for development.
+4. There is now a CedarLogic installer executable in the `build` directory. If you run the installer, you will have the latest semi-stable version of CedarLogic installed. If you open `build\CedarLogic.sln` with
+Visual Studio you can work from there.
 
 ## Linux
 
